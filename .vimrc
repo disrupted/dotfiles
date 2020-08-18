@@ -377,7 +377,7 @@ xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
 
 " Coc-Explorer
-nmap <leader>e :CocCommand explorer<CR>
+nmap <C-e> :CocCommand explorer<CR>
 " nmap <leader>f :CocCommand explorer --preset floating<CR>
 " when closing all buffers and Coc-Explorer is the last one left auto-close it
 autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif
