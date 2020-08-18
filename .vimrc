@@ -153,10 +153,13 @@ nnoremap <silent> ˚        :resize +2<CR>
 nnoremap <silent> ˙        :vertical resize -2<CR>
 nnoremap <silent> ¬        :vertical resize +2<CR>
 
+" move among buffers with CTRL
+" map <C-J> :bnext<CR>
+" map <C-K> :bprev<CR>
 " TAB in general mode will move to text buffer
-nnoremap <silent> <TAB> :bnext<CR>
+" nnoremap <silent> <TAB> :bnext<CR>
 " SHIFT-TAB will go back
-nnoremap <silent> <S-TAB> :bprevious<CR>
+" nnoremap <silent> <S-TAB> :bprev<CR>
 
 " ============
 
@@ -228,7 +231,6 @@ set number                              " Line numbers
 set relativenumber
 set noruler                             " Hide the cursor position
 set cursorline                          " Enable highlighting of the current line
-set background=dark                     " tell vim what the background color looks like
 set showcmd
 set wildmenu
 set lazyredraw
@@ -341,11 +343,11 @@ set shortmess+=c
 set signcolumn=yes
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-" inoremap <silent><expr> <TAB>
-"       \ pumvisible() ? "\<C-n>" :
-"       \ <SID>check_back_space() ? "\<TAB>" :
-"       \ coc#refresh()
-" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
@@ -515,15 +517,17 @@ let g:lightline = {
       \ 'colorscheme': 'one',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'cocstatus', 'readonly', 'filename', 'modified' ] ],
+      \             [ 'gitbranch', 'cocstatus', 'readonly', 'filename', 'modified' ] ],
       \   'right': [ [ 'percent' ],
       \              [           ],
-      \              [ 'fileformat', 'fileencoding', 'filetype' ] ]
+      \              [ 'filetype', 'fileformat', 'fileencoding' ] ]
       \ },
       \ 'component_function': {
       \   'fileformat': 'LightlineFileformat',
       \   'filetype': 'LightlineFiletype',
     	\   'cocstatus': 'coc#status',
+      \   'currentfunction': 'CocCurrentFunction',
+      \   'gitbranch': 'FugitiveHead',
       \ },
       \ }
 
@@ -533,6 +537,10 @@ endfunction
 
 function! LightlineFiletype()
   return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
+endfunction
+
+function! CocCurrentFunction()
+    return get(b:, 'coc_current_function', '')
 endfunction
 
 " Use autocmd to force lightline update.
