@@ -61,10 +61,12 @@ Plug 'Shougo/neocomplcache.vim'
 " Plug 'tomtom/tlib_vim'
 " Plug 'honza/vim-snippets'
 " Plug 'garbas/vim-snipmate'
-" Git/mercurial/others diff icons on the side of the file lines
+" Git
 Plug 'mhinz/vim-signify'
+" Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-fugitive'
 " Automatically sort python imports
-" Plug 'fisadev/vim-isort'
+Plug 'fisadev/vim-isort'
 " Drag visual blocks arround
 " Plug 'fisadev/dragvisuals.vim'
 " Window chooser
@@ -94,12 +96,13 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 " Project directory scope for FZF
 Plug 'airblade/vim-rooter'
-" fugitive git integration
-Plug 'tpope/vim-fugitive'
 Plug 'neomake/neomake'
 " Better tabline
 Plug 'mg979/vim-xtabline'
 " Plug 'dense-analysis/ale'
+Plug 'liuchengxu/vim-which-key'
+" find and replace on multiple files
+Plug 'brooth/far.vim'
 filetype plugin on
 
 " set leader key to comma
@@ -188,15 +191,15 @@ autocmd FileType htmldjango setlocal shiftwidth=4 tabstop=4 softtabstop=4
 autocmd FileType javascript setlocal shiftwidth=4 tabstop=4 softtabstop=4
 
 " ignore these files when completing names and in Ex
-set wildignore=.svn,CVS,.git,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif,*.pdf,*.bak,*.beam,*.mkv,*.mp4,*.m4v,*.webm,*.dts*,*.aac,*.mp3,*.flac
+set wildignore+=.svn,CVS,.git,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif,*.pdf,*.bak,*.beam,*.mkv,*.mp4,*.m4v,*.webm,*.dts*,*.aac,*.mp3,*.flac,**/node_modules/**
 " set of file name suffixes that will be given a lower priority when it comes to matching wildcards
 set suffixes+=.old
 
 " source $MYVIMRC reloads the saved $MYVIMRC
-:nmap <Leader>s :source $MYVIMRC<CR>
+:nmap <leader>s :source $MYVIMRC<CR>
 
 " opens $MYVIMRC for editing, or use :tabedit $MYVIMRC
-:nmap <Leader>v :e ~/.vimrc<CR>
+:nmap <leader>v :e ~/.vimrc<CR>
 
 let s:hidden_all = 0
 function! ToggleHiddenAll()
@@ -222,6 +225,7 @@ set hlsearch
 " Yank and paste with the system clipboard
 set clipboard=unnamed
 
+" === sane defaults / QoL changes === "
 syntax on
 set hidden                              " Required to keep multiple buffers open multiple buffers
 set encoding=utf-8                      " The encoding displayed
@@ -244,6 +248,8 @@ set virtualedit=all
 set nostartofline
 " highlight substitute match incrementally as you're typing
 set inccommand=nosplit
+" when entering a buffer, set path to the directory of the file
+autocmd BufEnter * lcd %:p:h
 
 " Setting vertical line
 " set colorcolumn=86
@@ -260,6 +266,18 @@ endif
 
 let g:indentLine_char = '│'
 
+" === Search & Replace === "
+" Press * to search for the term under the cursor or a visual selection and
+" then press this key below to replace all instances of it in the current file.
+nnoremap <leader>r :%s///g<Left><Left>
+" nnoremap <leader>rc :%s///gc<Left><Left><Left>
+
+" The same as above but instead of acting on the whole file it will be
+" restricted to the previously visually selected range. You can do that by
+" pressing *, visually selecting the range you want it to apply to and then
+" press this key below to replace all instances of it in the current selection.
+xnoremap <leader>r :s///g<Left><Left>
+" xnoremap <leader>rc :s///gc<Left><Left><Left>
 
 " === TERMINAL === "
 " exit terminal mode with Esc
@@ -286,7 +304,7 @@ nnoremap <C-l> <C-w>l
 " ctrl + w _
 "Max out the width of the current split
 " ctrl + w |
-"Normalize all split sizes, which is very handy when resizing terminal
+"Normalize all split sizes, very handy when resizing terminal
 " ctrl + w =
 " Quickly Toggle Window Zoom
 map <leader>z :ZoomWinTabToggle<CR>
@@ -303,6 +321,114 @@ noremap <leader>7 7gt
 noremap <leader>8 8gt
 noremap <leader>9 9gt
 noremap <leader>0 :tablast<cr>
+
+" === Which Key === "
+" Map leader to which_key
+nnoremap <silent> <leader> :silent WhichKey '<Space>'<CR>
+vnoremap <silent> <leader> :silent <c-u> :silent WhichKeyVisual '<Space>'<CR>
+
+" Create map to add keys to
+let g:which_key_map =  {}
+" Define a separator
+let g:which_key_sep = '→'
+" set timeoutlen=500
+
+
+" Not a fan of floating windows for this
+let g:which_key_use_floating_win = 0
+
+" Change the colors if you want
+highlight default link WhichKey          Operator
+highlight default link WhichKeySeperator Background
+highlight default link WhichKeyGroup     Identifier
+highlight default link WhichKeyDesc      Function
+
+" Hide status line
+autocmd! FileType which_key
+autocmd  FileType which_key set laststatus=0 noshowmode noruler
+  \| autocmd BufLeave <buffer> set laststatus=2 noshowmode ruler
+
+" Single mappings
+let g:which_key_map['/'] = [ '<Plug>NERDCommenterToggle'  , 'comment' ]
+let g:which_key_map['e'] = [ ':CocCommand explorer'       , 'explorer' ]
+let g:which_key_map['f'] = [ ':Files'                     , 'search files' ]
+let g:which_key_map['h'] = [ '<C-W>s'                     , 'split below']
+let g:which_key_map['r'] = [ ':Ranger'                    , 'ranger' ]
+let g:which_key_map['S'] = [ ':Rg'                        , 'search text' ]
+let g:which_key_map['v'] = [ '<C-W>v'                     , 'split right']
+let g:which_key_map['z'] = [ 'Zoom'                       , 'zoom' ]
+
+" s is for search
+let g:which_key_map.s = {
+      \ 'name' : '+search' ,
+      \ '/' : [':History/'     , 'history'],
+      \ ';' : [':Commands'     , 'commands'],
+      \ 'a' : [':Ag'           , 'text Ag'],
+      \ 'b' : [':BLines'       , 'current buffer'],
+      \ 'B' : [':Buffers'      , 'open buffers'],
+      \ 'c' : [':Commits'      , 'commits'],
+      \ 'C' : [':BCommits'     , 'buffer commits'],
+      \ 'f' : [':Files'        , 'files'],
+      \ 'g' : [':GFiles'       , 'git files'],
+      \ 'G' : [':GFiles?'      , 'modified git files'],
+      \ 'h' : [':History'      , 'file history'],
+      \ 'H' : [':History:'     , 'command history'],
+      \ 'l' : [':Lines'        , 'lines'] ,
+      \ 'm' : [':Marks'        , 'marks'] ,
+      \ 'M' : [':Maps'         , 'normal maps'] ,
+      \ 'p' : [':Helptags'     , 'help tags'] ,
+      \ 'P' : [':Tags'         , 'project tags'],
+      \ 's' : [':Snippets'     , 'snippets'],
+      \ 'S' : [':Colors'       , 'color schemes'],
+      \ 't' : [':Rg'           , 'text Rg'],
+      \ 'T' : [':BTags'        , 'buffer tags'],
+      \ 'w' : [':Windows'      , 'search windows'],
+      \ 'y' : [':Filetypes'    , 'file types'],
+      \ 'z' : [':FZF'          , 'FZF'],
+      \ }
+
+" Register which key map
+call which_key#register('<Space>', "g:which_key_map")
+
+
+" === Git integration === "
+" === Signify === "
+" Change these if you want
+" let g:signify_sign_add               = '+'
+" let g:signify_sign_delete            = '_'
+" let g:signify_sign_delete_first_line = '‾'
+" let g:signify_sign_change            = '~'
+
+" I find the numbers disctracting
+" let g:signify_sign_show_count = 0
+" let g:signify_sign_show_text = 1
+
+" Jump though hunks
+nmap <leader>gj <plug>(signify-next-hunk)
+nmap <leader>gk <plug>(signify-prev-hunk)
+nmap <leader>gJ 9999<leader>gJ
+nmap <leader>gK 9999<leader>gk
+
+" If you like colors instead
+" highlight SignifySignAdd                  ctermbg=green                guibg=#00ff00
+" highlight SignifySignDelete ctermfg=black ctermbg=red    guifg=#ffffff guibg=#ff0000
+" highlight SignifySignChange ctermfg=black ctermbg=yellow guifg=#000000 guibg=#ff
+
+" === GitGutter === "
+" supports staging hunks compared to Signify but much slower
+
+" let g:gitgutter_sign_added              = '▎'
+" let g:gitgutter_sign_modified           = '▎'
+" let g:gitgutter_sign_removed            = '契'
+" let g:gitgutter_sign_removed_first_line = '契'
+" let g:gitgutter_sign_modified_removed   = '▎'
+" let g:gitgutter_preview_win_floating = 1
+
+" let g:gitgutter_enabled = 1
+
+" highlight GitGutterAdd    guifg=#98c379 ctermfg=2 guibg=yellow ctermbg=yellow
+" highlight GitGutterChange guifg=#61afef ctermfg=3 guibg=yellow ctermbg=yellow
+" highlight GitGutterDelete guifg=#e06c75 ctermfg=1 guibg=yellow ctermbg=yellow
 
 " === NERDTree === "
 nmap <C-n> :NERDTreeToggle<CR>
@@ -377,6 +503,14 @@ endfunction
 " Remap for format selected region
 xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf  <Plug>(coc-fix-current)
 
 " Coc-Explorer
 nmap <C-e> :CocCommand explorer<CR>
@@ -499,37 +633,45 @@ let g:xtabline_settings.icons = {
 " noremap <C-I> :CocCommand prettier.formatFile<CR>
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 
-" ALE
+" === ALE === "
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 let g:ale_sign_error = '✘'
 let g:ale_sign_warning = '⚠'
 " let g:ale_lint_on_text_changed = 'never'  " only lint on save
 
-" titlecase
+" === Titlecase === "
 let g:titlecase_map_keys = 0  " remove default keymapping which interferes with tabs
 nmap <leader>ct <Plug>Titlecase
 vmap <leader>ct <Plug>Titlecase
 nmap <leader>cT <Plug>TitlecaseLine
 
-"  appearance
+" === Lightline === "
 set noshowmode  " disables -- INSERT -- mode display underneath lightline
 let g:lightline = {
       \ 'colorscheme': 'one',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'gitbranch', 'cocstatus', 'readonly', 'filename', 'modified' ] ],
+      \             [ 'readonly', 'filename_with_icon', 'modified', 'status_diagnostic' ] ],
       \   'right': [ [ 'percent' ],
-      \              [           ],
-      \              [ 'filetype', 'fileformat', 'fileencoding' ] ]
+      \              [ 'gitbranch' ],
+      \              [ 'gitchanges' ] ]
       \ },
       \ 'component_function': {
       \   'fileformat': 'LightlineFileformat',
       \   'filetype': 'LightlineFiletype',
-    	\   'cocstatus': 'coc#status',
+      \   'cocstatus': 'coc#status',
       \   'currentfunction': 'CocCurrentFunction',
       \   'gitbranch': 'FugitiveHead',
+      \   'gitchanges': 'GitSignifyStats',
+      \   'status_diagnostic': 'StatusDiagnostic',
+      \   'filename_with_icon': 'FileNameWithIcon',
       \ },
       \ }
+      " \              [ 'filetype', 'fileencoding' ],
+
+function! FileNameWithIcon() abort
+  return winwidth(0) > 70  ?  WebDevIconsGetFileTypeSymbol() . ' ' . expand('%:t') : '' 
+endfunction
 
 function! LightlineFileformat()
   return winwidth(0) > 70 ? &fileformat : ''
@@ -540,12 +682,39 @@ function! LightlineFiletype()
 endfunction
 
 function! CocCurrentFunction()
-    return get(b:, 'coc_current_function', '')
+  return get(b:, 'coc_current_function', '')
+endfunction
+
+" function! GitGutterStatus()
+"   let [a,m,r] = GitGutterGetHunkSummary()
+"   return printf('+%d ~%d -%d', a, m, r)
+" endfunction
+
+function! GitSignifyStats()
+  " return sy#repo#get_stats_decorated()
+  let [a,r,m] = sy#repo#get_stats() 
+  return printf('+%d ~%d -%d', a, m, r)
+endfunction
+
+function! StatusDiagnostic() abort
+  let info = get(b:, 'coc_diagnostic_info', {})
+
+  if get(info, 'error', 0)
+    return ""
+  endif
+
+  if get(info, 'warning', 0)
+    return info['warning'] . ""
+  endif
+
+  return "" 
 endfunction
 
 " Use autocmd to force lightline update.
 autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
 
+
+" === Appearance === "
 let g:one_allow_italics = 1
 let g:onedark_terminal_italic = 1
 
@@ -554,6 +723,9 @@ set background=dark
 " set t_ut=
 colorscheme one
 call one#highlight('Normal', '', '24282c', 'none') " dark
+" set SignColumn/Gutter to dark background color
+highlight clear SignColumn
+" highlight SignColumn guibg=0 ctermbg=0
 
 " let g:VM_maps = {}
 " let g:VM_maps['Find Under']         = '<C-d>'           " replace C-n
