@@ -1,0 +1,44 @@
+{
+  "coc.preferences.formatOnType": true,
+  "coc.preferences.formatOnSaveFiletypes": [
+    "javascript",
+    "typescript",
+    "json",
+    "css",
+    "python",
+    "Markdown",
+    "yaml"
+  ],
+  "list.interactiveDebounceTime": 300,
+  "codeLens.enable": true,
+  "suggest.maxCompleteItemCount": 20,
+  "suggest.snippetIndicator": "\u26a1 ",
+  // diagnostic
+  "diagnostic.virtualText": true,
+  "diagnostic.errorSign": "◉",
+  "diagnostic.warningSign": "•",
+  "diagnostic.infoSign": "•",
+  // python
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": false,
+  "python.linting.flake8Enabled": true,
+  "python.formatting.provider": "black",
+  "python.terminal.executeInFileDir": true,
+  // yaml
+  "yaml.format.enable": true,
+  "yaml.customTags": [
+    "!secret",
+    "!include_dir_named",
+    "!include_dir_list",
+    "!include_dir_merge_named",
+    "!include_dir_merge_list"
+  ],
+  // explorer
+  "explorer.width": 30,
+  "explorer.icon.enableNerdfont": true,
+  "explorer.previewAction.onHover": false,
+  "explorer.keyMappings": {
+    "<cr>": ["expandable?", "expand", "open"],
+    "v": "open:vsplit"
+  }
+}
