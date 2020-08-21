@@ -72,7 +72,7 @@ Plug 'fisadev/vim-isort'
 " Window chooser
 " Plug 't9md/vim-choosewin'
 " Python and other languages code checker
-Plug 'scrooloose/syntastic'
+" Plug 'scrooloose/syntastic'
 " Paint css colors with the real color
 " Plug 'lilydjwg/colorizer'
 " Ack code search (requires ack installed in the system)
@@ -99,10 +99,13 @@ Plug 'airblade/vim-rooter'
 Plug 'neomake/neomake'
 " Better tabline
 Plug 'mg979/vim-xtabline'
+" ALE
 " Plug 'dense-analysis/ale'
 Plug 'liuchengxu/vim-which-key'
 " find and replace on multiple files
 Plug 'brooth/far.vim'
+" Better python syntax highlighting
+" Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
 filetype plugin on
 
 " set leader key to comma
@@ -242,6 +245,10 @@ set showmatch
 set autoindent
 set smartindent
 set ignorecase
+set complete+=kspell
+set spelllang=en,cjk
+" set spell
+set completeopt=menuone  " ,longest
 set updatetime=300                      " Faster completion
 " keep horizontal cursor position when jumping up/down
 set virtualedit=all
@@ -466,7 +473,7 @@ set updatetime=300
 " don't give |ins-completion-menu| messages.
 set shortmess+=c
 " always show signcolumns
-set signcolumn=yes
+set signcolumn=yes  " or =number to merge signcolumn and linenumbers
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
 inoremap <silent><expr> <TAB>
@@ -482,6 +489,14 @@ endfunction
 autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 " Use <C-space> to trigger completion.
 inoremap <silent><expr> <C-space> coc#refresh()
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
+" position. Coc only does snippet and additional edit on confirm.
+" <cr> could be remapped by other vim plugin, try `:verbose imap <CR>`.
+if exists('*complete_info')
+  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+else
+  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+endif
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
@@ -503,6 +518,9 @@ endfunction
 " Remap for format selected region
 xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
 
 " Use `[g` and `]g` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
@@ -638,6 +656,11 @@ let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 let g:ale_sign_error = '✘'
 let g:ale_sign_warning = '⚠'
 " let g:ale_lint_on_text_changed = 'never'  " only lint on save
+let g:ale_fix_on_save = 1
+let g:ale_linters = {
+      \ 'python': ['flake8', 'pylint'],
+      \ 'javascript': ['eslint']
+      \ }
 
 " === Titlecase === "
 let g:titlecase_map_keys = 0  " remove default keymapping which interferes with tabs
