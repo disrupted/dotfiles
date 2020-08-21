@@ -16,34 +16,34 @@ call plug#begin('~/.vim/plugged')
 Plug 'tpope/vim-sensible'
 Plug 'rakr/vim-one'
 " Plug 'joshdick/onedark.vim'
-Plug 'chriskempson/base16-vim'
-Plug 'jacoborus/tender.vim'
+" Plug 'chriskempson/base16-vim'
+" Plug 'jacoborus/tender.vim'
 " Override configs by directory 
-Plug 'arielrossanigo/dir-configs-override.vim'
+" Plug 'arielrossanigo/dir-configs-override.vim'
 " Better file browser
 " Plug 'scrooloose/nerdtree'
 Plug 'ryanoasis/vim-devicons'
 " Code commenter
 Plug 'tpope/vim-commentary'
 " Class/module browser
-Plug 'majutsushi/tagbar'
+" Plug 'majutsushi/tagbar'
 " Code and files fuzzy finder
-Plug 'ctrlpvim/ctrlp.vim'
+" Plug 'ctrlpvim/ctrlp.vim'
 " Extension to ctrlp, for fuzzy command finder
-Plug 'fisadev/vim-ctrlp-cmdpalette'
+" Plug 'fisadev/vim-ctrlp-cmdpalette'
 " Zen coding
-Plug 'mattn/emmet-vim'
+" Plug 'mattn/emmet-vim'
 " Git integration
-Plug 'motemen/git-vim'
+" Plug 'motemen/git-vim'
 " Tab list panel
-Plug 'kien/tabman.vim'
+" Plug 'kien/tabman.vim'
 Plug 'dbeniamine/cheat.sh-vim'
 " Lightline
 Plug 'itchyny/lightline.vim'
 " Consoles as buffers
-Plug 'rosenfeld/conque-term'
+" Plug 'rosenfeld/conque-term'
 " Pending tasks list
-Plug 'fisadev/FixedTaskList.vim'
+" Plug 'fisadev/FixedTaskList.vim'
 " Surround
 Plug 'tpope/vim-surround'
 " Autoclose
@@ -55,7 +55,7 @@ Plug 'jeetsukumaran/vim-indentwise'
 " Python autocompletion, go to definition.
 " Plug 'davidhalter/jedi-vim'
 " Better autocompletion
-Plug 'Shougo/neocomplcache.vim'
+" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 " Snippets manager (SnipMate), dependencies, and snippets repo
 " Plug 'MarcWeber/vim-addon-mw-utils'
 " Plug 'tomtom/tlib_vim'
@@ -84,6 +84,7 @@ Plug 'francoiscabrol/ranger.vim'
 " Plug 'mg979/vim-visual-multi'
 " coc.nvim: autocompletion
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'kevinoid/vim-jsonc'
 " indentline: show vertical lines as indent guides
 " Plug 'Yggdroot/indentLine'
 " vim-grip: live markdown preview
@@ -106,6 +107,17 @@ Plug 'liuchengxu/vim-which-key'
 Plug 'brooth/far.vim'
 " Better python syntax highlighting
 " Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
+
+" if has('python')
+"   " YAPF formatter for Python
+"   Plug 'pignacio/vim-yapf-format'
+" endif
+
+" Initialize plugin system
+call plug#end()
+
+" no vi-compatible
+set nocompatible
 filetype plugin on
 
 " set leader key to comma
@@ -168,18 +180,6 @@ nnoremap <silent> ¬        :vertical resize +2<CR>
 " nnoremap <silent> <S-TAB> :bprev<CR>
 
 " ============
-
-if has('python')
-  " YAPF formatter for Python
-  Plug 'pignacio/vim-yapf-format'
-endif
-
-" Plug 'rakr/vim-one'
-" Initialize plugin system
-call plug#end()
-
-" no vi-compatible
-set nocompatible
 
 " allow plugins by file type (required for plugins!)
 filetype plugin on
@@ -248,7 +248,7 @@ set ignorecase
 set complete+=kspell
 set spelllang=en,cjk
 " set spell
-set completeopt=menuone  " ,longest
+" set completeopt+=menuone,preview  " ,longest
 set updatetime=300                      " Faster completion
 " keep horizontal cursor position when jumping up/down
 set virtualedit=all
@@ -328,6 +328,11 @@ noremap <leader>7 7gt
 noremap <leader>8 8gt
 noremap <leader>9 9gt
 noremap <leader>0 :tablast<cr>
+
+
+" === deoplete === "
+" don't mix with COC
+" let g:deoplete#enable_at_startup = 1
 
 " === Which Key === "
 " Map leader to which_key
@@ -468,8 +473,6 @@ endif
 " let g:syntastic_yaml_checkers = ['yamllint']
 
 " === COC === "
-" You will have bad experience for diagnostic messages when it's default 4000.
-set updatetime=300
 " don't give |ins-completion-menu| messages.
 set shortmess+=c
 " always show signcolumns
@@ -481,6 +484,7 @@ inoremap <silent><expr> <TAB>
       \ <SID>check_back_space() ? "\<TAB>" :
       \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
 function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
@@ -558,10 +562,10 @@ nnoremap <leader>m :Marks<CR>
 
 let g:fzf_tags_command = 'ctags -R'
 " Border color
-let g:fzf_layout = {'up':'~90%', 'window': { 'width': 0.8, 'height': 0.8,'yoffset':0.5,'xoffset': 0.5, 'highlight': 'Todo', 'border': 'sharp' } }
+" let g:fzf_layout = {'up':'~90%', 'window': { 'width': 0.8, 'height': 0.8,'yoffset':0.5,'xoffset': 0.5, 'highlight': 'Todo', 'border': 'sharp' } }
 
 let $FZF_DEFAULT_OPTS = '--layout=reverse --info=inline'
-let $FZF_DEFAULT_COMMAND="rg --files --hidden"
+let $FZF_DEFAULT_COMMAND="rg --files --ignore --hidden -g '!.git/'"
 
 
 " Customize fzf colors to match your color scheme
@@ -607,6 +611,8 @@ command! -bang -nargs=* GGrep
   \ call fzf#vim#grep(
   \   'git grep --line-number '.shellescape(<q-args>), 0,
   \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
+
+autocmd! FileType fzf tnoremap <buffer> <esc> <c-c>
 
 " === Tabline === "
 let g:xtabline_settings = {}

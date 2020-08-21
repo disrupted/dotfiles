@@ -4,6 +4,7 @@
     "javascript",
     "typescript",
     "json",
+    "jsonc",
     "css",
     "python",
     "Markdown",
@@ -11,9 +12,14 @@
   ],
   "list.interactiveDebounceTime": 300,
   "codeLens.enable": true,
+  "suggest.enablePreview": true,
+  "suggest.enablePreselect": true,
+  "suggest.autoTrigger": "always",
+  "suggest.triggerAfterInsertEnter": true,
   "suggest.maxCompleteItemCount": 20,
   "suggest.snippetIndicator": "\u26a1 ",
   // diagnostic
+  "diagnostic.refreshOnInsertMode": true,
   "diagnostic.virtualText": true,
   "diagnostic.errorSign": "◉",
   "diagnostic.warningSign": "•",
@@ -25,6 +31,8 @@
   "python.formatting.provider": "black",
   "python.terminal.executeInFileDir": true,
   // yaml
+  "yaml.completion": true,
+  "yaml.validate": true,
   "yaml.format.enable": true,
   "yaml.customTags": [
     "!secret",
