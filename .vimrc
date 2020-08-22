@@ -15,73 +15,20 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'tpope/vim-sensible'
 Plug 'rakr/vim-one'
-" Plug 'joshdick/onedark.vim'
-" Plug 'chriskempson/base16-vim'
-" Plug 'jacoborus/tender.vim'
-" Override configs by directory 
-" Plug 'arielrossanigo/dir-configs-override.vim'
-" Better file browser
-" Plug 'scrooloose/nerdtree'
 Plug 'ryanoasis/vim-devicons'
-" Code commenter
 Plug 'tpope/vim-commentary'
-" Class/module browser
-" Plug 'majutsushi/tagbar'
-" Code and files fuzzy finder
-" Plug 'ctrlpvim/ctrlp.vim'
-" Extension to ctrlp, for fuzzy command finder
-" Plug 'fisadev/vim-ctrlp-cmdpalette'
-" Zen coding
-" Plug 'mattn/emmet-vim'
-" Git integration
-" Plug 'motemen/git-vim'
-" Tab list panel
-" Plug 'kien/tabman.vim'
 Plug 'dbeniamine/cheat.sh-vim'
-" Lightline
 Plug 'itchyny/lightline.vim'
-" Consoles as buffers
-" Plug 'rosenfeld/conque-term'
-" Pending tasks list
-" Plug 'fisadev/FixedTaskList.vim'
-" Surround
 Plug 'tpope/vim-surround'
-" Autoclose
-" Plug 'jiangmiao/auto-pairs'
-" Indent text object
-" Plug 'michaeljsmith/vim-indent-object'
 " Indentation based movements
 Plug 'jeetsukumaran/vim-indentwise'
-" Python autocompletion, go to definition.
-" Plug 'davidhalter/jedi-vim'
-" Better autocompletion
-" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-" Snippets manager (SnipMate), dependencies, and snippets repo
-" Plug 'MarcWeber/vim-addon-mw-utils'
-" Plug 'tomtom/tlib_vim'
-" Plug 'honza/vim-snippets'
-" Plug 'garbas/vim-snipmate'
 " Git
 Plug 'mhinz/vim-signify'
-" Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 " Automatically sort python imports
 Plug 'fisadev/vim-isort'
-" Drag visual blocks arround
-" Plug 'fisadev/dragvisuals.vim'
-" Window chooser
-" Plug 't9md/vim-choosewin'
-" Python and other languages code checker
-" Plug 'scrooloose/syntastic'
-" Paint css colors with the real color
-" Plug 'lilydjwg/colorizer'
-" Ack code search (requires ack installed in the system)
-" Plug 'mileszs/ack.vim'
 Plug 'tpope/vim-eunuch'
 Plug 'francoiscabrol/ranger.vim'
-" Plug 'rbgrouleff/bclose.vim'
-" Plug 'terryma/vim-multiple-cursors'
-" Plug 'mg979/vim-visual-multi'
 " coc.nvim: autocompletion
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'kevinoid/vim-jsonc'
@@ -105,10 +52,10 @@ Plug 'mg979/vim-xtabline'
 Plug 'liuchengxu/vim-which-key'
 " find and replace on multiple files
 Plug 'brooth/far.vim'
-" Better python syntax highlighting
-" Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
 
 " if has('python')
+"   " Better python syntax highlighting
+"   Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
 "   " YAPF formatter for Python
 "   Plug 'pignacio/vim-yapf-format'
 " endif
@@ -256,7 +203,8 @@ set nostartofline
 " highlight substitute match incrementally as you're typing
 set inccommand=nosplit
 " when entering a buffer, set path to the directory of the file
-autocmd BufEnter * lcd %:p:h
+" autocmd BufEnter * lcd %:p:h  " TODO need to investigate how to make this
+" work with terminal buffers
 
 " Setting vertical line
 " set colorcolumn=86
@@ -330,10 +278,7 @@ noremap <leader>9 9gt
 noremap <leader>0 :tablast<cr>
 
 
-" === deoplete === "
-" don't mix with COC
-" let g:deoplete#enable_at_startup = 1
-
+" === PLUGIN CONFIGS === "
 " === Which Key === "
 " Map leader to which_key
 nnoremap <silent> <leader> :silent WhichKey '<Space>'<CR>
@@ -345,11 +290,10 @@ let g:which_key_map =  {}
 let g:which_key_sep = '→'
 " set timeoutlen=500
 
-
-" Not a fan of floating windows for this
+" disable floating window
 let g:which_key_use_floating_win = 0
 
-" Change the colors if you want
+" Colors
 highlight default link WhichKey          Operator
 highlight default link WhichKeySeperator Background
 highlight default link WhichKeyGroup     Identifier
@@ -426,51 +370,11 @@ nmap <leader>gK 9999<leader>gk
 " highlight SignifySignDelete ctermfg=black ctermbg=red    guifg=#ffffff guibg=#ff0000
 " highlight SignifySignChange ctermfg=black ctermbg=yellow guifg=#000000 guibg=#ff
 
-" === GitGutter === "
-" supports staging hunks compared to Signify but much slower
+" === FuGITive === "
+nmap <leader>gh :diffget //3<CR>
+nmap <leader>gu :diffget //2<CR>
+nmap <leader>gs :G<CR>
 
-" let g:gitgutter_sign_added              = '▎'
-" let g:gitgutter_sign_modified           = '▎'
-" let g:gitgutter_sign_removed            = '契'
-" let g:gitgutter_sign_removed_first_line = '契'
-" let g:gitgutter_sign_modified_removed   = '▎'
-" let g:gitgutter_preview_win_floating = 1
-
-" let g:gitgutter_enabled = 1
-
-" highlight GitGutterAdd    guifg=#98c379 ctermfg=2 guibg=yellow ctermbg=yellow
-" highlight GitGutterChange guifg=#61afef ctermfg=3 guibg=yellow ctermbg=yellow
-" highlight GitGutterDelete guifg=#e06c75 ctermfg=1 guibg=yellow ctermbg=yellow
-
-" === NERDTree === "
-nmap <C-n> :NERDTreeToggle<CR>
-" automatically close if last buffer
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-let g:NERDTreeQuitOnOpen = 1
-let g:NERDTreeAutoDeleteBuffer = 1
-" Show hidden files/directories
-let g:NERDTreeShowHidden = 1
-" Remove bookmarks and help text from NERDTree
-let g:NERDTreeMinimalUI = 1
-let g:NERDTreeDirArrows = 1
-" Custom icons for expandable/expanded directories
-" let g:NERDTreeDirArrowExpandable = '⬏'
-" let g:NERDTreeDirArrowCollapsible = '⬎'
-" Hide certain files and directories from NERDTree
-let g:NERDTreeIgnore = ['^\.DS_Store$', '^tags$', '\.git$[[dir]]', '\.idea$[[dir]]', '\.sass-cache$']
-" Hide the Nerdtree status line to avoid clutter
-let g:NERDTreeStatusline = ''
-" after a re-source, fix syntax matching issues (concealing brackets):
-if exists('g:loaded_webdevicons')
-  call webdevicons#refresh()
-endif
-
-" === Syntastic === "
-" let g:syntastic_javascript_checkers = [ 'jshint' ]
-" let g:syntastic_ocaml_checkers = ['merlin']
-" let g:syntastic_python_checkers = ['flake8', 'pylint']
-" let g:syntastic_shell_checkers = ['shellcheck']
-" let g:syntastic_yaml_checkers = ['yamllint']
 
 " === COC === "
 " don't give |ins-completion-menu| messages.
@@ -680,7 +584,7 @@ let g:lightline = {
       \ 'colorscheme': 'one',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'readonly', 'filename_with_icon', 'modified', 'status_diagnostic' ] ],
+      \             [ 'readonly', 'filename_with_icon', 'status_diagnostic' ] ],
       \   'right': [ [ 'percent' ],
       \              [ 'gitbranch' ],
       \              [ 'gitchanges' ] ]
@@ -696,10 +600,18 @@ let g:lightline = {
       \   'filename_with_icon': 'FileNameWithIcon',
       \ },
       \ }
-      " \              [ 'filetype', 'fileencoding' ],
+
+function! LightlineFilename()
+  let filename = expand('%:t') !=# '' ? expand('%:t') : '[No Name]'
+  let modified = &modified ? ' +' : ''
+  return filename . modified
+endfunction
 
 function! FileNameWithIcon() abort
-  return winwidth(0) > 70  ?  WebDevIconsGetFileTypeSymbol() . ' ' . expand('%:t') : '' 
+  let filename = expand('%:t') !=# '' ? expand('%:t') : '[No Name]'
+  let modified = &modified ? ' +' : ''
+  let icon = winwidth(0) > 70 ? WebDevIconsGetFileTypeSymbol() . ' ' : ''
+  return icon . filename . modified
 endfunction
 
 function! LightlineFileformat()
@@ -714,13 +626,7 @@ function! CocCurrentFunction()
   return get(b:, 'coc_current_function', '')
 endfunction
 
-" function! GitGutterStatus()
-"   let [a,m,r] = GitGutterGetHunkSummary()
-"   return printf('+%d ~%d -%d', a, m, r)
-" endfunction
-
 function! GitSignifyStats()
-  " return sy#repo#get_stats_decorated()
   let [a,r,m] = sy#repo#get_stats() 
   return printf('+%d ~%d -%d', a, m, r)
 endfunction
@@ -752,11 +658,4 @@ set background=dark
 " set t_ut=
 colorscheme one
 call one#highlight('Normal', '', '24282c', 'none') " dark
-" set SignColumn/Gutter to dark background color
-highlight clear SignColumn
-" highlight SignColumn guibg=0 ctermbg=0
-
-" let g:VM_maps = {}
-" let g:VM_maps['Find Under']         = '<C-d>'           " replace C-n
-" let g:VM_maps['Find Subword Under'] = '<C-d>'           " replace visual C-n
-" let g:VM_mouse_mappings = 1
+highlight clear SignColumn " set SignColumn/Gutter to dark background color 
