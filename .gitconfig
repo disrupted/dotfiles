@@ -1,0 +1,28 @@
+[user]
+    name = disrupted
+    email = hi@salomonpopp.me
+    signingkey = A299EE8F816BBFA4
+
+[commit]
+    gpgsign = true
+
+[gpg]
+    program = gpg2
+
+[core]
+    pager = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    features = side-by-side line-numbers decorations
+    whitespace-error-style = 22 reverse
+    syntax-theme = Monokai Extended Bright
+    ; plus-color = "#012800"
+    ; minus-color = "#340001"
+
+[delta "decorations"]
+    commit-decoration-style = bold yellow box ul
+    file-style = bold yellow ul
+    file-decoration-style = none
