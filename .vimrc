@@ -143,7 +143,7 @@ autocmd FileType javascript setlocal shiftwidth=4 tabstop=4 softtabstop=4
 " ignore these files when completing names and in Ex
 set wildignore+=.svn,CVS,.git,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif,*.pdf,*.bak,*.beam,*.mkv,*.mp4,*.m4v,*.webm,*.dts*,*.aac,*.mp3,*.flac,**/node_modules/**
 " set of file name suffixes that will be given a lower priority when it comes to matching wildcards
-set suffixes+=.old
+set suffixes+=.old,.bkp
 
 " source $MYVIMRC reloads the saved $MYVIMRC
 :nmap <leader>s :source $MYVIMRC<CR>
@@ -238,6 +238,11 @@ xnoremap <leader>r :s///g<Left><Left>
 " exit terminal mode with Esc
 tnoremap <Esc> <C-\><C-n>
 autocmd BufWinEnter,WinEnter term://* startinsert
+
+augroup TerminalConfig
+   " au! " Clear old autocommands
+  autocmd TermOpen * setlocal nonumber norelativenumber
+augroup END
 
 " === SPLITS === "
 set splitbelow
@@ -468,8 +473,8 @@ let g:fzf_tags_command = 'ctags -R'
 " Border color
 " let g:fzf_layout = {'up':'~90%', 'window': { 'width': 0.8, 'height': 0.8,'yoffset':0.5,'xoffset': 0.5, 'highlight': 'Todo', 'border': 'sharp' } }
 
-let $FZF_DEFAULT_OPTS = '--layout=reverse --info=inline'
-let $FZF_DEFAULT_COMMAND="rg --files --ignore --hidden -g '!.git/'"
+let $FZF_DEFAULT_OPTS = '--layout=reverse' " --info=inline
+let $FZF_DEFAULT_COMMAND="rg --files --ignore --hidden -g '!{.git/*,node_modules/*}' -g '!{*.png,*.jpg,*.jpeg}'"
 
 
 " Customize fzf colors to match your color scheme
