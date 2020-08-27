@@ -157,7 +157,7 @@ setopt listpacked
 setopt automenu
 # setopt vi
 
-chpwd() exa --icons -Flaigh
+chpwd() exa --icons -Fla  # -Flaigh
 #####################
 # ENV VARIABLE      #
 #####################
@@ -201,8 +201,9 @@ bindkey '^Z' fancy-ctrl-z
 # FZF SETTINGS      #
 #####################
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
+  # let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case %s || true'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_CTRL_T_OPTS='--preview="cat {}" --preview-window=right:60%:wrap'
+export FZF_CTRL_T_OPTS='--preview="bat --theme \"TwoDark\" {}" --preview-window=right:60%:wrap'
 export FZF_ALT_C_OPTS='--preview="ls {}" --preview-window=right:60%:wrap'
 # export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 # --height=50%

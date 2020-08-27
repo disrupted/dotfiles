@@ -39,9 +39,11 @@
     diffFilter = delta --color-only
 
 [delta]
-    features = side-by-side line-numbers decorations
+    features = line-numbers decorations  # side-by-side
     whitespace-error-style = 22 reverse
-    syntax-theme = Monokai Extended Bright
+    syntax-theme = TwoDark  # Monokai Extended Bright
+    side-by-side = false
+    zero-style = dim syntax
     # plus-color = "#012800"
     # minus-color = "#340001"
 
