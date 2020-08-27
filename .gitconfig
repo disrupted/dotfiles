@@ -22,7 +22,7 @@
     gpgsign = true
 
 [core]
-    pager = delta
+    pager = delta  # or bat
     # Exclude everything this file. Used for general exclusions.
     excludesfile = ~/.gitignore
     # Set attributes on files. Used for general diff improvements.

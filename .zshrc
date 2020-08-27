@@ -1,6 +1,5 @@
-export VISUAL=nvim
-export EDITOR="$VISUAL"
-export GPG_TTY=$(tty)
+# disrupted zshrc
+# based on crivotz/dot_files
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -105,8 +104,8 @@ zinit light sharkdp/bat
 zinit ice from"gh-r" as"program" mv"ripgrep* -> ripgrep" pick"ripgrep/rg"
 zinit light BurntSushi/ripgrep
 # NEOVIM
-zinit ice from"gh-r" as"program" bpick"*appimage*" mv"nvim* -> nvim" pick"nvim"
-zinit light neovim/neovim
+# zinit ice from"gh-r" as"program" bpick"*appimage*" mv"nvim* -> nvim" pick"nvim"
+# zinit light neovim/neovim
 # DELTA
 zinit ice wait lucid
 zinit load 'dandavison/delta'
@@ -128,3 +127,86 @@ zinit light sharkdp/fd
 # GH-CLI
 zinit ice lucid wait"0" as"program" from"gh-r" pick"gh*/bin/gh"
 zinit light "cli/cli"
+
+#####################
+# HISTORY           #
+#####################
+[ -z "$HISTFILE" ] && HISTFILE="$HOME/.zhistory"
+HISTSIZE=290000
+SAVEHIST=$HISTSIZE
+
+#####################
+# SETOPT            #
+#####################
+setopt extended_history       # record timestamp of command in HISTFILE
+setopt hist_expire_dups_first # delete duplicates first when HISTFILE size exceeds HISTSIZE
+setopt hist_ignore_all_dups   # ignore duplicated commands history list
+setopt hist_ignore_space      # ignore commands that start with space
+setopt hist_verify            # show command with history expansion to user before running it
+setopt inc_append_history     # add commands to HISTFILE in order of execution
+setopt share_history          # share command history data
+setopt always_to_end          # cursor moved to the end in full completion
+setopt hash_list_all          # hash everything before completion
+setopt completealiases        # complete alisases
+setopt always_to_end          # when completing from the middle of a word, move the cursor to the end of the word
+setopt complete_in_word       # allow completion from within a word/phrase
+setopt nocorrect                # spelling correction for commands
+setopt list_ambiguous         # complete as much of a completion until it gets ambiguous.
+setopt nolisttypes
+setopt listpacked
+setopt automenu
+# setopt vi
+
+chpwd() exa --icons -Flaigh
+#####################
+# ENV VARIABLE      #
+#####################
+export EDITOR='nvim'
+export VISUAL=$EDITOR
+export PAGER='less'
+export SHELL='/bin/zsh'
+export LANG='en_US.UTF-8'
+export LC_ALL='en_US.UTF-8'
+export GPG_TTY=$(tty)
+
+#####################
+# COLORING          #
+#####################
+autoload colors && colors
+
+#####################
+# ALIASES           #
+#####################
+source $HOME/.zsh_aliases
+
+#####################
+# FANCY-CTRL-Z      #
+#####################
+function fg-fzf() {
+	job="$(jobs | fzf -0 -1 | sed -E 's/\[(.+)\].*/\1/')" && echo '' && fg %$job
+}
+function fancy-ctrl-z () {
+	if [[ $#BUFFER -eq 0 ]]; then
+		BUFFER=" fg-fzf"
+		zle accept-line -w
+	else
+		zle push-input -w
+		zle clear-screen -w
+	fi
+}
+zle -N fancy-ctrl-z
+bindkey '^Z' fancy-ctrl-z
+
+#####################
+# FZF SETTINGS      #
+#####################
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_CTRL_T_OPTS='--preview="cat {}" --preview-window=right:60%:wrap'
+export FZF_ALT_C_OPTS='--preview="ls {}" --preview-window=right:60%:wrap'
+# export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
+# --height=50%
+# --color=fg:#e5e9f0,bg:#2e3440,hl:#81a1c1
+# --color=fg+:#e5e9f0,bg+:#2e3440,hl+:#81a1c1
+# --color=info:#eacb8a,prompt:#bf6069,pointer:#b48dac
+# --color=marker:#a3be8b,spinner:#b48dac,header:#a3be8b'
