@@ -29,8 +29,11 @@ Plug 'tpope/vim-fugitive'
 Plug 'fisadev/vim-isort'
 Plug 'tpope/vim-eunuch'
 Plug 'francoiscabrol/ranger.vim'
-" coc.nvim: autocompletion
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" LSP for nvim 0.5+
+Plug 'neovim/nvim-lsp'
+Plug 'nvim-lua/completion-nvim'
+" coc.nvim: LSP
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'kevinoid/vim-jsonc'
 " indentline: show vertical lines as indent guides
 " Plug 'Yggdroot/indentLine'
@@ -381,6 +384,23 @@ nmap <leader>gu :diffget //2<CR>
 nmap <leader>gs :G<CR>
 
 
+" === LSP === "
+lua <<EOF
+require'nvim_lsp'.pyls.setup{
+    cmd = {"pyls", "--log-file", "/tmp/pyls-log.txt", "--verbose"}
+}
+require'nvim_lsp'.vimls.setup{}
+EOF
+
+" === completion === "
+" Use completion-nvim in every buffer
+autocmd BufEnter * lua require'completion'.on_attach()
+" Use <Tab> and <S-Tab> to navigate through popup menu
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+" Set completeopt to have a better completion experience
+set completeopt=menuone,noinsert,noselect
+
 " === COC === "
 " don't give |ins-completion-menu| messages.
 set shortmess+=c
@@ -388,11 +408,11 @@ set shortmess+=c
 set signcolumn=yes  " or =number to merge signcolumn and linenumbers
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+" inoremap <silent><expr> <TAB>
+"       \ pumvisible() ? "\<C-n>" :
+"       \ <SID>check_back_space() ? "\<TAB>" :
+"       \ coc#refresh()
+" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
   let col = col('.') - 1
