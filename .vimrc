@@ -29,9 +29,12 @@ Plug 'tpope/vim-fugitive'
 Plug 'fisadev/vim-isort'
 Plug 'tpope/vim-eunuch'
 Plug 'francoiscabrol/ranger.vim'
+Plug 'jiangmiao/auto-pairs'
 " LSP for nvim 0.5+
+" language server : autocomplete, snippets support, goto action, diagnostics
 Plug 'neovim/nvim-lsp'
 Plug 'nvim-lua/completion-nvim'
+Plug 'nvim-lua/lsp-status.nvim'
 " coc.nvim: LSP
 " Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'kevinoid/vim-jsonc'
@@ -386,10 +389,32 @@ nmap <leader>gs :G<CR>
 
 " === LSP === "
 lua <<EOF
-require'nvim_lsp'.pyls.setup{
+local lsp_status = require('lsp-status')
+lsp_status.register_progress()
+
+local nvim_lsp = require'nvim_lsp'
+
+-- define language servers
+nvim_lsp.pyls.setup{
     cmd = {"pyls", "--log-file", "/tmp/pyls-log.txt", "--verbose"}
 }
-require'nvim_lsp'.vimls.setup{}
+nvim_lsp.vimls.setup{}
+nvim_lsp.jsonls.setup{}
+nvim_lsp.dockerls.setup{}
+nvim_lsp.diagnosticls.setup{}
+nvim_lsp.yamlls.setup{
+  settings = {
+    yaml = {
+      customTags = {
+        "!secret",
+        "!include_dir_named",
+        "!include_dir_list",
+        "!include_dir_merge_named",
+        "!include_dir_merge_list"
+      }
+    }
+  }
+}
 EOF
 
 " === completion === "
@@ -656,19 +681,41 @@ function! GitSignifyStats()
   return printf('+%d ~%d -%d', a, m, r)
 endfunction
 
-function! StatusDiagnostic() abort
-  let info = get(b:, 'coc_diagnostic_info', {})
+" function! StatusDiagnostic() abort
+"   let info = get(b:, 'coc_diagnostic_info', {})
 
-  if get(info, 'error', 0)
+"   if get(info, 'error', 0)
+"     return ""
+"   endif
+
+"   if get(info, 'warning', 0)
+"     return info['warning'] . ""
+"   endif
+
+"   return "" 
+" endfunction
+
+function! StatusDiagnostic() abort
+  let info = luaeval("require('lsp-status').diagnostics()")
+
+  if get(info, 'errors', 0)
     return ""
   endif
 
-  if get(info, 'warning', 0)
-    return info['warning'] . ""
+  if get(info, 'warnings', 0)
+    return info['warnings'] . ""
   endif
 
   return "" 
 endfunction
+
+" function! LspStatus() abort
+"   if luaeval('#vim.lsp.buf_get_clients() > 0')
+"     return luaeval("require('lsp-status').status()")
+"   endif
+
+"   return ''
+" endfunction
 
 " Use autocmd to force lightline update.
 autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
