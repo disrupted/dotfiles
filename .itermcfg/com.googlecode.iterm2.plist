@@ -4384,7 +4384,7 @@
 	<key>NSWindow Frame UKCrashReporter</key>
 	<string>127 443 592 584 0 0 1680 1027 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>209 82 1208 884 0 0 1680 1027 </string>
+	<string>217 269 1056 697 0 0 1680 1027 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
 	<string>318 359 770 477 0 0 1680 1027 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
@@ -4863,7 +4863,7 @@
 			<key>Tags</key>
 			<array/>
 			<key>Terminal Type</key>
-			<string>xterm-256color-italic</string>
+			<string>xterm-256color</string>
 			<key>Thin Strokes</key>
 			<integer>0</integer>
 			<key>Title Components</key>
@@ -16453,7 +16453,7 @@
 		<key>screenFrame</key>
 		<string>{{0, 0}, {1680, 1050}}</string>
 		<key>topLeft</key>
-		<string>{96, 885}</string>
+		<string>{117, 996}</string>
 	</dict>
 	<key>NoSyncHaveWarnedAboutPasteConfirmationChange</key>
 	<true/>
@@ -17431,6 +17431,8 @@
 	</dict>
 	<key>PrefsCustomFolder</key>
 	<string>~/.itermcfg</string>
+	<key>PreventEscapeSequenceFromClearingHistory</key>
+	<false/>
 	<key>Print In Black And White</key>
 	<true/>
 	<key>SUEnableAutomaticChecks</key>
