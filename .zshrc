@@ -161,6 +161,7 @@ chpwd() exa --icons -Fla  # -Flaigh
 #####################
 # ENV VARIABLE      #
 #####################
+export TERM=xterm
 export EDITOR='nvim'
 export VISUAL=$EDITOR
 export PAGER='less'
