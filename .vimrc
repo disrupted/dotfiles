@@ -64,6 +64,8 @@ Plug 'mg979/vim-xtabline'
 Plug 'liuchengxu/vim-which-key'
 " find and replace on multiple files
 Plug 'brooth/far.vim'
+" fast splitting a window into a term
+Plug 'smason1995/easy-split-terms'
 
 " if has('python')
 "   " Better python syntax highlighting
