@@ -77,9 +77,9 @@ Plug 'smason1995/easy-split-terms'
 " Initialize plugin system
 call plug#end()
 
-" no vi-compatible
+" Disable strange Vi defaults
 set nocompatible
-filetype plugin on
+filetype plugin indent on
 
 " set leader key to comma
 let mapleader = ","  
@@ -142,10 +142,6 @@ nnoremap <silent> ¬        :vertical resize +2<CR>
 
 " ============
 
-" allow plugins by file type (required for plugins!)
-filetype plugin on
-filetype indent on
-
 " tabs and spaces handling
 set tabstop=2 softtabstop=2 shiftwidth=2 expandtab
 
@@ -182,38 +178,39 @@ endfunction
 
 nnoremap <leader>h :call ToggleHiddenAll()<CR>
 
-" incremental search
-set incsearch
-" highlighted search results
-set hlsearch
-" Yank and paste with the system clipboard
-set clipboard=unnamed
-
 " === sane defaults / QoL changes === "
 syntax on
 set hidden                              " Required to keep multiple buffers open multiple buffers
-set encoding=utf-8                      " The encoding displayed
+set encoding=utf-8                      " Force utf-8 for the encoding displayed
 set pumheight=10                        " Makes popup menu smaller
 set fileencoding=utf-8                  " The encoding written to file
+set incsearch                           " incremental search
+set hlsearch                            " highlighted search results 
+set clipboard=unnamed                   " Yank and paste with the system clipboard 
 set number                              " Line numbers
 set relativenumber
 set noruler                             " Hide the cursor position
 set cursorline                          " Enable highlighting of the current line
 set showcmd
 set wildmenu
-set lazyredraw
-set showmatch
-set autoindent
+set lazyredraw                          " Only redraw when needed
+set showmatch                           " Highlight matching [{()}]
+set autoindent                          " Autoindent when starting new line
 set smartindent
+set smarttab                            " Use 'shiftwidth' when using <Tab> in front of a line
 set ignorecase
 set complete+=kspell
 set spelllang=en,cjk
 " set spell
 " set completeopt+=menuone,preview  " ,longest
 set updatetime=300                      " Faster completion
-" keep horizontal cursor position when jumping up/down
-set virtualedit=all
-set nostartofline
+set autoread                            " Reload unchanged files automatically
+set virtualedit=all                     " Keep horizontal cursor position when jumping up/down 
+set nostartofline                       " Do not jump to first character with page commands.
+set noswapfile                          " Disable swap to prevent annoying messages
+set nomodeline                          " Don't parse modelines because of vulnerability
+set title                               " Set window title by default
+set shortmess+=I                        " Don't display startup intro message
 " highlight substitute match incrementally as you're typing
 set inccommand=nosplit
 " when entering a buffer, set path to the directory of the file
@@ -233,6 +230,18 @@ if !has('nvim')
   set ttymouse=xterm2
 endif
 
+" === Extras === "
+" Delete comment character when joining commented lines
+if v:version > 703 || v:version == 703 && has("patch541")
+  set formatoptions+=j
+endif
+
+" Use Ctrl-L to clear the highlighting of hlsearch
+if maparg('<C-L>', 'n') ==# ''
+  nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
+endif
+
+
 let g:indentLine_char = '│'
 
 " === Search & Replace === "
@@ -247,6 +256,11 @@ nnoremap <leader>r :%s///g<Left><Left>
 " press this key below to replace all instances of it in the current selection.
 xnoremap <leader>r :s///g<Left><Left>
 " xnoremap <leader>rc :s///gc<Left><Left><Left>
+
+
+" Keep flags when repeating last substitute command.
+nnoremap & :&&<CR>
+xnoremap & :&&<CR>
 
 " === TERMINAL === "
 " exit terminal mode with Esc
@@ -298,6 +312,10 @@ noremap <leader>0 :tablast<cr>
 
 
 " === PLUGIN CONFIGS === "
+" === Auto-Pairs === "
+" disable for vim/smali files as it messes up comments
+au Filetype smali let b:AutoPairs={'(':')', '{':'}',"'":"'",'"':'"', '`':'`'}
+
 " === Which Key === "
 " Map leader to which_key
 nnoremap <silent> <leader> :silent WhichKey '<Space>'<CR>
@@ -438,7 +456,7 @@ set completeopt=menuone,noinsert,noselect
 " don't give |ins-completion-menu| messages.
 set shortmess+=c
 " always show signcolumns
-set signcolumn=yes  " or =number to merge signcolumn and linenumbers
+set signcolumn=number  " or =number to merge signcolumn and linenumbers
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
 " inoremap <silent><expr> <TAB>
@@ -734,6 +752,10 @@ let g:one_allow_italics = 1
 let g:onedark_terminal_italic = 1
 
 set background=dark
+" Allow color schemes to do bright colors without forcing bold.
+if &t_Co == 8 && $TERM !~# '^linux'
+  set t_Co=16
+endif
 " set t_Co=256
 " set t_ut=
 colorscheme one
