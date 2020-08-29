@@ -50,6 +50,24 @@ zinit light bobsoppe/zsh-ssh-agent
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 zinit ice wait"0a" lucid atload"_zsh_autosuggest_start"
 zinit light zsh-users/zsh-autosuggestions
+# Then load url-quote-magic and bracketed-paste-magic as above
+autoload -U url-quote-magic bracketed-paste-magic
+zle -N self-insert url-quote-magic
+zle -N bracketed-paste bracketed-paste-magic
+# Now the fix, setup these two hooks:
+pasteinit() {
+  OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
+  zle -N self-insert url-quote-magic 
+}
+pastefinish() {
+  zle -N self-insert $OLD_SELF_INSERT
+}
+zstyle :bracketed-paste-magic paste-init pasteinit
+zstyle :bracketed-paste-magic paste-finish pastefinish
+
+# and finally, make sure zsh-autosuggestions does not interfere with it:
+ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(bracketed-paste)
+
 # ENHANCD
 zinit ice wait"0b" lucid
 zinit light b4b4r07/enhancd
@@ -156,6 +174,8 @@ setopt nolisttypes
 setopt listpacked
 setopt automenu
 # setopt vi
+# # recognize comments
+setopt interactivecomments
 
 chpwd() exa --icons -Fla  # -Flaigh
 #####################
@@ -179,6 +199,7 @@ autoload colors && colors
 # ALIASES           #
 #####################
 source $HOME/.zsh_aliases
+source $HOME/.zsh_aliases_private
 
 #####################
 # FANCY-CTRL-Z      #
