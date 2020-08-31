@@ -168,16 +168,50 @@ setopt hash_list_all          # hash everything before completion
 setopt completealiases        # complete alisases
 setopt always_to_end          # when completing from the middle of a word, move the cursor to the end of the word
 setopt complete_in_word       # allow completion from within a word/phrase
-setopt nocorrect                # spelling correction for commands
+setopt nocorrect              # spelling correction for commands
 setopt list_ambiguous         # complete as much of a completion until it gets ambiguous.
 setopt nolisttypes
 setopt listpacked
 setopt automenu
-# setopt vi
-# # recognize comments
-setopt interactivecomments
+# setopt vi                     # vim ketbindings
+setopt interactivecomments    # recognize comments 
+setopt sharehistory           # global history
 
 chpwd() exa --icons -Fla  # -Flaigh
+
+#####################
+# VI KEYBINDINGS    #
+#####################
+bindkey "^?" backward-delete-char  # enable delete key
+
+#####################
+# KEYBINDINGS       #
+#####################
+bindkey "^[[1;3C" forward-word     # alt+right to move forward one word
+bindkey "^[[1;3D" backward-word    # alt+left to move backward one word
+
+bindkey '^[^?' backward-kill-word  # alt+delete to backward delete word
+
+bindkey "${key[Up]}" up-line-or-local-history
+bindkey "${key[Down]}" down-line-or-local-history
+
+up-line-or-local-history() {
+    zle set-local-history 1
+    zle up-line-or-history
+    zle set-local-history 0
+}
+zle -N up-line-or-local-history
+down-line-or-local-history() {
+    zle set-local-history 1
+    zle down-line-or-history
+    zle set-local-history 0
+}
+zle -N down-line-or-local-history
+
+# Global history
+bindkey "^[[1;5A" up-line-or-history    # [CTRL] + Cursor up
+bindkey "^[[1;5B" down-line-or-history  # [CTRL] + Cursor down
+
 #####################
 # ENV VARIABLE      #
 #####################
