@@ -31,8 +31,6 @@ Plug 'jeetsukumaran/vim-indentwise'
 " Git
 Plug 'mhinz/vim-signify'
 Plug 'tpope/vim-fugitive'
-" Automatically sort python imports
-Plug 'fisadev/vim-isort'
 Plug 'tpope/vim-eunuch'
 Plug 'francoiscabrol/ranger.vim'
 Plug 'jiangmiao/auto-pairs'
@@ -67,12 +65,14 @@ Plug 'brooth/far.vim'
 " fast splitting a window into a term
 Plug 'smason1995/easy-split-terms'
 
-" if has('python')
+if has('python')
+    " Automatically sort python imports
+    Plug 'fisadev/vim-isort'
 "   " Better python syntax highlighting
 "   Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
 "   " YAPF formatter for Python
 "   Plug 'pignacio/vim-yapf-format'
-" endif
+endif
 
 " Initialize plugin system
 call plug#end()
