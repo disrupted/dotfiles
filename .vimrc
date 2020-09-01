@@ -56,7 +56,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'airblade/vim-rooter'
 Plug 'neomake/neomake'
 " Better tabline
-Plug 'mg979/vim-xtabline'
+" Plug 'mg979/vim-xtabline'
 " ALE
 " Plug 'dense-analysis/ale'
 Plug 'liuchengxu/vim-which-key'
@@ -592,7 +592,11 @@ command! -bang -nargs=* GGrep
   \   'git grep --line-number '.shellescape(<q-args>), 0,
   \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
 
-autocmd! FileType fzf tnoremap <buffer> <esc> <c-c>
+" hide annoying GUI elements when running FZF
+if has('nvim') || has('gui_running')
+  autocmd! FileType fzf tnoremap <buffer> <esc> <c-c>
+  autocmd  FileType fzf set laststatus=0 | autocmd WinLeave <buffer> set laststatus=2
+endif
 
 " === Tabline === "
 let g:xtabline_settings = {}
