@@ -173,7 +173,7 @@ setopt list_ambiguous         # complete as much of a completion until it gets a
 setopt nolisttypes
 setopt listpacked
 setopt automenu
-# setopt vi                     # vim ketbindings
+setopt emacs  # vi            # emacs / vim keybindings
 setopt interactivecomments    # recognize comments 
 setopt sharehistory           # global history
 
@@ -182,7 +182,7 @@ chpwd() exa --icons -Fla  # -Flaigh
 #####################
 # VI KEYBINDINGS    #
 #####################
-bindkey "^?" backward-delete-char  # enable delete key
+# bindkey "^?" backward-delete-char  # enable delete key
 
 #####################
 # KEYBINDINGS       #
