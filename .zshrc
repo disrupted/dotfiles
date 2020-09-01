@@ -192,8 +192,12 @@ bindkey "^[[1;3D" backward-word    # alt+left to move backward one word
 
 bindkey '^[^?' backward-kill-word  # alt+delete to backward delete word
 
-bindkey "${key[Up]}" up-line-or-local-history
-bindkey "${key[Down]}" down-line-or-local-history
+# key[Up]="$terminfo[kcuu1]"
+# key[Down]="$terminfo[kcud1]"
+bindkey "^[[A" up-line-or-local-history
+bindkey "^[[B" down-line-or-local-history
+# bindkey "${key[Up]}" up-line-or-local-history
+# bindkey "${key[Down]}" down-line-or-local-history
 
 up-line-or-local-history() {
     zle set-local-history 1
@@ -215,7 +219,7 @@ bindkey "^[[1;5B" down-line-or-history  # [CTRL] + Cursor down
 #####################
 # ENV VARIABLE      #
 #####################
-export TERM=xterm
+# export TERM=xterm-256color
 export EDITOR='nvim'
 export VISUAL=$EDITOR
 export PAGER='less'
