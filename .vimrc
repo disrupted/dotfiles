@@ -32,7 +32,7 @@ Plug 'jeetsukumaran/vim-indentwise'
 Plug 'mhinz/vim-signify'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-eunuch'
-Plug 'francoiscabrol/ranger.vim'
+" Plug 'francoiscabrol/ranger.vim'
 Plug 'jiangmiao/auto-pairs'
 " LSP for nvim 0.5+
 " language server : autocomplete, snippets support, goto action, diagnostics
@@ -57,6 +57,9 @@ Plug 'airblade/vim-rooter'
 Plug 'neomake/neomake'
 " Better tabline
 " Plug 'mg979/vim-xtabline'
+" Plug 'pacha/vem-tabline'
+" Plug 'ap/vim-buftabline'
+Plug 'mengelbrecht/lightline-bufferline'
 " ALE
 " Plug 'dense-analysis/ale'
 Plug 'liuchengxu/vim-which-key'
@@ -64,6 +67,17 @@ Plug 'liuchengxu/vim-which-key'
 Plug 'brooth/far.vim'
 " fast splitting a window into a term
 Plug 'smason1995/easy-split-terms'
+" Fern file manager
+" Plug 'lambdalisue/fern.vim'
+" Plug 'lambdalisue/fern-renderer-nerdfont.vim'
+" fix for fern
+" if has("nvim")
+"   Plug 'antoinemadec/FixCursorHold.nvim'
+" endif
+" LuaTree file explorer
+Plug 'kyazdani42/nvim-tree.lua'
+Plug 'kyazdani42/nvim-web-devicons' " for file icons
+Plug 'lambdalisue/reword.vim'
 
 if has('python')
     " Automatically sort python imports
@@ -87,6 +101,12 @@ let mapleader = ","
 map <leader>e :bufdo e!<CR> 
 
 " === KEYS ===
+" disable arrow keys
+noremap <Up> <Nop>
+noremap <Down> <Nop>
+noremap <Left> <Nop>
+noremap <Right> <Nop>
+
 " ctrl+a: select all text 
 map <C-a> <esc>ggVG<CR>
 
@@ -187,6 +207,7 @@ set fileencoding=utf-8                  " The encoding written to file
 set incsearch                           " incremental search
 set hlsearch                            " highlighted search results 
 set clipboard=unnamed                   " Yank and paste with the system clipboard 
+" set showtabline=2                       " Always display tabline at top
 set number                              " Line numbers
 set relativenumber
 set noruler                             " Hide the cursor position
@@ -262,6 +283,8 @@ xnoremap <leader>r :s///g<Left><Left>
 nnoremap & :&&<CR>
 xnoremap & :&&<CR>
 
+let g:python3_host_program = $HOME."~/work/python/environments/venv/bin/python"
+
 " === TERMINAL === "
 " exit terminal mode with Esc
 tnoremap <Esc> <C-\><C-n>
@@ -312,6 +335,89 @@ noremap <leader>0 :tablast<cr>
 
 
 " === PLUGIN CONFIGS === "
+" === nvim-tree file explorer === "
+nnoremap <C-e> :LuaTreeToggle<CR>
+
+let g:lua_tree_ignore = [ '.git', 'node_modules', '.cache' ] "empty by default
+let g:lua_tree_auto_open = 1 "0 by default, opens the tree when typing `nvim $DIR` or `nvim`
+let g:lua_tree_auto_close = 1 "0 by default, closes the tree when it's the last window
+let g:lua_tree_follow = 1 "0 by default, this option allows the cursor to be updated when entering a buffer
+let g:lua_tree_indent_markers = 1 "0 by default, this option shows indent markers when folders are open
+let g:lua_tree_git_hl = 1 "0 by default, will enable file highlight for git attributes (can be used without the icons).
+
+let g:lua_tree_icons = {
+    \ 'default': '',
+    \ 'symlink': '',
+    \ 'git': {
+    \   'unstaged': "✗",
+    \   'staged': "✓",
+    \   'unmerged': "",
+    \   'renamed': "➜",
+    \   'untracked': "★"
+    \   },
+    \ 'folder': {
+    \   'default': "",
+    \   'open': ""
+    \   }
+    \ }
+
+" === fern file explorer === "
+" Disable netrw.
+let g:loaded_netrw  = 1
+let g:loaded_netrwPlugin = 1
+let g:loaded_netrwSettings = 1
+let g:loaded_netrwFileHandlers = 1
+
+" Enable file type icons
+let g:fern#renderer = "nerdfont"
+
+augroup my-fern-hijack
+  autocmd!
+  autocmd BufEnter * ++nested call s:hijack_directory()
+augroup END
+
+function! s:hijack_directory() abort
+  let path = expand('%:p')
+  if !isdirectory(path)
+    return
+  endif
+  bwipeout %
+  execute printf('Fern %s', fnameescape(path))
+endfunction
+
+" Custom settings and mappings.
+let g:fern#disable_default_mappings = 1
+
+noremap <silent> <Leader>f :Fern . -drawer -reveal=% -toggle -width=35<CR><C-w>=
+
+function! FernInit() abort
+  nmap <buffer><expr>
+        \ <Plug>(fern-my-open-expand-collapse)
+        \ fern#smart#leaf(
+        \   "\<Plug>(fern-action-open:select)",
+        \   "\<Plug>(fern-action-expand)",
+        \   "\<Plug>(fern-action-collapse)",
+        \ )
+  nmap <buffer> <CR> <Plug>(fern-my-open-expand-collapse)
+  nmap <buffer> <2-LeftMouse> <Plug>(fern-my-open-expand-collapse)
+  nmap <buffer> n <Plug>(fern-action-new-path)
+  nmap <buffer> d <Plug>(fern-action-remove)
+  nmap <buffer> m <Plug>(fern-action-move)
+  nmap <buffer> M <Plug>(fern-action-rename)
+  nmap <buffer> h <Plug>(fern-action-hidden-toggle)
+  nmap <buffer> r <Plug>(fern-action-reload)
+  nmap <buffer> k <Plug>(fern-action-mark-toggle)
+  nmap <buffer> b <Plug>(fern-action-open:split)
+  nmap <buffer> v <Plug>(fern-action-open:vsplit)
+  nmap <buffer><nowait> < <Plug>(fern-action-leave)
+  nmap <buffer><nowait> > <Plug>(fern-action-enter)
+endfunction
+
+augroup FernGroup
+  autocmd!
+  autocmd FileType fern call FernInit()
+augroup END
+
 " === Auto-Pairs === "
 " disable for vim/smali files as it messes up comments
 au Filetype smali let b:AutoPairs={'(':')', '{':'}',"'":"'",'"':'"', '`':'`'}
@@ -500,8 +606,8 @@ endfunction
 " Remap for rename current word
 " nmap <leader>rn <Plug>(coc-rename)
 " Remap for format selected region
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
+" xmap <leader>f  <Plug>(coc-format-selected)
+" nmap <leader>f  <Plug>(coc-format-selected)
 
 " Symbol renaming.
 nmap <leader>rn <Plug>(coc-rename)
@@ -515,7 +621,7 @@ nmap <silent> ]g <Plug>(coc-diagnostic-next)
 nmap <leader>qf  <Plug>(coc-fix-current)
 
 " Coc-Explorer
-nmap <C-e> :CocCommand explorer<CR>
+" nmap <C-e> :CocCommand explorer<CR>
 " nmap <leader>f :CocCommand explorer --preset floating<CR>
 " when closing all buffers and Coc-Explorer is the last one left auto-close it
 autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif
@@ -660,6 +766,14 @@ nmap <leader>cT <Plug>TitlecaseLine
 
 " === Lightline === "
 set noshowmode  " disables -- INSERT -- mode display underneath lightline
+
+let g:lightline#bufferline#min_buffer_count = 2
+let g:lightline#bufferline#show_number  = 0
+let g:lightline#bufferline#enable_devicons = 1         " Show fileicons
+let g:lightline#bufferline#shorten_path = 0
+" let g:lightline#bufferline#filename_modifier = ':t'  " Hide path and show only filename
+let g:lightline#bufferline#unnamed      = '[No Name]'
+
 let g:lightline = {
       \ 'colorscheme': 'one',
       \ 'active': {
@@ -668,6 +782,16 @@ let g:lightline = {
       \   'right': [ [ 'percent' ],
       \              [ 'gitbranch' ],
       \              [ 'gitchanges' ] ]
+      \ },
+      \ 'tabline': {
+      \   'left': [ ['buffers'] ],
+      \   'right': [ ]
+      \ },
+      \ 'component_expand': {
+      \   'buffers': 'lightline#bufferline#buffers'
+      \ },
+      \ 'component_type': {
+      \   'buffers': 'tabsel'
       \ },
       \ 'component_function': {
       \   'fileformat': 'LightlineFileformat',
@@ -691,6 +815,7 @@ function! FileNameWithIcon() abort
   let filename = expand('%:t') !=# '' ? expand('%:t') : '[No Name]'
   let modified = &modified ? ' +' : ''
   let icon = winwidth(0) > 70 ? WebDevIconsGetFileTypeSymbol() . ' ' : ''
+  " let icon = winwidth(0) > 70 ? luaeval("require'nvim-web-devicons'.get_icon(filename)") . ' ' : ''
   return icon . filename . modified
 endfunction
 
