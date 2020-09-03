@@ -531,6 +531,7 @@ nvim_lsp.pyls.setup{
     cmd = {"pyls", "--log-file", "/tmp/pyls-log.txt", "--verbose"}
 }
 nvim_lsp.vimls.setup{}
+nvim_lsp.jdtls.setup{}
 nvim_lsp.jsonls.setup{}
 nvim_lsp.dockerls.setup{}
 nvim_lsp.diagnosticls.setup{}
