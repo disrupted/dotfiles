@@ -134,7 +134,7 @@ zinit load 'wfxr/forgit'
 zinit ice lucid wait"0" as"program" from"gh-r" mv"lazygit* -> lazygit" atload"alias lg='lazygit'"
 zinit light 'jesseduffield/lazygit'
 # LAZYDOCKER
-zinit ice lucid wait"0" as"program" from"gh-r" mv"lazydocker* -> lazydocker" atload"alias lg='lazydocker'"
+zinit ice lucid wait"0" as"program" from"gh-r" mv"lazydocker* -> lazydocker" atload"alias ld='lazydocker'"
 zinit light 'jesseduffield/lazydocker'
 # RANGER
 zinit ice depth'1' as"program" pick"ranger.py"
