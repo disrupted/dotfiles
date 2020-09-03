@@ -794,6 +794,7 @@ let g:lightline = {
       \   'buffers': 'tabsel'
       \ },
       \ 'component_function': {
+      \   'mode': 'LightlineMode',
       \   'fileformat': 'LightlineFileformat',
       \   'filetype': 'LightlineFiletype',
       \   'cocstatus': 'coc#status',
@@ -804,6 +805,13 @@ let g:lightline = {
       \   'filename_with_icon': 'FileNameWithIcon',
       \ },
       \ }
+
+function! LightlineMode()
+  return expand('%:t') =~# '^__Tagbar__' ? 'Tagbar':
+        \ expand('%:t') ==# 'ControlP' ? 'CtrlP' :
+        \ &filetype =~# '\v(help|vimfiler|unite|LuaTree)' ? '' :
+        \ lightline#mode()
+endfunction
 
 function! LightlineFilename()
   let filename = expand('%:t') !=# '' ? expand('%:t') : '[No Name]'
@@ -832,6 +840,9 @@ function! CocCurrentFunction()
 endfunction
 
 function! GitSignifyStats()
+  if &filetype =~# '\v(help|vimfiler|unite|LuaTree)'
+    return ''
+  endif
   let [a,r,m] = sy#repo#get_stats() 
   return printf('+%d ~%d -%d', a, m, r)
 endfunction
@@ -851,6 +862,9 @@ endfunction
 " endfunction
 
 function! StatusDiagnostic() abort
+  if &filetype =~# '\v(help|vimfiler|unite|LuaTree)'
+    return ''
+  endif
   let info = luaeval("require('lsp-status').diagnostics()")
 
   if get(info, 'errors', 0)
