@@ -553,17 +553,17 @@ nvim_lsp.yamlls.setup{
 EOF
 
 let g:diagnostic_enable_virtual_text = 1
-let g:diagnostic_trimmed_virtual_text = '20'
+let g:diagnostic_trimmed_virtual_text = '30'
 let g:diagnostic_virtual_text_prefix = ' '
 
 call sign_define("LspDiagnosticsErrorSign", {"text" : "◉", "texthl" : "LspDiagnosticsError"})
-call sign_define("LspDiagnosticsWarningSign", {"text" : "•", "texthl" : "LspDiagnosticsWarning"})
+call sign_define("LspDiagnosticsWarningSign", {"text" : "•", "texthl" : "LspDiagnosticsWarning"}) " ⚬
 call sign_define("LspDiagnosticsInformationSign", {"text" : "•", "texthl" : "LspDiagnosticsInformation"})
 call sign_define("LspDiagnosticsHintSign", {"text" : "H", "texthl" : "LspDiagnosticsHint"})
 
 function! SetLSPHighlights()
   highlight LspDiagnosticsError ctermfg=red guifg=#ff0000 guibg=NONE guisp=NONE gui=NONE
-  highlight LspDiagnosticsWarning ctermfg=yellow guifg=#ffff00 guibg=NONE guisp=NONE gui=NONE
+  " highlight LspDiagnosticsWarning ctermfg=yellow guifg=#ffff00 guibg=NONE guisp=NONE gui=NONE
 endfunction
 
 autocmd ColorScheme * call SetLSPHighlights()
@@ -862,8 +862,11 @@ function! GitSignifyStats()
   if &filetype =~# '\v(help|vimfiler|unite|LuaTree)'
     return ''
   endif
-  let [a,r,m] = sy#repo#get_stats() 
-  return printf('+%d ~%d -%d', a, m, r)
+  let [added, modified, removed] = sy#repo#get_stats() 
+  if added == -1  " this means signify does not recognize diffs.
+    return ''
+  endif
+  return printf('+%d ~%d -%d', added, modified, removed)
 endfunction
 
 " function! StatusDiagnostic() abort
