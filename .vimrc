@@ -55,7 +55,7 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 " Project directory scope for FZF
 Plug 'airblade/vim-rooter'
-Plug 'neomake/neomake'
+" Plug 'neomake/neomake'
 " Better tabline
 " Plug 'mg979/vim-xtabline'
 " Plug 'pacha/vem-tabline'
@@ -532,7 +532,7 @@ nvim_lsp.pyls.setup{
     cmd = {"pyls", "--log-file", "/tmp/pyls-log.txt", "--verbose"},
     on_attach=require'diagnostic'.on_attach
 }
-nvim_lsp.vimls.setup{}
+nvim_lsp.vimls.setup{on_attach=require'diagnostic'.on_attach}
 nvim_lsp.jdtls.setup{}
 nvim_lsp.jsonls.setup{}
 nvim_lsp.dockerls.setup{}
@@ -551,6 +551,22 @@ nvim_lsp.yamlls.setup{
   }
 }
 EOF
+
+let g:diagnostic_enable_virtual_text = 1
+let g:diagnostic_trimmed_virtual_text = '20'
+let g:diagnostic_virtual_text_prefix = ' '
+
+call sign_define("LspDiagnosticsErrorSign", {"text" : "◉", "texthl" : "LspDiagnosticsError"})
+call sign_define("LspDiagnosticsWarningSign", {"text" : "•", "texthl" : "LspDiagnosticsWarning"})
+call sign_define("LspDiagnosticsInformationSign", {"text" : "•", "texthl" : "LspDiagnosticsInformation"})
+call sign_define("LspDiagnosticsHintSign", {"text" : "H", "texthl" : "LspDiagnosticsHint"})
+
+function! SetLSPHighlights()
+  highlight LspDiagnosticsError ctermfg=red guifg=#ff0000 guibg=NONE guisp=NONE gui=NONE
+  highlight LspDiagnosticsWarning ctermfg=yellow guifg=#ffff00 guibg=NONE guisp=NONE gui=NONE
+endfunction
+
+autocmd ColorScheme * call SetLSPHighlights()
 
 " === completion === "
 " Use completion-nvim in every buffer
