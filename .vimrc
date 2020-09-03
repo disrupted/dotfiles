@@ -258,9 +258,9 @@ if v:version > 703 || v:version == 703 && has("patch541")
   set formatoptions+=j
 endif
 
-" Use Ctrl-L to clear the highlighting of hlsearch
-if maparg('<C-L>', 'n') ==# ''
-  nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
+" Use Ctrl-/ to clear the highlighting of hlsearch
+if maparg('<C-/>', 'n') ==# ''
+  nnoremap <silent> <C-/> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
 endif
 
 
@@ -552,9 +552,10 @@ nvim_lsp.yamlls.setup{
 }
 EOF
 
+let g:diagnostic_enable_underline = 1
 let g:diagnostic_enable_virtual_text = 1
-let g:diagnostic_trimmed_virtual_text = '30'
-let g:diagnostic_virtual_text_prefix = ' '
+let g:diagnostic_trimmed_virtual_text = '40'
+let g:diagnostic_virtual_text_prefix = ''
 
 call sign_define("LspDiagnosticsErrorSign", {"text" : "◉", "texthl" : "LspDiagnosticsError"})
 call sign_define("LspDiagnosticsWarningSign", {"text" : "•", "texthl" : "LspDiagnosticsWarning"}) " ⚬
@@ -894,7 +895,7 @@ function! StatusDiagnostic() abort
   endif
 
   if get(info, 'warnings', 0)
-    return info['warnings'] . ""
+    return info['warnings'] . " "
   endif
 
   return "" 
