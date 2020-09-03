@@ -39,6 +39,7 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'neovim/nvim-lsp'
 Plug 'nvim-lua/completion-nvim'
 Plug 'nvim-lua/lsp-status.nvim'
+Plug 'nvim-lua/diagnostic-nvim'
 " coc.nvim: LSP
 " Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'kevinoid/vim-jsonc'
@@ -528,7 +529,8 @@ local nvim_lsp = require'nvim_lsp'
 
 -- define language servers
 nvim_lsp.pyls.setup{
-    cmd = {"pyls", "--log-file", "/tmp/pyls-log.txt", "--verbose"}
+    cmd = {"pyls", "--log-file", "/tmp/pyls-log.txt", "--verbose"},
+    on_attach=require'diagnostic'.on_attach
 }
 nvim_lsp.vimls.setup{}
 nvim_lsp.jdtls.setup{}
