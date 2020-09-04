@@ -79,10 +79,12 @@ Plug 'smason1995/easy-split-terms'
 Plug 'kyazdani42/nvim-tree.lua'
 Plug 'kyazdani42/nvim-web-devicons' " for file icons
 Plug 'lambdalisue/reword.vim'
+" Black formatter for Python
+Plug 'psf/black', { 'branch': 'stable' }
+" Automatically sort python imports
+Plug 'fisadev/vim-isort'
 
 if has('python')
-    " Automatically sort python imports
-    Plug 'fisadev/vim-isort'
 "   " Better python syntax highlighting
 "   Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
 "   " YAPF formatter for Python
@@ -336,6 +338,9 @@ noremap <leader>0 :tablast<cr>
 
 
 " === PLUGIN CONFIGS === "
+" === formatters === "
+autocmd BufWritePre *.py execute ':Black'
+
 " === nvim-tree file explorer === "
 nnoremap <C-e> :LuaTreeToggle<CR>
 
@@ -530,7 +535,12 @@ local nvim_lsp = require'nvim_lsp'
 -- define language servers
 nvim_lsp.pyls.setup{
     cmd = {"pyls", "--log-file", "/tmp/pyls-log.txt", "--verbose"},
-    on_attach=require'diagnostic'.on_attach
+    on_attach=require'diagnostic'.on_attach,
+    settings = {
+      pyls = {
+        configurationSources = { "pycodestyle", "flake8" }
+      }
+    }
 }
 nvim_lsp.vimls.setup{on_attach=require'diagnostic'.on_attach}
 nvim_lsp.jdtls.setup{}
