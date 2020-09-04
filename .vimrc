@@ -339,7 +339,7 @@ noremap <leader>0 :tablast<cr>
 
 " === PLUGIN CONFIGS === "
 " === formatters === "
-autocmd BufWritePre *.py execute ':Black'
+autocmd BufWritePre *.py execute ':Isort' | execute ':Black'
 
 " === nvim-tree file explorer === "
 nnoremap <C-e> :LuaTreeToggle<CR>
