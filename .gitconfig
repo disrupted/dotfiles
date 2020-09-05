@@ -10,6 +10,26 @@
 [color]
     ui = auto
 
+[color "branch"]
+    current = yellow reverse
+    local = yellow
+    remote = green
+
+[color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+
+[color "status"]
+    added = yellow
+    changed = green
+    untracked = red
+
+[log]
+	decorate = auto
+  abbrevCommit = true
+
 [push]
     # Push to the set upstream branch being tracked by default.
     default = simple
@@ -41,7 +61,7 @@
 [delta]
     features = line-numbers decorations  # side-by-side
     whitespace-error-style = 22 reverse
-    syntax-theme = TwoDark  # Monokai Extended Bright
+    syntax-theme = Monokai Extended Bright  # TwoDark
     side-by-side = false
     zero-style = dim syntax
     # plus-color = "#012800"
@@ -72,6 +92,7 @@
     # Enable this in networks where git:// or git@ are blocked.
     #insteadOf = git://github.com/
     #insteadOf = git@github.com:
+    insteadOf = gh:
 
 [url "git@github.com:"]
     # Use SSH for GitHub instead of https://
@@ -84,6 +105,12 @@
     # (which is often faster).
     pushInsteadOf = git://gitorious.org/
 
+[url "https://gist.github.com/"]
+    insteadOf = gist:
+
+[url "https://bitbucket.org/"]
+    insteadOf = bb:
+
 [credential]
     # Use macOS Keychain to store HTTP passwords.
     helper = osxkeychain
@@ -91,3 +118,14 @@
 [hub]
     # Use HTTPS rather than SSH protocol in Hub
     protocol = https
+
+[alias]
+    # Show all of my configured aliases
+    aliases = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
+
+    # preferred git log view
+    lg = log --graph --abbrev-commit --decorate --format=format:'%C(yellow)%h%C(reset) %C(white)%s%C(reset) %C(dim white)-%C(reset) %ar %C(dim white)<%an>%C(reset)%C(auto)%d%C(reset)' --all
+    lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(yellow)%h%C(reset) %C(white)%s%C(reset) %C(dim white)-%C(reset) %ar %C(dim white)<%an>%C(reset)%C(auto)%d%C(reset)%n' --all --stat
+
+    # View the log and diff for a commit (previous if no SHA1 provided)
+    details = log -n1 -p --format=fuller
