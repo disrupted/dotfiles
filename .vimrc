@@ -83,10 +83,10 @@ Plug 'lambdalisue/reword.vim'
 Plug 'psf/black', { 'branch': 'stable' }
 " Automatically sort python imports
 Plug 'fisadev/vim-isort'
+" Better python syntax highlighting
+" Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
 
 if has('python')
-"   " Better python syntax highlighting
-"   Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
 "   " YAPF formatter for Python
 "   Plug 'pignacio/vim-yapf-format'
 endif
@@ -898,7 +898,7 @@ endfunction
 " endfunction
 
 function! StatusDiagnostic() abort
-  if &filetype =~# '\v(help|vimfiler|unite|LuaTree)'
+  if &filetype =~# '\v(help|vimfiler|unite|LuaTree)' || &buftype ==# "terminal"
     return ''
   endif
   let info = luaeval("require('lsp-status').diagnostics()")
