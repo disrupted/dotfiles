@@ -83,6 +83,8 @@ Plug 'kyazdani42/nvim-web-devicons' " for file icons
 Plug 'lambdalisue/reword.vim'
 " Better python syntax highlighting
 " Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
+" Improved syntax highlighting
+Plug 'nvim-treesitter/nvim-treesitter'
 
 " Initialize plugin system
 call plug#end()
@@ -531,7 +533,7 @@ nvim_lsp.pyls.setup{
     on_attach=require'diagnostic'.on_attach,
     settings = {
       pyls = {
-        configurationSources = { "pycodestyle", "flake8" }
+        configurationSources = { "pycodestyle", "flake8", "mypy" }
       }
     }
 }
@@ -648,6 +650,16 @@ nmap <leader>qf  <Plug>(coc-fix-current)
 " nmap <leader>f :CocCommand explorer --preset floating<CR>
 " when closing all buffers and Coc-Explorer is the last one left auto-close it
 autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif
+
+" === Treesitter === "
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = "all",     -- one of "all", "language", or a list of languages
+  highlight = {
+    enable = true,              -- false will disable the whole extension
+  },
+}
+EOF
 
 " === FZF === "
 " This is the default extra key bindings
