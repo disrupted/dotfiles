@@ -17,6 +17,8 @@ if empty(glob('~/.config/nvim/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
+let g:ale_disable_lsp = 1  " before plugins are loaded
+
 call plug#begin('~/.vim/plugged')
 
 Plug 'tpope/vim-sensible'
@@ -62,7 +64,7 @@ Plug 'airblade/vim-rooter'
 " Plug 'ap/vim-buftabline'
 Plug 'mengelbrecht/lightline-bufferline'
 " ALE
-" Plug 'dense-analysis/ale'
+Plug 'dense-analysis/ale'
 Plug 'liuchengxu/vim-which-key'
 " find and replace on multiple files
 Plug 'brooth/far.vim'
@@ -79,17 +81,8 @@ Plug 'smason1995/easy-split-terms'
 Plug 'kyazdani42/nvim-tree.lua'
 Plug 'kyazdani42/nvim-web-devicons' " for file icons
 Plug 'lambdalisue/reword.vim'
-" Black formatter for Python
-Plug 'psf/black', { 'branch': 'stable' }
-" Automatically sort python imports
-Plug 'fisadev/vim-isort'
 " Better python syntax highlighting
 " Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
-
-if has('python')
-"   " YAPF formatter for Python
-"   Plug 'pignacio/vim-yapf-format'
-endif
 
 " Initialize plugin system
 call plug#end()
@@ -338,9 +331,6 @@ noremap <leader>0 :tablast<cr>
 
 
 " === PLUGIN CONFIGS === "
-" === formatters === "
-autocmd BufWritePre *.py silent! execute ':Isort' | silent! execute ':Black'
-
 " === nvim-tree file explorer === "
 nnoremap <C-e> :LuaTreeToggle<CR>
 
@@ -782,13 +772,15 @@ command! -nargs=0 Prettier :CocCommand prettier.formatFile
 
 " === ALE === "
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-let g:ale_sign_error = '✘'
-let g:ale_sign_warning = '⚠'
+" let g:ale_sign_error = '✘'
+" let g:ale_sign_warning = '⚠'
 " let g:ale_lint_on_text_changed = 'never'  " only lint on save
 let g:ale_fix_on_save = 1
+" let g:ale_completion_autoimport = 1
+let g:ale_list_window_size = 5  " Show 5 lines of errors (default: 10)
+let g:ale_linters_explicit = 1  " Only run linters named in ale_linters settings.
 let g:ale_linters = {
-      \ 'python': ['flake8', 'pylint'],
-      \ 'javascript': ['eslint']
+      \ '*': ['remove_trailing_lines', 'trim_whitespace'],
       \ }
 
 " === Titlecase === "
