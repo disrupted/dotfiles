@@ -791,7 +791,7 @@ let g:ale_fix_on_save = 1
 " let g:ale_completion_autoimport = 1
 let g:ale_list_window_size = 5  " Show 5 lines of errors (default: 10)
 let g:ale_linters_explicit = 1  " Only run linters named in ale_linters settings.
-let g:ale_linters = {
+let g:ale_fixers = {
       \ '*': ['remove_trailing_lines', 'trim_whitespace'],
       \ }
 
