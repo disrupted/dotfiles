@@ -94,9 +94,9 @@ set nocompatible
 filetype plugin indent on
 
 " set leader key to comma
-let mapleader = ","  
+let mapleader = ","
 " ,e reload file in all buffers
-map <leader>e :bufdo e!<CR> 
+map <leader>e :bufdo e!<CR>
 
 " === KEYS ===
 " disable arrow keys
@@ -105,7 +105,7 @@ noremap <Down> <Nop>
 noremap <Left> <Nop>
 noremap <Right> <Nop>
 
-" ctrl+a: select all text 
+" ctrl+a: select all text
 map <C-a> <esc>ggVG<CR>
 
 " Better indenting/tabbing
@@ -123,7 +123,7 @@ imap <C-h> <C-w>h
 imap <C-j> <C-w>j
 imap <C-k> <C-w>k
 imap <C-l> <C-w>l
-nnoremap <C-h> <C-w>h                        
+nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
@@ -203,8 +203,8 @@ set encoding=utf-8                      " Force utf-8 for the encoding displayed
 set pumheight=10                        " Makes popup menu smaller
 set fileencoding=utf-8                  " The encoding written to file
 set incsearch                           " incremental search
-set hlsearch                            " highlighted search results 
-set clipboard=unnamed                   " Yank and paste with the system clipboard 
+set hlsearch                            " highlighted search results
+set clipboard=unnamed                   " Yank and paste with the system clipboard
 " set showtabline=2                       " Always display tabline at top
 set number                              " Line numbers
 set relativenumber
@@ -224,7 +224,7 @@ set spelllang=en,cjk
 " set completeopt+=menuone,preview  " ,longest
 set updatetime=300                      " Faster completion
 set autoread                            " Reload unchanged files automatically
-set virtualedit=all                     " Keep horizontal cursor position when jumping up/down 
+set virtualedit=all                     " Keep horizontal cursor position when jumping up/down
 set nostartofline                       " Do not jump to first character with page commands.
 set noswapfile                          " Disable swap to prevent annoying messages
 set nomodeline                          " Don't parse modelines because of vulnerability
@@ -786,7 +786,7 @@ command! -nargs=0 Prettier :CocCommand prettier.formatFile
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 " let g:ale_sign_error = '✘'
 " let g:ale_sign_warning = '⚠'
-" let g:ale_lint_on_text_changed = 'never'  " only lint on save
+let g:ale_lint_on_text_changed = 'never'  " only lint on save
 let g:ale_fix_on_save = 1
 " let g:ale_completion_autoimport = 1
 let g:ale_list_window_size = 5  " Show 5 lines of errors (default: 10)
@@ -880,7 +880,7 @@ function! GitSignifyStats()
   if &filetype =~# '\v(help|vimfiler|unite|LuaTree)'
     return ''
   endif
-  let [added, modified, removed] = sy#repo#get_stats() 
+  let [added, modified, removed] = sy#repo#get_stats()
   if added == -1  " this means signify does not recognize diffs.
     return ''
   endif
@@ -898,7 +898,7 @@ endfunction
 "     return info['warning'] . ""
 "   endif
 
-"   return "" 
+"   return ""
 " endfunction
 
 function! StatusDiagnostic() abort
@@ -915,7 +915,7 @@ function! StatusDiagnostic() abort
     return info['warnings'] . " "
   endif
 
-  return "" 
+  return ""
 endfunction
 
 " function! LspStatus() abort
@@ -943,4 +943,4 @@ endif
 " set t_ut=
 colorscheme one
 call one#highlight('Normal', '', '24282c', 'none') " dark
-highlight clear SignColumn " set SignColumn/Gutter to dark background color 
+highlight clear SignColumn " set SignColumn/Gutter to dark background color
