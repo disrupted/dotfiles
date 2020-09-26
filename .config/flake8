@@ -1,11 +1,12 @@
 [flake8]
-ignore = 
+ignore =
     D203,
     E501,
     D100,
     D413,  # Error in first line
     E401,  # Unable to import module
     W503,  # line break before binary operator
+    W292,  # no new line at the end
 max-line-length = 88
 max-complexity = 10
 exclude =
