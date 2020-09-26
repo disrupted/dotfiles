@@ -1,5 +1,7 @@
 [pycodestyle]
 ignore =
     # W503: line break before binary operator
-    W503
+    W503,
+    # E501: line too long
+    E501
 max-line-length = 88
