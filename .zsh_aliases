@@ -8,5 +8,6 @@ alias ll='exa -la --git --git-ignore --ignore-glob=".git|.DS_Store|__MACOSX" -T 
 alias ll3='exa -la --git --git-ignore --ignore-glob=".git|.DS_Store|__MACOSX" -T -L3'
 alias ll4='exa -la --git --git-ignore --ignore-glob=".git|.DS_Store|__MACOSX" -T -L4'
 alias d='sudo docker'
+alias dc='sudo docker-compose'
 alias dexec='sudo docker exec -e COLUMNS="`tput cols`" -e LINES="`tput lines`" -ti'
 alias ha='dexec -it hassio_cli ha'
