@@ -81,10 +81,10 @@ Plug 'smason1995/easy-split-terms'
 Plug 'kyazdani42/nvim-tree.lua'
 Plug 'kyazdani42/nvim-web-devicons' " for file icons
 Plug 'lambdalisue/reword.vim'
-" Better python syntax highlighting
-" Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
 " Improved syntax highlighting
 Plug 'nvim-treesitter/nvim-treesitter'
+" highlighter for f, F
+Plug 'unblevable/quick-scope'
 
 " Initialize plugin system
 call plug#end()
@@ -333,6 +333,9 @@ noremap <leader>0 :tablast<cr>
 
 
 " === PLUGIN CONFIGS === "
+" === quick-scope === "
+" Trigger a highlight in the appropriate direction when pressing these keys
+let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 " === nvim-tree file explorer === "
 nnoremap <C-e> :LuaTreeToggle<CR>
 
@@ -533,7 +536,7 @@ nvim_lsp.pyls.setup{
     on_attach=require'diagnostic'.on_attach,
     settings = {
       pyls = {
-        configurationSources = { "pycodestyle", "flake8", "mypy" }
+        configurationSources = { "pycodestyle", "flake8" }
       }
     }
 }
@@ -587,7 +590,7 @@ set completeopt=menuone,noinsert,noselect
 " don't give |ins-completion-menu| messages.
 set shortmess+=c
 " always show signcolumns
-set signcolumn=number  " or =number to merge signcolumn and linenumbers
+set signcolumn=yes  " or =number to merge signcolumn and linenumbers
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
 " inoremap <silent><expr> <TAB>
