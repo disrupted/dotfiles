@@ -173,6 +173,9 @@ set wildignore+=.svn,CVS,.git,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*
 " set of file name suffixes that will be given a lower priority when it comes to matching wildcards
 set suffixes+=.old,.bkp
 
+set list
+set listchars=tab:→\ ,trail:·,precedes:←,extends:→,nbsp:·,space:·
+
 " source $MYVIMRC reloads the saved $MYVIMRC
 :nmap <leader>s :source $MYVIMRC<CR>
 
