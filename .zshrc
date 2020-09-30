@@ -57,7 +57,7 @@ zle -N bracketed-paste bracketed-paste-magic
 # Now the fix, setup these two hooks:
 pasteinit() {
   OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
-  zle -N self-insert url-quote-magic 
+  zle -N self-insert url-quote-magic
 }
 pastefinish() {
   zle -N self-insert $OLD_SELF_INSERT
@@ -124,9 +124,17 @@ zinit light BurntSushi/ripgrep
 # NEOVIM
 # zinit ice from"gh-r" as"program" bpick"*appimage*" mv"nvim* -> nvim" pick"nvim"
 # zinit light neovim/neovim
+# neovim
+zinit wait'0' lucid \
+  from'gh-r' ver'nightly' as'program' pick'nvim*/bin/nvim' \
+  atclone'echo "" > ._zinit/is_release' \
+  atpull'%atclone' \
+  run-atpull \
+  light-mode for @neovim/neovim
 # DELTA
-zinit ice wait lucid
-zinit load 'dandavison/delta'
+zinit wait'1' lucid \
+  from"gh-r" as"program" pick"delta*/delta" \
+  light-mode for @dandavison/delta
 # FORGIT
 zinit ice wait lucid
 zinit load 'wfxr/forgit'
@@ -145,6 +153,24 @@ zinit light sharkdp/fd
 # GH-CLI
 zinit ice lucid wait"0" as"program" from"gh-r" pick"gh*/bin/gh"
 zinit light "cli/cli"
+# tldr (rust implementation tealdeer)
+zinit wait'1' lucid \
+  from"gh-r" as"program" pick"tldr" \
+  light-mode for @dbrgn/tealdeer
+zinit ice wait'1' lucid as"completion" mv'zsh_tealdeer -> _tldr'
+zinit snippet https://github.com/dbrgn/tealdeer/blob/master/zsh_tealdeer
+# emoji
+# zinit wait'1' lucid \
+#   atload"source $ZHOMEDIR/rc/pluginconfig/emoji-cli_atload.zsh" \
+#   light-mode for @b4b4r07/emoji-cli
+# mmv (rename multiple files in vim)
+zinit wait'1' lucid \
+  from"gh-r" as"program" pick"mmv*/mmv" \
+  light-mode for @itchyny/mmv
+# procs (modern replacement for ps written in rust)
+zinit wait'1' lucid \
+  from"gh-r" as"program" bpick'*lnx*' \
+  light-mode for @dalance/procs
 
 #####################
 # HISTORY           #
@@ -174,7 +200,7 @@ setopt nolisttypes
 setopt listpacked
 setopt automenu
 setopt emacs  # vi            # emacs / vim keybindings
-setopt interactivecomments    # recognize comments 
+setopt interactivecomments    # recognize comments
 setopt sharehistory           # global history
 
 chpwd() exa --icons -Fla  # -Flaigh
