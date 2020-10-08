@@ -99,6 +99,8 @@ let mapleader = ","
 map <leader>e :bufdo e!<CR>
 
 " === KEYS ===
+inoremap jk <Esc>
+
 " disable arrow keys
 noremap <Up> <Nop>
 noremap <Down> <Nop>
