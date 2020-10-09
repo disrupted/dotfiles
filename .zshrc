@@ -122,15 +122,17 @@ zinit light sharkdp/bat
 zinit ice from"gh-r" as"program" mv"ripgrep* -> ripgrep" pick"ripgrep/rg"
 zinit light BurntSushi/ripgrep
 # NEOVIM
-zinit ice from"gh-r" ver"nightly" as"program" bpick"*appimage*" mv"nvim* -> nvim" pick"nvim"
-zinit light neovim/neovim
+# zinit ice from"gh-r" ver"nightly" as"program" bpick"*appimage*" mv"nvim* -> nvim" pick"nvim"
+# zinit light neovim/neovim
+# zinit ice from"gh-r" ver"nightly" as"program" pick'nvim*/bin/nvim'
+# zinit light neovim/neovim
 # neovim
-# zinit wait'0' lucid \
-#   from'gh-r' ver'nightly' as'program' pick'nvim*/bin/nvim' \
-#   atclone'echo "" > ._zinit/is_release' \
-#   atpull'%atclone' \
-#   run-atpull \
-#   light-mode for @neovim/neovim
+zinit wait'0' lucid \
+  from'gh-r' ver'nightly' as'program' pick'nvim*/bin/nvim' \
+  atclone'echo "" > ._zinit/is_release' \
+  atpull'%atclone' \
+  run-atpull \
+  light-mode for @neovim/neovim
 # DELTA
 zinit wait'1' lucid \
   from"gh-r" as"program" pick"delta*/delta" \
@@ -155,7 +157,7 @@ zinit ice lucid wait"0" as"program" from"gh-r" pick"gh*/bin/gh"
 zinit light "cli/cli"
 # tldr (rust implementation tealdeer)
 zinit wait'1' lucid \
-  from"gh-r" as"program" pick"tldr" \
+  from"gh-r" as"program" mv"tldr* -> tldr" pick"tldr" \
   light-mode for @dbrgn/tealdeer
 zinit ice wait'1' lucid as"completion" mv'zsh_tealdeer -> _tldr'
 zinit snippet https://github.com/dbrgn/tealdeer/blob/master/zsh_tealdeer
@@ -171,6 +173,10 @@ zinit wait'1' lucid \
 zinit wait'1' lucid \
   from"gh-r" as"program" bpick'*lnx*' \
   light-mode for @dalance/procs
+# prettyping
+zinit ice wait lucid as'program' mv'prettyping* -> prettyping' \
+    atload'alias ping=prettyping --nolegend'
+zinit light denilsonsa/prettyping
 
 #####################
 # HISTORY           #
