@@ -546,7 +546,7 @@ nvim_lsp.pyls.setup{
     }
 }
 nvim_lsp.vimls.setup{on_attach=require'diagnostic'.on_attach}
-nvim_lsp.jdtls.setup{}
+-- nvim_lsp.jdtls.setup{}
 nvim_lsp.jsonls.setup{}
 nvim_lsp.dockerls.setup{}
 nvim_lsp.diagnosticls.setup{}
@@ -663,7 +663,7 @@ autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | end
 " === Treesitter === "
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = "all",     -- one of "all", "language", or a list of languages
+  -- ensure_installed = "all",     -- one of "all", "language", or a list of languages
   highlight = {
     enable = true,              -- false will disable the whole extension
   },
