@@ -803,6 +803,7 @@ let g:ale_linters_explicit = 1  " Only run linters named in ale_linters settings
 let g:ale_fixers = {
       \ '*': ['remove_trailing_lines', 'trim_whitespace'],
       \ }
+let g:ale_warn_about_trailing_whitespace = 1
 
 " === Titlecase === "
 let g:titlecase_map_keys = 0  " remove default keymapping which interferes with tabs
