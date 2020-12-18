@@ -562,17 +562,23 @@ lspconfig.yamlls.setup{
     }
   }
 }
+
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+  vim.lsp.diagnostic.on_publish_diagnostics, {
+    underline = true,
+    signs = true,
+    virtual_text = {
+      spacing = 4,
+      prefix = '',
+    },
+  }
+)
 EOF
 
-" let g:diagnostic_enable_underline = 1
-" let g:diagnostic_enable_virtual_text = 1
-" let g:diagnostic_trimmed_virtual_text = '40'
-" let g:diagnostic_virtual_text_prefix = ''
-
-call sign_define("LspDiagnosticsErrorSign", {"text" : "◉", "texthl" : "LspDiagnosticsError"})
-call sign_define("LspDiagnosticsWarningSign", {"text" : "•", "texthl" : "LspDiagnosticsWarning"}) " ⚬
-call sign_define("LspDiagnosticsInformationSign", {"text" : "•", "texthl" : "LspDiagnosticsInformation"})
-call sign_define("LspDiagnosticsHintSign", {"text" : "H", "texthl" : "LspDiagnosticsHint"})
+call sign_define("LspDiagnosticsSignError", {"text" : "◉", "texthl" : "LspDiagnosticsError"})
+call sign_define("LspDiagnosticsSignWarning", {"text" : "•", "texthl" : "LspDiagnosticsWarning"}) " ⚬
+call sign_define("LspDiagnosticsSignInformation", {"text" : "•", "texthl" : "LspDiagnosticsInformation"})
+call sign_define("LspDiagnosticsSignHint", {"text" : "H", "texthl" : "LspDiagnosticsHint"})
 
 function! SetLSPHighlights()
   highlight LspDiagnosticsError ctermfg=red guifg=#ff0000 guibg=NONE guisp=NONE gui=NONE
