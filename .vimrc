@@ -41,7 +41,6 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'neovim/nvim-lsp'
 Plug 'nvim-lua/completion-nvim'
 Plug 'nvim-lua/lsp-status.nvim'
-Plug 'nvim-lua/diagnostic-nvim'
 " coc.nvim: LSP
 " Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'kevinoid/vim-jsonc'
@@ -56,7 +55,7 @@ Plug 'troydm/zoomwintab.vim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 " Project directory scope for FZF
-Plug 'airblade/vim-rooter'
+" Plug 'airblade/vim-rooter'
 " Plug 'neomake/neomake'
 " Better tabline
 " Plug 'mg979/vim-xtabline'
@@ -286,7 +285,7 @@ xnoremap <leader>r :s///g<Left><Left>
 nnoremap & :&&<CR>
 xnoremap & :&&<CR>
 
-let g:python3_host_program = $HOME."~/work/python/environments/venv/bin/python"
+let g:python3_host_program = $HOME."/usr/local/bin/python3"
 
 " === TERMINAL === "
 " exit terminal mode with Esc
@@ -533,24 +532,23 @@ lua <<EOF
 local lsp_status = require('lsp-status')
 lsp_status.register_progress()
 
-local nvim_lsp = require'nvim_lsp'
+local lspconfig = require'lspconfig'
 
 -- define language servers
-nvim_lsp.pyls.setup{
+lspconfig.pyls.setup{
     cmd = {"pyls", "--log-file", "/tmp/pyls-log.txt", "--verbose"},
-    on_attach=require'diagnostic'.on_attach,
     settings = {
       pyls = {
         configurationSources = { "pycodestyle", "flake8" }
       }
     }
 }
-nvim_lsp.vimls.setup{on_attach=require'diagnostic'.on_attach}
--- nvim_lsp.jdtls.setup{}
-nvim_lsp.jsonls.setup{}
-nvim_lsp.dockerls.setup{}
-nvim_lsp.diagnosticls.setup{}
-nvim_lsp.yamlls.setup{
+lspconfig.vimls.setup{}
+-- lspconfig.jdtls.setup{}
+lspconfig.jsonls.setup{}
+lspconfig.dockerls.setup{}
+lspconfig.diagnosticls.setup{}
+lspconfig.yamlls.setup{
   settings = {
     yaml = {
       customTags = {
@@ -566,10 +564,10 @@ nvim_lsp.yamlls.setup{
 }
 EOF
 
-let g:diagnostic_enable_underline = 1
-let g:diagnostic_enable_virtual_text = 1
-let g:diagnostic_trimmed_virtual_text = '40'
-let g:diagnostic_virtual_text_prefix = ''
+" let g:diagnostic_enable_underline = 1
+" let g:diagnostic_enable_virtual_text = 1
+" let g:diagnostic_trimmed_virtual_text = '40'
+" let g:diagnostic_virtual_text_prefix = ''
 
 call sign_define("LspDiagnosticsErrorSign", {"text" : "◉", "texthl" : "LspDiagnosticsError"})
 call sign_define("LspDiagnosticsWarningSign", {"text" : "•", "texthl" : "LspDiagnosticsWarning"}) " ⚬
