@@ -3,10 +3,14 @@ ignore =
     D203,
     E501,
     D100,
-    D413,  # Error in first line
-    E401,  # Unable to import module
-    W503,  # line break before binary operator
-    W292,  # no new line at the end
+    # D413: Error in first line
+    D413,
+    # E401: Unable to import module
+    E401,
+    # W503: line break before binary operator
+    W503,
+    # W292: no new line at the end
+    W292,
 max-line-length = 88
 max-complexity = 10
 exclude =
