@@ -1,2 +1,3 @@
 set surround
 set commentary
+set idearefactormode=keep
