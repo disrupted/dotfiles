@@ -259,6 +259,8 @@ export SHELL='/bin/zsh'
 export LANG='en_US.UTF-8'
 export LC_ALL='en_US.UTF-8'
 export GPG_TTY=$(tty)
+export PATH="/usr/local/opt/helm@2/bin:$PATH"
+export PROMPT_EOL_MARK=''  # hide % at end of output
 
 #####################
 # COLORING          #
@@ -303,3 +305,19 @@ export FZF_ALT_C_OPTS='--preview="ls {}" --preview-window=right:60%:wrap'
 # --color=fg+:#e5e9f0,bg+:#2e3440,hl+:#81a1c1
 # --color=info:#eacb8a,prompt:#bf6069,pointer:#b48dac
 # --color=marker:#a3be8b,spinner:#b48dac,header:#a3be8b'
+
+# For compilers to find zlib you may need to set:
+export LDFLAGS="${LDFLAGS} -L/usr/local/opt/zlib/lib"
+export CPPFLAGS="${CPPFLAGS} -I/usr/local/opt/zlib/include"
+
+# For pkg-config to find zlib you may need to set:
+export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} /usr/local/opt/zlib/lib/pkgconfig"
+
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+fi
+. ~/.pyenv/versions/3.8.6/bin/virtualenvwrapper.sh
+
+export CLOUDSDK_PYTHON="/usr/local/opt/python@3.8/libexec/bin/python"
+    source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
+    source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
