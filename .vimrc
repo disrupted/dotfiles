@@ -57,7 +57,6 @@ Plug 'junegunn/fzf.vim'
 " Project directory scope for FZF
 " Plug 'airblade/vim-rooter'
 " Plug 'neomake/neomake'
-" Plug 'mengelbrecht/lightline-bufferline'
 Plug 'akinsho/nvim-bufferline.lua'
 " ALE
 Plug 'dense-analysis/ale'
@@ -766,45 +765,6 @@ if has('nvim') || has('gui_running')
   autocmd  FileType fzf set laststatus=0 | autocmd WinLeave <buffer> set laststatus=2
 endif
 
-" === Tabline === "
-let g:xtabline_settings = {}
-
-let g:xtabline_settings.enable_mappings = 0
-
-let g:xtabline_settings.tabline_modes = ['buffers', 'tabs']
-
-let g:xtabline_settings.enable_persistance = 0
-
-" let g:xtabline_settings.last_open_first = 1
-let g:xtabline_lazy = 1
-
-let g:xtabline_settings.show_right_corner = 0
-
-let g:xtabline_settings.indicators = {
-      \ 'modified': '+',
-      \ 'pinned': '[📌]',
-      \}
-      " \ 'modified': '●',
-
-let g:xtabline_settings.icons = {
-      \'pin': '📌',
-      \'star': '*',
-      \'book': '📖',
-      \'lock': '🔒',
-      \'hammer': '🔨',
-      \'tick': '✔',
-      \'cross': '✖',
-      \'warning': '⚠',
-      \'menu': '☰',
-      \'apple': '🍎',
-      \'linux': '🐧',
-      \'windows': '⌘',
-      \'git': '',
-      \'palette': '🎨',
-      \'lens': '🔍',
-      \'flag': '🏁',
-      \}
-
 " === Prettier === "
 " noremap <C-I> :CocCommand prettier.formatFile<CR>
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
@@ -847,14 +807,8 @@ EOF
 " === Lightline === "
 set noshowmode  " disables -- INSERT -- mode display underneath lightline
 
-let g:lightline#bufferline#min_buffer_count = 2
-let g:lightline#bufferline#show_number  = 0
-let g:lightline#bufferline#enable_devicons = 1         " Show fileicons
-let g:lightline#bufferline#shorten_path = 0
-" let g:lightline#bufferline#filename_modifier = ':t'  " Hide path and show only filename
-let g:lightline#bufferline#unnamed      = '[No Name]'
-
 let g:lightline = {
+      \ 'enable': { 'tabline': 0 },
       \ 'colorscheme': 'one',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
