@@ -532,10 +532,25 @@ lua <<EOF
 local lsp_status = require('lsp-status')
 lsp_status.register_progress()
 
-local lspconfig = require'lspconfig'
+local nvim_lsp = require'lspconfig'
+
+-- Keybindings for LSPs
+    vim.fn.nvim_set_keymap("n", "<leader>gd", "<cmd>lua vim.lsp.buf.definition()<CR>", {noremap = true, silent = true})
+    vim.fn.nvim_set_keymap("n", "<leader>ge", "<cmd>lua vim.lsp.buf.declaration()<CR>", {noremap = true, silent = true})
+    vim.fn.nvim_set_keymap("n", "<leader>gh", "<cmd>lua vim.lsp.buf.hover()<CR>", {noremap = true, silent = true})
+    vim.fn.nvim_set_keymap("n", "<leader>gf", "<cmd>lua vim.lsp.buf.formatting()<CR>", {noremap = true, silent = true})
+    vim.fn.nvim_set_keymap("n", "<leader>gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", {noremap = true, silent = true})
+    vim.fn.nvim_set_keymap("n", "<c-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", {noremap = true, silent = true})
+    vim.fn.nvim_set_keymap("n", "<leader>gy", "<cmd>lua vim.lsp.buf.type_definition()<CR>", {noremap = true, silent = true})
+    vim.fn.nvim_set_keymap("n", "<leader>gr", "<cmd>lua vim.lsp.buf.references()<CR>", {noremap = true, silent = true})
+    vim.fn.nvim_set_keymap("n", "<leader>gt", "<cmd>lua vim.lsp.buf.document_symbol()<CR>", {noremap = true, silent = true})
+    vim.fn.nvim_set_keymap("n", "<leader>gw", "<cmd>lua vim.lsp.buf.workspace_symbol()<CR>", {noremap = true, silent = true})
+    vim.fn.nvim_set_keymap("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", {noremap = true, silent = true})
+    vim.fn.nvim_set_keymap("n", "<a-.>", "<cmd>lua vim.lsp.buf.code_action()<CR>", {noremap = true, silent = true})
+    vim.api.nvim_command('setlocal omnifunc=v:lua.vim.lsp.omnifunc')
 
 -- define language servers
-lspconfig.pyls.setup{
+nvim_lsp.pyls.setup{
     cmd = {"pyls", "--log-file", "/tmp/pyls-log.txt", "--verbose"},
     settings = {
       pyls = {
@@ -543,12 +558,12 @@ lspconfig.pyls.setup{
       }
     }
 }
-lspconfig.vimls.setup{}
--- lspconfig.jdtls.setup{}
-lspconfig.jsonls.setup{}
-lspconfig.dockerls.setup{}
-lspconfig.diagnosticls.setup{}
-lspconfig.yamlls.setup{
+nvim_lsp.vimls.setup{}
+-- nvim_lsp.jdtls.setup{}
+nvim_lsp.jsonls.setup{}
+nvim_lsp.dockerls.setup{}
+-- nvim_lsp.diagnosticls.setup{}
+nvim_lsp.yamlls.setup{
   settings = {
     yaml = {
       customTags = {
@@ -557,7 +572,8 @@ lspconfig.yamlls.setup{
         "!include_dir_list",
         "!include_dir_merge_named",
         "!include_dir_merge_list",
-        "!lambda"
+        "!lambda",
+        "!input"
       }
     }
   }
@@ -573,12 +589,13 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
     },
   }
 )
+
+vim.fn.sign_define("LspDiagnosticsSignError", {text = "◉", texthl = "LspDiagnosticsError"})
+vim.fn.sign_define("LspDiagnosticsSignWarning", {text = "•", texthl = "LspDiagnosticsWarning"})
+vim.fn.sign_define("LspDiagnosticsSignInformation", {text = "•", texthl = "LspDiagnosticsInformation"})
+vim.fn.sign_define("LspDiagnosticsSignHint", {text = "H", texthl = "LspDiagnosticsHint"})
 EOF
 
-call sign_define("LspDiagnosticsSignError", {"text" : "◉", "texthl" : "LspDiagnosticsError"})
-call sign_define("LspDiagnosticsSignWarning", {"text" : "•", "texthl" : "LspDiagnosticsWarning"}) " ⚬
-call sign_define("LspDiagnosticsSignInformation", {"text" : "•", "texthl" : "LspDiagnosticsInformation"})
-call sign_define("LspDiagnosticsSignHint", {"text" : "H", "texthl" : "LspDiagnosticsHint"})
 
 function! SetLSPHighlights()
   highlight LspDiagnosticsError ctermfg=red guifg=#ff0000 guibg=NONE guisp=NONE gui=NONE
