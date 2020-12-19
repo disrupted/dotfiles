@@ -57,11 +57,8 @@ Plug 'junegunn/fzf.vim'
 " Project directory scope for FZF
 " Plug 'airblade/vim-rooter'
 " Plug 'neomake/neomake'
-" Better tabline
-" Plug 'mg979/vim-xtabline'
-" Plug 'pacha/vem-tabline'
-" Plug 'ap/vim-buftabline'
-Plug 'mengelbrecht/lightline-bufferline'
+" Plug 'mengelbrecht/lightline-bufferline'
+Plug 'akinsho/nvim-bufferline.lua'
 " ALE
 Plug 'dense-analysis/ale'
 Plug 'liuchengxu/vim-which-key'
@@ -832,6 +829,21 @@ nmap <leader>ct <Plug>Titlecase
 vmap <leader>ct <Plug>Titlecase
 nmap <leader>cT <Plug>TitlecaseLine
 
+" === Bufferline === "
+lua <<EOF
+require'bufferline'.setup{
+  options = {
+    view = "multiwindow",
+    tab_size = 18,
+    enforce_regular_tabs = true,
+    separator_style = "thin",
+    show_buffer_close_icons = false,
+    close_icon = '',
+    always_show_bufferline = false,
+  }
+}
+EOF
+
 " === Lightline === "
 set noshowmode  " disables -- INSERT -- mode display underneath lightline
 
@@ -850,10 +862,6 @@ let g:lightline = {
       \   'right': [ [ 'percent' ],
       \              [ 'gitbranch' ],
       \              [ 'gitchanges' ] ]
-      \ },
-      \ 'tabline': {
-      \   'left': [ ['buffers'] ],
-      \   'right': [ ]
       \ },
       \ 'component_expand': {
       \   'buffers': 'lightline#bufferline#buffers'
