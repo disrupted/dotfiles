@@ -550,7 +550,10 @@ nvim_lsp.pyls.setup{
     cmd = {"pyls", "--log-file", "/tmp/pyls-log.txt", "--verbose"},
     settings = {
       pyls = {
-        configurationSources = { "pycodestyle", "flake8" }
+        configurationSources = { "pycodestyle", "flake8" },
+        plugins = {
+          pyls_mypy = { enabled = true }
+        }
       }
     }
 }
