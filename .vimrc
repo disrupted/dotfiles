@@ -803,6 +803,13 @@ require'bufferline'.setup{
     show_buffer_close_icons = false,
     close_icon = '',
     always_show_bufferline = false,
+  },
+  highlights = {
+    buffer_selected = {
+          guifg = normal_fg,
+          guibg = normal_bg,
+          gui = "bold"
+    }
   }
 }
 EOF
