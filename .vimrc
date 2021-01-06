@@ -798,7 +798,7 @@ require'bufferline'.setup{
   options = {
     view = "multiwindow",
     tab_size = 18,
-    enforce_regular_tabs = true,
+    enforce_regular_tabs = false,
     separator_style = "thin",
     show_buffer_close_icons = false,
     close_icon = '',
