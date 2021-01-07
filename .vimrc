@@ -72,7 +72,7 @@ Plug 'smason1995/easy-split-terms'
 " if has("nvim")
 "   Plug 'antoinemadec/FixCursorHold.nvim'
 " endif
-" LuaTree file explorer
+" NvimTree file explorer
 Plug 'kyazdani42/nvim-tree.lua'
 Plug 'kyazdani42/nvim-web-devicons' " for file icons
 Plug 'lambdalisue/reword.vim'
@@ -337,16 +337,16 @@ noremap <leader>0 :tablast<cr>
 " Trigger a highlight in the appropriate direction when pressing these keys
 let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 " === nvim-tree file explorer === "
-nnoremap <C-e> :LuaTreeToggle<CR>
+nnoremap <C-e> :NvimTreeToggle<CR>
 
-let g:lua_tree_ignore = [ '.git', 'node_modules', '.cache' ] "empty by default
-let g:lua_tree_auto_open = 1 "0 by default, opens the tree when typing `nvim $DIR` or `nvim`
-let g:lua_tree_auto_close = 1 "0 by default, closes the tree when it's the last window
-let g:lua_tree_follow = 1 "0 by default, this option allows the cursor to be updated when entering a buffer
-let g:lua_tree_indent_markers = 1 "0 by default, this option shows indent markers when folders are open
-let g:lua_tree_git_hl = 1 "0 by default, will enable file highlight for git attributes (can be used without the icons).
+let g:nvim_tree_ignore = [ '.git', 'node_modules', '.cache' ] "empty by default
+let g:nvim_tree_auto_open = 1 "0 by default, opens the tree when typing `nvim $DIR` or `nvim`
+let g:nvim_tree_auto_close = 1 "0 by default, closes the tree when it's the last window
+let g:nvim_tree_follow = 1 "0 by default, this option allows the cursor to be updated when entering a buffer
+let g:nvim_tree_indent_markers = 1 "0 by default, this option shows indent markers when folders are open
+let g:nvim_tree_git_hl = 1 "0 by default, will enable file highlight for git attributes (can be used without the icons).
 
-let g:lua_tree_icons = {
+let g:nvim_tree_icons = {
     \ 'default': '',
     \ 'symlink': '',
     \ 'git': {
@@ -849,7 +849,7 @@ let g:lightline = {
 function! LightlineMode()
   return expand('%:t') =~# '^__Tagbar__' ? 'Tagbar':
         \ expand('%:t') ==# 'ControlP' ? 'CtrlP' :
-        \ &filetype =~# '\v(help|vimfiler|unite|LuaTree)' ? '' :
+        \ &filetype =~# '\v(help|vimfiler|unite|NvimTree)' ? '' :
         \ lightline#mode()
 endfunction
 
@@ -880,7 +880,7 @@ function! CocCurrentFunction()
 endfunction
 
 function! GitSignifyStats()
-  if &filetype =~# '\v(help|vimfiler|unite|LuaTree)'
+  if &filetype =~# '\v(help|vimfiler|unite|NvimTree)'
     return ''
   endif
   let [added, modified, removed] = sy#repo#get_stats()
@@ -905,7 +905,7 @@ endfunction
 " endfunction
 
 function! StatusDiagnostic() abort
-  if &filetype =~# '\v(help|vimfiler|unite|LuaTree)' || &buftype ==# "terminal"
+  if &filetype =~# '\v(help|vimfiler|unite|NvimTree)' || &buftype ==# "terminal"
     return ''
   endif
   let info = luaeval("require('lsp-status').diagnostics()")
