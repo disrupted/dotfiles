@@ -41,7 +41,6 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'neovim/nvim-lsp'
 Plug 'nvim-lua/completion-nvim'
 Plug 'nvim-lua/lsp-status.nvim'
-Plug 'sbdchd/neoformat'
 Plug 'dstein64/vim-startuptime'
 " coc.nvim: LSP
 " Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -61,7 +60,7 @@ Plug 'junegunn/fzf.vim'
 " Plug 'neomake/neomake'
 Plug 'akinsho/nvim-bufferline.lua'
 " ALE
-" Plug 'dense-analysis/ale'
+Plug 'dense-analysis/ale'
 Plug 'liuchengxu/vim-which-key'
 " find and replace on multiple files
 Plug 'brooth/far.vim'
@@ -801,12 +800,6 @@ if has('nvim') || has('gui_running')
   autocmd! FileType fzf tnoremap <buffer> <esc> <c-c>
   autocmd  FileType fzf set laststatus=0 | autocmd WinLeave <buffer> set laststatus=2
 endif
-
-" === Neoformat === "
-augroup fmt
-  autocmd!
-  autocmd BufWritePre * silent !undojoin | Neoformat
-augroup END
 
 " === ALE === "
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
