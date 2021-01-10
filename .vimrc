@@ -976,3 +976,5 @@ endif
 colorscheme one
 call one#highlight('Normal', '', '24282c', 'none') " dark
 highlight clear SignColumn " set SignColumn/Gutter to dark background color
+set fillchars+=vert:│  " use slimmer vsplit border
+highlight VertSplit ctermbg=NONE guibg=NONE
