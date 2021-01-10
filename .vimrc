@@ -61,7 +61,7 @@ Plug 'junegunn/fzf.vim'
 " Plug 'neomake/neomake'
 Plug 'akinsho/nvim-bufferline.lua'
 " ALE
-Plug 'dense-analysis/ale'
+" Plug 'dense-analysis/ale'
 Plug 'liuchengxu/vim-which-key'
 " find and replace on multiple files
 Plug 'brooth/far.vim'
@@ -619,7 +619,7 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
       prefix = '',
     },
     -- delay update
-    update_in_inset = false,
+    update_in_insert = false,
   }
 )
 
@@ -802,9 +802,11 @@ if has('nvim') || has('gui_running')
   autocmd  FileType fzf set laststatus=0 | autocmd WinLeave <buffer> set laststatus=2
 endif
 
-" === Prettier === "
-" noremap <C-I> :CocCommand prettier.formatFile<CR>
-command! -nargs=0 Prettier :CocCommand prettier.formatFile
+" === Neoformat === "
+augroup fmt
+  autocmd!
+  autocmd BufWritePre * silent !undojoin | Neoformat
+augroup END
 
 " === ALE === "
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
