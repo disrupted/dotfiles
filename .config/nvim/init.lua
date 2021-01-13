@@ -51,7 +51,6 @@ require('packer').startup(function()
         'romgrk/barbar.nvim',
         requires = {'kyazdani42/nvim-web-devicons', opt = true}
     }
-    -- use 'mhinz/vim-signify'
     use {'lewis6991/gitsigns.nvim', requires = {'nvim-lua/plenary.nvim'}}
     -- use 'mhartington/formatter.nvim'
 
@@ -412,25 +411,36 @@ require('status-line')
 -- lualine.theme = 'onedark'
 -- lualine.status()
 
--- Signify
-vim.g.signify_sign_show_count = 0 -- Don’t show the number of deleted lines.
-
 -- gitsigns
 require('gitsigns').setup {
     signs = {
-        add = {hl = 'DiffAdd', text = '│', numhl = 'GitSignsAddNr'},
-        change = {hl = 'DiffChange', text = '│', numhl = 'GitSignsChangeNr'},
-        delete = {hl = 'DiffDelete', text = '_', numhl = 'GitSignsDeleteNr'},
+        add = {hl = 'DiffAdd', text = '+', numhl = 'GitSignsAddNr'},
+        change = {hl = 'DiffChange', text = '~', numhl = 'GitSignsChangeNr'},
+        delete = {hl = 'DiffDelete', text = '_', show_count = true, numhl = 'GitSignsDeleteNr'},
         topdelete = {
             hl = 'DiffDelete',
             text = '‾',
+            show_count = true,
             numhl = 'GitSignsDeleteNr'
         },
         changedelete = {
             hl = 'DiffChange',
             text = '~',
+            show_count = true,
             numhl = 'GitSignsChangeNr'
         }
+    },
+    count_chars = {
+      [1]   = '',
+      [2]   = '₂',
+      [3]   = '₃',
+      [4]   = '₄',
+      [5]   = '₅',
+      [6]   = '₆',
+      [7]   = '₇',
+      [8]   = '₈',
+      [9]   = '₉',
+      ['+'] = '₊',
     },
     numhl = false,
     keymaps = {
