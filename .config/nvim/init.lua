@@ -170,6 +170,12 @@ map('v', '>', '>gv')
 map('x', 'K', ":move '<-2<CR>gv-gv")
 map('x', 'J', ":move '>+1<CR>gv-gv")
 
+-- Use <Tab> and <S-Tab> to navigate through popup menu
+vim.api.nvim_set_keymap('i', '<Tab>', 'pumvisible() ? "\\<C-n>" : "\\<Tab>"',
+                        {expr = true})
+vim.api.nvim_set_keymap('i', '<S-Tab>', 'pumvisible() ? "\\<C-p>" : "\\<Tab>"',
+                        {expr = true})
+
 map('n', '<leader>b', "<cmd>lua require('telescope.builtin').buffers()<CR>")
 map('n', '<C-f>', "<cmd>lua require('telescope.builtin').find_files()<CR>")
 map('n', '<leader>g', "<cmd>lua require('telescope.builtin').live_grep()<CR>")
@@ -315,12 +321,9 @@ nvim_lsp.yamlls.setup {
     }
 }
 
-local black = {formatCommand = "black -", formatStdin = true}
-local isort = {
-    formatCommand = "isort --stdout --profile black -",
-    formatStdin = true
-}
-local luafmt = {formatCommand = "lua-format -i", formatStdin = true}
+local black = require "efm/black"
+local isort = require "efm/isort"
+local luafmt = require "efm/luafmt"
 
 nvim_lsp.efm.setup {
     on_attach = on_attach,
@@ -416,7 +419,12 @@ require('gitsigns').setup {
     signs = {
         add = {hl = 'DiffAdd', text = '+', numhl = 'GitSignsAddNr'},
         change = {hl = 'DiffChange', text = '~', numhl = 'GitSignsChangeNr'},
-        delete = {hl = 'DiffDelete', text = '_', show_count = true, numhl = 'GitSignsDeleteNr'},
+        delete = {
+            hl = 'DiffDelete',
+            text = '_',
+            show_count = true,
+            numhl = 'GitSignsDeleteNr'
+        },
         topdelete = {
             hl = 'DiffDelete',
             text = '‾',
@@ -431,16 +439,16 @@ require('gitsigns').setup {
         }
     },
     count_chars = {
-      [1]   = '',
-      [2]   = '₂',
-      [3]   = '₃',
-      [4]   = '₄',
-      [5]   = '₅',
-      [6]   = '₆',
-      [7]   = '₇',
-      [8]   = '₈',
-      [9]   = '₉',
-      ['+'] = '₊',
+        [1] = '',
+        [2] = '₂',
+        [3] = '₃',
+        [4] = '₄',
+        [5] = '₅',
+        [6] = '₆',
+        [7] = '₇',
+        [8] = '₈',
+        [9] = '₉',
+        ['+'] = '₊'
     },
     numhl = false,
     keymaps = {
