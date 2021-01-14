@@ -70,7 +70,7 @@ opt('b', 'shiftwidth', indent) -- Size of an indent
 opt('b', 'smartindent', true) -- Insert indents automatically
 opt('b', 'tabstop', indent) -- Number of spaces tabs count for
 opt('b', 'softtabstop', indent)
-opt('o', 'completeopt', 'menuone,noinsert,noselect') -- Completion options (for deoplete)
+opt('o', 'completeopt', 'menuone,noinsert,noselect') -- Completion options
 opt('o', 'hidden', true) -- Enable modified buffers in background
 opt('o', 'ignorecase', true) -- Ignore case
 opt('o', 'joinspaces', false) -- No double spaces with join after a dot
@@ -171,10 +171,14 @@ map('x', 'K', ":move '<-2<CR>gv-gv")
 map('x', 'J', ":move '>+1<CR>gv-gv")
 
 -- Use <Tab> and <S-Tab> to navigate through popup menu
-vim.api.nvim_set_keymap('i', '<Tab>', 'pumvisible() ? "\\<C-n>" : "\\<Tab>"',
-                        {expr = true})
-vim.api.nvim_set_keymap('i', '<S-Tab>', 'pumvisible() ? "\\<C-p>" : "\\<Tab>"',
-                        {expr = true})
+vim.api.nvim_buf_set_keymap(0, 'i', '<tab>', "<Plug>(completion_smart_tab)",
+                            {noremap = false, silent = true})
+vim.api.nvim_buf_set_keymap(0, 'i', '<s-tab>', "<Plug>(completion_smart_s_tab)",
+                            {noremap = false, silent = true})
+-- vim.api.nvim_set_keymap('i', '<Tab>', 'pumvisible() ? "\\<C-n>" : "\\<Tab>"',
+--                         {expr = true})
+-- vim.api.nvim_set_keymap('i', '<S-Tab>', 'pumvisible() ? "\\<C-p>" : "\\<Tab>"',
+--                         {expr = true})
 
 map('n', '<leader>b', "<cmd>lua require('telescope.builtin').buffers()<CR>")
 map('n', '<C-f>', "<cmd>lua require('telescope.builtin').find_files()<CR>")
@@ -193,11 +197,41 @@ require'nvim-treesitter.configs'.setup {
 }
 
 -- LSP
-local nvim_lsp = require('lspconfig')
-local lsp_status = require('lsp-status')
+local lspconfig = require 'lspconfig'
+local lsp_status = require 'lsp-status'
 lsp_status.register_progress()
 -- client log level
 vim.lsp.set_log_level('info')
+
+-- vim.g.completion_enable_auto_popup = true
+-- vim.g.completion_enable_snippet = "UltiSnips"
+vim.g.completion_matching_strategy_list = {"exact", "substring"} -- {"exact", "substring", "fuzzy", "all"}
+vim.g.completion_sorting = "none"
+-- vim.g.completion_auto_change_source = 1
+vim.g.completion_matching_smart_case = 1
+vim.g.completion_chain_complete_list = {
+    default = {
+        {complete_items = {"lsp"}}, {complete_items = {"snippet"}},
+        {complete_items = {"path"}}, {mode = "<c-n>"}, {mode = "dict"}
+    }
+}
+vim.g.completion_enable_auto_paren = 1
+vim.g.completion_customize_lsp_label = {
+    Function = " [function]",
+    Method = " [method]",
+    Reference = " [refrence]",
+    Enum = " [enum]",
+    Field = "ﰠ [field]",
+    Keyword = " [key]",
+    Variable = " [variable]",
+    Folder = " [folder]",
+    Snippet = " [snippet]",
+    Operator = " [operator]",
+    Module = " [module]",
+    Text = "ﮜ[text]",
+    Class = " [class]",
+    Interface = " [interface]"
+}
 
 local on_attach = function(client, bufnr)
     local function buf_set_keymap(...)
@@ -270,6 +304,8 @@ local on_attach = function(client, bufnr)
       augroup END
     ]]
     end
+
+    print("LSP Attached.")
 end
 
 -- Handle formatting in a smarter way
@@ -297,8 +333,9 @@ end
 --     end
 
 -- define language servers
-nvim_lsp.pyls.setup {
-    cmd = {"pyls", "--log-file", "/tmp/pyls-log.txt", "--verbose"},
+lspconfig.pyls.setup {
+    on_attach = require'completion'.on_attach,
+    cmd = {"pyls", "--log-file", "/tmp/pyls.log", "--verbose"},
     settings = {
         pyls = {
             configurationSources = {"pycodestyle", "flake8"},
@@ -306,12 +343,11 @@ nvim_lsp.pyls.setup {
         }
     }
 }
--- nvim_lsp.vimls.setup {}
--- nvim_lsp.jdtls.setup{}
--- nvim_lsp.jsonls.setup {}
--- nvim_lsp.dockerls.setup {}
--- nvim_lsp.diagnosticls.setup{}
-nvim_lsp.yamlls.setup {
+-- lspconfig.vimls.setup {}
+-- lspconfig.jdtls.setup{}
+-- lspconfig.jsonls.setup {}
+-- lspconfig.dockerls.setup {}
+lspconfig.yamlls.setup {
     settings = {
         yaml = {
             customTags = {
@@ -323,20 +359,19 @@ nvim_lsp.yamlls.setup {
     }
 }
 
+-- EFM Universal Language Server
+local efm_config = os.getenv('HOME') .. '/.config/efm-langserver/config.yaml'
+local log_dir = "/tmp/"
 local black = require "efm/black"
 local isort = require "efm/isort"
 local lua_format = require "efm/lua-format"
 local prettier = require "efm/prettier"
--- local prettier = {formatCommand = "prettier"}
 
-nvim_lsp.efm.setup {
+lspconfig.efm.setup {
+    cmd = {"efm-langserver", "-c", efm_config, "-logfile", log_dir .. "efm.log"},
     on_attach = on_attach,
-    -- cmd = {
-    --     'efm-langserver', '-c', '-logfile',
-    --     os.getenv('HOME') .. '.config/efm-langserver/efm.log', '-loglevel', '2'
-    -- },
     -- Fallback to .bashrc as a project root to enable LSP on loose files
-    root_dir = nvim_lsp.util.root_pattern("package.json", ".git/", ".zshrc"),
+    root_dir = lspconfig.util.root_pattern("package.json", ".git/", ".zshrc"),
     init_options = {documentFormatting = true},
     settings = {
         rootMarkers = {"package.json", ".git/", ".zshrc"},
@@ -345,7 +380,10 @@ nvim_lsp.efm.setup {
             lua = {lua_format},
             yaml = {prettier},
             json = {prettier},
-            markdown = {prettier}
+            markdown = {prettier},
+            javascript = {prettier},
+            typescript = {prettier},
+            typescriptreact = {prettier}
         }
     }
 }
