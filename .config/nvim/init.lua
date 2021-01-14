@@ -251,7 +251,7 @@ local on_attach = function(client, bufnr)
         vim.api.nvim_command [[augroup Format]]
         vim.api.nvim_command [[autocmd! * <buffer>]]
         vim.api
-            .nvim_command [[autocmd BufWritePost <buffer> lua vim.lsp.buf.formatting()]]
+            .nvim_command [[autocmd BufWritePost <buffer> lua vim.lsp.buf.formatting_sync(nil, 1000)]]
         vim.api.nvim_command [[augroup END]]
     end
 
@@ -330,7 +330,7 @@ nvim_lsp.efm.setup {
     init_options = {documentFormatting = true},
     settings = {
         rootMarkers = {".git/"},
-        languages = {python = {black, isort}, lua = {luafmt}}
+        languages = {python = {isort, black}, lua = {luafmt}}
     }
 }
 

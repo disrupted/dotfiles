@@ -1,1 +1,1 @@
-return {formatCommand = "black -", formatStdin = true}
+return {formatCommand = "black -q -", formatStdin = true}
