@@ -21,9 +21,7 @@ require('packer').startup(function()
     use {'wbthomason/packer.nvim', opt = true}
     use 'tpope/vim-sensible'
     use 'tpope/vim-surround'
-    use 'rakr/vim-one'
-    use 'joshdick/onedark.vim'
-    -- use 'joshdick/onedark.vim'
+    use 'disrupted/vim-one' -- personal tweaked colorscheme
     use 'tpope/vim-commentary'
     use {
         'nvim-telescope/telescope.nvim',
@@ -44,6 +42,7 @@ require('packer').startup(function()
     use 'neovim/nvim-lspconfig'
     use 'nvim-lua/lsp-status.nvim'
     use 'nvim-lua/completion-nvim'
+    use 'mfussenegger/nvim-dap'
     use 'windwp/nvim-autopairs'
     use 'dstein64/vim-startuptime'
     -- use 'akinsho/nvim-bufferline.lua'
@@ -92,9 +91,9 @@ opt('o', 'inccommand', 'nosplit')
 opt('o', 'backspace', 'indent,eol,start') -- Change backspace to behave more intuitively
 opt('w', 'cursorline', true)
 opt('o', 'showmatch', true)
-opt('o', 'autoread', true)
 opt('o', 'virtualedit', 'all')
 opt('o', 'lazyredraw', true)
+opt('o', 'showmode', false)
 
 -- Set highlight on search
 vim.o.hlsearch = false
@@ -115,6 +114,10 @@ vim.o.showcmd = true
 -- Save undo history
 vim.o.undofile = true
 
+-- local fillchars = {'vert:│'}
+-- vim.o.fillchars = table.concat(fillchars, ',')
+vim.o.fillchars = 'foldopen:▾,foldclose:▸,vert:│'
+
 -- NETRW
 -- Nerdtree like sidepanel
 -- absolute width of netrw window
@@ -126,7 +129,6 @@ vim.g.netrw_banner = 0
 vim.o.termguicolors = true
 vim.g.one_allow_italics = 1
 cmd 'colorscheme one'
-vim.o.fillchars = vim.o.fillchars .. 'vert:│'
 
 --- COLORS ---
 local hl = function(group, options)
@@ -405,6 +407,9 @@ vim.fn.sign_define("LspDiagnosticsSignInformation",
                    {text = "•", texthl = "LspDiagnosticsInformation"})
 vim.fn.sign_define("LspDiagnosticsSignHint",
                    {text = "H", texthl = "LspDiagnosticsHint"})
+
+-- DAP
+-- TODO: nvim-dap-python
 
 -- Bufferline
 -- require'bufferline'.setup{
