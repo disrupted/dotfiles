@@ -84,7 +84,7 @@ opt('o', 'wildmode', 'list:longest') -- Command-line completion mode
 opt('w', 'list', true) -- Show some invisible characters (tabs...)
 opt('w', 'number', true) -- Print line number
 opt('w', 'relativenumber', true) -- Relative line numbers
-opt('w', 'wrap', false)
+opt('w', 'wrap', true)
 opt('o', 'updatetime', 250)
 opt('w', 'signcolumn', 'yes')
 opt('o', 'clipboard', 'unnamed')
@@ -196,6 +196,8 @@ require'nvim-treesitter.configs'.setup {
 local nvim_lsp = require('lspconfig')
 local lsp_status = require('lsp-status')
 lsp_status.register_progress()
+-- client log level
+vim.lsp.set_log_level('info')
 
 local on_attach = function(client, bufnr)
     local function buf_set_keymap(...)
@@ -251,7 +253,7 @@ local on_attach = function(client, bufnr)
         vim.api.nvim_command [[augroup Format]]
         vim.api.nvim_command [[autocmd! * <buffer>]]
         vim.api
-            .nvim_command [[autocmd BufWritePost <buffer> lua vim.lsp.buf.formatting_sync(nil, 1000)]]
+            .nvim_command [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync(nil, 1000)]]
         vim.api.nvim_command [[augroup END]]
     end
 
@@ -323,14 +325,28 @@ nvim_lsp.yamlls.setup {
 
 local black = require "efm/black"
 local isort = require "efm/isort"
-local luafmt = require "efm/luafmt"
+local lua_format = require "efm/lua-format"
+local prettier = require "efm/prettier"
+-- local prettier = {formatCommand = "prettier"}
 
 nvim_lsp.efm.setup {
     on_attach = on_attach,
+    -- cmd = {
+    --     'efm-langserver', '-c', '-logfile',
+    --     os.getenv('HOME') .. '.config/efm-langserver/efm.log', '-loglevel', '2'
+    -- },
+    -- Fallback to .bashrc as a project root to enable LSP on loose files
+    root_dir = nvim_lsp.util.root_pattern("package.json", ".git/", ".zshrc"),
     init_options = {documentFormatting = true},
     settings = {
-        rootMarkers = {".git/"},
-        languages = {python = {isort, black}, lua = {luafmt}}
+        rootMarkers = {"package.json", ".git/", ".zshrc"},
+        languages = {
+            python = {isort, black},
+            lua = {lua_format},
+            yaml = {prettier},
+            json = {prettier},
+            markdown = {prettier}
+        }
     }
 }
 
