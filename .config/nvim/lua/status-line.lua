@@ -33,7 +33,8 @@ local colors = {
     gray2 = '#2c323d',
     gray3 = '#3e4452',
     darkgrey = '#5c6370',
-    middlegrey = '#848586'
+    grey = '#848586',
+    middlegrey = '#8791A5'
 }
 
 -- Local helper functions
@@ -81,9 +82,9 @@ gls.left[1] = {
                 n = 'NORMAL',
                 i = 'INSERT',
                 c = 'COMMAND',
-                V = 'VISUAL',
-                [''] = 'VISUAL',
                 v = 'VISUAL',
+                V = 'V-LINE',
+                [''] = 'VISUAL',
                 R = 'REPLACE'
             }
             vim.api.nvim_command('hi GalaxyViMode guibg=' .. mode_color())
@@ -104,7 +105,7 @@ gls.left[2] = {
         provider = 'FileIcon',
         condition = buffer_not_empty,
         highlight = {
-            require('galaxyline.provider_fileinfo').get_file_icon_color,
+            require('galaxyline.provider_fileinfo').get_file_icon,
             colors.section_bg
         }
     }
@@ -187,19 +188,20 @@ gls.right[3] = {
         highlight = {colors.red1, colors.bg}
     }
 }
-gls.left[4] = {
+gls.right[4] = {
     Space = {
         provider = function() return ' ' end,
         highlight = {colors.section_bg, colors.bg}
     }
 }
--- gls.right[5] = {
---     GitIcon = {
---         provider = function() return '  ' end,
---         condition = buffer_not_empty,
---         highlight = {colors.red2, colors.bg}
---     }
--- }
+gls.right[5] = {
+    GitIcon = {
+        provider = function() return '  ' end,
+        condition = buffer_not_empty and
+            require('galaxyline.provider_vcs').check_git_workspace,
+        highlight = {colors.middlegrey, colors.bg}
+    }
+}
 gls.right[6] = {
     GitBranch = {
         provider = 'GitBranch',
