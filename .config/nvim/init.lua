@@ -30,14 +30,9 @@ require('packer').startup(function()
     use {
         'glepnir/galaxyline.nvim',
         branch = 'main',
-        -- your statusline
-        -- config = function() require'my_statusline' end,
+        config = function() require 'status-line' end,
         requires = {'kyazdani42/nvim-web-devicons', opt = true}
     }
-    -- use {
-    --     'hoob3rt/lualine.nvim',
-    --     requires = {'kyazdani42/nvim-web-devicons', opt = true}
-    -- }
     use 'nvim-treesitter/nvim-treesitter'
     use 'neovim/nvim-lspconfig'
     use 'nvim-lua/lsp-status.nvim'
@@ -45,87 +40,200 @@ require('packer').startup(function()
     use 'mfussenegger/nvim-dap'
     use 'windwp/nvim-autopairs'
     use 'dstein64/vim-startuptime'
-    -- use 'akinsho/nvim-bufferline.lua'
     use {
         'romgrk/barbar.nvim',
         requires = {'kyazdani42/nvim-web-devicons', opt = true}
     }
     use {'lewis6991/gitsigns.nvim', requires = {'nvim-lua/plenary.nvim'}}
-    -- use 'mhartington/formatter.nvim'
 
 end)
 
-local scopes = {o = vim.o, b = vim.bo, w = vim.wo}
+-- local scopes = {o = vim.o, b = vim.bo, w = vim.wo}
 
-local function opt(scope, key, value)
-    scopes[scope][key] = value
-    if scope ~= 'o' then scopes['o'][key] = value end
+-- local function opt(scope, key, value)
+--     scopes[scope][key] = value
+--     if scope ~= 'o' then scopes['o'][key] = value end
+-- end
+
+local executable = function(e) return fn.executable(e) > 0 end
+
+local opts_info = vim.api.nvim_get_all_options_info()
+
+local opt = setmetatable({}, {
+    __newindex = function(_, key, value)
+        vim.o[key] = value
+        local scope = opts_info[key].scope
+        if scope == "win" then
+            vim.wo[key] = value
+        elseif scope == "buf" then
+            vim.bo[key] = value
+        end
+    end
+})
+
+local function add(value, str, sep)
+    sep = sep or ","
+    str = str or ""
+    value = type(value) == "table" and table.concat(value, sep) or value
+    return str ~= "" and table.concat({value, str}, sep) or value
 end
 
-local indent = 2
-opt('o', 'autoindent', true) -- Allow filetype plugins and syntax highlighting
-opt('b', 'expandtab', true) -- Use spaces instead of tabs
-opt('b', 'shiftwidth', indent) -- Size of an indent
-opt('b', 'smartindent', true) -- Insert indents automatically
-opt('b', 'tabstop', indent) -- Number of spaces tabs count for
-opt('b', 'softtabstop', indent)
-opt('o', 'completeopt', 'menuone,noinsert,noselect') -- Completion options
-opt('o', 'hidden', true) -- Enable modified buffers in background
-opt('o', 'ignorecase', true) -- Ignore case
-opt('o', 'joinspaces', false) -- No double spaces with join after a dot
-opt('o', 'scrolloff', 4) -- Lines of context
-opt('o', 'shiftround', true) -- Round indent
-opt('o', 'sidescrolloff', 8) -- Columns of context
-opt('o', 'smartcase', true) -- Don't ignore case with capitals
-opt('o', 'splitbelow', true) -- Put new windows below current
-opt('o', 'splitright', true) -- Put new windows right of current
-opt('o', 'wildmode', 'list:longest') -- Command-line completion mode
-opt('w', 'list', true) -- Show some invisible characters (tabs...)
-opt('w', 'number', true) -- Print line number
-opt('w', 'relativenumber', true) -- Relative line numbers
-opt('w', 'wrap', true)
-opt('o', 'updatetime', 250)
-opt('w', 'signcolumn', 'yes')
-opt('o', 'clipboard', 'unnamed')
-opt('o', 'inccommand', 'nosplit')
-opt('o', 'backspace', 'indent,eol,start') -- Change backspace to behave more intuitively
-opt('w', 'cursorline', true)
-opt('o', 'showmatch', true)
-opt('o', 'virtualedit', 'all')
-opt('o', 'lazyredraw', true)
-opt('o', 'showmode', false)
+-- Enable break indent
+-- vim.o.breakindent = true
 
--- Set highlight on search
+-----------------------------------------------------------------------------//
+-- Utils {{{1
+-----------------------------------------------------------------------------//
+vim.o.completeopt = add {"menu", "noinsert", "noselect", "longest"} -- Completion options
+vim.o.clipboard = 'unnamedplus'
+vim.o.inccommand = 'nosplit'
+vim.o.backspace = 'indent,eol,start' -- Change backspace to behave more intuitively
+
+-----------------------------------------------------------------------------//
+-- Indentation {{{1
+-----------------------------------------------------------------------------//
+opt.autoindent = true -- Allow filetype plugins and syntax highlighting
+opt.expandtab = true -- Use spaces instead of tabs
+opt.shiftwidth = 2 -- Size of an indent
+opt.smartindent = true -- Insert indents automatically
+opt.tabstop = 2 -- Number of spaces tabs count for
+opt.softtabstop = 2
+vim.o.shiftround = true -- Round indent
+vim.o.joinspaces = false -- No double spaces with join after a dot
+
+-----------------------------------------------------------------------------//
+-- Display {{{1
+-----------------------------------------------------------------------------//
+vim.wo.number = true -- Print line number
+vim.wo.relativenumber = true -- Relative line numbers
+vim.wo.signcolumn = 'yes'
+vim.wo.cursorline = true
+opt.wrap = true
+opt.linebreak = true -- wrap, but on words, not randomly
+opt.textwidth = 80
+opt.synmaxcol = 1024 -- don't syntax highlight long lines
+vim.g.vimsyn_embed = "lPr" -- allow embedded syntax highlighting for lua, python, ruby
+vim.o.showcmd = true -- Set show command
+vim.o.showmode = false
+vim.o.lazyredraw = true
+vim.o.emoji = false -- turn off as they are treated as double width characters
+-- vim.o.virtualedit = 'all'
+vim.o.virtualedit = "block" -- allow cursor to move where there is no text in visual block mode
+vim.o.list = true -- invisible chars
+vim.o.listchars = add {
+    "eol: ", "tab:→ ", "extends:…", "precedes:…", "trail:·", "nbsp:·",
+    "space:·"
+}
+
+-----------------------------------------------------------------------------//
+-- Title {{{1
+-----------------------------------------------------------------------------//
+-- vim.o.titlestring = " ❐ %t %r %m"
+-- vim.o.titleold = '%{fnamemodify(getcwd(), ":t")}'
+-- vim.o.title = true
+-- vim.o.titlelen = 70
+
+---------------------------------------------------------------------------//
+-- Folds {{{1
+-----------------------------------------------------------------------------//
+vim.o.foldtext = "folds#render()"
+vim.o.foldopen = add(vim.o.foldopen, "search")
+vim.o.foldlevelstart = 10
+opt.foldmethod = "syntax"
+
+-----------------------------------------------------------------------------//
+-- Backup {{{1
+-----------------------------------------------------------------------------//
+vim.o.swapfile = false
+vim.o.backup = false
+vim.o.writebackup = false
+if fn.isdirectory(vim.o.undodir) == 0 then fn.mkdir(vim.o.undodir, "p") end
+opt.undofile = true -- Save undo history
+vim.o.confirm = true -- prompt to save before destructive actions
+
+-----------------------------------------------------------------------------//
+-- Search {{{1
+-----------------------------------------------------------------------------//
 vim.o.hlsearch = false
 vim.o.incsearch = true
+vim.o.ignorecase = true -- Ignore case
+vim.o.smartcase = true -- Don't ignore case with capitals
+vim.o.wrapscan = true -- Search wraps at end of file
+vim.o.scrolloff = 4 -- Lines of context
+-- vim.o.sidescrolloff = 8 -- Columns of context
+vim.o.showmatch = true
 
--- Do not save when switching buffers
-vim.o.hidden = true
+-- Use faster grep alternatives if possible
+if executable("rg") then
+    vim.o.grepprg =
+        [[rg --hidden --glob "!.git" --no-heading --smart-case --vimgrep --follow $*]]
+    vim.o.grepformat = add("%f:%l:%c:%m", vim.o.grepformat)
+end
+-----------------------------------------------------------------------------//
+-- window splitting and buffers {{{1
+-----------------------------------------------------------------------------//
+vim.o.hidden = true -- Enable modified buffers in background
+vim.o.splitbelow = true -- Put new windows below current
+vim.o.splitright = true -- Put new windows right of current
+vim.o.fillchars = add {
+    "vert:│", "fold: ", "diff:", -- alternatives: ⣿ ░
+    "msgsep:‾", "foldopen:▾", "foldsep:│", "foldclose:▸"
+}
 
--- Enable mouse mode
+-----------------------------------------------------------------------------//
+-- Wild and file globbing stuff in command mode {{{1
+-----------------------------------------------------------------------------//
+vim.o.wildmenu = true
+vim.o.wildmode = "full" -- Shows a menu bar as opposed to an enormous list
+vim.o.wildignorecase = true -- Ignore case when completing file names and directories
+-- Binary
+vim.o.wildignore = add {
+    "*.aux,*.out,*.toc", "*.o,*.obj,*.dll,*.jar,*.pyc,*.rbc,*.class",
+    "*.ai,*.bmp,*.gif,*.ico,*.jpg,*.jpeg,*.png,*.psd,*.webp",
+    "*.avi,*.m4a,*.mp3,*.oga,*.ogg,*.wav,*.webm", "*.eot,*.otf,*.ttf,*.woff",
+    "*.doc,*.pdf", "*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz", -- Cache
+    ".sass-cache", "*/vendor/gems/*,*/vendor/cache/*,*/.bundle/*,*.gem",
+    -- Temp/System
+    "*.*~,*~ ", "*.swp,.lock,.DS_Store,._*,tags.lock"
+}
+vim.o.wildoptions = "pum"
+vim.o.pumblend = 3 -- Make popup window translucent
+
+-----------------------------------------------------------------------------//
+-- Timings {{{1
+-----------------------------------------------------------------------------//
+vim.o.updatetime = 300
+vim.o.timeout = true
+vim.o.timeoutlen = 500
+vim.o.ttimeoutlen = 10
+
+-----------------------------------------------------------------------------//
+-- Diff {{{1
+-----------------------------------------------------------------------------//
+-- Use in vertical diff mode, blank lines to keep sides aligned, Ignore whitespace changes
+vim.o.diffopt = add({
+    "vertical", "iwhite", "hiddenoff", "foldcolumn:0", "context:4",
+    "algorithm:histogram", "indent-heuristic"
+}, vim.o.diffopt)
+
+-----------------------------------------------------------------------------//
+-- Mouse {{{1
+-----------------------------------------------------------------------------//
 vim.o.mouse = "a"
 
--- Enable break indent
-vim.o.breakindent = true
-
--- Set show command
-vim.o.showcmd = true
-
--- Save undo history
-vim.o.undofile = true
-
--- local fillchars = {'vert:│'}
--- vim.o.fillchars = table.concat(fillchars, ',')
-vim.o.fillchars = 'foldopen:▾,foldclose:▸,vert:│'
-
--- NETRW
+-----------------------------------------------------------------------------//
+-- Netrw {{{1
+-----------------------------------------------------------------------------//
 -- Nerdtree like sidepanel
 -- absolute width of netrw window
 -- vim.g.netrw_winsize = -28
 -- do not display info on the top of window
 vim.g.netrw_banner = 0
 
--- Set colorscheme (order is important here)
+-----------------------------------------------------------------------------//
+-- Colorscheme {{{1
+-----------------------------------------------------------------------------//
+-- order is important here
 vim.o.termguicolors = true
 vim.g.one_allow_italics = 1
 cmd 'colorscheme one'
@@ -411,26 +519,6 @@ vim.fn.sign_define("LspDiagnosticsSignHint",
 -- DAP
 -- TODO: nvim-dap-python
 
--- Bufferline
--- require'bufferline'.setup{
---   options = {
---     view = "multiwindow",
---     tab_size = 18,
---     enforce_regular_tabs = false,
---     separator_style = "thin",
---     show_buffer_close_icons = false,
---     close_icon = '',
---     always_show_bufferline = false,
---   },
---   highlights = {
---     buffer_selected = {
---           guifg = normal_fg,
---           guibg = normal_bg,
---           gui = "bold"
---     }
---   }
--- }
-
 -- barbar
 vim.g.bufferline = {
     -- Enable/disable animations
@@ -464,14 +552,6 @@ vim.g.bufferline = {
     -- Sets the maximum padding width with which to surround each tab
     maximum_padding = 2
 }
-
--- GalaxyLine
-require('status-line')
-
--- lualine
--- local lualine = require('lualine')
--- lualine.theme = 'onedark'
--- lualine.status()
 
 -- gitsigns
 require('gitsigns').setup {
