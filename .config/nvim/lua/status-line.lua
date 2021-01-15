@@ -49,6 +49,22 @@ local mode_color = function()
     end
 end
 
+local function file_readonly()
+    if vim.bo.filetype == 'help' then return '' end
+    if vim.bo.readonly == true then return '  ' end
+    return ''
+end
+
+local function get_current_file_name()
+    local file = vim.fn.expand('%:t')
+    if vim.fn.empty(file) == 1 then return '' end
+    if string.len(file_readonly()) ~= 0 then return file .. file_readonly() end
+    if vim.bo.modifiable then
+        if vim.bo.modified then return file .. '  ' end
+    end
+    return file .. ' '
+end
+
 -- Left side
 gls.left[1] = {
     ViMode = {
@@ -84,7 +100,7 @@ gls.left[2] = {
 }
 gls.left[3] = {
     FileName = {
-        provider = 'FileName',
+        provider = get_current_file_name,
         condition = buffer_not_empty,
         highlight = {colors.fg, colors.section_bg},
         separator = "",
