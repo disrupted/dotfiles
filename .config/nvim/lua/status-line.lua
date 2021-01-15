@@ -4,20 +4,6 @@ local utils = require('utils')
 local gls = gl.section
 gl.short_line_list = {'defx', 'packager', 'vista'}
 
--- Colors
--- local colors = {
---     bg = '#282a36',
---     fg = '#f8f8f2',
---     section_bg = '#38393f',
---     yellow = '#f1fa8c',
---     cyan = '#8be9fd',
---     green = '#50fa7b',
---     orange = '#ffb86c',
---     magenta = '#ff79c6',
---     blue = '#8be9fd',
---     red = '#ff5555'
--- }
-
 local colors = {
     bg = '#282c34',
     fg = '#aab2bf',
@@ -61,20 +47,9 @@ local mode_color = function()
         print(vim.fn.mode())
         return colors.purple
     end
-
-    -- return mode_colors[vim.fn.mode()]
 end
 
 -- Left side
--- gls.left[1] = {
---     FirstElement = {
---         provider = function()
---             vim.api.nvim_command('hi GalaxyFirstElement guifg=' .. mode_color())
---             return '▋'
---         end,
---         highlight = {colors.blue, colors.section_bg}
---     }
--- }
 gls.left[1] = {
     ViMode = {
         provider = function()
@@ -94,15 +69,12 @@ gls.left[1] = {
                 return '  V-BLOCK '
             end
         end,
-        highlight = {colors.bg, colors.bg, 'bold'},
-        -- separator = "  ",
-        separator = " ",
-        separator_highlight = {colors.bg, colors.section_bg}
+        highlight = {colors.bg, colors.bg, 'bold'}
     }
 }
 gls.left[2] = {
     FileIcon = {
-        provider = 'FileIcon',
+        provider = {function() return '  ' end, 'FileIcon'},
         condition = buffer_not_empty,
         highlight = {
             require('galaxyline.provider_fileinfo').get_file_icon,
@@ -112,7 +84,7 @@ gls.left[2] = {
 }
 gls.left[3] = {
     FileName = {
-        provider = {'FileName'},
+        provider = 'FileName',
         condition = buffer_not_empty,
         highlight = {colors.fg, colors.section_bg},
         separator = "",
@@ -207,6 +179,14 @@ gls.right[6] = {
         provider = 'GitBranch',
         condition = buffer_not_empty,
         highlight = {colors.middlegrey, colors.bg}
+    }
+}
+gls.right[7] = {
+    PerCent = {
+        provider = 'LinePercent',
+        separator = '',
+        separator_highlight = {colors.blue, colors.bg},
+        highlight = {colors.gray2, colors.blue}
     }
 }
 -- gls.right[7] = {
