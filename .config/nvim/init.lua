@@ -12,8 +12,8 @@ if fn.empty(fn.glob(install_path)) > 0 then
 end
 
 -- Only required if you have packer in your `opt` pack
-vim.cmd [[packadd packer.nvim]]
-vim.cmd [[autocmd BufWritePost init.lua PackerCompile]]
+cmd [[packadd packer.nvim]]
+cmd [[autocmd BufWritePost init.lua PackerCompile]]
 
 local use = require('packer').use
 require('packer').startup(function()
@@ -26,6 +26,11 @@ require('packer').startup(function()
     use {
         'nvim-telescope/telescope.nvim',
         requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
+    }
+    use {
+        "sunjon/telescope-frecency",
+        config = function() require"telescope".load_extension("frecency") end,
+        requires = {'tami5/sql.nvim'}
     }
     use {
         'glepnir/galaxyline.nvim',
@@ -45,20 +50,13 @@ require('packer').startup(function()
         requires = {'kyazdani42/nvim-web-devicons', opt = true}
     }
     use {'lewis6991/gitsigns.nvim', requires = {'nvim-lua/plenary.nvim'}}
+    use '/usr/local/opt/fzf'
+    use 'junegunn/fzf.vim'
 
 end)
 
--- local scopes = {o = vim.o, b = vim.bo, w = vim.wo}
-
--- local function opt(scope, key, value)
---     scopes[scope][key] = value
---     if scope ~= 'o' then scopes['o'][key] = value end
--- end
-
 local executable = function(e) return fn.executable(e) > 0 end
-
 local opts_info = vim.api.nvim_get_all_options_info()
-
 local opt = setmetatable({}, {
     __newindex = function(_, key, value)
         vim.o[key] = value
@@ -70,16 +68,12 @@ local opt = setmetatable({}, {
         end
     end
 })
-
 local function add(value, str, sep)
     sep = sep or ","
     str = str or ""
     value = type(value) == "table" and table.concat(value, sep) or value
     return str ~= "" and table.concat({value, str}, sep) or value
 end
-
--- Enable break indent
--- vim.o.breakindent = true
 
 -----------------------------------------------------------------------------//
 -- Utils {{{1
@@ -128,14 +122,15 @@ vim.o.listchars = add {
     "eol: ", "tab:→ ", "extends:…", "precedes:…", "trail:·", "nbsp:·",
     "space:·"
 }
+cmd('set list') -- workaround until vim.o mappings are fixed
 
 -----------------------------------------------------------------------------//
 -- Title {{{1
 -----------------------------------------------------------------------------//
--- vim.o.titlestring = " ❐ %t %r %m"
--- vim.o.titleold = '%{fnamemodify(getcwd(), ":t")}'
--- vim.o.title = true
--- vim.o.titlelen = 70
+vim.o.titlestring = " ❐ %t %r %m"
+vim.o.titleold = '%{fnamemodify(getcwd(), ":t")}'
+vim.o.title = true
+vim.o.titlelen = 70
 
 ---------------------------------------------------------------------------//
 -- Folds {{{1
@@ -294,11 +289,6 @@ vim.api.nvim_buf_set_keymap(0, 'i', '<s-tab>', "<Plug>(completion_smart_s_tab)",
 -- vim.api.nvim_set_keymap('i', '<S-Tab>', 'pumvisible() ? "\\<C-p>" : "\\<Tab>"',
 --                         {expr = true})
 
-map('n', '<leader>b', "<cmd>lua require('telescope.builtin').buffers()<CR>")
-map('n', '<C-f>', "<cmd>lua require('telescope.builtin').find_files()<CR>")
-map('n', '<leader>g', "<cmd>lua require('telescope.builtin').live_grep()<CR>")
-map('n', '<leader>h', "<cmd>lua require('telescope.builtin').help_tags()<CR>")
-
 --- PLUGINS ---
 -- autopairs
 require('nvim-autopairs').setup()
@@ -419,7 +409,7 @@ local on_attach = function(client, bufnr)
     ]]
     end
 
-    print("LSP Attached.")
+    print("LSP attached.")
 end
 
 -- Handle formatting in a smarter way
@@ -508,7 +498,7 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] =
         signs = true,
         virtual_text = {spacing = 4, prefix = ''},
         -- delay update
-        update_in_insert = true
+        update_in_insert = false
     })
 
 vim.fn.sign_define("LspDiagnosticsSignError",
@@ -519,6 +509,82 @@ vim.fn.sign_define("LspDiagnosticsSignInformation",
                    {text = "•", texthl = "LspDiagnosticsInformation"})
 vim.fn.sign_define("LspDiagnosticsSignHint",
                    {text = "H", texthl = "LspDiagnosticsHint"})
+
+-- Telescope
+local actions = require('telescope.actions')
+local sorters = require('telescope.sorters')
+local previewers = require('telescope.previewers')
+local builtins = require('telescope.builtin')
+
+require("telescope").setup {
+    defaults = {
+        prompt_prefix = ' ❯',
+        mappings = {i = {["<ESC>"] = actions.close}},
+        -- file_ignore_patterns = {"%.jpg", "%.jpeg", "%.png", "%.otf", "%.ttf"},
+        file_sorter = sorters.get_fzy_sorter,
+        generic_sorter = sorters.get_fzy_sorter,
+        -- throw treesitter and file not found errors
+        file_previewer = previewers.vim_buffer_cat.new,
+        grep_previewer = previewers.vim_buffer_vimgrep.new,
+        qflist_previewer = previewers.vim_buffer_qflist.new,
+        layout_strategy = 'flex',
+        winblend = 7,
+        set_env = {COLORTERM = "truecolor"},
+        color_devicons = true
+    }
+}
+
+local options = {
+    shorten_path = false,
+    height = 10,
+    layout_strategy = 'horizontal',
+    layout_config = {preview_width = 0.65}
+}
+function _G.__telescope_files()
+    -- Launch file search using Telescope
+    if vim.fn.isdirectory(".git") then
+        -- if in a git project, use :Telescope git_files
+        builtins.git_files(options)
+    else
+        -- otherwise, use :Telescope find_files
+        builtins.find_files(options)
+    end
+end
+function _G.__telescope_buffers()
+    builtins.buffers({
+        shorten_path = false,
+        height = 10,
+        layout_strategy = 'horizontal',
+        layout_config = {preview_width = 0.65},
+        show_all_buffers = true,
+        color_devicons = true
+    })
+end
+function _G.__telescope_grep()
+    builtins.live_grep({
+        shorten_path = false,
+        height = 10,
+        layout_strategy = 'horizontal',
+        layout_config = {preview_width = 0.4}
+    })
+end
+function _G.__telescope_commits()
+    builtins.git_commits({
+        height = 10,
+        layout_strategy = 'horizontal',
+        layout_config = {preview_width = 0.55}
+    })
+end
+
+map('n', '<C-f>', "<cmd>lua __telescope_files()<CR>")
+-- map('n', '<leader>b', "<cmd>lua __telescope_buffers()<CR>")
+map('n', '<leader>b', "<cmd>Buffers<CR>")
+map('n', '<leader>s',
+    "<cmd>lua require('telescope').extensions.frecency.frecency({layout_strategy = 'vertical'})<CR>")
+map('n', '<leader>g', "<cmd>lua __telescope_grep()<CR>")
+map('n', '<leader>h',
+    "<cmd>lua require('telescope.builtin').help_tags(options)<CR>")
+map('n', '<leader>c', "<cmd>lua __telescope_commits()<CR>")
 
 -- DAP
 -- TODO: nvim-dap-python
