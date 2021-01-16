@@ -89,6 +89,10 @@ vim.o.clipboard = 'unnamedplus'
 vim.o.inccommand = 'nosplit'
 vim.o.backspace = 'indent,eol,start' -- Change backspace to behave more intuitively
 
+if vim.fn.filereadable('/usr/local/bin/python3') then
+    vim.g.python3_host_prog = '/usr/local/bin/python3'
+end
+
 -----------------------------------------------------------------------------//
 -- Indentation {{{1
 -----------------------------------------------------------------------------//
