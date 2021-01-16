@@ -11,8 +11,8 @@ local colors = {
     blue = '#61afef',
     green = '#98c379',
     purple = '#c678dd',
-    red1 = '#e06c75',
     orange = '#e5c07b',
+    red1 = '#e06c75',
     red2 = '#be5046',
     yellow = '#e5c07b',
     gray1 = '#5c6370',
@@ -124,7 +124,7 @@ gls.left[11] = {
     DiagnosticWarn = {
         provider = 'DiagnosticWarn',
         icon = '  ',
-        highlight = {colors.red1, colors.bg}
+        highlight = {colors.orange, colors.bg}
     }
 }
 gls.left[12] = {
