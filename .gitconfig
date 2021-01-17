@@ -66,6 +66,9 @@
     zero-style = dim syntax
     # plus-color = "#012800"
     # minus-color = "#340001"
+    hunk-header-style = omit  # completely remove hunk headers
+    # hunk-header-style = syntax
+    # file-style = red omit
 
 [delta "decorations"]
     commit-decoration-style = bold yellow box ul
