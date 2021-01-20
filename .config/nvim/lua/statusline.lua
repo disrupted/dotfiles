@@ -38,7 +38,8 @@ local mode_color = function()
         V = colors.purple,
         [''] = colors.purple,
         v = colors.purple,
-        R = colors.red1
+        R = colors.red1,
+        t = colors.blue
     }
 
     if mode_colors[vim.fn.mode()] ~= nil then
@@ -76,7 +77,10 @@ gls.left[1] = {
                 v = 'VISUAL',
                 V = 'V-LINE',
                 [''] = 'VISUAL',
-                R = 'REPLACE'
+                R = 'REPLACE',
+                t = 'TERMINAL',
+                s = 'SELECT',
+                S = 'S-LINE',
             }
             vim.api.nvim_command('hi GalaxyViMode guibg=' .. mode_color())
             if alias[vim.fn.mode()] ~= nil then

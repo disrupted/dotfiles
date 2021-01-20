@@ -7,7 +7,7 @@ local execute = vim.api.nvim_command
 local install_path = fn.stdpath('data') .. '/site/pack/packer/opt/packer.nvim'
 
 if fn.empty(fn.glob(install_path)) > 0 then
-    execute('!git clone https://github.com/wbthomason/packer.nvim ' ..
+    execute('!git clone https://github.com/wbthomason/packer.nvim' ..
                 install_path)
 end
 
@@ -35,7 +35,7 @@ require('packer').startup(function()
     use {
         'glepnir/galaxyline.nvim',
         branch = 'main',
-        config = function() require 'status-line' end,
+        config = function() require 'statusline' end,
         requires = {'kyazdani42/nvim-web-devicons', opt = true}
     }
     use 'nvim-treesitter/nvim-treesitter'
@@ -52,6 +52,7 @@ require('packer').startup(function()
     use {'lewis6991/gitsigns.nvim', requires = {'nvim-lua/plenary.nvim'}}
     use '/usr/local/opt/fzf'
     use 'junegunn/fzf.vim'
+    use 'smason1995/easy-split-terms'
 
 end)
 
@@ -108,15 +109,14 @@ vim.wo.signcolumn = 'yes'
 vim.wo.cursorline = true
 opt.wrap = true
 opt.linebreak = true -- wrap, but on words, not randomly
-opt.textwidth = 80
+-- opt.textwidth = 80
 opt.synmaxcol = 1024 -- don't syntax highlight long lines
 vim.g.vimsyn_embed = "lPr" -- allow embedded syntax highlighting for lua, python, ruby
 vim.o.showcmd = true -- Set show command
 vim.o.showmode = false
 vim.o.lazyredraw = true
 vim.o.emoji = false -- turn off as they are treated as double width characters
--- vim.o.virtualedit = 'all'
-vim.o.virtualedit = "block" -- allow cursor to move where there is no text in visual block mode
+vim.o.virtualedit = 'all' -- allow cursor to move past end of line
 vim.o.list = true -- invisible chars
 vim.o.listchars = add {
     "eol: ", "tab:→ ", "extends:…", "precedes:…", "trail:·", "nbsp:·",
@@ -127,7 +127,7 @@ cmd('set list') -- workaround until vim.o mappings are fixed
 -----------------------------------------------------------------------------//
 -- Title {{{1
 -----------------------------------------------------------------------------//
-vim.o.titlestring = " ❐ %t %r %m"
+vim.o.titlestring = "❐ %t"
 vim.o.titleold = '%{fnamemodify(getcwd(), ":t")}'
 vim.o.title = true
 vim.o.titlelen = 70
@@ -216,6 +216,12 @@ vim.o.diffopt = add({
 }, vim.o.diffopt)
 
 -----------------------------------------------------------------------------//
+-- Terminal {{{1
+-----------------------------------------------------------------------------//
+-- Directly go into insert mode when switching to terminal
+cmd [[autocmd BufWinEnter,WinEnter term://* startinsert]]
+
+-----------------------------------------------------------------------------//
 -- Mouse {{{1
 -----------------------------------------------------------------------------//
 vim.o.mouse = "a"
@@ -237,21 +243,6 @@ vim.o.termguicolors = true
 vim.g.one_allow_italics = 1
 cmd 'colorscheme one'
 
---- COLORS ---
-local hl = function(group, options)
-    local bg = options.bg == nil and '' or 'guibg=' .. options.bg
-    local fg = options.fg == nil and '' or 'guifg=' .. options.fg
-    local gui = options.gui == nil and '' or 'gui=' .. options.gui
-
-    vim.cmd(string.format('hi %s %s %s %s', group, bg, fg, gui))
-end
-
-vim.cmd("highlight clear SignColumn")
-vim.cmd [[call one#highlight('Normal', '', '24282c', 'none')]]
--- local one_highlight = vim.fn["one#highlight"]
--- one_highlight("Normal", "", "000000", "none")
--- one_highlight("VertSplit", "2c323c", "bg", "")
-
 --- MAPPINGS ---
 local function map(mode, lhs, rhs, opts)
     local options = {noremap = true}
@@ -259,7 +250,8 @@ local function map(mode, lhs, rhs, opts)
     vim.api.nvim_set_keymap(mode, lhs, rhs, options)
 end
 
-vim.g.mapleader = ","
+-- set leader to space
+vim.g.mapleader = " "
 
 map('i', '<C-h>', '<C-w>h', {noremap = false})
 map('i', '<C-j>', '<C-w>j', {noremap = false})
@@ -270,6 +262,18 @@ map('n', '<C-j>', '<C-w>j')
 map('n', '<C-k>', '<C-w>k')
 map('n', '<C-l>', '<C-w>l')
 
+-- Terminal window navigation
+map('t', '<C-h>', '<C-\\><C-N><C-w>h')
+map('t', '<C-j>', '<C-\\><C-N><C-w>j')
+map('t', '<C-k>', '<C-\\><C-N><C-w>k')
+map('t', '<C-l>', '<C-\\><C-N><C-w>l')
+map('t', '<C-h>', '<C-\\><C-N><C-w>h')
+map('t', '<C-j>', '<C-\\><C-N><C-w>j')
+map('t', '<C-k>', '<C-\\><C-N><C-w>k')
+map('t', '<C-l>', '<C-\\><C-N><C-w>l')
+map('t', '<Esc>', '<C-\\><C-N>')
+
+-- Better indenting
 map('v', '<', '<gv')
 map('v', '>', '>gv')
 
@@ -279,15 +283,18 @@ map('v', '>', '>gv')
 map('x', 'K', ":move '<-2<CR>gv-gv")
 map('x', 'J', ":move '>+1<CR>gv-gv")
 
+-- ctrl + a: select all
+map('n', '<C-a>', '<esc>ggVG<CR>')
+
 -- Use <Tab> and <S-Tab> to navigate through popup menu
-vim.api.nvim_buf_set_keymap(0, 'i', '<tab>', "<Plug>(completion_smart_tab)",
-                            {noremap = false, silent = true})
-vim.api.nvim_buf_set_keymap(0, 'i', '<s-tab>', "<Plug>(completion_smart_s_tab)",
-                            {noremap = false, silent = true})
--- vim.api.nvim_set_keymap('i', '<Tab>', 'pumvisible() ? "\\<C-n>" : "\\<Tab>"',
---                         {expr = true})
--- vim.api.nvim_set_keymap('i', '<S-Tab>', 'pumvisible() ? "\\<C-p>" : "\\<Tab>"',
---                         {expr = true})
+-- vim.api.nvim_buf_set_keymap(0, 'i', '<tab>', "<Plug>(completion_smart_tab)",
+--                             {noremap = false, silent = true})
+-- vim.api.nvim_buf_set_keymap(0, 'i', '<s-tab>', "<Plug>(completion_smart_s_tab)",
+--                             {noremap = false, silent = true})
+vim.api.nvim_set_keymap('i', '<Tab>', 'pumvisible() ? "\\<C-n>" : "\\<Tab>"',
+                        {expr = true})
+vim.api.nvim_set_keymap('i', '<S-Tab>', 'pumvisible() ? "\\<C-p>" : "\\<Tab>"',
+                        {expr = true})
 
 --- PLUGINS ---
 -- autopairs
@@ -542,13 +549,13 @@ local options = {
 }
 function _G.__telescope_files()
     -- Launch file search using Telescope
-    if vim.fn.isdirectory(".git") then
-        -- if in a git project, use :Telescope git_files
-        builtins.git_files(options)
-    else
-        -- otherwise, use :Telescope find_files
-        builtins.find_files(options)
-    end
+    -- if vim.fn.isdirectory(".git") then
+    --     -- if in a git project, use :Telescope git_files
+    --     builtins.git_files(options)
+    -- else
+    -- otherwise, use :Telescope find_files
+    builtins.find_files(options)
+    -- end
 end
 function _G.__telescope_buffers()
     builtins.buffers({
@@ -590,38 +597,7 @@ map('n', '<leader>c', "<cmd>lua __telescope_commits()<CR>")
 -- TODO: nvim-dap-python
 
 -- barbar
-vim.g.bufferline = {
-    -- Enable/disable animations
-    animation = false,
-
-    auto_hide = true,
-
-    -- Enable/disable icons
-    -- if set to 'numbers', will show buffer index in the tabline
-    -- if set to 'both', will show buffer index and icons in the tabline
-    icons = true,
-    icon_separator_active = '',
-    icon_separator_inactive = '',
-    icon_close_tab = '',
-    icon_close_tab_modified = ' ',
-
-    -- Enable/disable close button
-    closable = false,
-
-    -- Enables/disable clickable tabs
-    --  - left-click: go to buffer
-    --  - middle-click: delete buffer
-    clickable = true,
-
-    -- If set, the letters for each buffer in buffer-pick mode will be
-    -- assigned based on their name. Otherwise or in case all letters are
-    -- already assigned, the behavior is to assign letters in order of
-    -- usability (see order below)
-    semantic_letters = true,
-
-    -- Sets the maximum padding width with which to surround each tab
-    maximum_padding = 2
-}
+require 'bufferline'
 
 -- gitsigns
 require('gitsigns').setup {
