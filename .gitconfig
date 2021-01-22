@@ -59,16 +59,25 @@
     diffFilter = delta --color-only
 
 [delta]
-    features = line-numbers decorations  # side-by-side
+    paging = auto
+    line-numbers = true
+    syntax-theme = TwoDark
+    width = 1
+    # zero-style = dim syntax
     whitespace-error-style = 22 reverse
-    syntax-theme = Monokai Extended Bright  # TwoDark
-    side-by-side = false
-    zero-style = dim syntax
-    # plus-color = "#012800"
-    # minus-color = "#340001"
-    hunk-header-style = omit  # completely remove hunk headers
-    # hunk-header-style = syntax
-    # file-style = red omit
+    minus-style = syntax "#450a15"
+    minus-emph-style = syntax "#600818"
+    plus-style = syntax "#0b4820"
+    plus-emph-style = syntax "#175c2e"
+    # hunk-header-style = omit
+    hunk-header-style = syntax bold
+    #hunk-header-decoration-style = omit
+    hunk-header-decoration-style = "#4b5263" box
+    file-style = white bold
+    file-decoration-style = white box
+    line-numbers-zero-style = "#4b5263"
+    line-numbers-left-format = "{nm:^4} "
+    line-numbers-right-format = "{np:^4} "
 
 [delta "decorations"]
     commit-decoration-style = bold yellow box ul

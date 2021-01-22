@@ -80,8 +80,21 @@ bindkey '^[[B' history-substring-search-down
 bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
 # TAB COMPLETIONS
-zinit ice wait"0b" lucid blockf
-zinit light zsh-users/zsh-completions
+zinit light-mode for \
+    blockf \
+        zsh-users/zsh-completions \
+    as="program" atclone="rm -f ^(rgg|agv)" \
+        lilydjwg/search-and-view \
+    atclone="dircolors -b LS_COLORS > c.zsh" atpull='%atclone' pick='c.zsh' \
+        trapd00r/LS_COLORS \
+    src="etc/git-extras-completion.zsh" \
+        tj/git-extras
+zinit wait="1" lucid for \
+    OMZ::lib/clipboard.zsh \
+    OMZ::lib/git.zsh \
+    OMZ::plugins/systemd/systemd.plugin.zsh \
+    OMZ::plugins/sudo/sudo.plugin.zsh
+
 if whence dircolors >/dev/null; then
   eval "$(dircolors -b)"
   zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
@@ -100,7 +113,6 @@ zstyle ':completion:complete:*:options' sort false
 zstyle ':fzf-tab:complete:_zlua:*' query-string input
 zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm,cmd -w -w"
 zstyle ':fzf-tab:complete:kill:argument-rest' fzf-flags --preview=$extract'ps --pid=$in[(w)1] -o cmd --no-headers -w -w' --preview-window=down:3:wrap
-# zstyle ':fzf-tab:complete:cd:*' fzf-flags --preview=$extract'exa -1 --color=always ${~ctxt[hpre]}$in'
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
 zstyle ":completion:*:git-checkout:*" sort false
 
