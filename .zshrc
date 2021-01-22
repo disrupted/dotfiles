@@ -82,6 +82,14 @@ bindkey -M vicmd 'j' history-substring-search-down
 # TAB COMPLETIONS
 zinit ice wait"0b" lucid blockf
 zinit light zsh-users/zsh-completions
+if whence dircolors >/dev/null; then
+  eval "$(dircolors -b)"
+  zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+  alias ls='ls --color'
+else
+  export CLICOLOR=1
+  zstyle ':completion:*' list-colors ''
+fi
 zstyle ':completion:*' completer _expand _complete _ignored _approximate
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 zstyle ':completion:*' menu select=2
@@ -92,9 +100,10 @@ zstyle ':completion:complete:*:options' sort false
 zstyle ':fzf-tab:complete:_zlua:*' query-string input
 zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm,cmd -w -w"
 zstyle ':fzf-tab:complete:kill:argument-rest' fzf-flags --preview=$extract'ps --pid=$in[(w)1] -o cmd --no-headers -w -w' --preview-window=down:3:wrap
-zstyle ':fzf-tab:complete:cd:*' fzf-flags --preview=$extract'exa -1 --color=always ${~ctxt[hpre]}$in'
-# zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
+# zstyle ':fzf-tab:complete:cd:*' fzf-flags --preview=$extract'exa -1 --color=always ${~ctxt[hpre]}$in'
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
 zstyle ":completion:*:git-checkout:*" sort false
+
 # FZF
 zinit ice lucid wait'0b' from"gh-r" as"program"
 zinit light junegunn/fzf-bin
@@ -302,7 +311,7 @@ bindkey '^Z' fancy-ctrl-z
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
   # let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case %s || true'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_CTRL_T_OPTS='--preview="bat --theme \"TwoDark\" {}" --preview-window=right:60%:wrap'
+# export FZF_CTRL_T_OPTS='--preview="bat --theme \"TwoDark\" {}" --preview-window=right:60%:wrap'
 export FZF_ALT_C_OPTS='--preview="ls {}" --preview-window=right:60%:wrap'
 bindkey '^F' fzf-file-widget
 # export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
