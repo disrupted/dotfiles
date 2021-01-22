@@ -91,8 +91,10 @@ zstyle ':completion:*:processes' command 'ps -au$USER'
 zstyle ':completion:complete:*:options' sort false
 zstyle ':fzf-tab:complete:_zlua:*' query-string input
 zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm,cmd -w -w"
-zstyle ':fzf-tab:complete:kill:argument-rest' extra-opts --preview=$extract'ps --pid=$in[(w)1] -o cmd --no-headers -w -w' --preview-window=down:3:wrap
-zstyle ':fzf-tab:complete:cd:*' extra-opts --preview=$extract'exa -1 --color=always ${~ctxt[hpre]}$in'
+zstyle ':fzf-tab:complete:kill:argument-rest' fzf-flags --preview=$extract'ps --pid=$in[(w)1] -o cmd --no-headers -w -w' --preview-window=down:3:wrap
+zstyle ':fzf-tab:complete:cd:*' fzf-flags --preview=$extract'exa -1 --color=always ${~ctxt[hpre]}$in'
+# zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
+zstyle ":completion:*:git-checkout:*" sort false
 # FZF
 zinit ice lucid wait'0b' from"gh-r" as"program"
 zinit light junegunn/fzf-bin
@@ -177,6 +179,9 @@ zinit wait'1' lucid \
 zinit ice wait lucid as'program' mv'prettyping* -> prettyping' \
     atload'alias ping=prettyping --nolegend'
 zinit light denilsonsa/prettyping
+# sad
+zinit ice lucid wait"0" as"program" from"gh-r" pick"sad*/sad"
+zinit light "ms-jpq/sad"
 
 #####################
 # HISTORY           #
@@ -299,6 +304,7 @@ export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_CTRL_T_OPTS='--preview="bat --theme \"TwoDark\" {}" --preview-window=right:60%:wrap'
 export FZF_ALT_C_OPTS='--preview="ls {}" --preview-window=right:60%:wrap'
+bindkey '^F' fzf-file-widget
 # export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 # --height=50%
 # --color=fg:#e5e9f0,bg:#2e3440,hl:#81a1c1
@@ -306,18 +312,12 @@ export FZF_ALT_C_OPTS='--preview="ls {}" --preview-window=right:60%:wrap'
 # --color=info:#eacb8a,prompt:#bf6069,pointer:#b48dac
 # --color=marker:#a3be8b,spinner:#b48dac,header:#a3be8b'
 
-# For compilers to find zlib you may need to set:
-export LDFLAGS="${LDFLAGS} -L/usr/local/opt/zlib/lib"
-export CPPFLAGS="${CPPFLAGS} -I/usr/local/opt/zlib/include"
-
-# For pkg-config to find zlib you may need to set:
+# For compilers and pkgconfig to find zlib
+export LDFLAGS="-L/usr/local/opt/zlib/lib -L/usr/local/opt/bzip2/lib"
+export CPPFLAGS="-I/usr/local/opt/zlib/include -I/usr/local/opt/bzip2/include"
 export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} /usr/local/opt/zlib/lib/pkgconfig"
 
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init -)"
-fi
-. ~/.pyenv/versions/3.8.6/bin/virtualenvwrapper.sh
-
+# Google Cloud SDK
+source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
+source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
 export CLOUDSDK_PYTHON="/usr/local/opt/python@3.8/libexec/bin/python"
-    source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
-    source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
