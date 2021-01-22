@@ -40,7 +40,7 @@
 				<key>gutter</key>
 				<string>#2B303B</string>
 				<key>gutterForeground</key>
-				<string>#636d8388</string>
+				<string>#4b5263</string>
 				<key>selection</key>
 				<string>#bbccf51b</string>
 				<key>selectionBorder</key>
@@ -440,7 +440,7 @@
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
-				<string>#9acc76</string>
+				<string>#98c379</string>
 			</dict>
 		</dict>
 		<dict>
@@ -451,7 +451,7 @@
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
-				<string>#eb6772</string>
+				<string>#e06c75</string>
 			</dict>
 		</dict>
 		<dict>
@@ -462,7 +462,7 @@
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
-				<string>#cd74e8</string>
+				<string>#d19a66</string>
 			</dict>
 		</dict>
 		<dict>

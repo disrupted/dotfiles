@@ -6,7 +6,7 @@
 # for a list of all available themes
 --theme="OneDark"
 
---style="numbers,header,grid"
+--style="numbers,header,grid,changes"
 
 # Enable this to use italic text on the terminal. This is not supported on all
 # terminal emulators (like tmux, by default):
