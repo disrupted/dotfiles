@@ -61,23 +61,40 @@
 [delta]
     paging = auto
     line-numbers = true
-    syntax-theme = TwoDark
-    width = 1
+    syntax-theme = OneDark #TwoDark
     # zero-style = dim syntax
     whitespace-error-style = 22 reverse
-    minus-style = syntax "#450a15"
-    minus-emph-style = syntax "#600818"
-    plus-style = syntax "#0b4820"
-    plus-emph-style = syntax "#175c2e"
+    #minus-style = syntax "#450a15"
+    #minus-style = syntax "#36191D"
+    #minus-style = syntax "#450F13"
+    #minus-style = syntax "#3C0D10"
+    minus-style = syntax "#402529"
+    #minus-emph-style = syntax "#600818"
+    #minus-emph-style = syntax "#591318"
+    #minus-emph-style = syntax "#5E1419"
+    minus-emph-style = syntax "#662F33"
+    #plus-style = syntax "#0b4820"
+    #plus-style = syntax "#132E20"
+    #plus-style = syntax "#2E3B24"
+    #plus-style = syntax "#2C3822"
+    plus-style = syntax "#29342A"
+    #plus-emph-style = syntax "#175c2e"
+    #plus-emph-style = syntax "#3A4A2E"
+    #plus-emph-style = syntax "#3F5032"
+    plus-emph-style = syntax "#3B5134"
     # hunk-header-style = omit
     hunk-header-style = syntax bold
     #hunk-header-decoration-style = omit
     hunk-header-decoration-style = "#4b5263" box
     file-style = white bold
-    file-decoration-style = white box
+    file-decoration-style = "#4b5263" ul
     line-numbers-zero-style = "#4b5263"
     line-numbers-left-format = "{nm:^4} "
     line-numbers-right-format = "{np:^4} "
+    #line-numbers-minus-style = "#f85249"
+    line-numbers-minus-style = "#e06c75"  # onedark green
+    #line-numbers-plus-style = "#3fb950"
+    line-numbers-plus-style = "#98c379"  # onedark red
 
 [delta "decorations"]
     commit-decoration-style = bold yellow box ul
