@@ -2,7 +2,7 @@ local gl = require('galaxyline')
 local utils = require('utils')
 
 local gls = gl.section
-gl.short_line_list = {'defx', 'packager', 'vista'}
+gl.short_line_list = {'defx', 'packager', 'vista', 'NvimTree'}
 
 local colors = {
     bg = '#282c34',

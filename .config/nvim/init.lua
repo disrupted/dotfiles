@@ -52,7 +52,11 @@ require('packer').startup(function()
     use {'lewis6991/gitsigns.nvim', requires = {'nvim-lua/plenary.nvim'}}
     use '/usr/local/opt/fzf'
     use 'junegunn/fzf.vim'
-    use 'smason1995/easy-split-terms'
+    use {
+        'kyazdani42/nvim-tree.lua',
+        requires = {'kyazdani42/nvim-web-devicons'},
+        config = function() require 'nvim_tree' end
+    }
 
 end)
 
@@ -218,6 +222,13 @@ vim.o.diffopt = add({
 -----------------------------------------------------------------------------//
 -- Terminal {{{1
 -----------------------------------------------------------------------------//
+function _G.__split_term_right()
+    execute('botright vsplit term://$SHELL')
+    execute('setlocal nonumber')
+    execute('setlocal norelativenumber')
+    execute('startinsert')
+end
+vim.cmd("command TermRight :call luaeval('_G.__split_term_right()')")
 -- Directly go into insert mode when switching to terminal
 cmd [[autocmd BufWinEnter,WinEnter term://* startinsert]]
 
@@ -285,6 +296,8 @@ map('x', 'J', ":move '>+1<CR>gv-gv")
 
 -- ctrl + a: select all
 map('n', '<C-a>', '<esc>ggVG<CR>')
+
+map('n', '<C-e>', ':NvimTreeToggle<CR>')
 
 -- Use <Tab> and <S-Tab> to navigate through popup menu
 -- vim.api.nvim_buf_set_keymap(0, 'i', '<tab>', "<Plug>(completion_smart_tab)",
