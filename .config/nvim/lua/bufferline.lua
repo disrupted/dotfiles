@@ -8,8 +8,8 @@ vim.g.bufferline = {
     -- if set to 'numbers', will show buffer index in the tabline
     -- if set to 'both', will show buffer index and icons in the tabline
     icons = true,
-    icon_separator_active = '',
-    icon_separator_inactive = '',
+    icon_separator_active = '▎',
+    icon_separator_inactive = ' ',
     icon_close_tab = '',
     icon_close_tab_modified = ' ',
 
