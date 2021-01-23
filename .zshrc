@@ -118,8 +118,8 @@ zstyle ":completion:*:git-checkout:*" sort false
 
 # FZF
 zinit ice lucid wait'0b' from"gh-r" as"program"
-zinit light junegunn/fzf-bin
-# FZF BYNARY AND TMUX HELPER SCRIPT
+zinit light junegunn/fzf
+# FZF TMUX HELPER SCRIPT
 zinit ice lucid wait'0c' as"command" pick"bin/fzf-tmux"
 zinit light junegunn/fzf
 # BIND MULTIPLE WIDGETS USING FZF
@@ -337,8 +337,3 @@ bindkey '^F' fzf-file-widget
 export LDFLAGS="-L/usr/local/opt/zlib/lib -L/usr/local/opt/bzip2/lib"
 export CPPFLAGS="-I/usr/local/opt/zlib/include -I/usr/local/opt/bzip2/include"
 export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} /usr/local/opt/zlib/lib/pkgconfig"
-
-# Google Cloud SDK
-source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
-source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
-export CLOUDSDK_PYTHON="/usr/local/opt/python@3.8/libexec/bin/python"

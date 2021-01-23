@@ -7,7 +7,7 @@ local execute = vim.api.nvim_command
 local install_path = fn.stdpath('data') .. '/site/pack/packer/opt/packer.nvim'
 
 if fn.empty(fn.glob(install_path)) > 0 then
-    execute('!git clone https://github.com/wbthomason/packer.nvim' ..
+    execute('!git clone https://github.com/wbthomason/packer.nvim' .. ' ' ..
                 install_path)
 end
 
@@ -50,7 +50,7 @@ require('packer').startup(function()
         requires = {'kyazdani42/nvim-web-devicons', opt = true}
     }
     use {'lewis6991/gitsigns.nvim', requires = {'nvim-lua/plenary.nvim'}}
-    use '/usr/local/opt/fzf'
+    use 'junegunn/fzf'
     use 'junegunn/fzf.vim'
     use {
         'kyazdani42/nvim-tree.lua',
