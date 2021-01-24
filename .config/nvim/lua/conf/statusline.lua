@@ -80,7 +80,7 @@ gls.left[1] = {
                 R = 'REPLACE',
                 t = 'TERMINAL',
                 s = 'SELECT',
-                S = 'S-LINE',
+                S = 'S-LINE'
             }
             vim.api.nvim_command('hi GalaxyViMode guibg=' .. mode_color())
             if alias[vim.fn.mode()] ~= nil then
