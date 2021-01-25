@@ -21,7 +21,7 @@ require('packer').startup(function()
     use {'wbthomason/packer.nvim', opt = true}
     use 'tpope/vim-sensible'
     use 'tpope/vim-surround'
-    use 'disrupted/vim-one' -- personal tweaked colorscheme
+    use 'disrupted/one-nvim' -- personal tweaked colorscheme
     use 'tpope/vim-commentary'
     use {
         'nvim-treesitter/nvim-treesitter',
@@ -59,7 +59,16 @@ require('packer').startup(function()
             }
         }
     }
-    use 'mfussenegger/nvim-dap'
+    use {
+        'mfussenegger/nvim-dap',
+        opt = false,
+        requires = {
+            'mfussenegger/nvim-dap-python',
+            {'theHamsta/nvim-dap-virtual-text', after = 'nvim-treesitter'}
+        },
+        setup = require'conf.dap'.setup(),
+        config = require'conf.dap'.config()
+    }
     use {
         'kyazdani42/nvim-tree.lua',
         setup = require'conf.nvim_tree'.setup(),
@@ -93,14 +102,10 @@ require('packer').startup(function()
         requires = {'nvim-lua/plenary.nvim'}
     }
     use {'windwp/nvim-autopairs', setup = require'nvim-autopairs'.setup()}
+    use {'christoomey/vim-tmux-navigator'}
     use 'dstein64/vim-startuptime'
     use 'junegunn/fzf'
     use 'junegunn/fzf.vim'
-    -- use {
-    --     'Th3Whit3Wolf/onebuddy',
-    --     setup = require'colorbuddy'.colorscheme('onebuddy'),
-    --     requires = {'tjdevries/colorbuddy.nvim'}
-    -- }
 
 end)
 
@@ -132,8 +137,11 @@ vim.o.clipboard = 'unnamedplus'
 vim.o.inccommand = 'nosplit'
 vim.o.backspace = 'indent,eol,start' -- Change backspace to behave more intuitively
 
-if vim.fn.filereadable('/usr/local/bin/python3') then
-    vim.g.python3_host_prog = '/usr/local/bin/python3'
+-- if vim.fn.filereadable('/usr/local/bin/python3') then
+--     vim.g.python3_host_prog = '/usr/local/bin/python3'
+-- end
+if vim.fn.filereadable('~/.local/share/virtualenvs/debugpy/bin/python') then
+    vim.g.python3_host_prog = '~/.local/share/virtualenvs/debugpy/bin/python'
 end
 
 -----------------------------------------------------------------------------//
@@ -295,8 +303,7 @@ vim.g.netrw_banner = 0
 -----------------------------------------------------------------------------//
 -- order is important here
 vim.o.termguicolors = true
-vim.g.one_allow_italics = 1
-cmd 'colorscheme one'
+cmd 'colorscheme one-nvim'
 
 -----------------------------------------------------------------------------//
 -- Mappings {{{1
@@ -342,6 +349,10 @@ map('x', 'J', ":move '>+1<CR>gv-gv")
 
 -- ctrl + a: select all
 map('n', '<C-a>', '<esc>ggVG<CR>')
+
+-- edit & source init.lua
+map('n', ',v', ':e $MYVIMRC<CR>')
+map('n', ',s', ':luafile $MYVIMRC<CR>')
 
 -----------------------------------------------------------------------------//
 -- }}}1

@@ -37,23 +37,22 @@ function M.setup()
             layout_config = {preview_width = 0.55}
         })
     end
+    local opts = {noremap = true, silent = true}
     -- vim.api.nvim_set_keymap('n', '<Space>b', '<cmd>Buffers<CR>', {noremap = true, silent = true})
     vim.api.nvim_set_keymap('n', '<Space>b',
-                            '<cmd>lua __telescope_buffers()<CR>',
-                            {noremap = true, silent = true})
+                            '<cmd>lua __telescope_buffers()<CR>', opts)
     vim.api.nvim_set_keymap('n', '<C-f>', '<cmd>lua __telescope_files()<CR>',
-                            {noremap = true, silent = true})
-    vim.api.nvim_set_keymap('n', '<Space>s',
-                            "<cmd>lua require('telescope').extensions.frecency.frecency({layout_strategy = 'vertical'})<CR>",
-                            {noremap = true, silent = true})
+                            opts)
+    -- vim.api.nvim_set_keymap('n', '<Space>s',
+    --                         "<cmd>lua require('telescope').extensions.frecency.frecency({layout_strategy = 'vertical'})<CR>",
+    --    opts)
     vim.api.nvim_set_keymap('n', '<Space>g', '<cmd>lua __telescope_grep()<CR>',
-                            {noremap = true, silent = true})
+                            opts)
     vim.api.nvim_set_keymap('n', '<Space>h',
                             "<cmd>lua require('telescope.builtin').help_tags(options)<CR>",
-                            {noremap = true, silent = true})
+                            opts)
     vim.api.nvim_set_keymap('n', '<Space>c',
-                            '<cmd>lua __telescope_commits()<CR>',
-                            {noremap = true, silent = true})
+                            '<cmd>lua __telescope_commits()<CR>', opts)
 end
 
 function M.config()
