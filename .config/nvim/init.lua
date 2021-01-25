@@ -104,8 +104,6 @@ require('packer').startup(function()
     use {'windwp/nvim-autopairs', setup = require'nvim-autopairs'.setup()}
     use {'christoomey/vim-tmux-navigator'}
     use 'dstein64/vim-startuptime'
-    use 'junegunn/fzf'
-    use 'junegunn/fzf.vim'
 
 end)
 

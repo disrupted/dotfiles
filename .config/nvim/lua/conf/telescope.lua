@@ -14,6 +14,9 @@ function M.setup()
     end
     function _G.__telescope_buffers()
         builtins.buffers({
+            sort_lastused = true,
+            ignore_current_buffer = true,
+            sorter = require('telescope.sorters').get_substr_matcher(),
             shorten_path = false,
             height = 10,
             layout_strategy = 'horizontal',
@@ -38,7 +41,6 @@ function M.setup()
         })
     end
     local opts = {noremap = true, silent = true}
-    -- vim.api.nvim_set_keymap('n', '<Space>b', '<cmd>Buffers<CR>', {noremap = true, silent = true})
     vim.api.nvim_set_keymap('n', '<Space>b',
                             '<cmd>lua __telescope_buffers()<CR>', opts)
     vim.api.nvim_set_keymap('n', '<C-f>', '<cmd>lua __telescope_files()<CR>',
