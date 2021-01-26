@@ -32,7 +32,7 @@
 
 [push]
     # Push to the set upstream branch being tracked by default.
-    default = simple
+	default = current
 
 [pull]
     # Default to rebasing on pulls
