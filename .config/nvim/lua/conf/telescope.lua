@@ -2,6 +2,13 @@ local M = {}
 
 function M.setup()
     local builtins = require('telescope.builtin')
+
+    local options = {
+        shorten_path = false,
+        height = 10,
+        layout_strategy = 'horizontal',
+        layout_config = {preview_width = 0.65}
+    }
     function _G.__telescope_files()
         -- Launch file search using Telescope
         -- if vim.fn.isdirectory(".git") then
@@ -55,6 +62,8 @@ function M.setup()
                             opts)
     vim.api.nvim_set_keymap('n', '<Space>c',
                             '<cmd>lua __telescope_commits()<CR>', opts)
+    vim.api.nvim_set_keymap('n', ',pr',
+                            "<cmd>lua require('telescope.builtin').extensions.pull_request()<CR>", opts)
 end
 
 function M.config()
@@ -77,13 +86,6 @@ function M.config()
             set_env = {COLORTERM = "truecolor"},
             color_devicons = true
         }
-    }
-
-    local options = {
-        shorten_path = false,
-        height = 10,
-        layout_strategy = 'horizontal',
-        layout_config = {preview_width = 0.65}
     }
 end
 

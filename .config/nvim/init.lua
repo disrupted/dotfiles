@@ -27,7 +27,7 @@ require('packer').startup(function()
         'nvim-treesitter/nvim-treesitter',
         event = 'BufRead *',
         requires = {
-            -- nvim-treesitter plugins
+            -- treesitter plugins
             {
                 'nvim-treesitter/nvim-treesitter-refactor',
                 after = 'nvim-treesitter'
@@ -84,6 +84,10 @@ require('packer').startup(function()
         'sunjon/telescope-frecency',
         config = function() require'telescope'.load_extension('frecency') end,
         requires = {'tami5/sql.nvim'}
+    }
+    use {
+        'nvim-telescope/telescope-github.nvim',
+        config = function() require'telescope'.load_extension('gh') end
     }
     use {
         'glepnir/galaxyline.nvim',
