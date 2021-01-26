@@ -1,5 +1,4 @@
 # disrupted zshrc
-# based on crivotz/dot_files
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -132,7 +131,15 @@ zinit light Aloxaf/fzf-tab
 zinit ice wait"0c" lucid atinit"zpcompinit;zpcdreplay"
 zinit light zdharma/fast-syntax-highlighting
 # EXA
-zinit ice wait"2" lucid from"gh-r" as"program" mv"exa* -> exa"
+zinit ice wait"2" lucid from"gh-r" as"program" mv"exa* -> exa" \
+  atload"
+        alias l='exa --group-directories-first --icons -la --git --git-ignore --ignore-glob=\".DS_Store|__MACOSX|__pycache__\"'
+        alias la='exa --group-directories-first --icons -la'
+        alias ll='exa --group-directories-first --icons -la --color-scale --time-style=long-iso --git --git-ignore --ignore-glob=\".git|.DS_Store|__MACOSX|__pycache__\" -T -L2'
+        alias ll3='exa --group-directories-first --icons -la --git --git-ignore --ignore-glob=\".git|.DS_Store|__MACOSX\" -T -L3'
+        alias ll4='exa --group-directories-first --icons -la --git --git-ignore --ignore-glob=\".git|.DS_Store|__MACOSX\" -T -L4'
+        alias tree='exa --group-directories-first -T --icons'
+    "
 zinit light ogham/exa
 zinit ice wait blockf atpull'zinit creinstall -q .'
 # ZSH DIFF SO FANCY
@@ -144,14 +151,9 @@ zinit light sharkdp/bat
 # RIPGREP
 zinit ice from"gh-r" as"program" mv"ripgrep* -> ripgrep" pick"ripgrep/rg"
 zinit light BurntSushi/ripgrep
-# NEOVIM
-# zinit ice from"gh-r" ver"nightly" as"program" bpick"*appimage*" mv"nvim* -> nvim" pick"nvim"
-# zinit light neovim/neovim
-# zinit ice from"gh-r" ver"nightly" as"program" pick'nvim*/bin/nvim'
-# zinit light neovim/neovim
 # neovim
 zinit wait'0' lucid \
-  from'gh-r' ver'nightly' as'program' pick'nvim*/bin/nvim' \
+  id-as"nvim" from'gh-r' ver'nightly' as'program' pick'nvim*/bin/nvim' \
   atclone'echo "" > ._zinit/is_release' \
   atpull'%atclone' \
   run-atpull \
@@ -170,13 +172,14 @@ zinit light 'jesseduffield/lazygit'
 zinit ice lucid wait"0" as"program" from"gh-r" mv"lazydocker* -> lazydocker" atload"alias ld='lazydocker'"
 zinit light 'jesseduffield/lazydocker'
 # RANGER
-zinit ice depth'1' as"program" pick"ranger.py"
+zinit ice depth'1' as"program" pick"ranger.py" atload'alias ranger=ranger.py'
 zinit light ranger/ranger
 # FD
 zinit ice as"command" from"gh-r" mv"fd* -> fd" pick"fd/fd"
 zinit light sharkdp/fd
 # GH-CLI
-zinit ice lucid wait"0" as"program" from"gh-r" pick"gh*/bin/gh"
+zinit ice lucid wait"0" as"program" id-as"gh" from"gh-r" has"git" \
+  atclone'**/gh completion -s zsh > _gh' atpull'%atclone' pick'**/gh'
 zinit light "cli/cli"
 # tldr (rust implementation tealdeer)
 zinit wait'1' lucid \
@@ -194,15 +197,50 @@ zinit wait'1' lucid \
   light-mode for @itchyny/mmv
 # procs (modern replacement for ps written in rust)
 zinit wait'1' lucid \
-  from"gh-r" as"program" bpick'*lnx*' \
+  from"gh-r" as"program" \
+  atload'alias ps=procs' \
   light-mode for @dalance/procs
+
 # prettyping
 zinit ice wait lucid as'program' mv'prettyping* -> prettyping' \
-    atload'alias ping=prettyping --nolegend'
+    atload"alias ping='prettyping --nolegend'"
 zinit light denilsonsa/prettyping
 # sad
 zinit ice lucid wait"0" as"program" from"gh-r" pick"sad*/sad"
 zinit light "ms-jpq/sad"
+# bottom system monitor
+zinit ice from"gh-r" as"program" \
+  atload"alias top=btm" \
+  atload"alias htop=btm"
+zinit light ClementTsang/bottom
+# hexyl hex viewer
+zinit ice lucid wait"0" as"program" from"gh-r" \
+    pick"hexyl*/hexyl"
+zinit light sharkdp/hexyl
+# mmv renamer
+zinit ice lucid wait"0" as"program" from"gh-r" \
+    pick"mmv*/mmv"
+zinit light 'itchyny/mmv'
+# jq
+zinit ice lucid wait"0" as"program" id-as"jq" from"gh-r" mv"jq-* -> jq"
+zinit light stedolan/jq
+# sd sed alternative
+zinit ice lucid wait"0" as"program" id-as"sd" from"gh-r" pick"sd" mv"sd-* -> sd"
+zinit light chmln/sd
+# zoxide autojumper
+zinit ice lucid wait"0" as'program' id-as"zoxide" from'gh-r' mv'zoxide* -> zoxide' \
+  atclone'./zoxide init zsh --hook pwd >! zhook.zsh' atpull'%atclone' \
+  src'zhook.zsh' for \
+  'ajeetdsouza/zoxide'
+# nnn file manager
+zinit wait lucid id-as"nnn" from="github" as="program" for \
+  sbin"nnn" make="O_NERD=1" jarun/nnn
+# rip rm-improved
+#zinit wait lucid id-as"rip" from="github" as="program" for \
+#  sbin"rip* -> rip" nivekuil/rip
+#zinit wait"1" lucid \
+#  from"gh-r" as"program" pick"rip*/rip" \
+#  light-mode for @nivekuil/rip
 
 #####################
 # HISTORY           #
@@ -252,8 +290,8 @@ bindkey '^[^?' backward-kill-word  # alt+delete to backward delete word
 
 # key[Up]="$terminfo[kcuu1]"
 # key[Down]="$terminfo[kcud1]"
-bindkey "^[[A" up-line-or-local-history
-bindkey "^[[B" down-line-or-local-history
+# bindkey "^[[A" up-line-or-local-history
+# bindkey "^[[B" down-line-or-local-history
 # bindkey "${key[Up]}" up-line-or-local-history
 # bindkey "${key[Down]}" down-line-or-local-history
 
@@ -337,3 +375,7 @@ bindkey '^F' fzf-file-widget
 export LDFLAGS="-L/usr/local/opt/zlib/lib -L/usr/local/opt/bzip2/lib"
 export CPPFLAGS="-I/usr/local/opt/zlib/include -I/usr/local/opt/bzip2/include"
 export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} /usr/local/opt/zlib/lib/pkgconfig"
+
+export CLOUDSDK_PYTHON="/usr/local/opt/python@3.8/libexec/bin/python"
+source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
+source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
