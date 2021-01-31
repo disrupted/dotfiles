@@ -158,3 +158,5 @@
 
     # View the log and diff for a commit (previous if no SHA1 provided)
     details = log -n1 -p --format=fuller
+[init]
+	defaultBranch = main
