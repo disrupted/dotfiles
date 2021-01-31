@@ -1,7 +1,6 @@
 local M = {}
 
 function M.setup()
-    -- vim.g.completion_enable_auto_popup = true
     vim.g.completion_enable_snippet = 'snippets.nvim'
     vim.g.completion_auto_change_source = 1
     vim.g.completion_matching_strategy_list = {'exact', 'substring'} -- {'exact', 'substring', 'fuzzy', 'all'}
@@ -14,9 +13,10 @@ function M.setup()
                 {complete_items = {'path'}}, {mode = '<c-n>'}, {mode = 'dict'}
             }
         }
+    -- vim.g.completion_enable_auto_popup = 1
     vim.g.completion_enable_auto_paren = 1
-    vim.g.completion_customize_lsp_label =
-        {
+    -- vim.g.completion_enable_auto_hover = 1
+    vim.g.completion_customize_lsp_label = {
             Function = ' [function]',
             Method = ' [method]',
             Reference = ' [refrence]',
@@ -105,6 +105,10 @@ function M.setup()
     vim.api.nvim_set_keymap('i', '<S-Tab>',
                             'pumvisible() ? "\\<C-p>" : "\\<Tab>"',
                             {expr = true})
+    -- map <c-space> to manually trigger completion
+    vim.api.nvim_set_keymap('i', '<C-space>',
+                            '<Plug>(completion_trigger)',
+                            {noremap = false, silent = true})
 end
 
 function M.config()

@@ -24,7 +24,7 @@ function M.setup()
             sort_lastused = true,
             ignore_current_buffer = true,
             sorter = require('telescope.sorters').get_substr_matcher(),
-            shorten_path = false,
+            shorten_path = true,
             height = 10,
             layout_strategy = 'horizontal',
             layout_config = {preview_width = 0.65},
@@ -75,7 +75,7 @@ function M.config()
         defaults = {
             prompt_prefix = ' ❯',
             mappings = {i = {["<ESC>"] = actions.close}},
-            -- file_ignore_patterns = {"%.jpg", "%.jpeg", "%.png", "%.otf", "%.ttf"},
+            file_ignore_patterns = {"%.jpg", "%.jpeg", "%.png", "%.svg", "%.otf", "%.ttf"},
             file_sorter = sorters.get_fzy_sorter,
             generic_sorter = sorters.get_fzy_sorter,
             file_previewer = previewers.vim_buffer_cat.new,
