@@ -21,7 +21,7 @@ require('packer').startup(function()
     use 'tpope/vim-sensible'
     use 'tpope/vim-surround'
     use 'disrupted/one-nvim' -- personal tweaked colorscheme
-    use 'b3nj5m1n/kommentary'
+    use {'b3nj5m1n/kommentary', config = require'conf.kommentary'.config()}
     use {
         'nvim-treesitter/nvim-treesitter',
         event = 'BufRead *',
