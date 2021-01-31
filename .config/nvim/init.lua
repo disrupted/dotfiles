@@ -17,12 +17,11 @@ cmd [[autocmd BufWritePost init.lua PackerCompile]]
 
 local use = require('packer').use
 require('packer').startup(function()
-    -- Packer can manage itself as an optional plugin
     use {'wbthomason/packer.nvim', opt = true}
     use 'tpope/vim-sensible'
     use 'tpope/vim-surround'
     use 'disrupted/one-nvim' -- personal tweaked colorscheme
-    use 'tpope/vim-commentary'
+    use 'b3nj5m1n/kommentary'
     use {
         'nvim-treesitter/nvim-treesitter',
         event = 'BufRead *',
@@ -37,6 +36,7 @@ require('packer').startup(function()
                 after = 'nvim-treesitter'
             }
         },
+        run = ':TSUpdate',
         config = require'conf.treesitter'.config()
     }
     use {
@@ -59,6 +59,7 @@ require('packer').startup(function()
             }
         }
     }
+    -- use {'hrsh7th/nvim-compe', setup = require'conf.compe'.setup()}
     use {
         'mfussenegger/nvim-dap',
         opt = false,
