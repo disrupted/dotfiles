@@ -107,6 +107,7 @@ require('packer').startup(function()
         requires = {'nvim-lua/plenary.nvim'}
     }
     use {'windwp/nvim-autopairs', setup = require'nvim-autopairs'.setup()}
+    use {'kosayoda/nvim-lightbulb', config = require'conf.lightbulb'.config()}
     use {'christoomey/vim-tmux-navigator'}
     use 'dstein64/vim-startuptime'
 
@@ -191,7 +192,7 @@ vim.o.titleold = '%{fnamemodify(getcwd(), ":t")}'
 vim.o.title = true
 vim.o.titlelen = 70
 
----------------------------------------------------------------------------//
+-----------------------------------------------------------------------------//
 -- Folds {{{1
 -----------------------------------------------------------------------------//
 vim.o.foldtext = "folds#render()"
