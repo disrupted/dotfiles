@@ -1,5 +1,6 @@
 function mkcd() { mkdir $1; cd $1;}
 alias c='clear'
+alias gs='git status -sb'
 alias wget='wget --content-disposition'
 alias venv='source ~/work/python/environments/venv/bin/activate'
 alias update='sudo apt-get update && sudo apt-get upgrade -y'
