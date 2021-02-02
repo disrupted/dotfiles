@@ -18,13 +18,12 @@ cmd [[autocmd BufWritePost init.lua PackerCompile]]
 local use = require('packer').use
 require('packer').startup(function()
     use {'wbthomason/packer.nvim', opt = true}
-    use 'tpope/vim-sensible'
-    use 'tpope/vim-surround'
     use 'disrupted/one-nvim' -- personal tweaked colorscheme
+    use {'blackCauldron7/surround.nvim', setup = require'conf.surround'.setup()}
     use {'b3nj5m1n/kommentary', config = require'conf.kommentary'.config()}
     use {
         'nvim-treesitter/nvim-treesitter',
-        event = 'BufRead *',
+        -- event = 'BufRead *',
         requires = {
             -- treesitter plugins
             {
@@ -41,14 +40,14 @@ require('packer').startup(function()
     }
     use {
         'neovim/nvim-lspconfig',
-        event = {'BufNewFile *', 'BufRead *'},
+        -- event = {'BufNewFile *', 'BufRead *'},
         setup = require'conf.lsp'.setup(),
         config = require'conf.lsp'.config(),
         requires = {'nvim-lua/lsp-status.nvim'}
     }
     use {
         'nvim-lua/completion-nvim',
-        event = 'InsertEnter *',
+        -- event = 'InsertEnter *',
         setup = require'conf.completion'.setup(),
         config = require'conf.completion'.config(),
         requires = {
@@ -81,11 +80,11 @@ require('packer').startup(function()
         config = require'conf.telescope'.config(),
         requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
     }
-    use {
-        'sunjon/telescope-frecency',
-        config = function() require'telescope'.load_extension('frecency') end,
-        requires = {'tami5/sql.nvim'}
-    }
+    -- use {
+    -- 'sunjon/telescope-frecency',
+    -- config = function() require'telescope'.load_extension('frecency') end,
+    -- requires = {'tami5/sql.nvim'}
+    -- }
     use {
         'nvim-telescope/telescope-github.nvim',
         config = function() require'telescope'.load_extension('gh') end
@@ -109,7 +108,6 @@ require('packer').startup(function()
     use {'windwp/nvim-autopairs', setup = require'nvim-autopairs'.setup()}
     use {'kosayoda/nvim-lightbulb', config = require'conf.lightbulb'.config()}
     use {'christoomey/vim-tmux-navigator'}
-    use 'dstein64/vim-startuptime'
 
 end)
 
@@ -179,8 +177,7 @@ vim.o.emoji = false -- turn off as they are treated as double width characters
 vim.o.virtualedit = 'all' -- allow cursor to move past end of line
 vim.o.list = true -- invisible chars
 vim.o.listchars = add {
-    "eol: ", "tab:→ ", "extends:…", "precedes:…", "trail:·", "nbsp:·",
-    "space:·"
+    "eol: ", "tab:→ ", "extends:…", "precedes:…", "trail:·"
 }
 cmd('set list') -- workaround until vim.o mappings are fixed
 
@@ -320,6 +317,8 @@ end
 
 -- set leader to space
 vim.g.mapleader = " "
+-- <space><space> switches between buffers
+map('n', '<leader><leader>', ':b#<CR>')
 
 map('i', '<C-h>', '<C-w>h', {noremap = false})
 map('i', '<C-j>', '<C-w>j', {noremap = false})
