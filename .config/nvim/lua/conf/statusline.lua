@@ -1,5 +1,5 @@
 local gl = require('galaxyline')
-local utils = require('utils')
+local utils = require('conf.utils')
 
 local gls = gl.section
 gl.short_line_list = {'defx', 'packager', 'vista', 'NvimTree'}
@@ -32,20 +32,22 @@ end
 
 local mode_color = function()
     local mode_colors = {
-        n = colors.green,
-        i = colors.blue,
-        c = colors.green,
-        V = colors.purple,
-        [''] = colors.purple,
-        v = colors.purple,
-        R = colors.red1,
-        t = colors.blue
+        [110] = colors.green,
+        [105] = colors.blue,
+        [99] = colors.green,
+        [116] = colors.blue,
+        [118] = colors.purple,
+        [22] = colors.purple,
+        [86] = colors.purple,
+        [82] = colors.red1,
+        [115] = colors.red1,
+        [83] = colors.red1
     }
 
-    if mode_colors[vim.fn.mode()] ~= nil then
-        return mode_colors[vim.fn.mode()]
+    mode_color = mode_colors[vim.fn.mode():byte()]
+    if mode_color ~= nil then
+        return mode_color
     else
-        print(vim.fn.mode())
         return colors.purple
     end
 end
@@ -70,23 +72,24 @@ end
 gls.left[1] = {
     ViMode = {
         provider = function()
-            local alias = {
-                n = 'NORMAL',
-                i = 'INSERT',
-                c = 'COMMAND',
-                v = 'VISUAL',
-                V = 'V-LINE',
-                [''] = 'VISUAL',
-                R = 'REPLACE',
-                t = 'TERMINAL',
-                s = 'SELECT',
-                S = 'S-LINE'
+            local aliases = {
+                [110] = 'NORMAL',
+                [105] = 'INSERT',
+                [99] = 'COMMAND',
+                [116] = 'TERMINAL',
+                [118] = 'VISUAL',
+                [22] = 'V-BLOCK',
+                [86] = 'V-LINE',
+                [82] = 'REPLACE',
+                [115] = 'SELECT',
+                [83] = 'S-LINE'
             }
             vim.api.nvim_command('hi GalaxyViMode guibg=' .. mode_color())
-            if alias[vim.fn.mode()] ~= nil then
-                return '  ' .. alias[vim.fn.mode()] .. ' '
+            alias = aliases[vim.fn.mode():byte()]
+            if alias ~= nil then
+                return '  ' .. alias .. ' '
             else
-                return '  V-BLOCK '
+                return '  ' .. vim.fn.mode():byte() .. ' '
             end
         end,
         highlight = {colors.bg, colors.bg, 'bold'}
@@ -148,14 +151,6 @@ gls.left[13] = {
 }
 
 -- Right side
--- gls.right[1] = {
---     FileFormat = {
---         provider = function() return ' ' .. vim.bo.filetype end,
---         highlight = {colors.fg, colors.section_bg},
---         separator = '',
---         separator_highlight = {colors.section_bg, colors.bg}
---     }
--- }
 gls.right[1] = {
     DiffAdd = {
         provider = 'DiffAdd',
@@ -209,16 +204,6 @@ gls.right[7] = {
         highlight = {colors.gray2, colors.blue}
     }
 }
--- gls.right[7] = {
---     LineInfo = {
---         provider = 'LineColumn',
---         highlight = {colors.fg, colors.section_bg},
---         -- separator = ' | ',
---         -- separator_highlight = {colors.bg, colors.section_bg}
---         separator = '',
---         separator_highlight = {colors.section_bg, colors.bg}
---     }
--- }
 
 -- Short status line
 gls.short_line_left[1] = {
