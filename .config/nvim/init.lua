@@ -23,7 +23,6 @@ require('packer').startup(function()
     use {'b3nj5m1n/kommentary', config = require'conf.kommentary'.config()}
     use {
         'nvim-treesitter/nvim-treesitter',
-        -- event = 'BufRead *',
         requires = {
             -- treesitter plugins
             {
@@ -40,14 +39,12 @@ require('packer').startup(function()
     }
     use {
         'neovim/nvim-lspconfig',
-        -- event = {'BufNewFile *', 'BufRead *'},
         setup = require'conf.lsp'.setup(),
         config = require'conf.lsp'.config(),
         requires = {'nvim-lua/lsp-status.nvim'}
     }
     use {
         'nvim-lua/completion-nvim',
-        -- event = 'InsertEnter *',
         setup = require'conf.completion'.setup(),
         config = require'conf.completion'.config(),
         requires = {
