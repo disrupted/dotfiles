@@ -241,6 +241,9 @@ zinit wait lucid id-as"nnn" from="github" as="program" for \
 #zinit wait"1" lucid \
 #  from"gh-r" as"program" pick"rip*/rip" \
 #  light-mode for @nivekuil/rip
+# gitui rust
+zinit ice lucid wait"0" as"program" id-as"gitui" from"gh-r"
+zinit light extrawurst/gitui
 
 #####################
 # HISTORY           #
