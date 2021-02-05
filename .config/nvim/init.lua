@@ -43,19 +43,19 @@ require('packer').startup(function()
         config = require'conf.lsp'.config(),
         requires = {'nvim-lua/lsp-status.nvim'}
     }
-    use {
-        'nvim-lua/completion-nvim',
-        setup = require'conf.completion'.setup(),
-        config = require'conf.completion'.config(),
-        requires = {
-            'norcalli/snippets.nvim',
-            {'steelsojka/completion-buffers', after = {'completion-nvim'}}, {
-                'nvim-treesitter/completion-treesitter',
-                after = {'completion-nvim', 'nvim-treesitter'}
-            }
-        }
-    }
-    -- use {'hrsh7th/nvim-compe', setup = require'conf.compe'.setup()}
+    -- use {
+    --     'nvim-lua/completion-nvim',
+    --     setup = require'conf.completion'.setup(),
+    --     config = require'conf.completion'.config(),
+    --     requires = {
+    --         'norcalli/snippets.nvim',
+    --         {'steelsojka/completion-buffers', after = {'completion-nvim'}}, {
+    --             'nvim-treesitter/completion-treesitter',
+    --             after = {'completion-nvim', 'nvim-treesitter'}
+    --         }
+    --     }
+    -- }
+    use {'hrsh7th/nvim-compe', setup = require'conf.compe'.setup()}
     use {
         'mfussenegger/nvim-dap',
         opt = false,
@@ -104,8 +104,8 @@ require('packer').startup(function()
     }
     use {'windwp/nvim-autopairs', setup = require'nvim-autopairs'.setup()}
     use {'kosayoda/nvim-lightbulb', config = require'conf.lightbulb'.config()}
+    use {'kdheepak/lazygit.nvim'}
     use {'christoomey/vim-tmux-navigator'}
-
 end)
 
 local executable = function(e) return fn.executable(e) > 0 end
@@ -336,6 +336,7 @@ map('t', '<C-j>', '<C-\\><C-N><C-w>j')
 map('t', '<C-k>', '<C-\\><C-N><C-w>k')
 map('t', '<C-l>', '<C-\\><C-N><C-w>l')
 map('t', '<Esc>', '<C-\\><C-N>')
+-- map('t', '<C-[>', '<C-\\><C-N>')
 
 -- Better indenting
 map('v', '<', '<gv')
