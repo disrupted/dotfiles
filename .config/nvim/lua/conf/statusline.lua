@@ -86,11 +86,17 @@ gls.left[1] = {
             }
             vim.api.nvim_command('hi GalaxyViMode guibg=' .. mode_color())
             alias = aliases[vim.fn.mode():byte()]
+            local mode = ""
             if alias ~= nil then
-                return '  ' .. alias .. ' '
+                if utils.has_width_gt(40) then
+                    mode = alias
+                else
+                    mode = alias:sub(1, 1)
+                end
             else
-                return '  ' .. vim.fn.mode():byte() .. ' '
+                mode = vim.fn.mode():byte()
             end
+            return '  ' .. mode .. ' '
         end,
         highlight = {colors.bg, colors.bg, 'bold'}
     }
