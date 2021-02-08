@@ -2,7 +2,7 @@ local M = {}
 
 function M.setup()
     vim.g.nvim_tree_ignore = {'.git', 'node_modules', '.cache'}
-    vim.g.nvim_tree_auto_open = 1 -- 0 by default, opens the tree when typing `nvim $DIR` or `nvim`
+    vim.g.nvim_tree_auto_open = 0 -- 0 by default, opens the tree when typing `nvim $DIR` or `nvim`
     vim.g.nvim_tree_auto_close = 1 -- 0 by default, closes the tree when it's the last window
     vim.g.nvim_tree_follow = 1 -- 0 by default, this option allows the cursor to be updated when entering a buffer
     vim.g.nvim_tree_indent_markers = 1 -- 0 by default, this option shows indent markers when folders are open
@@ -51,9 +51,9 @@ function M.setup()
     }
 
     vim.cmd([[
-    hi NvimTreeIndentMarker guifg=#5c6370 
-    hi NvimTreeFolderIcon guifg=#5c6370
-  ]])
+      hi NvimTreeIndentMarker guifg=#5c6370 
+      hi NvimTreeFolderIcon guifg=#5c6370
+    ]])
 
     vim.api.nvim_set_keymap("n", "<C-e>", "<cmd>NvimTreeToggle<CR>",
                             {noremap = true, silent = true})
