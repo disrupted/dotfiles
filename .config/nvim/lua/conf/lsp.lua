@@ -15,33 +15,31 @@ function M.setup()
             underline = true,
             signs = true,
             virtual_text = {spacing = 4, prefix = ''},
-            -- delay update
-            update_in_insert = false
+            update_in_insert = false -- delay update
         })
 
     -- Handle formatting in a smarter way
     -- If the buffer has been edited before formatting has completed, do not try to 
     -- apply the changes
-    -- vim.lsp.handlers['textDocument/formatting'] =
-    --     function(err, _, result, _, bufnr)
-    --         if err ~= nil or result == nil then return end
+    vim.lsp.handlers['textDocument/formatting'] =
+        function(err, _, result, _, bufnr)
+            if err ~= nil or result == nil then return end
 
-    --         -- If the buffer hasn't been modified before the formatting has finished, 
-    --         -- update the buffer
-    --         if not vim.api.nvim_buf_get_option(bufnr, 'modified') then
-    --             local view = vim.fn.winsaveview()
-    --             vim.lsp.util.apply_text_edits(result, bufnr)
-    --             vim.fn.winrestview(view)
-    --             if bufnr == vim.api.nvim_get_current_buf() then
-    --                 vim.api.nvim_command('noautocmd :update')
+            -- If the buffer hasn't been modified before the formatting has finished, 
+            -- update the buffer
+            if not vim.api.nvim_buf_get_option(bufnr, 'modified') then
+                local view = vim.fn.winsaveview()
+                vim.lsp.util.apply_text_edits(result, bufnr)
+                vim.fn.winrestview(view)
+                if bufnr == vim.api.nvim_get_current_buf() then
+                    vim.api.nvim_command('noautocmd :update')
 
-    --                 -- Trigger post-formatting autocommand which can be used to refresh 
-    --                 -- gitgutter
-    --                 vim.api.nvim_command(
-    --                     'silent doautocmd <nomodeline> User FormatterPost')
-    --             end
-    --         end
-    --     end
+                    -- Trigger post-formatting autocommand which can be used to refresh gitgutter
+                    vim.api.nvim_command(
+                        'silent doautocmd <nomodeline> User FormatterPost')
+                end
+            end
+        end
 end
 
 function M.config()
@@ -97,13 +95,13 @@ function M.config()
         vim.o.shortmess = vim.o.shortmess .. "c"
 
         -- Set some keybinds conditional on server capabilities
-        if client.resolved_capabilities.document_formatting then
-            buf_set_keymap("n", "<space>f",
-                           "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-        elseif client.resolved_capabilities.document_range_formatting then
-            buf_set_keymap("n", "<space>f",
-                           "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-        end
+        -- if client.resolved_capabilities.document_formatting then
+        --     buf_set_keymap("n", "<space>f",
+        --                    "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+        -- elseif client.resolved_capabilities.document_range_formatting then
+        --     buf_set_keymap("n", "<space>f",
+        --                    "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+        -- end
 
         -- Format on save
         if client.resolved_capabilities.document_formatting then
@@ -117,20 +115,17 @@ function M.config()
         -- Set autocommands conditional on server_capabilities
         if client.resolved_capabilities.document_highlight then
             require('lspconfig').util.nvim_multiline_command [[
-        :hi LspReferenceRead cterm=bold ctermbg=red guibg=LightYellow
-        :hi LspReferenceText cterm=bold ctermbg=red guibg=LightYellow
-        :hi LspReferenceWrite cterm=bold ctermbg=red guibg=LightYellow
-        augroup lsp_document_highlight
-          autocmd!
-          autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
-          autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
-        augroup END
-      ]]
+              augroup lsp_document_highlight
+                autocmd!
+                autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
+                autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+              augroup END
+            ]]
         end
-
         print("LSP attached.")
     end
     -- define language servers
+    -- https://github.com/palantir/python-language-server
     lspconfig.pyls.setup {
         -- on_attach = require'completion'.on_attach,
         cmd = {"pyls", "--log-file", "/tmp/pyls.log", "--verbose"},
@@ -157,7 +152,16 @@ function M.config()
         }
     }
 
-    -- EFM Universal Language Server
+    -- https://github.com/theia-ide/typescript-language-server
+    lspconfig.tsserver.setup {
+        on_attach = function(client)
+            client.resolved_capabilities.document_formatting = false
+            on_attach(client)
+        end
+    }
+
+    -- EFM Universal Language Server 
+    -- https://github.com/mattn/efm-langserver
     local efm_config = os.getenv('HOME') ..
                            '/.config/efm-langserver/config.yaml'
     local log_dir = "/tmp/"
@@ -165,12 +169,17 @@ function M.config()
     local isort = require "efm/isort"
     local lua_format = require "efm/lua-format"
     local prettier = require "efm/prettier"
+    local eslint = require "efm/eslint"
 
     lspconfig.efm.setup {
         cmd = {
             "efm-langserver", "-c", efm_config, "-logfile", log_dir .. "efm.log"
         },
         on_attach = on_attach,
+        filetypes = {
+            "python", "lua", "yaml", "json", "markdown", "javascript",
+            "typescript", "javascriptreact", "typescriptreact", "dockerfile"
+        },
         -- Fallback to .bashrc as a project root to enable LSP on loose files
         root_dir = lspconfig.util
             .root_pattern("package.json", ".git/", ".zshrc"),
@@ -183,9 +192,10 @@ function M.config()
                 yaml = {prettier},
                 json = {prettier},
                 markdown = {prettier},
-                javascript = {prettier},
-                typescript = {prettier},
-                typescriptreact = {prettier}
+                javascript = {prettier, eslint},
+                typescript = {prettier, eslint},
+                javascriptreact = {prettier, eslint},
+                typescriptreact = {prettier, eslint}
             }
         }
     }
