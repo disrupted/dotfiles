@@ -177,8 +177,9 @@ function M.config()
         },
         on_attach = on_attach,
         filetypes = {
-            "python", "lua", "yaml", "json", "markdown", "javascript",
-            "typescript", "javascriptreact", "typescriptreact", "dockerfile"
+            "python", "lua", "yaml", "json", "markdown", "rst", "html", "css",
+            "javascript", "typescript", "javascriptreact", "typescriptreact",
+            "dockerfile"
         },
         -- Fallback to .bashrc as a project root to enable LSP on loose files
         root_dir = lspconfig.util
@@ -192,6 +193,8 @@ function M.config()
                 yaml = {prettier},
                 json = {prettier},
                 markdown = {prettier},
+                html = {prettier},
+                css = {prettier},
                 javascript = {prettier, eslint},
                 typescript = {prettier, eslint},
                 javascriptreact = {prettier, eslint},
