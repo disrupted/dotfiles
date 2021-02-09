@@ -20,7 +20,8 @@ require('packer').startup(function()
     use {'wbthomason/packer.nvim', opt = true}
     use 'disrupted/one-nvim' -- personal tweaked colorscheme
     use {'blackCauldron7/surround.nvim', setup = require'conf.surround'.setup()}
-    use {'b3nj5m1n/kommentary', config = require'conf.kommentary'.config()}
+    -- use {'b3nj5m1n/kommentary', config = require'conf.kommentary'.config()}
+    use {'terrortylor/nvim-comment', setup = require'conf.comment'.setup()}
     use {
         'nvim-treesitter/nvim-treesitter',
         requires = {
