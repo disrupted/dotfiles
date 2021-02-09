@@ -1,7 +1,10 @@
 local M = {}
 
 function M.config()
-  require('kommentary.config').config["lua"] = {"--", false}
+    require('kommentary.config').configure_language("lua", {
+        single_line_comment_string = "--",
+        prefer_single_line_comments = true
+    })
 end
 
 return M
