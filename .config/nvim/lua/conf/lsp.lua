@@ -14,7 +14,7 @@ function M.setup()
         vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
             underline = true,
             signs = true,
-            virtual_text = {spacing = 4, prefix = ''},
+            virtual_text = {spacing = 2, prefix = ' '},
             update_in_insert = false -- delay update
         })
 
@@ -134,7 +134,15 @@ function M.config()
         settings = {
             pyls = {
                 configurationSources = {"pycodestyle", "flake8"},
-                plugins = {pyls_mypy = {enabled = true}}
+                plugins = {
+                    yapf = {enabled = false},
+                    pylint = {enabled = false},
+                    pycodestyle = {enabled = false},
+                    pyflakes = {enabled = false},
+                    pydocstyle = {enabled = false},
+                    flake8 = {enabled = true},
+                    pyls_mypy = {enabled = false}
+                }
             }
         }
     }
@@ -169,6 +177,7 @@ function M.config()
     local log_dir = "/tmp/"
     local black = require "efm/black"
     local isort = require "efm/isort"
+    local mypy = require "efm/mypy"
     local lua_format = require "efm/lua-format"
     local prettier = require "efm/prettier"
     local eslint = require "efm/eslint"
@@ -190,7 +199,7 @@ function M.config()
         settings = {
             rootMarkers = {"package.json", ".git/", ".zshrc"},
             languages = {
-                python = {isort, black},
+                python = {isort, black, mypy},
                 lua = {lua_format},
                 yaml = {prettier},
                 json = {prettier},
