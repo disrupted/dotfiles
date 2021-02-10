@@ -141,7 +141,7 @@ function M.config()
                     pyflakes = {enabled = false},
                     pydocstyle = {enabled = false},
                     flake8 = {enabled = true},
-                    pyls_mypy = {enabled = false}
+                    pyls_mypy = {enabled = true}
                 }
             }
         }
@@ -199,7 +199,7 @@ function M.config()
         settings = {
             rootMarkers = {"package.json", ".git/", ".zshrc"},
             languages = {
-                python = {isort, black, mypy},
+                python = {isort, black},
                 lua = {lua_format},
                 yaml = {prettier},
                 json = {prettier},
