@@ -21,12 +21,12 @@ function M.setup()
         incomplete_delay = 400,
         allow_prefix_unmatch = false,
         source = {
-            path = true,
-            treesitter = true,
-            buffer = true,
-            nvim_lsp = true,
-            nvim_lua = true,
-            snippets_nvim = true,
+            path = {menu = '[PATH]', priority = 9},
+            treesitter = {menu = '[TS]', priority = 9},
+            buffer = {menu = '[BUF]', priority = 8},
+            nvim_lsp = {menu = '[LSP]', priority = 10, sort = false},
+            nvim_lua = {menu = '[LUA]', priority = 8},
+            snippets_nvim = {menu = '[SNP]', priority = 10},
             spell = true
         }
     }
