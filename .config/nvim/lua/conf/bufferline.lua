@@ -1,6 +1,6 @@
 local M = {}
 
-function M.config()
+function M.setup()
     vim.g.bufferline = {
         -- Enable/disable animations
         animation = false,

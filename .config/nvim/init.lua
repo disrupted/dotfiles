@@ -44,8 +44,10 @@ require('packer').startup(function()
         config = require'conf.lsp'.config(),
         requires = {'nvim-lua/lsp-status.nvim'}
     }
+    use 'anott03/nvim-lspinstall'
     -- use {
     --     'nvim-lua/completion-nvim',
+    --     disable = true,
     --     setup = require'conf.completion'.setup(),
     --     config = require'conf.completion'.config(),
     --     requires = {
@@ -58,11 +60,16 @@ require('packer').startup(function()
     -- }
     use {'hrsh7th/nvim-compe', setup = require'conf.compe'.setup()}
     use {
+        -- Debug Adapter Protocol client
         'mfussenegger/nvim-dap',
-        opt = false,
+        ft = {'python'},
         requires = {
-            'mfussenegger/nvim-dap-python',
-            {'theHamsta/nvim-dap-virtual-text', after = 'nvim-treesitter'}
+            {'mfussenegger/nvim-dap-python', opt = true},
+            {
+                'theHamsta/nvim-dap-virtual-text',
+                opt = true,
+                after = 'nvim-treesitter'
+            }
         },
         setup = require'conf.dap'.setup(),
         config = require'conf.dap'.config()
@@ -70,7 +77,7 @@ require('packer').startup(function()
     use {
         'kyazdani42/nvim-tree.lua',
         setup = require'conf.nvim_tree'.setup(),
-        requires = {'kyazdani42/nvim-web-devicons'}
+        requires = {'kyazdani42/nvim-web-devicons', opt = true}
     }
     use {
         'nvim-telescope/telescope.nvim',
@@ -95,7 +102,7 @@ require('packer').startup(function()
     }
     use {
         'romgrk/barbar.nvim',
-        config = require'conf.bufferline'.config(),
+        setup = require'conf.bufferline'.setup(),
         requires = {'kyazdani42/nvim-web-devicons', opt = true}
     }
     use {
@@ -105,8 +112,19 @@ require('packer').startup(function()
     }
     use {'windwp/nvim-autopairs', setup = require'nvim-autopairs'.setup()}
     use {'kosayoda/nvim-lightbulb', config = require'conf.lightbulb'.config()}
+    -- use {
+    --     'glepnir/indent-guides.nvim',
+    --     setup = require'conf.indent-guides'.setup()
+    -- }
     use {'kdheepak/lazygit.nvim'}
-    use {'christoomey/vim-tmux-navigator'}
+    use {'christoomey/vim-tmux-navigator', cond = os.getenv('TMUX')}
+    -- use {
+    --     'liuchengxu/vim-which-key',
+    --     cmd = {'WhichKey', 'WhichKeyVisual'},
+    --     setup = require'conf.which-key'.setup(),
+    --     config = require'conf.which-key'.config()
+    -- }
+    use {'kassio/neoterm', config = require'conf.neoterm'.config()}
 end)
 
 local executable = function(e) return fn.executable(e) > 0 end
@@ -132,7 +150,7 @@ end
 -----------------------------------------------------------------------------//
 -- Utils {{{1
 -----------------------------------------------------------------------------//
-vim.o.completeopt = add {"menu", "noinsert", "noselect", "longest"} -- Completion options
+vim.o.completeopt = add {"menuone", "noselect"} -- Completion options
 vim.o.clipboard = 'unnamedplus'
 vim.o.inccommand = 'nosplit'
 vim.o.backspace = 'indent,eol,start' -- Change backspace to behave more intuitively
@@ -161,7 +179,7 @@ vim.o.joinspaces = false -- No double spaces with join after a dot
 -----------------------------------------------------------------------------//
 vim.wo.number = true -- Print line number
 vim.wo.relativenumber = true -- Relative line numbers
-vim.wo.signcolumn = 'yes'
+vim.wo.signcolumn = 'auto'
 vim.wo.cursorline = true
 opt.wrap = true
 opt.linebreak = true -- wrap, but on words, not randomly
@@ -178,6 +196,7 @@ vim.o.listchars = add {
     "eol: ", "tab:→ ", "extends:…", "precedes:…", "trail:·"
 }
 cmd('set list') -- workaround until vim.o mappings are fixed
+vim.o.shortmess = vim.o.shortmess .. "I" -- disable :intro startup screen
 
 -----------------------------------------------------------------------------//
 -- Title {{{1
@@ -282,6 +301,10 @@ end
 vim.cmd("command TermRight :call luaeval('_G.__split_term_right()')")
 -- Directly go into insert mode when switching to terminal
 cmd [[autocmd BufWinEnter,WinEnter term://* startinsert]]
+-- cmd [[autocmd BufLeave term://* stopinsert]]
+-- Automatically close terminal buffer on process exit
+-- cmd [[autocmd TermClose term://* call nvim_input('<CR>')]]
+-- cmd [[autocmd TermClose * call feedkeys("i")]]
 
 -----------------------------------------------------------------------------//
 -- Mouse {{{1
@@ -338,6 +361,7 @@ map('t', '<C-k>', '<C-\\><C-N><C-w>k')
 map('t', '<C-l>', '<C-\\><C-N><C-w>l')
 map('t', '<Esc>', '<C-\\><C-N>')
 -- map('t', '<C-[>', '<C-\\><C-N>')
+map('t', '<C-[><C-[>', '<C-\\><C-N>') -- double ESC to escape terminal
 
 -- Better indenting
 map('v', '<', '<gv')
