@@ -157,6 +157,7 @@ zinit wait'0' lucid \
   atclone'echo "" > ._zinit/is_release' \
   atpull'%atclone' \
   run-atpull \
+  atload"alias v=nvim" \
   light-mode for @neovim/neovim
 # DELTA
 zinit wait'1' lucid \
