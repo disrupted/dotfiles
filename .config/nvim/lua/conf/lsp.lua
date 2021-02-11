@@ -14,7 +14,7 @@ function M.setup()
         vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
             underline = true,
             signs = true,
-            virtual_text = {spacing = 2, prefix = ' '},
+            virtual_text = {spacing = 4, prefix = ' '},
             update_in_insert = false -- delay update
         })
 
@@ -181,6 +181,7 @@ function M.config()
     local lua_format = require "efm/lua-format"
     local prettier = require "efm/prettier"
     local eslint = require "efm/eslint"
+    local eslint_d = require "efm/eslint_d"
 
     lspconfig.efm.setup {
         cmd = {
@@ -193,8 +194,13 @@ function M.config()
             "dockerfile"
         },
         -- Fallback to .bashrc as a project root to enable LSP on loose files
-        root_dir = lspconfig.util
-            .root_pattern("package.json", ".git/", ".zshrc"),
+        root_dir = function(fname)
+            return lspconfig.util.root_pattern("tsconfig.json")(fname) or
+                       lspconfig.util
+                           .root_pattern(".eslintrc.js", ".git")(fname) or
+                       lspconfig.util.root_pattern("package.json", ".git/",
+                                                   ".zshrc")(fname);
+        end,
         init_options = {documentFormatting = true},
         settings = {
             rootMarkers = {"package.json", ".git/", ".zshrc"},
@@ -206,10 +212,10 @@ function M.config()
                 markdown = {prettier},
                 html = {prettier},
                 css = {prettier},
-                javascript = {prettier, eslint},
-                typescript = {prettier, eslint},
-                javascriptreact = {prettier, eslint},
-                typescriptreact = {prettier, eslint}
+                javascript = {prettier, eslint_d},
+                typescript = {prettier, eslint_d},
+                javascriptreact = {prettier, eslint_d},
+                typescriptreact = {prettier, eslint_d}
             }
         }
     }
