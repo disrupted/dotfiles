@@ -3,21 +3,46 @@ local M = {}
 function M.setup() vim.g.dap_virtual_text = true end
 
 function M.config()
+    vim.cmd [[packadd nvim-dap]]
     vim.cmd [[packadd nvim-dap-python]]
     vim.cmd [[packadd nvim-dap-virtual-text]]
+
     local dap = require('dap')
+
+    vim.fn.sign_define('DapBreakpoint', {
+        text = '',
+        texthl = 'LspDiagnosticsError',
+        linehl = '',
+        numhl = ''
+    })
 
     -- Python
     require('dap-python').setup('~/.local/share/virtualenvs/debugpy/bin/python',
                                 {console = 'internalConsole'})
+    dap.configurations.python = {
+        {
+            type = 'python',
+            request = 'launch',
+            name = "Launch file",
+            program = "${file}",
+            pythonPath = function() return 'python' end
+        }
+    }
     require('dap-python').test_runner = 'pytest'
 
+    function _G.__dap_start()
+        dap.continue()
+        vim.wo.signcolumn = 'auto:2'
+    end
+    function _G.__dap_exit()
+        dap.disconnect()
+        vim.wo.signcolumn = 'auto'
+    end
     -- Key bindings
     local opts = {noremap = true, silent = true}
-    vim.api.nvim_set_keymap('n', '<Space>ds',
-                            "<cmd>lua require'dap'.continue()<CR>", opts)
-    vim.api.nvim_set_keymap('n', '<Space>dq',
-                            "<cmd>lua require'dap'.disconnect()<CR>", opts)
+    vim.api
+        .nvim_set_keymap('n', '<Space>ds', "<cmd>lua __dap_start()<CR>", opts)
+    vim.api.nvim_set_keymap('n', '<Space>dq', "<cmd>lua __dap_exit()<CR>", opts)
     vim.api.nvim_set_keymap('n', '<Space>do',
                             "<cmd>lua require'dap'.step_over()<CR>", opts)
     vim.api.nvim_set_keymap('n', '<Space>di',

@@ -62,6 +62,7 @@ require('packer').startup(function()
     use {
         -- Debug Adapter Protocol client
         'mfussenegger/nvim-dap',
+        opt = true,
         ft = {'python'},
         requires = {
             {'mfussenegger/nvim-dap-python', opt = true},
@@ -117,7 +118,10 @@ require('packer').startup(function()
     --     setup = require'conf.indent-guides'.setup()
     -- }
     use {'kdheepak/lazygit.nvim'}
-    use {'christoomey/vim-tmux-navigator', cond = os.getenv('TMUX')}
+    use {
+        'christoomey/vim-tmux-navigator',
+        cond = function() return os.getenv('TMUX') end
+    }
     -- use {
     --     'liuchengxu/vim-which-key',
     --     cmd = {'WhichKey', 'WhichKeyVisual'},
@@ -179,6 +183,7 @@ vim.o.joinspaces = false -- No double spaces with join after a dot
 -----------------------------------------------------------------------------//
 vim.wo.number = true -- Print line number
 vim.wo.relativenumber = true -- Relative line numbers
+vim.wo.numberwidth = 2
 vim.wo.signcolumn = 'auto'
 vim.wo.cursorline = true
 opt.wrap = true
