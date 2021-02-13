@@ -24,6 +24,7 @@ require('packer').startup(function()
     -- use {'terrortylor/nvim-comment', setup = require'conf.comment'.setup()}
     use {
         'nvim-treesitter/nvim-treesitter',
+        event = {'BufRead *'},
         requires = {
             -- treesitter plugins
             {
@@ -40,6 +41,7 @@ require('packer').startup(function()
     }
     use {
         'neovim/nvim-lspconfig',
+        event = {'BufRead *'},
         setup = require'conf.lsp'.setup(),
         config = require'conf.lsp'.config(),
         requires = {'nvim-lua/lsp-status.nvim'}
@@ -58,7 +60,12 @@ require('packer').startup(function()
     --         }
     --     }
     -- }
-    use {'hrsh7th/nvim-compe', setup = require'conf.compe'.setup()}
+    use {
+        'hrsh7th/nvim-compe',
+        event = {'InsertEnter *'},
+        config = require'conf.compe'.config(),
+        requires = {'norcalli/snippets.nvim'}
+    }
     use {
         -- Debug Adapter Protocol client
         'mfussenegger/nvim-dap',
@@ -103,8 +110,10 @@ require('packer').startup(function()
     }
     use {
         'romgrk/barbar.nvim',
+        opt = true,
         setup = require'conf.bufferline'.setup(),
-        requires = {'kyazdani42/nvim-web-devicons', opt = true}
+        requires = {'kyazdani42/nvim-web-devicons', opt = true},
+        disable = true
     }
     use {
         'lewis6991/gitsigns.nvim',

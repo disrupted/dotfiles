@@ -63,7 +63,8 @@ function M.setup()
     vim.api.nvim_set_keymap('n', '<Space>c',
                             '<cmd>lua __telescope_commits()<CR>', opts)
     vim.api.nvim_set_keymap('n', ',pr',
-                            "<cmd>lua require('telescope.builtin').extensions.pull_request()<CR>", opts)
+                            "<cmd>lua require('telescope.builtin').extensions.pull_request()<CR>",
+                            opts)
 end
 
 function M.config()
@@ -75,7 +76,9 @@ function M.config()
         defaults = {
             prompt_prefix = ' ❯',
             mappings = {i = {["<ESC>"] = actions.close}},
-            file_ignore_patterns = {"%.jpg", "%.jpeg", "%.png", "%.svg", "%.otf", "%.ttf"},
+            file_ignore_patterns = {
+                "%.jpg", "%.jpeg", "%.png", "%.svg", "%.otf", "%.ttf"
+            },
             file_sorter = sorters.get_fzy_sorter,
             generic_sorter = sorters.get_fzy_sorter,
             file_previewer = previewers.vim_buffer_cat.new,

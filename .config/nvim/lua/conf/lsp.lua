@@ -1,6 +1,7 @@
 local M = {}
 
 function M.setup()
+    vim.cmd [[packadd nvim-lspconfig]]
     vim.fn.sign_define("LspDiagnosticsSignError",
                        {text = "◉", texthl = "LspDiagnosticsError"})
     vim.fn.sign_define("LspDiagnosticsSignWarning",
@@ -141,7 +142,7 @@ function M.config()
                     pyflakes = {enabled = false},
                     pydocstyle = {enabled = false},
                     flake8 = {enabled = true},
-                    pyls_mypy = {enabled = true}
+                    pyls_mypy = {enabled = false}
                 }
             }
         }

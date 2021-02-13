@@ -1,6 +1,7 @@
 local M = {}
 
-function M.setup()
+function M.config()
+    vim.cmd [[packadd nvim-compe]]
     vim.lsp.protocol.CompletionItemKind =
         {
             "ﮜ [text]", " [method]", " [function]", " [constructor]",
@@ -31,12 +32,28 @@ function M.setup()
         }
     }
 
+    local opts = {silent = true, expr = true}
     vim.api.nvim_set_keymap('i', '<Tab>',
-                            'pumvisible() ? "\\<C-n>" : "\\<Tab>"',
-                            {expr = true})
+                            'pumvisible() ? "\\<C-n>" : "\\<Tab>"', opts)
     vim.api.nvim_set_keymap('i', '<S-Tab>',
-                            'pumvisible() ? "\\<C-p>" : "\\<Tab>"',
-                            {expr = true})
+                            'pumvisible() ? "\\<C-p>" : "\\<Tab>"', opts)
+    vim.api.nvim_set_keymap('i', '<C-Space>', [[compe#complete()]], opts)
+    vim.api.nvim_set_keymap('i', '<C-e>', [[compe#close('<C-e>')]], opts)
+    vim.api.nvim_set_keymap('i', '<CR>', [[compe#confirm('<CR>')]], opts)
+
+    -- From https://github.com/hydeik/dotfiles/blob/47d80c4d37a6bda7db236d61deefdd989dcd0f3b/editors/nvim/lua/plugins/completion.lua
+    -- We have to register sources manually, because packadd doesn't source
+    -- files from `after` directory inside `opt` directory.
+    -- See https://github.com/vim/vim/issues/1994
+    -- for _, src in ipairs {
+    --     "path", "buffer", "nvim_lua", "nvim_lsp", "snippets_nvim", "spell",
+    --     "treesitter"
+    -- } do
+    --     vim.g["loaded_compe_" .. src] = true
+    --     compe.register_source(src, require("compe_" .. src))
+    -- end
+    -- vim.g.loaded_compe_nvim_lsp = true
+    -- require("compe_nvim_lsp").attach()
 end
 
 return M
