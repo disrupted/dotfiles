@@ -1,6 +1,7 @@
 local M = {}
 
 function M.setup()
+    vim.cmd [[packadd gitsigns.nvim]]
     require'gitsigns'.setup {
         signs = {
             add = {hl = 'DiffAdd', text = '+', numhl = 'GitSignsAddNr'},

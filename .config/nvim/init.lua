@@ -46,7 +46,6 @@ require('packer').startup(function()
         config = require'conf.lsp'.config(),
         requires = {'nvim-lua/lsp-status.nvim'}
     }
-    use 'anott03/nvim-lspinstall'
     -- use {
     --     'nvim-lua/completion-nvim',
     --     disable = true,
@@ -84,6 +83,7 @@ require('packer').startup(function()
     }
     use {
         'kyazdani42/nvim-tree.lua',
+        cmd = {'NvimTreeOpen', 'NvimTreeToggle'},
         setup = require'conf.nvim_tree'.setup(),
         requires = {'kyazdani42/nvim-web-devicons', opt = true}
     }
@@ -117,16 +117,28 @@ require('packer').startup(function()
     }
     use {
         'lewis6991/gitsigns.nvim',
+        event = {'BufReadPre *', 'BufNewFile *'},
         setup = require'conf.gitsigns'.setup(),
         requires = {'nvim-lua/plenary.nvim'}
     }
-    use {'windwp/nvim-autopairs', setup = require'nvim-autopairs'.setup()}
-    use {'kosayoda/nvim-lightbulb', config = require'conf.lightbulb'.config()}
+    use {
+        'windwp/nvim-autopairs',
+        event = {'BufRead *'},
+        setup = function()
+            vim.cmd [[packadd nvim-autopairs]]
+            require'nvim-autopairs'.setup()
+        end
+    }
+    use {
+        'kosayoda/nvim-lightbulb',
+        config = require'conf.lightbulb'.config(),
+        requires = {'neovim/nvim-lspconfig'}
+    }
     -- use {
     --     'glepnir/indent-guides.nvim',
     --     setup = require'conf.indent-guides'.setup()
     -- }
-    use {'kdheepak/lazygit.nvim'}
+    use {'kdheepak/lazygit.nvim', opt = true, disable = true}
     use {
         'christoomey/vim-tmux-navigator',
         cond = function() return os.getenv('TMUX') end
@@ -137,7 +149,11 @@ require('packer').startup(function()
     --     setup = require'conf.which-key'.setup(),
     --     config = require'conf.which-key'.config()
     -- }
-    use {'kassio/neoterm', config = require'conf.neoterm'.config()}
+    use {
+        'kassio/neoterm',
+        cmd = {'Ttoggle'},
+        config = require'conf.neoterm'.config()
+    }
 end)
 
 local executable = function(e) return fn.executable(e) > 0 end
