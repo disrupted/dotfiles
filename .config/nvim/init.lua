@@ -266,13 +266,14 @@ vim.o.wildmode = "full" -- Shows a menu bar as opposed to an enormous list
 vim.o.wildignorecase = true -- Ignore case when completing file names and directories
 -- Binary
 vim.o.wildignore = add {
-    "*.aux,*.out,*.toc", "*.o,*.obj,*.dll,*.jar,*.pyc,*.rbc,*.class",
+    "*.aux,*.out,*.toc",
+    "*.o,*.obj,*.dll,*.jar,*.pyc,__pycache__,*.rbc,*.class", -- media
     "*.ai,*.bmp,*.gif,*.ico,*.jpg,*.jpeg,*.png,*.psd,*.webp",
     "*.avi,*.m4a,*.mp3,*.oga,*.ogg,*.wav,*.webm", "*.eot,*.otf,*.ttf,*.woff",
-    "*.doc,*.pdf", "*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz", -- Cache
-    ".sass-cache", "*/vendor/gems/*,*/vendor/cache/*,*/.bundle/*,*.gem",
-    -- Temp/System
-    "*.*~,*~ ", "*.swp,.lock,.DS_Store,._*,tags.lock"
+    "*.doc,*.pdf", -- archives
+    "*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz", -- temp/system
+    "*.*~,*~ ", "*.swp,.lock,.DS_Store,._*,tags.lock", -- version control
+    ".git,.svn"
 }
 vim.o.wildoptions = "pum"
 vim.o.pumblend = 3 -- Make popup window translucent
