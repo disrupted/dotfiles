@@ -133,11 +133,11 @@ graph_color="#abb2bf"
 
 # Filters - you can hide specific temperature and disks using filters.  This is admittedly a bit
 # hard to use as of now, and there is a planned interface for managing this in the future:
-#[disk_filter]
-#is_list_ignored = false
-#list = ["/dev/sda\\d+", "/dev/nvme0n1p2"]
-#regex = true
-#case_sensitive = false
+[disk_filter]
+is_list_ignored = true
+list = ["/dev/disk1s2", "/dev/disk1s4", "/dev/disk1s5", "/dev/disk1s5s1", "/dev/disk1s6"]
+regex = false
+case_sensitive = false
 
 #[temp_filter]
 #is_list_ignored = false
