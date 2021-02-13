@@ -21,7 +21,7 @@ function M.setup()
 
     -- Handle formatting in a smarter way
     -- If the buffer has been edited before formatting has completed, do not try to 
-    -- apply the changes
+    -- apply the changes, by Lukas Reineke
     vim.lsp.handlers['textDocument/formatting'] =
         function(err, _, result, _, bufnr)
             if err ~= nil or result == nil then return end
@@ -59,8 +59,7 @@ function M.config()
         end
 
         -- omni completion source
-        vim.bo.omnifunc = 'v:lua.vim.lsp.omnifunc'
-        -- buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+        buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
         -- Mappings.
         local opts = {noremap = true, silent = true}
@@ -95,35 +94,32 @@ function M.config()
                        '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
         vim.o.shortmess = vim.o.shortmess .. "c"
 
-        -- Set some keybinds conditional on server capabilities
-        -- if client.resolved_capabilities.document_formatting then
-        --     buf_set_keymap("n", "<space>f",
-        --                    "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-        -- elseif client.resolved_capabilities.document_range_formatting then
-        --     buf_set_keymap("n", "<space>f",
-        --                    "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-        -- end
-
-        -- Format on save
+        -- Set autocommands conditional on server_capabilities
         if client.resolved_capabilities.document_formatting then
-            vim.api.nvim_command [[augroup Format]]
-            vim.api.nvim_command [[autocmd! * <buffer>]]
-            -- vim.api
-            --     .nvim_command [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync(nil, 1000)]]
-            vim.api
-                .nvim_command [[autocmd BufWritePost <buffer> lua vim.lsp.buf.formatting()]]
-            vim.api.nvim_command [[augroup END]]
+            vim.api.nvim_exec([[
+                augroup format_on_save
+                  autocmd! * <buffer>
+                  autocmd BufWritePost <buffer> lua vim.lsp.buf.formatting()
+                augroup END
+              ]], false)
         end
 
-        -- Set autocommands conditional on server_capabilities
         if client.resolved_capabilities.document_highlight then
-            require('lspconfig').util.nvim_multiline_command [[
-              augroup lsp_document_highlight
-                autocmd!
-                autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
-                autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
-              augroup END
-            ]]
+            vim.api.nvim_exec([[
+                augroup lsp_document_highlight
+                  autocmd! * <buffer>
+                  autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
+                  autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+                augroup END
+              ]], false)
+        end
+
+        if client.resolved_capabilities.code_action then
+            vim.cmd [[packadd nvim-lightbulb]]
+            vim.cmd [[autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb()]]
+            buf_set_keymap('n', '<leader>a',
+                           '<cmd>lua require\'telescope.builtin\'.lsp_code_actions()<CR>',
+                           opts)
         end
         print("LSP attached.")
     end

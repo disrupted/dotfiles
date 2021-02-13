@@ -1,6 +1,6 @@
 local M = {}
 
-function M.setup()
+function M.config()
     vim.g.bufferline = {
         -- Enable/disable animations
         animation = false,
@@ -34,7 +34,7 @@ function M.setup()
         maximum_padding = 2
     }
     local opts = {noremap = true, silent = true}
-    vim.api.nvim_set_keymap("n", "<space>x", ":BufferDelete<CR>", opts)
+    vim.api.nvim_set_keymap('n', '<space>x', '<cmd>BufferDelete<CR>', opts)
 end
 
 return M

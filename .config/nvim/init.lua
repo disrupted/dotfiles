@@ -13,7 +13,7 @@ end
 
 -- Only required if you have packer in your `opt` pack
 cmd [[packadd packer.nvim]]
-cmd [[autocmd BufWritePost init.lua PackerCompile]]
+-- cmd [[autocmd BufWritePost init.lua PackerCompile]]
 
 local use = require('packer').use
 require('packer').startup(function()
@@ -93,27 +93,35 @@ require('packer').startup(function()
         config = require'conf.telescope'.config(),
         requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
     }
+    use {
+        'nvim-telescope/telescope-dap.nvim',
+        after = {'telescope.nvim', 'nvim-dap'},
+        config = function() require'telescope'.load_extension('dap') end
+    }
     -- use {
-    -- 'sunjon/telescope-frecency',
-    -- config = function() require'telescope'.load_extension('frecency') end,
-    -- requires = {'tami5/sql.nvim'}
+    --     'sunjon/telescope-frecency',
+    --     after = {'telescope.nvim'},
+    --     config = function() require'telescope'.load_extension('frecency') end,
+    --     requires = {'tami5/sql.nvim'}
     -- }
     use {
         'nvim-telescope/telescope-github.nvim',
+        after = {'telescope.nvim'},
         config = function() require'telescope'.load_extension('gh') end
     }
     use {
         'glepnir/galaxyline.nvim',
         branch = 'main',
+        event = {'VimEnter *'},
         config = function() require 'conf.statusline' end,
         requires = {'kyazdani42/nvim-web-devicons', opt = true}
     }
     use {
         'romgrk/barbar.nvim',
-        opt = true,
-        setup = require'conf.bufferline'.setup(),
+        event = {'VimEnter *'},
+        config = require'conf.bufferline'.config(),
         requires = {'kyazdani42/nvim-web-devicons', opt = true},
-        disable = true
+        disable = false
     }
     use {
         'lewis6991/gitsigns.nvim',
@@ -131,24 +139,16 @@ require('packer').startup(function()
     }
     use {
         'kosayoda/nvim-lightbulb',
-        config = require'conf.lightbulb'.config(),
-        requires = {'neovim/nvim-lspconfig'}
+        opt = true
+        -- after = {'nvim-lspconfig'},
+        -- setup = require'conf.lightbulb'.setup()
     }
-    -- use {
-    --     'glepnir/indent-guides.nvim',
-    --     setup = require'conf.indent-guides'.setup()
-    -- }
     use {'kdheepak/lazygit.nvim', opt = true, disable = true}
     use {
         'christoomey/vim-tmux-navigator',
-        cond = function() return os.getenv('TMUX') end
+        cond = function() return os.getenv('TMUX') end,
+        setup = function() vim.cmd [[packadd vim-tmux-navigator]] end
     }
-    -- use {
-    --     'liuchengxu/vim-which-key',
-    --     cmd = {'WhichKey', 'WhichKeyVisual'},
-    --     setup = require'conf.which-key'.setup(),
-    --     config = require'conf.which-key'.config()
-    -- }
     use {
         'kassio/neoterm',
         cmd = {'Ttoggle'},

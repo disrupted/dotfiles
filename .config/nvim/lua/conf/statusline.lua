@@ -1,3 +1,4 @@
+vim.cmd [[packadd galaxyline.nvim]]
 local gl = require('galaxyline')
 local utils = require('conf.utils')
 
