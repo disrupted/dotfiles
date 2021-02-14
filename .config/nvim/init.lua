@@ -121,7 +121,7 @@ require('packer').startup(function()
         event = {'VimEnter *'},
         config = require'conf.bufferline'.config(),
         requires = {'kyazdani42/nvim-web-devicons', opt = true},
-        disable = false
+        disable = true
     }
     use {
         'lewis6991/gitsigns.nvim',
@@ -137,12 +137,7 @@ require('packer').startup(function()
             require'nvim-autopairs'.setup()
         end
     }
-    use {
-        'kosayoda/nvim-lightbulb',
-        opt = true
-        -- after = {'nvim-lspconfig'},
-        -- setup = require'conf.lightbulb'.setup()
-    }
+    use {'kosayoda/nvim-lightbulb', opt = true}
     use {'kdheepak/lazygit.nvim', opt = true, disable = true}
     use {
         'christoomey/vim-tmux-navigator',
@@ -154,6 +149,7 @@ require('packer').startup(function()
         cmd = {'Ttoggle'},
         config = require'conf.neoterm'.config()
     }
+    use {'mhinz/vim-sayonara', cmd = 'Sayonara'}
 end)
 
 local executable = function(e) return fn.executable(e) > 0 end

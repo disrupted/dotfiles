@@ -28,7 +28,14 @@ local colors = {
 local buffer_not_empty = function() return not utils.is_buffer_empty() end
 
 local checkwidth = function()
-    return utils.has_width_gt(40) and buffer_not_empty()
+    return utils.has_width_gt(35) and buffer_not_empty()
+end
+
+local function has_value(tab, val)
+    for index, value in ipairs(tab) do
+        if value[1] == val then return true end
+    end
+    return false
 end
 
 local mode_color = function()
@@ -69,6 +76,34 @@ local function get_current_file_name()
     return file .. ' '
 end
 
+local function trailing_whitespace()
+    local trail = vim.fn.search('\\s$', 'nw')
+    if trail ~= 0 then
+        return '  '
+    else
+        return nil
+    end
+end
+
+local function tab_indent()
+    local tab = vim.fn.search('^\\t', 'nw')
+    if tab ~= 0 then
+        return ' → '
+    else
+        return nil
+    end
+end
+
+local function buffers_count()
+    local buffers = {}
+    for _, val in ipairs(vim.fn.range(1, vim.fn.bufnr('$'))) do
+        if vim.fn.bufexists(val) == 1 and vim.fn.buflisted(val) == 1 then
+            table.insert(buffers, val)
+        end
+    end
+    return #buffers
+end
+
 -- Left side
 gls.left[1] = {
     ViMode = {
@@ -87,9 +122,8 @@ gls.left[1] = {
             }
             vim.api.nvim_command('hi GalaxyViMode guibg=' .. mode_color())
             alias = aliases[vim.fn.mode():byte()]
-            local mode = ""
             if alias ~= nil then
-                if utils.has_width_gt(40) then
+                if utils.has_width_gt(35) then
                     mode = alias
                 else
                     mode = alias:sub(1, 1)
@@ -117,8 +151,22 @@ gls.left[3] = {
         provider = get_current_file_name,
         condition = buffer_not_empty,
         highlight = {colors.fg, colors.section_bg},
-        separator = "",
+        separator = '',
         separator_highlight = {colors.section_bg, colors.bg}
+    }
+}
+gls.left[4] = {
+    WhiteSpace = {
+        provider = trailing_whitespace,
+        condition = buffer_not_empty,
+        highlight = {colors.fg, colors.bg}
+    }
+}
+gls.left[5] = {
+    TabIndent = {
+        provider = tab_indent,
+        condition = buffer_not_empty,
+        highlight = {colors.fg, colors.bg}
     }
 }
 gls.left[9] = {
@@ -214,10 +262,24 @@ gls.right[7] = {
 
 -- Short status line
 gls.short_line_left[1] = {
-    BufferType = {
-        provider = 'FileTypeName',
+    FileIcon = {
+        provider = {function() return '  ' end, 'FileIcon'},
+        condition = function()
+            return buffer_not_empty and
+                       has_value(gl.short_line_list, vim.bo.filetype)
+        end,
+        highlight = {
+            require('galaxyline.provider_fileinfo').get_file_icon,
+            colors.section_bg
+        }
+    }
+}
+gls.short_line_left[2] = {
+    FileName = {
+        provider = get_current_file_name,
+        condition = buffer_not_empty,
         highlight = {colors.fg, colors.section_bg},
-        separator = ' ',
+        separator = '',
         separator_highlight = {colors.section_bg, colors.bg}
     }
 }

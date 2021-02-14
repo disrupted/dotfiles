@@ -10,6 +10,12 @@ function M.setup()
                        {text = "•", texthl = "LspDiagnosticsInformation"})
     vim.fn.sign_define("LspDiagnosticsSignHint",
                        {text = "H", texthl = "LspDiagnosticsHint"})
+    vim.fn.sign_define("LightBulbSign", {
+        text = "⋄",
+        texthl = "Number",
+        linehl = "",
+        numhl = ""
+    })
 
     vim.lsp.handlers["textDocument/publishDiagnostics"] =
         vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -92,6 +98,10 @@ function M.config()
                        opts)
         buf_set_keymap('n', '<space>q',
                        '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+        buf_set_keymap('n', '<leader>ls',
+                       '<cmd>lua vim.lsp.buf.document_symbol()<CR>', opts)
+        buf_set_keymap('n', '<leader>lS',
+                       '<cmd>lua vim.lsp.buf.workspace_symbol()<CR>', opts)
         vim.o.shortmess = vim.o.shortmess .. "c"
 
         -- Set autocommands conditional on server_capabilities
