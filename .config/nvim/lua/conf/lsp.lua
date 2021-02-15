@@ -26,13 +26,13 @@ function M.setup()
         })
 
     -- Handle formatting in a smarter way
-    -- If the buffer has been edited before formatting has completed, do not try to 
+    -- If the buffer has been edited before formatting has completed, do not try to
     -- apply the changes, by Lukas Reineke
     vim.lsp.handlers['textDocument/formatting'] =
         function(err, _, result, _, bufnr)
             if err ~= nil or result == nil then return end
 
-            -- If the buffer hasn't been modified before the formatting has finished, 
+            -- If the buffer hasn't been modified before the formatting has finished,
             -- update the buffer
             if not vim.api.nvim_buf_get_option(bufnr, 'modified') then
                 local view = vim.fn.winsaveview()
@@ -148,7 +148,7 @@ function M.config()
                     pyflakes = {enabled = false},
                     pydocstyle = {enabled = false},
                     flake8 = {enabled = true},
-                    pyls_mypy = {enabled = false}
+                    pyls_mypy = {enabled = true}
                 }
             }
         }
@@ -177,7 +177,7 @@ function M.config()
         end
     }
 
-    -- EFM Universal Language Server 
+    -- EFM Universal Language Server
     -- https://github.com/mattn/efm-langserver
     local efm_config = os.getenv('HOME') ..
                            '/.config/efm-langserver/config.yaml'
