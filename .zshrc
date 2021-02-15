@@ -245,6 +245,9 @@ zinit wait lucid id-as"nnn" from="github" as="program" for \
 # gitui rust
 zinit ice lucid wait"0" as"program" id-as"gitui" from"gh-r"
 zinit light extrawurst/gitui
+# xh faster HTTPie clone written in Rust
+zinit ice lucid wait"0" as"program" id-as"xh" from"gh-r"
+zinit light ducaale/xh
 
 #####################
 # HISTORY           #
