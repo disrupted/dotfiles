@@ -326,6 +326,7 @@ bindkey "^[[1;5B" down-line-or-history  # [CTRL] + Cursor down
 export EDITOR='nvim'
 export VISUAL=$EDITOR
 export PAGER='less'
+export MANPAGER="nvim -c 'set ft=man' -"
 export SHELL='/bin/zsh'
 export LANG='en_US.UTF-8'
 export LC_ALL='en_US.UTF-8'
