@@ -368,6 +368,7 @@ vim.g.mapleader = " "
 -- <space><space> switches between buffers
 map('n', '<leader><leader>', ':b#<CR>')
 
+-- Easier splits navigation
 map('n', '<Up>', '<Nop>')
 map('n', '<Down>', '<Nop>')
 map('n', '<Left>', '<Nop>')
@@ -376,14 +377,25 @@ map('i', '<Up>', '<Nop>')
 map('i', '<Down>', '<Nop>')
 map('i', '<Left>', '<Nop>')
 map('i', '<Right>', '<Nop>')
-map('i', '<C-h>', '<C-w>h', {noremap = false})
 map('i', '<C-j>', '<C-w>j', {noremap = false})
 map('i', '<C-k>', '<C-w>k', {noremap = false})
+map('i', '<C-h>', '<C-w>h', {noremap = false})
 map('i', '<C-l>', '<C-w>l', {noremap = false})
-map('n', '<C-h>', '<C-w>h')
 map('n', '<C-j>', '<C-w>j')
 map('n', '<C-k>', '<C-w>k')
+map('n', '<C-h>', '<C-w>h')
 map('n', '<C-l>', '<C-w>l')
+
+-- Use alt + hjkl to resize windows
+map('n', '<M-j>', '<cmd>resize -2<CR>')
+map('n', '<M-k>', '<cmd>resize +2<CR>')
+map('n', '<M-h>', '<cmd>vertical resize -2<CR>')
+map('n', '<M-l>', '<cmd>vertical resize +2<CR>')
+-- it works differently on Mac
+map('n', '∆', '<cmd>resize -2<CR>')
+map('n', '˚', '<cmd>resize +2<CR>')
+map('n', '˙', '<cmd>vertical resize -2<CR>')
+map('n', '¬', '<cmd>vertical resize +2<CR>')
 
 -- Terminal window navigation
 map('t', '<C-h>', '<C-\\><C-N><C-w>h')
