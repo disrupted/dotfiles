@@ -164,7 +164,7 @@ zinit wait'1' lucid \
   from"gh-r" as"program" pick"delta*/delta" \
   light-mode for @dandavison/delta
 # FORGIT
-zinit ice wait lucid
+zinit ice wait lucid id-as'forgit' atload"alias gr='forgit::restore'"
 zinit load 'wfxr/forgit'
 # LAZYGIT
 zinit ice lucid wait"0" as"program" from"gh-r" mv"lazygit* -> lazygit" atload"alias lg='lazygit'"
