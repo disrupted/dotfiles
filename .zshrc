@@ -184,10 +184,43 @@ zinit ice lucid wait"0" as"program" id-as"gh" from"gh-r" has"git" \
 zinit light "cli/cli"
 # tldr (rust implementation tealdeer)
 zinit wait'1' lucid \
-  from"gh-r" as"program" mv"tldr* -> tldr" pick"tldr" \
+  from"gh-r" as"program" id-as"tldr" mv"tldr* -> tldr" pick"tldr" \
   light-mode for @dbrgn/tealdeer
-zinit ice wait'1' lucid as"completion" mv'zsh_tealdeer -> _tldr'
+zinit ice wait'1' lucid as"tldr-completion" has'tldr' mv'zsh_tealdeer -> _tldr'
 zinit snippet https://github.com/dbrgn/tealdeer/blob/master/zsh_tealdeer
+# navi for cheat sheets including tldr & cheat.sh
+zinit wait"2" lucid \
+  id-as"navi" \
+  from"gh-r" \
+  pick"navi" \
+  as"program" \
+  atload'eval "$(navi widget zsh)";' \
+  for @denisidoro/navi
+# cheat.sh
+zinit wait"2a" lucid \
+  id-as"cht.sh" \
+  as"program" \
+  for https://cht.sh/:cht.sh
+  # has'rlwrap' \
+zinit wait"2b" lucid \
+  id-as"cht-completion" \
+  has'rlwrap' \
+  mv"cht* -> _cht" \
+  as"completion" \
+  for https://cheat.sh/:zsh
+# cheat
+zinit wait"2a" lucid \
+  id-as"cheat" \
+  from"gh-r" \
+  mv"cheat* -> cheat" \
+  pick"cheat" \
+  as"program" \
+  for @cheat/cheat
+zinit wait"2b" lucid \
+  id-as"cheat-completion" \
+  mv"cheat* -> _cheat" \
+  as"completion" \
+  for https://github.com/cheat/cheat/blob/master/scripts/cheat.zsh
 # emoji
 # zinit wait'1' lucid \
 #   atload"source $ZHOMEDIR/rc/pluginconfig/emoji-cli_atload.zsh" \
@@ -349,16 +382,16 @@ source $HOME/.zsh_aliases_private
 # FANCY-CTRL-Z      #
 #####################
 function fg-fzf() {
-	job="$(jobs | fzf -0 -1 | sed -E 's/\[(.+)\].*/\1/')" && echo '' && fg %$job
+  job="$(jobs | fzf -0 -1 | sed -E 's/\[(.+)\].*/\1/')" && echo '' && fg %$job
 }
 function fancy-ctrl-z () {
-	if [[ $#BUFFER -eq 0 ]]; then
-		BUFFER=" fg-fzf"
-		zle accept-line -w
-	else
-		zle push-input -w
-		zle clear-screen -w
-	fi
+  if [[ $#BUFFER -eq 0 ]]; then
+    BUFFER=" fg-fzf"
+    zle accept-line -w
+  else
+    zle push-input -w
+    zle clear-screen -w
+  fi
 }
 zle -N fancy-ctrl-z
 bindkey '^Z' fancy-ctrl-z
