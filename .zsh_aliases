@@ -1,4 +1,7 @@
 function mkcd() { mkdir -p $1; cd $1;}
+alias cp='cp -riv'
+alias mv='mv -iv'
+alias mkdir='mkdir -pv'
 alias c='clear'
 alias gs='git status -sb'
 alias gc='git commit'
