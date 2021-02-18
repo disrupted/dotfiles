@@ -368,6 +368,14 @@ vim.g.mapleader = " "
 -- <space><space> switches between buffers
 map('n', '<leader><leader>', ':b#<CR>')
 
+map('n', '<Up>', '<Nop>')
+map('n', '<Down>', '<Nop>')
+map('n', '<Left>', '<Nop>')
+map('n', '<Right>', '<Nop>')
+map('i', '<Up>', '<Nop>')
+map('i', '<Down>', '<Nop>')
+map('i', '<Left>', '<Nop>')
+map('i', '<Right>', '<Nop>')
 map('i', '<C-h>', '<C-w>h', {noremap = false})
 map('i', '<C-j>', '<C-w>j', {noremap = false})
 map('i', '<C-k>', '<C-w>k', {noremap = false})
