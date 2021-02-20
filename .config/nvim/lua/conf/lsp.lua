@@ -1,6 +1,7 @@
 local M = {}
 
 function M.setup()
+    vim.cmd [[packadd lsp-status.nvim]]
     vim.cmd [[packadd nvim-lspconfig]]
     vim.fn.sign_define("LspDiagnosticsSignError",
                        {text = "◉", texthl = "LspDiagnosticsError"})

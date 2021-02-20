@@ -44,7 +44,7 @@ require('packer').startup(function()
         event = {'BufRead *'},
         setup = require'conf.lsp'.setup(),
         config = require'conf.lsp'.config(),
-        requires = {'nvim-lua/lsp-status.nvim'}
+        requires = {'nvim-lua/lsp-status.nvim', opt = true}
     }
     -- use {
     --     'nvim-lua/completion-nvim',
