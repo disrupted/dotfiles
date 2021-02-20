@@ -283,6 +283,9 @@ zinit light extrawurst/gitui
 # xh faster HTTPie clone written in Rust
 zinit ice lucid wait"0" as"program" id-as"xh" from"gh-r"
 zinit light ducaale/xh
+# bandwhich network bandwidth monitor
+zinit ice lucid wait"0" as"program" id-as"bandwhich" from"gh-r"
+zinit light imsnif/bandwhich
 
 #####################
 # HISTORY           #
