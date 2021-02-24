@@ -192,10 +192,10 @@ end
 -----------------------------------------------------------------------------//
 opt.autoindent = true -- Allow filetype plugins and syntax highlighting
 opt.expandtab = true -- Use spaces instead of tabs
-opt.shiftwidth = 2 -- Size of an indent
+opt.shiftwidth = 4 -- Size of an indent
 opt.smartindent = true -- Insert indents automatically
-opt.tabstop = 2 -- Number of spaces tabs count for
-opt.softtabstop = 2
+opt.tabstop = 4 -- Number of spaces tabs count for
+opt.softtabstop = 4
 vim.o.shiftround = true -- Round indent
 vim.o.joinspaces = false -- No double spaces with join after a dot
 
