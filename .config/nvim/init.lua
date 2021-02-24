@@ -150,6 +150,12 @@ require('packer').startup(function()
         config = require'conf.neoterm'.config()
     }
     use {'mhinz/vim-sayonara', cmd = 'Sayonara'}
+    use {
+        'lukas-reineke/indent-blankline.nvim',
+        branch = 'lua',
+        event = {'VimEnter *'},
+        config = require'conf.indentline'.config()
+    }
 end)
 
 local executable = function(e) return fn.executable(e) > 0 end
