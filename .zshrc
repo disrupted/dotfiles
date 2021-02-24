@@ -135,7 +135,7 @@ zinit light zdharma/fast-syntax-highlighting
 # EXA
 zinit ice wait"2" lucid from"gh-r" as"program" mv"exa* -> exa" \
   atload"
-        alias l='exa --group-directories-first --icons -la --git --git-ignore --ignore-glob=\".DS_Store|__MACOSX|__pycache__\"'
+        alias l='exa --sort=changed --icons -la --git --git-ignore --ignore-glob=\".DS_Store|__MACOSX|__pycache__\"'
         alias la='exa --group-directories-first --icons -la'
         alias ll='exa --group-directories-first --icons -la --color-scale --time-style=long-iso --git --git-ignore --ignore-glob=\".git|.DS_Store|__MACOSX|__pycache__\" -T -L2'
         alias ll3='exa --group-directories-first --icons -la --git --git-ignore --ignore-glob=\".git|.DS_Store|__MACOSX\" -T -L3'
