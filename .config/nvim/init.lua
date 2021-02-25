@@ -374,6 +374,10 @@ vim.g.mapleader = " "
 -- <space><space> switches between buffers
 map('n', '<leader><leader>', ':b#<CR>')
 
+-- Sane movement defaults that works on long wrapped lines
+map('n', 'j', 'gj')
+map('n', 'k', 'gk')
+
 -- Easier splits navigation
 map('n', '<Up>', '<Nop>')
 map('n', '<Down>', '<Nop>')
