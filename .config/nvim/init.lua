@@ -378,7 +378,7 @@ map('n', '<leader><leader>', ':b#<CR>')
 map('n', 'j', 'gj')
 map('n', 'k', 'gk')
 
--- Easier splits navigation
+-- Disable arrow keys
 map('n', '<Up>', '<Nop>')
 map('n', '<Down>', '<Nop>')
 map('n', '<Left>', '<Nop>')
@@ -387,6 +387,7 @@ map('i', '<Up>', '<Nop>')
 map('i', '<Down>', '<Nop>')
 map('i', '<Left>', '<Nop>')
 map('i', '<Right>', '<Nop>')
+-- Easier splits navigation
 map('i', '<C-j>', '<C-w>j', {noremap = false})
 map('i', '<C-k>', '<C-w>k', {noremap = false})
 map('i', '<C-h>', '<C-w>h', {noremap = false})
