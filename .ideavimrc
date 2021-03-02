@@ -1,3 +1,46 @@
 set surround
 set commentary
 set idearefactormode=keep
+set hlsearch
+set ignorecase
+set smartcase
+
+" Disable arrow keys
+nnoremap  <Up>     <Nop>
+nnoremap  <Down>   <Nop>
+nnoremap  <Left>   <Nop>
+nnoremap  <Right>  <Nop>
+inoremap  <Up>     <Nop>
+inoremap  <Down>   <Nop>
+inoremap  <Left>   <Nop>
+inoremap  <Right>  <Nop>
+
+" don't lose selection when indenting
+vnoremap < <gv
+vnoremap > >gv
+
+" code navigation
+nmap <space>e :action GotoFile<CR>
+nmap <C-o> :action Back<CR>
+nmap <C-i> :action Forward<CR>
+nmap gD :action GotoImplementation<CR>
+nmap gu :action ShowUsages<CR>
+nmap gU :action FindUsages<CR>
+nmap gq :action QuickJavaDoc<CR>
+nmap <space>p :action ParameterInfo<CR>
+nmap <space>n :action GotoNextError<CR>
+nmap <space>a :action GotoAction<CR>
+
+" editing / refactoring
+" nmap gcc :action CommentByLineComment<CR>
+nmap <space>r :action RenameElement<CR>
+nmap <space>m :action ExtractMethod<CR>
+vnoremap <space>m :action ExtractMethod<CR>
+nmap <space>v :action IntroduceVariable<CR>
+nmap <space>i :action Inline<CR>
+nmap <space>o :action OptimizeImports<CR>
+nmap <space>g :action Generate<CR>
+
+nmap <space>t :action Run<CR>
+
+nnoremap <F9> :action ReformatCode<CR>
