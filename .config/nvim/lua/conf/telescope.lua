@@ -74,7 +74,7 @@ function M.config()
 
     require'telescope'.setup {
         defaults = {
-            prompt_prefix = ' ❯',
+            prompt_prefix = ' ❯ ',
             mappings = {i = {["<ESC>"] = actions.close}},
             file_ignore_patterns = {
                 "%.jpg", "%.jpeg", "%.png", "%.svg", "%.otf", "%.ttf"

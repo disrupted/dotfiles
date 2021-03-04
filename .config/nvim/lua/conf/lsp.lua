@@ -4,13 +4,15 @@ function M.setup()
     vim.cmd [[packadd lsp-status.nvim]]
     vim.cmd [[packadd nvim-lspconfig]]
     vim.fn.sign_define("LspDiagnosticsSignError",
-                       {text = "◉", texthl = "LspDiagnosticsError"})
+                       {text = "◉", texthl = "LspDiagnosticsDefaultError"})
     vim.fn.sign_define("LspDiagnosticsSignWarning",
-                       {text = "•", texthl = "LspDiagnosticsWarning"})
-    vim.fn.sign_define("LspDiagnosticsSignInformation",
-                       {text = "•", texthl = "LspDiagnosticsInformation"})
+                       {text = "•", texthl = "LspDiagnosticsDefaultWarning"})
+    vim.fn.sign_define("LspDiagnosticsSignInformation", {
+        text = "•",
+        texthl = "LspDiagnosticsDefaultInformation"
+    })
     vim.fn.sign_define("LspDiagnosticsSignHint",
-                       {text = "H", texthl = "LspDiagnosticsHint"})
+                       {text = "H", texthl = "LspDiagnosticsDefaultHint"})
     vim.fn.sign_define("LightBulbSign", {
         text = "⋄",
         texthl = "Number",
@@ -20,7 +22,7 @@ function M.setup()
 
     vim.lsp.handlers["textDocument/publishDiagnostics"] =
         vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-            underline = true,
+            underline = false,
             signs = true,
             virtual_text = {spacing = 4, prefix = ' '},
             update_in_insert = false -- delay update
