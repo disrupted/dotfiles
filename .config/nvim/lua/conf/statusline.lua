@@ -76,23 +76,23 @@ local function get_current_file_name()
     return file .. ' '
 end
 
-local function trailing_whitespace()
-    local trail = vim.fn.search('\\s$', 'nw')
-    if trail ~= 0 then
-        return '  '
-    else
-        return nil
-    end
-end
+-- local function trailing_whitespace()
+--     local trail = vim.fn.search('\\s$', 'nw')
+--     if trail ~= 0 then
+--         return '  '
+--     else
+--         return nil
+--     end
+-- end
 
-local function tab_indent()
-    local tab = vim.fn.search('^\\t', 'nw')
-    if tab ~= 0 then
-        return ' → '
-    else
-        return nil
-    end
-end
+-- local function tab_indent()
+--     local tab = vim.fn.search('^\\t', 'nw')
+--     if tab ~= 0 then
+--         return ' → '
+--     else
+--         return nil
+--     end
+-- end
 
 local function buffers_count()
     local buffers = {}
@@ -155,20 +155,20 @@ gls.left[3] = {
         separator_highlight = {colors.section_bg, colors.bg}
     }
 }
-gls.left[4] = {
-    WhiteSpace = {
-        provider = trailing_whitespace,
-        condition = buffer_not_empty,
-        highlight = {colors.fg, colors.bg}
-    }
-}
-gls.left[5] = {
-    TabIndent = {
-        provider = tab_indent,
-        condition = buffer_not_empty,
-        highlight = {colors.fg, colors.bg}
-    }
-}
+-- gls.left[4] = {
+--     WhiteSpace = {
+--         provider = trailing_whitespace,
+--         condition = buffer_not_empty,
+--         highlight = {colors.fg, colors.bg}
+--     }
+-- }
+-- gls.left[5] = {
+--     TabIndent = {
+--         provider = tab_indent,
+--         condition = buffer_not_empty,
+--         highlight = {colors.fg, colors.bg}
+--     }
+-- }
 gls.left[9] = {
     DiagnosticError = {
         provider = 'DiagnosticError',
@@ -259,6 +259,12 @@ gls.right[7] = {
         highlight = {colors.gray2, colors.blue}
     }
 }
+-- gls.right[8] = {
+--     ScrollBar = {
+--         provider = 'ScrollBar',
+--         highlight = {colors.purple, colors.section_bg}
+--     }
+-- }
 
 -- Short status line
 gls.short_line_left[1] = {
