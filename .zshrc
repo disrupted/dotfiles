@@ -117,6 +117,17 @@ zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 zstyle ':fzf-tab:*' popup-pad 0 0
 zstyle ":completion:*:git-checkout:*" sort false
 
+# TMUX
+zinit ice as"program" id-as"tmux" atpull"%atclone" make \
+  atclone"ln -fs $HOME/.zinit/plugins/tmux/tmux /usr/local/bin/tmux; ./autogen.sh; ./configure"
+zinit light tmux/tmux
+# TMUX plugin manager
+zinit ice lucid wait"!0a" as"null" id-as"tpm" \
+  atclone" \
+    mkdir -p $HOME/.tmux/plugins; \
+    ln -s $HOME/.zinit/plugins/tpm $HOME/.tmux/plugins/tpm; \
+    setup_my_tmux_plugin tpm;"
+zinit light tmux-plugins/tpm
 # FZF
 zinit ice lucid wait'0b' from"gh-r" as"program"
 zinit light junegunn/fzf
