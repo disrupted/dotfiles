@@ -1,16 +1,29 @@
 # disrupted's dotfiles
-my personal (Neo)vim config
+
+## Neovim
 
 ![nvim in tmux](.config/_screens/nvim.png)
 
+[`~/.config/nvim`](https://github.com/disrupted/dotfiles/tree/master/.config/nvim)
+configuration entirely written in Lua.
 
-Weechat IRC
+## Shell
+
+[`~/.zshrc`](https://github.com/disrupted/dotfiles/blob/master/.zshrc)
+ZSH using Powerline10k prompt. packages managed through zinit.
+
+## Weechat IRC
 
 ![Weechat IRC](.config/_screens/weechat.png)
 
 WIP: planning to add my other dotfiles at some point
 
+
+> Thanks to [@lukas-reineke](https://github.com/lukas-reineke/dotfiles), [@akinsho](https://github.com/akinsho/dotfiles), [@yutkat](https://github.com/yutkat/dotfiles) and the good people from [/r/neovim](https://reddit.com/r/neovim).
+
 ---
+
+## Misc
 
 test italics & similar output:
 
