@@ -16,14 +16,11 @@ ZSH using Powerline10k prompt. packages managed through zinit.
 
 ![Weechat IRC](.config/_screens/weechat.png)
 
-WIP: planning to add my other dotfiles at some point
-
-
 > Thanks to [@lukas-reineke](https://github.com/lukas-reineke/dotfiles), [@akinsho](https://github.com/akinsho/dotfiles), [@yutkat](https://github.com/yutkat/dotfiles) and the good people from [/r/neovim](https://reddit.com/r/neovim).
 
 ---
 
-## Misc
+### Misc
 
 test italics & similar output:
 
@@ -38,11 +35,13 @@ echo -e "\e[31mHello World\e[0m"
 from ['A Definitive Guide to Enabling Italics in Vim and tmux'](https://www.reddit.com/r/vim/comments/fr6zfl/a_definitive_guide_to_enabling_italics_in_vim_and/):
 
 Instead of adding a custom entry in the terminfo db, try to update the latter. On my Ubuntu, terminfo descriptions are provided by the packages ncurses-base and ncurses-term. If after upgrading the pacakges, your descriptions are still too old – or contain wrong sequences – then update the db right from the developer's site:
+
 ```sh
 $ curl -LO http://invisible-island.net/datafiles/current/terminfo.src.gz
 $ gunzip terminfo.src.gz
 $ tic -sx terminfo.src
 ```
+
 On Ubuntu, it should create a new db in your home directory (~/.terminfo). If you don't want to update the whole db, but only the description of a specific terminal, then replace the last tic(1) command with:
 `tic -sx -e $TERM terminfo.src`
 Or with:
