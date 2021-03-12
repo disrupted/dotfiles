@@ -282,7 +282,8 @@ zinit lucid wait"0" as'program' id-as'zoxide' from'gh-r' mv'zoxide* -> zoxide' \
   'ajeetdsouza/zoxide'
 # nnn file manager
 zinit wait lucid id-as"nnn" from="github" as="program" for \
-  sbin"nnn" make="O_NERD=1" jarun/nnn
+  sbin"nnn" make="O_NERD=1" src'misc/quitcd/quitcd.bash_zsh' \
+  jarun/nnn
 # rip rm-improved, trash alternative written in Rust
 zinit wait"1" lucid \
  from"gh-r" as"program" id-as"rip" pick"rip*/rip" \
