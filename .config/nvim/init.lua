@@ -184,7 +184,6 @@ end
 vim.o.completeopt = add {"menuone", "noselect"} -- Completion options
 vim.o.clipboard = 'unnamedplus'
 vim.o.inccommand = 'nosplit'
-vim.o.backspace = 'indent,eol,start' -- Change backspace to behave more intuitively
 
 -- if vim.fn.filereadable('/usr/local/bin/python3') then
 --     vim.g.python3_host_prog = '/usr/local/bin/python3'
@@ -196,7 +195,6 @@ end
 -----------------------------------------------------------------------------//
 -- Indentation {{{1
 -----------------------------------------------------------------------------//
-opt.autoindent = true -- Allow filetype plugins and syntax highlighting
 opt.expandtab = true -- Use spaces instead of tabs
 opt.shiftwidth = 4 -- Size of an indent
 opt.smartindent = true -- Insert indents automatically
@@ -218,7 +216,6 @@ opt.linebreak = true -- wrap, but on words, not randomly
 -- opt.textwidth = 80
 opt.synmaxcol = 1024 -- don't syntax highlight long lines
 vim.g.vimsyn_embed = "lPr" -- allow embedded syntax highlighting for lua, python, ruby
-vim.o.showcmd = true -- Set show command
 vim.o.showmode = false
 vim.o.lazyredraw = true
 vim.o.emoji = false -- turn off as they are treated as double width characters
@@ -252,15 +249,12 @@ opt.foldmethod = "syntax"
 vim.o.swapfile = false
 vim.o.backup = false
 vim.o.writebackup = false
-if fn.isdirectory(vim.o.undodir) == 0 then fn.mkdir(vim.o.undodir, "p") end
 opt.undofile = true -- Save undo history
 vim.o.confirm = true -- prompt to save before destructive actions
 
 -----------------------------------------------------------------------------//
 -- Search {{{1
 -----------------------------------------------------------------------------//
-vim.o.hlsearch = false
-vim.o.incsearch = true
 vim.o.ignorecase = true -- Ignore case
 vim.o.smartcase = true -- Don't ignore case with capitals
 vim.o.wrapscan = true -- Search wraps at end of file
@@ -288,7 +282,6 @@ vim.o.fillchars = add {
 -----------------------------------------------------------------------------//
 -- Wild and file globbing stuff in command mode {{{1
 -----------------------------------------------------------------------------//
-vim.o.wildmenu = true
 vim.o.wildmode = "full" -- Shows a menu bar as opposed to an enormous list
 vim.o.wildignorecase = true -- Ignore case when completing file names and directories
 -- Binary
