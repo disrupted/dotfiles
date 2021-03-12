@@ -389,6 +389,7 @@ export LANG='en_US.UTF-8'
 export LC_ALL='en_US.UTF-8'
 export WORDCHARS='~!#$%^&*(){}[]<>?.+;-'  # sane moving between words on the prompt
 export GPG_TTY=$(tty)
+export PATH="$PATH:~/.local/bin"  # for pipx
 export PATH="/usr/local/opt/helm@2/bin:$PATH"
 export PROMPT_EOL_MARK=''  # hide % at end of output
 
