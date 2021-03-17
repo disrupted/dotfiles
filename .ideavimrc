@@ -43,4 +43,4 @@ nmap <space>g :action Generate<CR>
 
 nmap <space>t :action Run<CR>
 
-nnoremap <F9> :action ReformatCode<CR>
+nnoremap <space>f :action ReformatCode<CR>
