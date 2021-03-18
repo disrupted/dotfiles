@@ -92,7 +92,9 @@ zinit wait="1" lucid for \
     OMZ::lib/clipboard.zsh \
     OMZ::lib/git.zsh \
     OMZ::plugins/systemd/systemd.plugin.zsh \
-    OMZ::plugins/sudo/sudo.plugin.zsh
+    OMZ::plugins/sudo/sudo.plugin.zsh \
+    OMZ::plugins/kubectl/kubectl.plugin.zsh \
+    OMZ::plugins/aws/aws.plugin.zsh
 
 if whence dircolors >/dev/null; then
   eval "$(dircolors -b)"
@@ -297,6 +299,11 @@ zinit light ducaale/xh
 # bandwhich network bandwidth monitor
 zinit ice lucid wait"0" as"program" id-as"bandwhich" from"gh-r"
 zinit light imsnif/bandwhich
+# load kubectl completion
+zinit light-mode lucid wait has"kubectl" for \
+  id-as"kubectl_completion" as"completion" \
+  atclone"kubectl completion zsh > _kubectl" \
+  atpull"%atclone" run-atpull zdharma/null
 
 #####################
 # HISTORY           #
