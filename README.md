@@ -5,12 +5,14 @@
 ![nvim in tmux](.config/_screens/nvim.png)
 
 [`~/.config/nvim`](https://github.com/disrupted/dotfiles/tree/master/.config/nvim)
+
 configuration entirely written in Lua.
 
 ## Shell
 
 [`~/.zshrc`](https://github.com/disrupted/dotfiles/blob/master/.zshrc)
-ZSH using Powerline10k prompt. packages managed through zinit.
+
+ZSH using powerlevel10k prompt. plugins managed through zinit.
 
 ## Weechat IRC
 
