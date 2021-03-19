@@ -1,6 +1,7 @@
 vim.cmd [[packadd galaxyline.nvim]]
 local gl = require('galaxyline')
 local utils = require('conf.utils')
+local condition = require('galaxyline.condition')
 
 local gls = gl.section
 gl.short_line_list = {'defx', 'packager', 'vista', 'NvimTree'}
@@ -249,27 +250,28 @@ gls.right[4] = {
 gls.right[5] = {
     GitIcon = {
         provider = function() return '  ' end,
-        condition = buffer_not_empty and
-            require('galaxyline.condition').check_git_workspace,
+        condition = condition.check_git_workspace,
         highlight = {colors.middlegrey, colors.bg}
     }
 }
 gls.right[6] = {
     GitBranch = {
         provider = 'GitBranch',
-        condition = buffer_not_empty,
+        condition = condition.check_git_workspace,
         highlight = {colors.middlegrey, colors.bg}
     }
 }
 gls.right[7] = {
     GitRoot = {
         provider = {
-            function() return '  ' end, GetGitRoot, function()
+            function() return ' ' end, GetGitRoot, function()
                 return ' '
             end
         },
-        condition = buffer_not_empty and
-            require('galaxyline.condition').check_git_workspace,
+        condition = function()
+            return utils.has_width_gt(45) and buffer_not_empty() and
+                       condition.check_git_workspace
+        end,
         highlight = {colors.middlegrey, colors.bg}
     }
 }
