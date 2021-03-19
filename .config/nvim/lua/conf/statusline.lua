@@ -94,14 +94,24 @@ end
 --     end
 -- end
 
-local function buffers_count()
-    local buffers = {}
-    for _, val in ipairs(vim.fn.range(1, vim.fn.bufnr('$'))) do
-        if vim.fn.bufexists(val) == 1 and vim.fn.buflisted(val) == 1 then
-            table.insert(buffers, val)
-        end
-    end
-    return #buffers
+-- local function buffers_count()
+--     local buffers = {}
+--     for _, val in ipairs(vim.fn.range(1, vim.fn.bufnr('$'))) do
+--         if vim.fn.bufexists(val) == 1 and vim.fn.buflisted(val) == 1 then
+--             table.insert(buffers, val)
+--         end
+--     end
+--     return #buffers
+-- end
+
+local function get_basename(file) return file:match("^.+/(.+)$") end
+
+local GetGitRoot = function()
+    local git_dir = require('galaxyline.provider_vcs').get_git_dir()
+    if not git_dir then return '' end
+
+    local git_root = git_dir:gsub('/.git/?$', '')
+    return get_basename(git_root)
 end
 
 -- Left side
@@ -240,7 +250,7 @@ gls.right[5] = {
     GitIcon = {
         provider = function() return '  ' end,
         condition = buffer_not_empty and
-            require('galaxyline.provider_vcs').check_git_workspace,
+            require('galaxyline.condition').check_git_workspace,
         highlight = {colors.middlegrey, colors.bg}
     }
 }
@@ -252,6 +262,18 @@ gls.right[6] = {
     }
 }
 gls.right[7] = {
+    GitRoot = {
+        provider = {
+            function() return '  ' end, GetGitRoot, function()
+                return ' '
+            end
+        },
+        condition = buffer_not_empty and
+            require('galaxyline.condition').check_git_workspace,
+        highlight = {colors.middlegrey, colors.bg}
+    }
+}
+gls.right[8] = {
     PerCent = {
         provider = 'LinePercent',
         separator = '',
@@ -259,7 +281,7 @@ gls.right[7] = {
         highlight = {colors.gray2, colors.blue}
     }
 }
--- gls.right[8] = {
+-- gls.right[9] = {
 --     ScrollBar = {
 --         provider = 'ScrollBar',
 --         highlight = {colors.purple, colors.section_bg}
