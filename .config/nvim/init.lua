@@ -368,8 +368,8 @@ vim.g.mapleader = " "
 map('n', '<leader><leader>', ':b#<CR>')
 
 -- Sane movement defaults that works on long wrapped lines
-map('n', 'j', 'gj')
-map('n', 'k', 'gk')
+map('', 'j', "(v:count ? 'j' : 'gj')", {expr = true})
+map('', 'k', "(v:count ? 'k' : 'gk')", {expr = true})
 
 -- Disable arrow keys
 map('n', '<Up>', '<Nop>')
@@ -426,6 +426,10 @@ map('x', 'J', ":move '>+1<CR>gv-gv")
 
 -- ctrl + a: select all
 map('n', '<C-a>', '<esc>ggVG<CR>')
+
+-- sensible defaults
+map('', 'Y', 'y$')
+map('', 'Q', '')
 
 -- edit & source init.lua
 map('n', ',v', ':e $MYVIMRC<CR>')

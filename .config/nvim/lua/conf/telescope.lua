@@ -75,7 +75,14 @@ function M.config()
     require'telescope'.setup {
         defaults = {
             prompt_prefix = ' ❯ ',
-            mappings = {i = {["<ESC>"] = actions.close}},
+            mappings = {
+                i = {
+                    ["<ESC>"] = actions.close,
+                    ["<C-j>"] = actions.move_selection_next,
+                    ["<C-k>"] = actions.move_selection_previous
+                },
+                n = {["<ESC>"] = actions.close}
+            },
             file_ignore_patterns = {
                 "%.jpg", "%.jpeg", "%.png", "%.svg", "%.otf", "%.ttf"
             },
