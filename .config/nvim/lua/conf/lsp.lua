@@ -92,7 +92,7 @@ function M.config()
         buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>',
                        opts)
         buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-        buf_set_keymap('n', '<space>e',
+        buf_set_keymap('n', '<space>d',
                        '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>',
                        opts)
         buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>',
@@ -192,6 +192,8 @@ function M.config()
     local prettier = require "efm/prettier"
     local eslint = require "efm/eslint"
     local eslint_d = require "efm/eslint_d"
+    local rustfmt = require "efm/rustfmt"
+    local gofmt = require "efm/gofmt"
 
     lspconfig.efm.setup {
         cmd = {
@@ -213,7 +215,7 @@ function M.config()
         end,
         init_options = {documentFormatting = true},
         settings = {
-            rootMarkers = {"package.json", ".git/", ".zshrc"},
+            rootMarkers = {"package.json", "go.mod", ".git/", ".zshrc"},
             languages = {
                 python = {isort, black},
                 lua = {lua_format},
@@ -226,9 +228,15 @@ function M.config()
                 typescript = {prettier, eslint_d},
                 javascriptreact = {prettier, eslint_d},
                 typescriptreact = {prettier, eslint_d}
+                -- rust = {rustfmt}, -- not needed with rust_analyzer
+                -- go = {gofmt}, -- not needed with gopls
             }
         }
     }
+
+    lspconfig.rust_analyzer.setup {on_attach = on_attach}
+
+    lspconfig.gopls.setup {on_attach = on_attach}
 end
 
 return M
