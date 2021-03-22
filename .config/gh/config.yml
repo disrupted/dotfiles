@@ -5,7 +5,10 @@ editor:
 # When to interactively prompt. This is a global config that cannot be overridden by hostname. Supported values: enabled, disabled
 prompt: enabled
 # A pager program to send command output to, e.g. "less". Set the value to "cat" to disable the pager.
-pager:
+pager: !!null delta
 # Aliases allow you to create nicknames for gh commands
 aliases:
-  co: pr checkout
+    co: '!id="$(gh pr list -L100 | fzf | cut -f1)"; [ -n "$id" ] && gh pr checkout "$id"'
+    i: issue view --comments
+    issues: issue list
+    prs: pr list
