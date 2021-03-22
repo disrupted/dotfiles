@@ -294,7 +294,7 @@ zinit wait"1" lucid \
 zinit ice lucid wait"0" as"program" id-as"gitui" from"gh-r"
 zinit light extrawurst/gitui
 # xh faster HTTPie clone written in Rust
-zinit ice lucid wait"0" as"program" id-as"xh" from"gh-r"
+zinit ice lucid wait"0" as"program" id-as"xh" from"gh-r" pick"xh*/xh"
 zinit light ducaale/xh
 # bandwhich network bandwidth monitor
 zinit ice lucid wait"0" as"program" id-as"bandwhich" from"gh-r"
