@@ -46,19 +46,6 @@ require('packer').startup(function()
         config = require'conf.lsp'.config(),
         requires = {'nvim-lua/lsp-status.nvim', opt = true}
     }
-    -- use {
-    --     'nvim-lua/completion-nvim',
-    --     disable = true,
-    --     setup = require'conf.completion'.setup(),
-    --     config = require'conf.completion'.config(),
-    --     requires = {
-    --         'norcalli/snippets.nvim',
-    --         {'steelsojka/completion-buffers', after = {'completion-nvim'}}, {
-    --             'nvim-treesitter/completion-treesitter',
-    --             after = {'completion-nvim', 'nvim-treesitter'}
-    --         }
-    --     }
-    -- }
     use {
         'hrsh7th/nvim-compe',
         event = {'InsertEnter *'},
