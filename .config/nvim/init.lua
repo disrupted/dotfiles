@@ -198,6 +198,13 @@ vim.wo.relativenumber = true -- Relative line numbers
 vim.wo.numberwidth = 2
 vim.wo.signcolumn = 'auto'
 vim.wo.cursorline = true
+vim.api.nvim_exec([[
+    augroup cursorline_focus
+        autocmd!
+        autocmd WinEnter * setlocal cursorline
+        autocmd WinLeave * setlocal nocursorline
+    augroup END
+    ]], false)
 opt.wrap = true
 opt.linebreak = true -- wrap, but on words, not randomly
 -- opt.textwidth = 80
