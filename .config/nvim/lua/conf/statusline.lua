@@ -265,11 +265,8 @@ gls.right[7] = {
     GitRoot = {
         provider = {GetGitRoot, function() return ' ' end},
         condition = function()
-            return utils.has_width_gt(45) and buffer_not_empty() and
-                       condition.check_git_workspace
+            return utils.has_width_gt(45) and condition.check_git_workspace
         end,
-        separator = ' ',
-        separator_highlight = {colors.middlegrey, colors.bg},
         highlight = {colors.middlegrey, colors.bg}
     }
 }
