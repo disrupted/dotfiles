@@ -3,6 +3,9 @@
     email = hi@salomonpopp.me
     signingkey = A299EE8F816BBFA4
 
+[includeIf "gitdir:~/bakdata/"]
+    path = ~/bakdata/.gitconfig
+
 [github]
     # GitHub username for cli
     user = disrupted

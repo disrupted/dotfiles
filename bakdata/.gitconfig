@@ -1,0 +1,6 @@
+[user]
+    name = Salomon Popp
+    email = salomon.popp@bakdata.com
+
+[commit]
+    gpgsign = false
