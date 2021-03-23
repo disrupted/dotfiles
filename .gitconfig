@@ -3,9 +3,6 @@
     email = hi@salomonpopp.me
     signingkey = A299EE8F816BBFA4
 
-[includeIf "gitdir:~/bakdata/"]
-    path = ~/bakdata/.gitconfig
-
 [github]
     # GitHub username for cli
     user = disrupted
@@ -155,3 +152,6 @@
 
     # View the log and diff for a commit (previous if no SHA1 provided)
     details = log -n1 -p --format=fuller
+
+[includeIf "gitdir:~/bakdata/"]
+    path = ~/bakdata/.gitconfig
