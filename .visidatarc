@@ -1,0 +1,10 @@
+options.disp_column_sep      =  '│'                  # separator between columns
+options.disp_status_fmt      =  '{sheet.name}|'      # status line prefix
+options.disp_lstatus_max     =  '0'                  # maximum length of left status line
+options.disp_error_val       =  '!'                  # displayed contents for computation exception
+options.force_256_colors     =  True
+options.color_default        =  '246'                # the default color
+options.color_column_sep     =  '240'
+options.color_current_col    =  '252'
+options.color_current_row    =  '252 reverse'
+options.color_current_hdr    =  'bold'
