@@ -1,79 +1,104 @@
+# color presets (mostly one_dark)
+foreground: &foreground "#abb2bf"
+background: &background default
+black: &black "#080808"
+blue: &blue "#61afef"
+green: &green "#98c379"
+grey: &grey "#abb2bf"
+orange: &orange "#ffb86c"
+purple: &purple "#c678dd"
+red: &red "#e06370"
+yellow: &yellow "#e5c07b"
+yellow_bright: &yellow_bright "#d19a66"
+border: &border "#4B5263"
+darkgrey: &darkgrey "#5C6370"
+
 k9s:
   body:
-    fgColor: dodgerblue
-    bgColor: default
-    logoColor: orange
+    fgColor: *foreground
+    bgColor: *background
+    logoColor: *green # hidden
   info:
-    fgColor: white
-    sectionColor: dodgerblue
+    # top left
+    fgColor: *grey
+    sectionColor: *yellow_bright
   dialog:
-    fgColor: dodgerblue
-    bgColor: default
-    buttonFgColor: black
-    buttonBgColor: dodgerblue
-    buttonFocusFgColor: white
-    buttonFocusBgColor: fuchsia
-    labelFgColor: fuchsia
-    fieldFgColor: dodgerblue
+    fgColor: *black
+    bgColor: *background
+    buttonFgColor: *foreground
+    buttonBgColor: *green
+    buttonFocusFgColor: *black
+    buttonFocusBgColor: *blue
+    labelFgColor: *orange
+    fieldFgColor: *blue
   frame:
     border:
-      fgColor: dodgerblue
-      focusColor: aqua
+      fgColor: *green
+      focusColor: *border
     menu:
-      fgColor: white
-      keyColor: dodgerblue
-      numKeyColor: fuchsia
+      # favorite namespaces
+      fgColor: *grey
+      keyColor: *orange
+      numKeyColor: *yellow
     crumbs:
-      fgColor: default
-      bgColor: steelblue
-      activeColor: orange
+      # bottom left
+      fgColor: *black
+      bgColor: *green
+      activeColor: *yellow
     status:
-      newColor: lightskyblue
-      modifyColor: greenyellow
-      addColor: white
-      errorColor: orangered
-      pendingColor: darkorange
-      highlightcolor: aqua
-      killColor: mediumpurple
-      completedColor: gray
+      newColor: *blue
+      modifyColor: *green
+      addColor: *grey
+      pendingColor: *orange
+      errorColor: *red
+      highlightcolor: *yellow
+      killColor: *purple
+      completedColor: *grey
     title:
-      fgColor: aqua
-      highlightColor: fuchsia
-      counterColor: papayawhip
-      filterColor: steelblue
+      # title of main table view
+      fgColor: *blue
+      bgColor: *background
+      highlightColor: *purple
+      counterColor: *foreground
+      filterColor: *blue
   views:
     # Charts skins...
     charts:
-      bgColor: default
+      bgColor: *background
       defaultDialColors:
-        - linegreen
-        - orangered
+        - *green
+        - *red
       defaultChartColors:
-        - linegreen
-        - orangered
+        - *green
+        - *red
     table:
-      fgColor: blue
-      bgColor: default
-      cursorFgColor: black
-      cursorBgColor: aqua
-      markColor: darkgoldenrod
+      fgColor: *yellow
+      bgColor: *background
+      cursorFgColor: *black
+      cursorBgColor: *blue
+      markColor: *yellow_bright
       header:
-        fgColor: white
-        bgColor: default
-        sorterColor: orange
+        fgColor: *grey
+        bgColor: *background
+        sorterColor: *orange
     xray:
-      fgColor: blue
-      bgColor: default
-      cursorColor: aqua
-      graphicColor: darkgoldenrod
+      fgColor: *blue
+      bgColor: *background
+      cursorColor: *foreground
+      graphicColor: *yellow_bright
       showIcons: false
     yaml:
-      keyColor: steelblue
-      colonColor: white
-      valueColor: papayawhip
+      keyColor: *red
+      colonColor: *grey
+      valueColor: *grey
     logs:
-      fgColor: white
-      bgColor: default
+      fgColor: *grey
+      bgColor: *background
       indicator:
-        fgColor: dodgerblue
-        bgColor: black
+        fgColor: *blue
+        bgColor: *background
+    help:
+      fgColor: *grey
+      bgColor: *background
+      indicator:
+        fgColor: *blue
