@@ -92,7 +92,6 @@ zinit wait="1" lucid for \
     OMZ::lib/clipboard.zsh \
     OMZ::lib/git.zsh \
     OMZ::plugins/systemd/systemd.plugin.zsh \
-    OMZ::plugins/sudo/sudo.plugin.zsh \
     OMZ::plugins/kubectl/kubectl.plugin.zsh \
     OMZ::plugins/aws/aws.plugin.zsh
 
@@ -394,7 +393,7 @@ export MANPAGER="nvim -c 'set ft=man' -"
 export SHELL='/bin/zsh'
 export LANG='en_US.UTF-8'
 export LC_ALL='en_US.UTF-8'
-export WORDCHARS='~!#$%^&*(){}[]<>?.+;-'  # sane moving between words on the prompt
+export WORDCHARS='~!#$%^&*(){}[]<>?.+;'  # sane moving between words on the prompt
 export GPG_TTY=$(tty)
 export PATH="$PATH:~/.local/bin"  # for pipx
 export GOPATH="$HOME/go"
