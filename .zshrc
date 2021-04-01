@@ -273,6 +273,10 @@ zinit light 'itchyny/mmv'
 # jq
 zinit ice lucid wait"0" as"program" id-as"jq" from"gh-r" mv"jq-* -> jq"
 zinit light stedolan/jq
+# yq
+zinit ice lucid wait"0" as"program" id-as"yq" from"gh-r" mv"yq_* -> yq" \
+ atclone'yq shell-completion zsh > _yq' atpull'%atclone'
+zinit light mikefarah/yq
 # sd sed alternative
 zinit ice lucid wait"0" as"program" id-as"sd" from"gh-r" pick"sd" mv"sd-* -> sd"
 zinit light chmln/sd
