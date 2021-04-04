@@ -89,7 +89,7 @@ function M.config()
                        opts)
         buf_set_keymap('n', '<space>D',
                        '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-        buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>',
+        buf_set_keymap('n', '<space>r', '<cmd>lua vim.lsp.buf.rename()<CR>',
                        opts)
         buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
         buf_set_keymap('n', '<space>d',
@@ -134,28 +134,33 @@ function M.config()
                            '<cmd>lua require\'telescope.builtin\'.lsp_code_actions()<CR>',
                            opts)
         end
+
+        vim.cmd [[autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics()]]
+        vim.cmd [[autocmd CursorHoldI * silent! lua vim.lsp.buf.signature_help()]]
+
         print("LSP attached.")
     end
     -- define language servers
     -- https://github.com/palantir/python-language-server
-    lspconfig.pyls.setup {
-        -- on_attach = require'completion'.on_attach,
-        cmd = {"pyls", "--log-file", "/tmp/pyls.log", "--verbose"},
-        settings = {
-            pyls = {
-                configurationSources = {"pycodestyle", "flake8"},
-                plugins = {
-                    yapf = {enabled = false},
-                    pylint = {enabled = false},
-                    pycodestyle = {enabled = false},
-                    pyflakes = {enabled = false},
-                    pydocstyle = {enabled = false},
-                    flake8 = {enabled = true},
-                    pyls_mypy = {enabled = true}
-                }
-            }
-        }
-    }
+    -- lspconfig.pyls.setup {
+    --     on_attach = on_attach,
+    --     cmd = {"pyls", "--log-file", "/tmp/pyls.log", "--verbose"},
+    --     settings = {
+    --         pyls = {
+    --             configurationSources = {"pycodestyle", "flake8"},
+    --             plugins = {
+    --                 yapf = {enabled = false},
+    --                 pylint = {enabled = false},
+    --                 pycodestyle = {enabled = false},
+    --                 pyflakes = {enabled = false},
+    --                 pydocstyle = {enabled = false},
+    --                 flake8 = {enabled = true},
+    --                 pyls_mypy = {enabled = true}
+    --             }
+    --         }
+    --     }
+    -- }
+    lspconfig.pyright.setup {on_attach = on_attach}
     -- lspconfig.vimls.setup {}
     -- lspconfig.jdtls.setup{}
     -- lspconfig.jsonls.setup {}
