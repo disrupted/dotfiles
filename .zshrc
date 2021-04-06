@@ -146,7 +146,8 @@ zinit light Aloxaf/fzf-tab
 zinit ice wait"0c" lucid atinit"zpcompinit;zpcdreplay"
 zinit light zdharma/fast-syntax-highlighting
 # EXA
-zinit ice wait"2" lucid from"gh-r" as"program" mv"exa* -> exa" \
+zinit ice wait"2" lucid id-as"exa" from"gh-r" as"program" mv"bin/exa* -> exa" \
+    cp"completions/exa.zsh -> _exa" \
   atload"
         alias l='exa --sort=changed --icons -la --git --git-ignore --ignore-glob=\".DS_Store|__MACOSX|__pycache__\"'
         alias la='exa --group-directories-first --icons -la'
