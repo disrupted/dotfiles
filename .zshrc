@@ -259,7 +259,9 @@ zinit light denilsonsa/prettyping
 zinit ice lucid wait"0" as"program" from"gh-r" pick"sad*/sad"
 zinit light "ms-jpq/sad"
 # bottom system monitor
-zinit ice from"gh-r" as"program" \
+zinit ice from"gh-r" ver"nightly" as"program" \
+  atclone'echo "" > ._zinit/is_release' \
+  atpull'%atclone' \
   atload"alias top=btm" \
   atload"alias htop=btm"
 zinit light ClementTsang/bottom
