@@ -168,6 +168,8 @@ end
 -----------------------------------------------------------------------------//
 -- Utils {{{1
 -----------------------------------------------------------------------------//
+vim.o.complete = add {"kspell"}
+-- vim.wo.spell = true
 vim.o.completeopt = add {"menuone", "noselect"} -- Completion options
 vim.o.clipboard = 'unnamedplus'
 vim.o.inccommand = 'nosplit'
@@ -276,7 +278,7 @@ vim.o.fillchars = add {
 -----------------------------------------------------------------------------//
 -- Wild and file globbing stuff in command mode {{{1
 -----------------------------------------------------------------------------//
-vim.o.wildmode = "full" -- Shows a menu bar as opposed to an enormous list
+vim.o.wildmode = "full"
 vim.o.wildignorecase = true -- Ignore case when completing file names and directories
 -- Binary
 vim.o.wildignore = add {

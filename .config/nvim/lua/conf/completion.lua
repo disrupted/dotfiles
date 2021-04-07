@@ -16,7 +16,8 @@ function M.setup()
     -- vim.g.completion_enable_auto_popup = 1
     vim.g.completion_enable_auto_paren = 1
     -- vim.g.completion_enable_auto_hover = 1
-    vim.g.completion_customize_lsp_label = {
+    vim.g.completion_customize_lsp_label =
+        {
             Function = ' [function]',
             Method = ' [method]',
             Reference = ' [refrence]',
@@ -106,8 +107,7 @@ function M.setup()
                             'pumvisible() ? "\\<C-p>" : "\\<Tab>"',
                             {expr = true})
     -- map <c-space> to manually trigger completion
-    vim.api.nvim_set_keymap('i', '<C-space>',
-                            '<Plug>(completion_trigger)',
+    vim.api.nvim_set_keymap('i', '<C-space>', '<Plug>(completion_trigger)',
                             {noremap = false, silent = true})
 end
 
