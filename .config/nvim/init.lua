@@ -143,6 +143,7 @@ require('packer').startup(function()
         event = {'VimEnter *'},
         config = require'conf.indentline'.config()
     }
+    use {'simrat39/rust-tools.nvim', opt = true}
 end)
 
 local executable = function(e) return fn.executable(e) > 0 end
