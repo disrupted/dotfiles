@@ -197,8 +197,8 @@ function M.config()
     local prettier = require "efm/prettier"
     local eslint = require "efm/eslint"
     local eslint_d = require "efm/eslint_d"
-    local rustfmt = require "efm/rustfmt"
-    local gofmt = require "efm/gofmt"
+    -- local rustfmt = require "efm/rustfmt"
+    -- local gofmt = require "efm/gofmt"
 
     lspconfig.efm.setup {
         cmd = {
@@ -240,36 +240,8 @@ function M.config()
     }
 
     -- RUST
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities.textDocument.completion.completionItem.snippetSupport = true
-
-    capabilities.textDocument.completion.completionItem.resolveSupport =
-        {properties = {'documentation', 'detail', 'additionalTextEdits'}}
-
-    capabilities.experimental = {}
-    capabilities.experimental.hoverActions = true
-
-    lspconfig.rust_analyzer.setup {
-        on_attach = on_attach,
-        capabilities = capabilities
-        -- settings = {
-        --     ["rust-analyzer"] = {
-        --         cargo = {runBuildScripts = true},
-        --         procMacro = {enable = true},
-        --         checkOnSave = {command = "clippy"},
-        --         diagnostics = {disabled = {"macro-error"}}
-
-        --     }
-        -- }
-    }
-
     vim.cmd [[packadd rust-tools.nvim]]
-    require'rust-tools'.setup {
-        autoSetHints = true,
-        runnables = {use_telescope = true},
-        inlay_hints = {show_parameter_hints = true}
-    }
-    -- require'rust-tools-debug'.setup()
+    require'rust-tools'.setup()
 
     -- GO
     lspconfig.gopls.setup {on_attach = on_attach}
