@@ -129,7 +129,7 @@ function M.config()
 
         if client.resolved_capabilities.code_action then
             vim.cmd [[packadd nvim-lightbulb]]
-            vim.cmd [[autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb()]]
+            vim.cmd [[autocmd CursorHold,CursorHoldI * if &ft != 'java' | lua require'nvim-lightbulb'.update_lightbulb()]]
             buf_set_keymap('n', '<leader>a',
                            '<cmd>lua require\'telescope.builtin\'.lsp_code_actions()<CR>',
                            opts)
@@ -162,7 +162,6 @@ function M.config()
     -- }
     lspconfig.pyright.setup {on_attach = on_attach}
     -- lspconfig.vimls.setup {}
-    -- lspconfig.jdtls.setup{}
     -- lspconfig.jsonls.setup {}
     -- lspconfig.dockerls.setup {}
     lspconfig.yamlls.setup {
@@ -245,6 +244,52 @@ function M.config()
 
     -- GO
     lspconfig.gopls.setup {on_attach = on_attach}
+
+    -- JAVA
+    init_jdtls = function()
+        vim.cmd [[packadd nvim-jdtls]]
+        require'jdtls'.start_or_attach({
+            cmd = {
+                'jdtls', os.getenv('HOME') .. '/bakdata/workspace/' ..
+                    vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
+            },
+            on_attach = on_attach,
+            settings = {
+                java = {
+                    formatter = {
+                        fileName = os.getenv('HOME') ..
+                            'bakdata/dependencies/format-bakdata-codestyle.xml'
+                    }
+                    -- import = {gradle = {enabled = true}},
+                    -- signatureHelp = {enabled = true},
+                    -- contentProvider = {preferred = 'fernflower'},
+                    -- completion = {
+                    --     favoriteStaticMembers = {
+                    --         "org.junit.jupiter.api.Assertions.*",
+                    --         "java.util.Objects.requireNonNull",
+                    --         "java.util.Objects.requireNonNullElse",
+                    --         "org.mockito.Mockito.*"
+                    --     }
+                    -- }
+                }
+            }
+        })
+
+        vim.api.nvim_exec([[
+            augroup organize_imports_on_save
+                autocmd! * <buffer>
+                autocmd FileType java
+                autocmd BufWritePre <buffer> lua require'jdtls'.organize_imports()
+            augroup END
+            ]], false)
+    end
+
+    vim.api.nvim_exec([[
+        augroup jdtls
+            autocmd!
+            autocmd FileType java lua init_jdtls()
+        augroup END
+        ]], false)
 end
 
 return M

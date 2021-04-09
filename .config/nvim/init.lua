@@ -144,6 +144,7 @@ require('packer').startup(function()
         config = require'conf.indentline'.config()
     }
     use {'simrat39/rust-tools.nvim', opt = true}
+    use {'mfussenegger/nvim-jdtls', opt = true}
 end)
 
 local executable = function(e) return fn.executable(e) > 0 end
@@ -294,6 +295,7 @@ vim.o.wildignore = add {
 }
 vim.o.wildoptions = "pum"
 vim.o.pumblend = 3 -- Make popup window translucent
+vim.o.pumheight = 20 -- Limit the amount of autocomplete items shown
 
 -----------------------------------------------------------------------------//
 -- Timings {{{1
