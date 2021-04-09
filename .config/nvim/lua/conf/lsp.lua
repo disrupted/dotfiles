@@ -15,7 +15,7 @@ function M.setup()
                        {text = "»", texthl = "LspDiagnosticsDefaultHint"})
     vim.fn.sign_define("LightBulbSign", {
         text = "◎",
-        texthl = "Number",
+        texthl = "LightBulb",
         linehl = "",
         numhl = ""
     })
