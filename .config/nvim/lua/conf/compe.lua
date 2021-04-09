@@ -32,11 +32,21 @@ function M.config()
         }
     }
 
+    check_back_space = function()
+        local col = vim.fn.col('.') - 1
+        if col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') then
+            return true
+        else
+            return false
+        end
+    end
+
     local opts = {silent = true, expr = true}
     vim.api.nvim_set_keymap('i', '<Tab>',
-                            'pumvisible() ? "\\<C-n>" : "\\<Tab>"', opts)
+                            'pumvisible() ? "<C-n>" : v:lua.check_back_space() ? "<Tab>" : compe#complete()',
+                            opts)
     vim.api.nvim_set_keymap('i', '<S-Tab>',
-                            'pumvisible() ? "\\<C-p>" : "\\<Tab>"', opts)
+                            'pumvisible() ? "\\<C-p>" : "\\<S-Tab>"', opts)
     vim.api.nvim_set_keymap('i', '<C-Space>', [[compe#complete()]], opts)
     vim.api.nvim_set_keymap('i', '<C-e>', [[compe#close('<C-e>')]], opts)
     vim.api.nvim_set_keymap('i', '<CR>', [[compe#confirm('<CR>')]], opts)
