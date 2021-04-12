@@ -247,6 +247,7 @@ function M.config()
 
     -- JAVA
     init_jdtls = function()
+        vim.wo.colorcolumn = '120'
         vim.cmd [[packadd nvim-jdtls]]
         require'jdtls'.start_or_attach({
             cmd = {
@@ -255,23 +256,9 @@ function M.config()
             },
             on_attach = on_attach,
             settings = {
-                java = {
-                    formatter = {
-                        fileName = os.getenv('HOME') ..
-                            'bakdata/dependencies/format-bakdata-codestyle.xml'
-                    }
-                    -- import = {gradle = {enabled = true}},
-                    -- signatureHelp = {enabled = true},
-                    -- contentProvider = {preferred = 'fernflower'},
-                    -- completion = {
-                    --     favoriteStaticMembers = {
-                    --         "org.junit.jupiter.api.Assertions.*",
-                    --         "java.util.Objects.requireNonNull",
-                    --         "java.util.Objects.requireNonNullElse",
-                    --         "org.mockito.Mockito.*"
-                    --     }
-                    -- }
-                }
+                ['java.format.settings.url'] = os.getenv('HOME') ..
+                    '/bakdata/dependencies/format-bakdata-codestyle.xml',
+                ['java.format.settings.profile'] = 'bakdata'
             }
         })
 
