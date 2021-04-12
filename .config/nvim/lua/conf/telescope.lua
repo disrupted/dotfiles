@@ -1,6 +1,7 @@
 local M = {}
 
 function M.setup()
+    vim.cmd [[packadd telescope.nvim]]
     local builtins = require('telescope.builtin')
 
     local options = {

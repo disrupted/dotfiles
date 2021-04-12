@@ -19,8 +19,16 @@ local use = require('packer').use
 require('packer').startup(function()
     use {'wbthomason/packer.nvim', opt = true}
     use 'disrupted/one-nvim' -- personal tweaked colorscheme
-    use {'blackCauldron7/surround.nvim', setup = require'conf.surround'.setup()}
-    use {'b3nj5m1n/kommentary', config = require'conf.kommentary'.config()}
+    use {
+        'blackCauldron7/surround.nvim',
+        event = {'VimEnter *'},
+        setup = require'conf.surround'.setup()
+    }
+    use {
+        'b3nj5m1n/kommentary',
+        event = {'VimEnter *'},
+        config = require'conf.kommentary'.config()
+    }
     -- use {'terrortylor/nvim-comment', setup = require'conf.comment'.setup()}
     use {
         'nvim-treesitter/nvim-treesitter',
@@ -76,6 +84,7 @@ require('packer').startup(function()
     }
     use {
         'nvim-telescope/telescope.nvim',
+        event = {'VimEnter *'},
         setup = require'conf.telescope'.setup(),
         config = require'conf.telescope'.config(),
         requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
