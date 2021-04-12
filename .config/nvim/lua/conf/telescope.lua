@@ -30,6 +30,7 @@ function M.setup()
             layout_strategy = 'horizontal',
             layout_config = {preview_width = 0.65},
             show_all_buffers = true,
+            only_cwd = true,
             color_devicons = true
         })
     end
