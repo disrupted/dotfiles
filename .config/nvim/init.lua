@@ -155,6 +155,7 @@ require('packer').startup(function()
     }
     use {'simrat39/rust-tools.nvim', opt = true}
     use {'mfussenegger/nvim-jdtls', opt = true}
+    use {'zsugabubus/crazy8.nvim', opt = true, event = {'BufRead *'}} -- detect indentation automatically
 end)
 
 local executable = function(e) return fn.executable(e) > 0 end
