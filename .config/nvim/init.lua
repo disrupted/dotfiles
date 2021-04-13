@@ -135,11 +135,6 @@ require('packer').startup(function()
     }
     use {'kosayoda/nvim-lightbulb', opt = true}
     use {'kdheepak/lazygit.nvim', opt = true, disable = true}
-    -- use {
-    --     'christoomey/vim-tmux-navigator',
-    --     cond = function() return os.getenv('TMUX') end,
-    --     setup = function() vim.cmd [[packadd vim-tmux-navigator]] end
-    -- }
     use {
         'numToStr/Navigator.nvim',
         cond = function() return os.getenv('TMUX') end,
@@ -386,23 +381,16 @@ map('', 'j', "(v:count ? 'j' : 'gj')", {expr = true})
 map('', 'k', "(v:count ? 'k' : 'gk')", {expr = true})
 
 -- Disable arrow keys
-map('n', '<Up>', '<Nop>')
-map('n', '<Down>', '<Nop>')
-map('n', '<Left>', '<Nop>')
-map('n', '<Right>', '<Nop>')
-map('i', '<Up>', '<Nop>')
-map('i', '<Down>', '<Nop>')
-map('i', '<Left>', '<Nop>')
-map('i', '<Right>', '<Nop>')
+map('', '<Up>', '<Nop>')
+map('', '<Down>', '<Nop>')
+map('', '<Left>', '<Nop>')
+map('', '<Right>', '<Nop>')
+
 -- Easier splits navigation
-map('i', '<C-j>', '<C-w>j', {noremap = false})
-map('i', '<C-k>', '<C-w>k', {noremap = false})
-map('i', '<C-h>', '<C-w>h', {noremap = false})
-map('i', '<C-l>', '<C-w>l', {noremap = false})
-map('n', '<C-j>', '<C-w>j')
-map('n', '<C-k>', '<C-w>k')
-map('n', '<C-h>', '<C-w>h')
-map('n', '<C-l>', '<C-w>l')
+map('n', '<C-j>', '<C-w>j', {noremap = false})
+map('n', '<C-k>', '<C-w>k', {noremap = false})
+map('n', '<C-h>', '<C-w>h', {noremap = false})
+map('n', '<C-l>', '<C-w>l', {noremap = false})
 
 -- Use alt + hjkl to resize windows
 map('n', '<M-j>', '<cmd>resize -2<CR>')
@@ -416,16 +404,10 @@ map('n', '˙', '<cmd>vertical resize -2<CR>')
 map('n', '¬', '<cmd>vertical resize +2<CR>')
 
 -- Terminal window navigation
-map('t', '<C-h>', '<C-\\><C-N><C-w>h')
-map('t', '<C-j>', '<C-\\><C-N><C-w>j')
-map('t', '<C-k>', '<C-\\><C-N><C-w>k')
-map('t', '<C-l>', '<C-\\><C-N><C-w>l')
-map('t', '<C-h>', '<C-\\><C-N><C-w>h')
-map('t', '<C-j>', '<C-\\><C-N><C-w>j')
-map('t', '<C-k>', '<C-\\><C-N><C-w>k')
-map('t', '<C-l>', '<C-\\><C-N><C-w>l')
-map('t', '<Esc>', '<C-\\><C-N>')
--- map('t', '<C-[>', '<C-\\><C-N>')
+map('t', '<C-h>', '<C-\\><C-N><C-w>h', {noremap = false})
+map('t', '<C-j>', '<C-\\><C-N><C-w>j', {noremap = false})
+map('t', '<C-k>', '<C-\\><C-N><C-w>k', {noremap = false})
+map('t', '<C-l>', '<C-\\><C-N><C-w>l', {noremap = false})
 map('t', '<C-[><C-[>', '<C-\\><C-N>') -- double ESC to escape terminal
 
 -- Better indenting
