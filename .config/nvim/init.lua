@@ -135,16 +135,22 @@ require('packer').startup(function()
     }
     use {'kosayoda/nvim-lightbulb', opt = true}
     use {'kdheepak/lazygit.nvim', opt = true, disable = true}
+    -- use {
+    --     'christoomey/vim-tmux-navigator',
+    --     cond = function() return os.getenv('TMUX') end,
+    --     setup = function() vim.cmd [[packadd vim-tmux-navigator]] end
+    -- }
     use {
-        'christoomey/vim-tmux-navigator',
+        'numToStr/Navigator.nvim',
         cond = function() return os.getenv('TMUX') end,
-        setup = function() vim.cmd [[packadd vim-tmux-navigator]] end
+        config = require'conf.navigator'.config()
     }
     use {
         'kassio/neoterm',
         cmd = {'Ttoggle'},
         config = require'conf.neoterm'.config()
     }
+    use {'hkupty/iron.nvim', opt = true} -- REPL
     use {'mhinz/vim-sayonara', cmd = 'Sayonara'}
     use {
         'lukas-reineke/indent-blankline.nvim',
