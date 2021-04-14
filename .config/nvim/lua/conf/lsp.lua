@@ -177,7 +177,14 @@ function M.config()
         require 'pylance'
         lspconfig.pylance.setup {
             on_attach = on_attach,
-            settings = {python = {analysis = {typeCheckingMode = "strict"}}}
+            python = {
+                analysis = {
+                    autoSearchPaths = true,
+                    useLibraryCodeForTypes = true,
+                    autoImportCompletions = true,
+                    typeCheckingMode = "strict" -- or "basic"
+                }
+            }
         }
     end
 
