@@ -134,9 +134,16 @@ function M.config()
               ]], false)
         end
 
+        show_lightbulb = function()
+            require'nvim-lightbulb'.update_lightbulb {
+                sign = {enabled = true, priority = 99},
+                virtual_text = {enabled = true, text = "💡"}
+            }
+        end
+
         if client.resolved_capabilities.code_action then
             vim.cmd [[packadd nvim-lightbulb]]
-            vim.cmd [[autocmd CursorHold,CursorHoldI * if &ft != 'java' | lua require'nvim-lightbulb'.update_lightbulb()]]
+            vim.cmd [[autocmd CursorHold,CursorHoldI * if &ft != 'java' | lua show_lightbulb()]]
             buf_set_keymap('n', '<leader>a',
                            '<cmd>lua require\'telescope.builtin\'.lsp_code_actions()<CR>',
                            opts)
