@@ -12,7 +12,7 @@ function M.setup()
         texthl = "LspDiagnosticsDefaultInformation"
     })
     vim.fn.sign_define("LspDiagnosticsSignHint",
-                       {text = "»", texthl = "LspDiagnosticsDefaultHint"})
+                       {text = "·", texthl = "LspDiagnosticsDefaultHint"})
     vim.fn.sign_define("LightBulbSign", {
         text = "◎",
         texthl = "LightBulb",
@@ -24,7 +24,12 @@ function M.setup()
         vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
             underline = false,
             signs = true,
-            virtual_text = {spacing = 4, prefix = ' '},
+            -- signs = {severity_limit = 'Information'},
+            virtual_text = {
+                spacing = 4,
+                prefix = ' ',
+                severity_limit = 'Warning'
+            },
             update_in_insert = false -- delay update
         })
 
@@ -95,9 +100,11 @@ function M.config()
         buf_set_keymap('n', '<space>d',
                        '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>',
                        opts)
-        buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>',
+        buf_set_keymap('n', '[d',
+                       '<cmd>lua vim.lsp.diagnostic.goto_prev({severity_limit = "Information"})<CR>',
                        opts)
-        buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>',
+        buf_set_keymap('n', ']d',
+                       '<cmd>lua vim.lsp.diagnostic.goto_next({severity_limit = "Information"})<CR>',
                        opts)
         buf_set_keymap('n', '<space>q',
                        '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
