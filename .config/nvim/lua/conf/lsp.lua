@@ -140,7 +140,9 @@ function M.config()
 
         print("LSP attached.")
     end
+
     -- define language servers
+    -- PYTHON
     -- https://github.com/palantir/python-language-server
     -- lspconfig.pyls.setup {
     --     on_attach = on_attach,
@@ -160,10 +162,26 @@ function M.config()
     --         }
     --     }
     -- }
-    lspconfig.pyright.setup {on_attach = on_attach}
-    -- lspconfig.vimls.setup {}
-    -- lspconfig.jsonls.setup {}
-    -- lspconfig.dockerls.setup {}
+
+    -- lspconfig.pyright.setup {on_attach = on_attach}
+
+    init_pylance = function()
+        vim.cmd [[packadd pylance]]
+        require 'pylance'
+        lspconfig.pylance.setup {
+            on_attach = on_attach,
+            settings = {python = {analysis = {typeCheckingMode = "strict"}}}
+        }
+    end
+
+    vim.api.nvim_exec([[
+        augroup pylance
+            autocmd!
+            autocmd FileType python lua init_pylance()
+        augroup END
+        ]], false)
+
+    -- YAML
     lspconfig.yamlls.setup {
         settings = {
             yaml = {
@@ -176,6 +194,7 @@ function M.config()
         }
     }
 
+    -- TYPESCRIPT
     -- https://github.com/theia-ide/typescript-language-server
     lspconfig.tsserver.setup {
         on_attach = function(client)
