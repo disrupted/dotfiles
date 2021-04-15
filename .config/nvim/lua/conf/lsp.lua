@@ -36,7 +36,7 @@ function M.setup()
     -- Handle formatting in a smarter way
     -- If the buffer has been edited before formatting has completed, do not try to
     -- apply the changes, by Lukas Reineke
-    vim.lsp.handlers['textDocument/formatting'] =
+    vim.lsp.handlers["textDocument/formatting"] =
         function(err, _, result, _, bufnr)
             if err ~= nil or result == nil then return end
 
@@ -100,11 +100,15 @@ function M.config()
         buf_set_keymap('n', '<space>d',
                        '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>',
                        opts)
-        buf_set_keymap('n', '[d',
-                       '<cmd>lua vim.lsp.diagnostic.goto_prev({severity_limit = "Information"})<CR>',
+        buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>',
                        opts)
-        buf_set_keymap('n', ']d',
-                       '<cmd>lua vim.lsp.diagnostic.goto_next({severity_limit = "Information"})<CR>',
+        buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>',
+                       opts)
+        buf_set_keymap('n', '[e',
+                       '<cmd>lua vim.lsp.diagnostic.goto_prev({severity_limit = "Warning"})<CR>',
+                       opts)
+        buf_set_keymap('n', ']e',
+                       '<cmd>lua vim.lsp.diagnostic.goto_next({severity_limit = "Warning"})<CR>',
                        opts)
         buf_set_keymap('n', '<space>q',
                        '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
