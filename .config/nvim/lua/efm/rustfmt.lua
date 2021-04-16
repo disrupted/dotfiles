@@ -1,3 +1,4 @@
+-- not needed with rust_analyzer
 return {
     formatCommand = "rustfmt",
     formatStdin = true,

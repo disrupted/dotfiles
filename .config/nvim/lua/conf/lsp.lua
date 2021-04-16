@@ -243,13 +243,9 @@ function M.config()
     local log_dir = "/tmp/"
     local black = require "efm/black"
     local isort = require "efm/isort"
-    local mypy = require "efm/mypy"
     local lua_format = require "efm/lua-format"
-    local prettier = require "efm/prettier"
-    local eslint = require "efm/eslint"
+    local prettier_d = require "efm/prettier_d"
     local eslint_d = require "efm/eslint_d"
-    -- local rustfmt = require "efm/rustfmt"
-    -- local gofmt = require "efm/gofmt"
 
     lspconfig.efm.setup {
         cmd = {
@@ -276,17 +272,15 @@ function M.config()
             languages = {
                 python = {isort, black},
                 lua = {lua_format},
-                yaml = {prettier},
-                json = {prettier},
-                markdown = {prettier},
-                html = {prettier},
-                css = {prettier},
-                javascript = {prettier, eslint_d},
-                typescript = {prettier, eslint_d},
-                javascriptreact = {prettier, eslint_d},
-                typescriptreact = {prettier, eslint_d}
-                -- rust = {rustfmt}, -- not needed with rust_analyzer
-                -- go = {gofmt}, -- not needed with gopls
+                yaml = {prettier_d},
+                json = {prettier_d},
+                markdown = {prettier_d},
+                html = {prettier_d},
+                css = {prettier_d},
+                javascript = {prettier_d, eslint_d},
+                typescript = {prettier_d, eslint_d},
+                javascriptreact = {prettier_d, eslint_d},
+                typescriptreact = {prettier_d, eslint_d}
             }
         }
     }
