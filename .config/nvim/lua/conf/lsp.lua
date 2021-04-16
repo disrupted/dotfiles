@@ -246,6 +246,7 @@ function M.config()
     local lua_format = require "efm/lua-format"
     local prettier_d = require "efm/prettier_d"
     local eslint_d = require "efm/eslint_d"
+    local deno_fmt = require "efm/deno_fmt"
 
     lspconfig.efm.setup {
         cmd = {
@@ -273,14 +274,14 @@ function M.config()
                 python = {isort, black},
                 lua = {lua_format},
                 yaml = {prettier_d},
-                json = {prettier_d},
-                markdown = {prettier_d},
+                json = {deno_fmt},
+                markdown = {deno_fmt},
                 html = {prettier_d},
                 css = {prettier_d},
-                javascript = {prettier_d, eslint_d},
-                typescript = {prettier_d, eslint_d},
-                javascriptreact = {prettier_d, eslint_d},
-                typescriptreact = {prettier_d, eslint_d}
+                javascript = {deno_fmt, eslint_d},
+                typescript = {deno_fmt, eslint_d},
+                javascriptreact = {deno_fmt, eslint_d},
+                typescriptreact = {deno_fmt, eslint_d}
             }
         }
     }
