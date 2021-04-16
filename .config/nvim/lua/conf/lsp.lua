@@ -73,9 +73,9 @@ function M.config()
         end
 
         -- omni completion source
-        buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+        buf_set_option('omnifunc', 'vim.lsp.omnifunc')
 
-        -- Mappings.
+        -- Mappings
         local opts = {noremap = true, silent = true}
         buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
         buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
@@ -126,6 +126,11 @@ function M.config()
                   autocmd BufWritePost <buffer> lua vim.lsp.buf.formatting()
                 augroup END
               ]], false)
+        end
+
+        if client.resolved_capabilities.document_range_formatting then
+            buf_set_keymap('n', '<leader>f',
+                           '<cmd>lua vim.lsp.buf.range_formatting()<CR>', opts)
         end
 
         if client.resolved_capabilities.document_highlight then
@@ -207,7 +212,9 @@ function M.config()
         ]], false)
 
     -- YAML
+    -- https://github.com/redhat-developer/yaml-language-server
     lspconfig.yamlls.setup {
+        on_attach = on_attach,
         settings = {
             yaml = {
                 customTags = {
@@ -215,6 +222,7 @@ function M.config()
                     "!include_dir_merge_named", "!include_dir_merge_list",
                     "!lambda", "!input"
                 }
+                -- schemas = {kubernetes = {"*.yaml"}}
             }
         }
     }
