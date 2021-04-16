@@ -10,8 +10,8 @@ while [[ $(realpath "$path") != / ]]; do
         --absolute-path \
         --exact-depth=1 \
         --max-results=1 \
-        -H -I -g \
-        "pyproject.toml")
+        -H -I \
+        '^(pyproject\.toml|requirements\.txt|\.git)$')
     if [[ ! -z "$result" ]]; then
         echo $(dirname "$result")
         exit 0
@@ -19,6 +19,14 @@ while [[ $(realpath "$path") != / ]]; do
 
     path="$(realpath --relative-to="$PWD" "$path"/..)"
 done
-echo $(git -C "$1" rev-parse --show-toplevel)  # fallback 1: git root
-# echo "$1"                                    # fallback 2: original dir
+
+# fallback 1: git root
+git_root=$(git -C "$1" rev-parse --show-toplevel)
+if [[ ! -z "$git_root" ]]; then
+    echo "$git_root"
+    exit 0
+fi
+
+# fallback 2: original dir
+echo "$1"
 exit 1
