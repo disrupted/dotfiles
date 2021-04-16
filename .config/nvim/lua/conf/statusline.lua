@@ -263,17 +263,19 @@ gls.right[6] = {
 }
 gls.right[7] = {
     GitRoot = {
-        provider = {GetGitRoot, function() return ' ' end},
+        provider = {GetGitRoot},
         condition = function()
             return utils.has_width_gt(45) and condition.check_git_workspace
         end,
+        separator = ' ',
+        separator_highlight = {colors.bg, colors.bg},
         highlight = {colors.middlegrey, colors.bg}
     }
 }
 gls.right[8] = {
     PerCent = {
         provider = 'LinePercent',
-        separator = '',
+        separator = ' ',
         separator_highlight = {colors.blue, colors.bg},
         highlight = {colors.gray2, colors.blue}
     }
