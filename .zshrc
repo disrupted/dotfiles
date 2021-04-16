@@ -310,6 +310,10 @@ zinit light-mode lucid wait has"kubectl" for \
   id-as"kubectl_completion" as"completion" \
   atclone"kubectl completion zsh > _kubectl" \
   atpull"%atclone" run-atpull zdharma/null
+# Hyperfine benchmarking tool
+zinit ice lucid wait"0" as"program" id-as"hyperfine" from"gh-r" \
+  mv"hyperfine*/hyperfine -> hyperfine"
+zinit light sharkdp/hyperfine
 
 #####################
 # HISTORY           #
