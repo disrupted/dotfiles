@@ -153,6 +153,7 @@ require('packer').startup(function()
         event = {'VimEnter *'},
         config = require'conf.indentline'.config()
     }
+    use {'pylance', opt = true}
     use {'simrat39/rust-tools.nvim', opt = true}
     use {'mfussenegger/nvim-jdtls', opt = true}
     use {'zsugabubus/crazy8.nvim', opt = true, event = {'BufRead *'}} -- detect indentation automatically
