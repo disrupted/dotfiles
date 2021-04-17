@@ -289,7 +289,19 @@ function M.config()
 
     -- RUST
     vim.cmd [[packadd rust-tools.nvim]]
-    require'rust-tools'.setup({server = {on_attach = on_attach}})
+    require'rust-tools'.setup({
+        tools = {
+            autoSetHints = true,
+            hover_with_actions = true,
+            runnables = {use_telescope = true},
+            inlay_hints = {
+                show_parameter_hints = true,
+                parameter_hints_prefix = " ", -- ⟵
+                other_hints_prefix = "⟹  "
+            }
+        },
+        server = {on_attach = on_attach}
+    })
 
     -- GO
     lspconfig.gopls.setup {on_attach = on_attach}
