@@ -306,6 +306,17 @@ function M.config()
     -- GO
     lspconfig.gopls.setup {on_attach = on_attach}
 
+    -- DENO
+    -- lspconfig.denols.setup {
+    --     on_attach = on_attach,
+    --     filetypes = {
+    --         "javascript", "javascriptreact", "javascript.jsx", "typescript",
+    --         "typescriptreact", "typescript.tsx", "yaml", "json", "markdown",
+    --         "html", "css"
+    --     },
+    --     init_options = {enable = true, lint = true, unstable = true}
+    -- }
+
     -- JAVA
     init_jdtls = function()
         vim.wo.colorcolumn = '120'
@@ -323,13 +334,13 @@ function M.config()
             }
         })
 
-        vim.api.nvim_exec([[
-            augroup organize_imports_on_save
-                autocmd! * <buffer>
-                autocmd FileType java
-                autocmd BufWritePre <buffer> lua require'jdtls'.organize_imports()
-            augroup END
-            ]], false)
+        -- vim.api.nvim_exec([[
+        --     augroup organize_imports_on_save
+        --         autocmd! * <buffer>
+        --         autocmd FileType java
+        --         autocmd BufWritePre <buffer> lua require'jdtls'.organize_imports()
+        --     augroup END
+        --     ]], false)
     end
 
     vim.api.nvim_exec([[
