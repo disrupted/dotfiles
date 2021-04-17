@@ -289,7 +289,7 @@ function M.config()
 
     -- RUST
     vim.cmd [[packadd rust-tools.nvim]]
-    require'rust-tools'.setup()
+    require'rust-tools'.setup({server = {on_attach = on_attach}})
 
     -- GO
     lspconfig.gopls.setup {on_attach = on_attach}
