@@ -2,8 +2,8 @@ local M = {}
 
 function M.config()
     vim.cmd [[packadd nvim-treesitter]]
-    -- vim.cmd [[packadd nvim-treesitter-refactor]]
-    -- vim.cmd [[packadd nvim-treesitter-textobjects]]
+    vim.cmd [[packadd nvim-treesitter-refactor]]
+    vim.cmd [[packadd nvim-treesitter-textobjects]]
     require'nvim-treesitter.configs'.setup {
         ensure_installed = 'maintained',
         highlight = {enable = true},
@@ -47,8 +47,8 @@ function M.config()
                     ["iC"] = "@class.inner",
                     ["ac"] = "@conditional.outer",
                     ["ic"] = "@conditional.inner",
-                    ["ae"] = "@block.outer",
-                    ["ie"] = "@block.inner",
+                    ["ab"] = "@block.outer",
+                    ["ib"] = "@block.inner",
                     ["al"] = "@loop.outer",
                     ["il"] = "@loop.inner",
                     ["is"] = "@statement.inner",
@@ -78,4 +78,3 @@ function M.config()
 end
 
 return M
-
