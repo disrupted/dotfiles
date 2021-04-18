@@ -126,6 +126,12 @@ require('packer').startup(function()
         requires = {'nvim-lua/plenary.nvim'}
     }
     use {
+        'TimUntersberger/neogit',
+        opt = true,
+        cmd = 'Neogit',
+        config = function() require'conf.neogit'.config() end
+    }
+    use {
         'windwp/nvim-autopairs',
         event = {'BufRead *'},
         setup = function()
