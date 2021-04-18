@@ -18,16 +18,17 @@ cmd [[packadd packer.nvim]]
 local use = require('packer').use
 require('packer').startup(function()
     use {'wbthomason/packer.nvim', opt = true}
+    -- use 'jooize/vim-colemak' -- mapping for the colemak keyboard layout
     use 'disrupted/one-nvim' -- personal tweaked colorscheme
     use {
         'blackCauldron7/surround.nvim',
         event = {'VimEnter *'},
-        setup = require'conf.surround'.setup()
+        config = function() require'conf.surround'.config() end
     }
     use {
         'b3nj5m1n/kommentary',
         event = {'VimEnter *'},
-        config = require'conf.kommentary'.config()
+        config = function() require'conf.kommentary'.config() end
     }
     -- use {'terrortylor/nvim-comment', setup = require'conf.comment'.setup()}
     use {
@@ -45,7 +46,8 @@ require('packer').startup(function()
             }
         },
         run = ':TSUpdate',
-        config = require'conf.treesitter'.config()
+        setup = require'conf.treesitter'.setup(),
+        config = function() require'conf.treesitter'.config() end
     }
     use {
         'neovim/nvim-lspconfig',
@@ -57,7 +59,7 @@ require('packer').startup(function()
     use {
         'hrsh7th/nvim-compe',
         event = {'InsertEnter *'},
-        config = require'conf.compe'.config(),
+        config = function() require'conf.compe'.config() end,
         requires = {'norcalli/snippets.nvim'}
     }
     use {
@@ -80,6 +82,7 @@ require('packer').startup(function()
         'kyazdani42/nvim-tree.lua',
         cmd = {'NvimTreeOpen', 'NvimTreeToggle'},
         setup = require'conf.nvim_tree'.setup(),
+        config = function() require'conf.nvim_tree'.config() end,
         requires = {'kyazdani42/nvim-web-devicons', opt = true}
     }
     use {
@@ -122,7 +125,7 @@ require('packer').startup(function()
     use {
         'lewis6991/gitsigns.nvim',
         event = {'BufReadPre *', 'BufNewFile *'},
-        setup = require'conf.gitsigns'.setup(),
+        config = function() require'conf.gitsigns'.config() end,
         requires = {'nvim-lua/plenary.nvim'}
     }
     use {
@@ -135,10 +138,7 @@ require('packer').startup(function()
     use {
         'windwp/nvim-autopairs',
         event = {'BufRead *'},
-        setup = function()
-            vim.cmd [[packadd nvim-autopairs]]
-            require'nvim-autopairs'.setup()
-        end
+        config = function() require'nvim-autopairs'.setup() end
     }
     use {'kosayoda/nvim-lightbulb', opt = true}
     use {'kdheepak/lazygit.nvim', opt = true, disable = true}
@@ -150,15 +150,16 @@ require('packer').startup(function()
     use {
         'kassio/neoterm',
         cmd = {'Ttoggle'},
-        config = require'conf.neoterm'.config()
+        config = function() require'conf.neoterm'.config() end
     }
     use {'hkupty/iron.nvim', opt = true} -- REPL
     use {'mhinz/vim-sayonara', cmd = 'Sayonara'}
+    use {'phaazon/hop.nvim', opt = false}
     use {
         'lukas-reineke/indent-blankline.nvim',
         branch = 'lua',
         event = {'VimEnter *'},
-        config = require'conf.indentline'.config()
+        config = function() require'conf.indentline'.config() end
     }
     use {'pylance', opt = true}
     use {'simrat39/rust-tools.nvim', opt = true}

@@ -1,7 +1,8 @@
 local M = {}
 
+function M.setup() vim.cmd [[packadd nvim-treesitter]] end
+
 function M.config()
-    vim.cmd [[packadd nvim-treesitter]]
     vim.cmd [[packadd nvim-treesitter-refactor]]
     vim.cmd [[packadd nvim-treesitter-textobjects]]
     require'nvim-treesitter.configs'.setup {

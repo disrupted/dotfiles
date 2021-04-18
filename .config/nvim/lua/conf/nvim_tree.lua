@@ -1,7 +1,12 @@
 local M = {}
 
 function M.setup()
-    vim.cmd [[packadd nvim-tree.lua]]
+    vim.api.nvim_set_keymap("n", "<C-e>",
+                            "<cmd>packadd nvim-tree.lua | lua require'nvim-tree'.toggle()<CR>",
+                            {noremap = true, silent = true})
+end
+
+function M.config()
     vim.g.nvim_tree_ignore = {'.git', 'node_modules', '.cache'}
     vim.g.nvim_tree_auto_open = 0 -- 0 by default, opens the tree when typing `nvim $DIR` or `nvim`
     vim.g.nvim_tree_auto_close = 1 -- 0 by default, closes the tree when it's the last window
@@ -59,10 +64,6 @@ function M.setup()
       hi NvimTreeIndentMarker guifg=#5c6370 
       hi NvimTreeFolderIcon guifg=#5c6370
     ]])
-
-    vim.api.nvim_set_keymap("n", "<C-e>",
-                            "<cmd>lua require 'nvim-tree'.toggle()<CR>",
-                            {noremap = true, silent = true})
 end
 
 return M

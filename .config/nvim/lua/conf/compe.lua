@@ -1,7 +1,6 @@
 local M = {}
 
 function M.config()
-    vim.cmd [[packadd nvim-compe]]
     vim.lsp.protocol.CompletionItemKind =
         {
             "ﮜ [text]", " [method]", " [function]", " [constructor]",
