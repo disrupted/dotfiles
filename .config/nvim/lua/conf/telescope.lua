@@ -1,9 +1,6 @@
 local M = {}
 
 function M.setup()
-    vim.cmd [[packadd telescope.nvim]]
-    local builtins = require('telescope.builtin')
-
     local options = {
         shorten_path = false,
         height = 10,
@@ -14,39 +11,42 @@ function M.setup()
         -- Launch file search using Telescope
         -- if vim.fn.isdirectory(".git") then
         --     -- if in a git project, use :Telescope git_files
-        --     builtins.git_files(options)
+        --     require'telescope.builtin'.git_files(options)
         -- else
         -- otherwise, use :Telescope find_files
-        builtins.find_files(options)
+        require'telescope.builtin'.find_files(options)
         -- end
     end
     function _G.__telescope_buffers()
-        builtins.buffers({
-            sort_lastused = true,
-            ignore_current_buffer = true,
-            sorter = require('telescope.sorters').get_substr_matcher(),
-            shorten_path = true,
-            height = 10,
-            layout_strategy = 'horizontal',
-            layout_config = {preview_width = 0.65},
-            show_all_buffers = true,
-            color_devicons = true
-        })
+        require'telescope.builtin'.buffers(
+            {
+                sort_lastused = true,
+                ignore_current_buffer = true,
+                sorter = require('telescope.sorters').get_substr_matcher(),
+                shorten_path = true,
+                height = 10,
+                layout_strategy = 'horizontal',
+                layout_config = {preview_width = 0.65},
+                show_all_buffers = true,
+                color_devicons = true
+            })
     end
     function _G.__telescope_grep()
-        builtins.live_grep({
-            shorten_path = false,
-            height = 10,
-            layout_strategy = 'horizontal',
-            layout_config = {preview_width = 0.4}
-        })
+        require'telescope.builtin'.live_grep(
+            {
+                shorten_path = false,
+                height = 10,
+                layout_strategy = 'horizontal',
+                layout_config = {preview_width = 0.4}
+            })
     end
     function _G.__telescope_commits()
-        builtins.git_commits({
-            height = 10,
-            layout_strategy = 'horizontal',
-            layout_config = {preview_width = 0.55}
-        })
+        require'telescope.builtin'.git_commits(
+            {
+                height = 10,
+                layout_strategy = 'horizontal',
+                layout_config = {preview_width = 0.55}
+            })
     end
     local opts = {noremap = true, silent = true}
     vim.api.nvim_set_keymap('n', '<Space>b',

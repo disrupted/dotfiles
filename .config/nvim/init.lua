@@ -53,8 +53,8 @@ require('packer').startup(function()
         'neovim/nvim-lspconfig',
         event = {'BufRead *'},
         setup = require'conf.lsp'.setup(),
-        config = require'conf.lsp'.config(),
-        requires = {'nvim-lua/lsp-status.nvim', opt = true}
+        config = function() require'conf.lsp'.config() end
+        -- requires = {'nvim-lua/lsp-status.nvim', opt = true}
     }
     use {
         'hrsh7th/nvim-compe',
@@ -76,7 +76,7 @@ require('packer').startup(function()
             }
         },
         setup = require'conf.dap'.setup(),
-        config = require'conf.dap'.config()
+        config = function() require'conf.dap'.config() end
     }
     use {
         'kyazdani42/nvim-tree.lua',
@@ -89,7 +89,7 @@ require('packer').startup(function()
         'nvim-telescope/telescope.nvim',
         event = {'VimEnter *'},
         setup = require'conf.telescope'.setup(),
-        config = require'conf.telescope'.config(),
+        config = function() require'conf.telescope'.config() end,
         requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
     }
     use {

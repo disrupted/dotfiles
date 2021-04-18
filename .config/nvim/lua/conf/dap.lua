@@ -3,10 +3,6 @@ local M = {}
 function M.setup() vim.g.dap_virtual_text = true end
 
 function M.config()
-    vim.cmd [[packadd nvim-dap]]
-    vim.cmd [[packadd nvim-dap-python]]
-    vim.cmd [[packadd nvim-dap-virtual-text]]
-
     local dap = require('dap')
 
     vim.fn.sign_define('DapBreakpoint', {
