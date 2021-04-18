@@ -1,8 +1,7 @@
 local M = {}
 
 function M.setup()
-    vim.api.nvim_set_keymap("n", "<C-e>",
-                            "<cmd>packadd nvim-tree.lua | lua require'nvim-tree'.toggle()<CR>",
+    vim.api.nvim_set_keymap("n", "<C-e>", "<cmd>NvimTreeToggle<CR>",
                             {noremap = true, silent = true})
 end
 
@@ -61,8 +60,8 @@ function M.config()
     }
 
     vim.cmd([[
-      hi NvimTreeIndentMarker guifg=#5c6370 
-      hi NvimTreeFolderIcon guifg=#5c6370
+      hi link NvimTreeIndentMarker Whitespace
+      hi link NvimTreeFolderIcon NonText
     ]])
 end
 
