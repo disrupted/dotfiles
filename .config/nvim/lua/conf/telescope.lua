@@ -57,7 +57,7 @@ function M.setup()
     -- vim.api.nvim_set_keymap('n', '<Space>s',
     --                         "<cmd>lua require('telescope').extensions.frecency.frecency({layout_strategy = 'vertical'})<CR>",
     --    opts)
-    vim.api.nvim_set_keymap('n', '<Space>g', '<cmd>lua __telescope_grep()<CR>',
+    vim.api.nvim_set_keymap('n', '<Space>/', '<cmd>lua __telescope_grep()<CR>',
                             opts)
     vim.api.nvim_set_keymap('n', '<Space>h',
                             "<cmd>lua require('telescope.builtin').help_tags(options)<CR>",

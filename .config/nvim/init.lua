@@ -129,6 +129,7 @@ require('packer').startup(function()
         'TimUntersberger/neogit',
         opt = true,
         cmd = 'Neogit',
+        setup = require'conf.neogit'.setup(),
         config = function() require'conf.neogit'.config() end
     }
     use {
