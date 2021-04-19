@@ -115,6 +115,15 @@ local GetGitRoot = function()
     return get_basename(git_root)
 end
 
+local LspStatus = function()
+    if #vim.lsp.buf_get_clients() > 0 then
+        local status = require'lsp-status'.status()
+        return status
+        -- return status:sub(2)
+    end
+    return ''
+end
+
 -- Left side
 gls.left[1] = {
     ViMode = {
@@ -182,47 +191,75 @@ gls.left[3] = {
 -- }
 gls.left[9] = {
     DiagnosticError = {
-        provider = 'DiagnosticError',
+        provider = {'DiagnosticError'},
         icon = '  ',
         highlight = {colors.red1, colors.bg}
+        -- separator = ' ',
+        -- separator_highlight = {colors.bg, colors.bg}
     }
 }
-gls.left[10] = {
-    Space = {
-        provider = function() return ' ' end,
-        highlight = {colors.section_bg, colors.bg}
-    }
-}
+-- gls.left[10] = {
+--     Space = {
+--         provider = function() return ' ' end,
+--         highlight = {colors.section_bg, colors.bg}
+--     }
+-- }
 gls.left[11] = {
     DiagnosticWarn = {
-        provider = 'DiagnosticWarn',
+        provider = {'DiagnosticWarn'},
         icon = '  ',
         highlight = {colors.orange, colors.bg}
+        -- separator = ' ',
+        -- separator_highlight = {colors.bg, colors.bg}
     }
 }
-gls.left[12] = {
-    Space = {
-        provider = function() return ' ' end,
-        highlight = {colors.section_bg, colors.bg}
-    }
-}
+-- gls.left[12] = {
+--     Space = {
+--         provider = function() return ' ' end,
+--         highlight = {colors.section_bg, colors.bg}
+--     }
+-- }
 gls.left[13] = {
     DiagnosticInfo = {
-        provider = 'DiagnosticInfo',
+        provider = {'DiagnosticInfo'},
         icon = '  ',
         highlight = {colors.blue, colors.section_bg},
         separator = ' ',
         separator_highlight = {colors.section_bg, colors.bg}
     }
 }
+gls.left[14] = {
+    LspStatus = {
+        provider = {LspStatus},
+        -- separator = ' ',
+        -- separator_highlight = {colors.bg, colors.bg},
+        highlight = {colors.middlegrey, colors.bg}
+    }
+}
 
 -- Right side
+-- gls.right[0] = {
+--     ShowLspClient = {
+--         provider = 'GetLspClient',
+--         condition = function()
+--             local tbl = {['dashboard'] = true, [''] = true}
+--             if tbl[vim.bo.filetype] then return false end
+--             return true
+--         end,
+--         icon = ' ',
+--         highlight = {colors.middlegrey, colors.bg},
+--         separator = ' ',
+--         separator_highlight = {colors.section_bg, colors.bg}
+--     }
+-- }
 gls.right[1] = {
     DiffAdd = {
         provider = 'DiffAdd',
         condition = checkwidth,
         icon = '+',
-        highlight = {colors.green, colors.bg}
+        highlight = {colors.green, colors.bg},
+        separator = ' ',
+        separator_highlight = {colors.section_bg, colors.bg}
     }
 }
 gls.right[2] = {
@@ -247,16 +284,9 @@ gls.right[4] = {
         highlight = {colors.section_bg, colors.bg}
     }
 }
-gls.right[5] = {
-    GitIcon = {
-        provider = function() return '  ' end,
-        condition = condition.check_git_workspace,
-        highlight = {colors.middlegrey, colors.bg}
-    }
-}
 gls.right[6] = {
     GitBranch = {
-        provider = 'GitBranch',
+        provider = {function() return '  ' end, 'GitBranch'},
         condition = condition.check_git_workspace,
         highlight = {colors.middlegrey, colors.bg}
     }

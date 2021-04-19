@@ -60,11 +60,23 @@ function M.config()
     vim.cmd [[packadd lsp-status.nvim]]
     local lspconfig = require 'lspconfig'
     local lsp_status = require 'lsp-status'
+    lsp_status.config({
+        status_symbol = '',
+        indicator_ok = '',
+        diagnostics = false,
+        current_function = false
+    })
     lsp_status.register_progress()
+
     -- client log level
     vim.lsp.set_log_level('info')
 
+    local capabilities = lsp_status.capabilities
+    capabilities.textDocument.completion.completionItem.snippetSupport = true
+
     local on_attach = function(client, bufnr)
+        lsp_status.on_attach(client)
+
         local function buf_set_keymap(...)
             vim.api.nvim_buf_set_keymap(bufnr, ...)
         end
@@ -186,12 +198,16 @@ function M.config()
     --     }
     -- }
 
-    -- lspconfig.pyright.setup {on_attach = on_attach}
+    -- lspconfig.pyright.setup {
+    --     on_attach = on_attach,
+    --     capabilities = capabilities
+    -- }
 
     vim.cmd [[packadd pylance]]
     require 'pylance'
     lspconfig.pylance.setup {
         on_attach = on_attach,
+        capabilities = capabilities,
         python = {
             analysis = {
                 autoSearchPaths = true,
