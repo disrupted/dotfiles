@@ -19,7 +19,10 @@ local use = require('packer').use
 require('packer').startup(function()
     use {'wbthomason/packer.nvim', opt = true}
     -- use 'jooize/vim-colemak' -- mapping for the colemak keyboard layout
-    use 'disrupted/one-nvim' -- personal tweaked colorscheme
+    use {
+        'disrupted/one-nvim', -- personal tweaked colorscheme
+        config = function() vim.cmd 'colorscheme one-nvim' end
+    }
     use {
         'blackCauldron7/surround.nvim',
         event = {'VimEnter *'},
@@ -51,16 +54,18 @@ require('packer').startup(function()
     }
     use {
         'neovim/nvim-lspconfig',
+        opt = true,
         event = {'BufRead *'},
         setup = require'conf.lsp'.setup(),
-        config = function() require'conf.lsp'.config() end
-        -- requires = {'nvim-lua/lsp-status.nvim', opt = true}
+        config = require'conf.lsp'.config(),
+        requires = {'nvim-lua/lsp-status.nvim', opt = true}
     }
     use {
         'hrsh7th/nvim-compe',
+        opt = true,
         event = {'InsertEnter *'},
         config = function() require'conf.compe'.config() end,
-        requires = {'norcalli/snippets.nvim'}
+        requires = {'norcalli/snippets.nvim', opt = true}
     }
     use {
         -- Debug Adapter Protocol client
@@ -80,6 +85,7 @@ require('packer').startup(function()
     }
     use {
         'kyazdani42/nvim-tree.lua',
+        opt = true,
         cmd = {'NvimTreeOpen', 'NvimTreeToggle'},
         setup = require'conf.nvim_tree'.setup(),
         config = function() require'conf.nvim_tree'.config() end,
@@ -110,6 +116,7 @@ require('packer').startup(function()
     }
     use {
         'glepnir/galaxyline.nvim',
+        opt = true,
         branch = 'main',
         event = {'VimEnter *'},
         config = function() require 'conf.statusline' end,
@@ -368,9 +375,7 @@ vim.g.netrw_banner = 0
 -----------------------------------------------------------------------------//
 -- Colorscheme {{{1
 -----------------------------------------------------------------------------//
--- order is important here
 vim.o.termguicolors = true
-cmd 'colorscheme one-nvim'
 
 -----------------------------------------------------------------------------//
 -- Mappings {{{1

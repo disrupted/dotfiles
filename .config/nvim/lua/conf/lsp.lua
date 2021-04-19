@@ -56,6 +56,8 @@ function M.setup()
 end
 
 function M.config()
+    vim.cmd [[packadd nvim-lspconfig]]
+    vim.cmd [[packadd lsp-status.nvim]]
     local lspconfig = require 'lspconfig'
     local lsp_status = require 'lsp-status'
     lsp_status.register_progress()
@@ -186,28 +188,19 @@ function M.config()
 
     -- lspconfig.pyright.setup {on_attach = on_attach}
 
-    init_pylance = function()
-        vim.cmd [[packadd pylance]]
-        require 'pylance'
-        lspconfig.pylance.setup {
-            on_attach = on_attach,
-            python = {
-                analysis = {
-                    autoSearchPaths = true,
-                    useLibraryCodeForTypes = true,
-                    autoImportCompletions = true,
-                    typeCheckingMode = "strict" -- or "basic"
-                }
+    vim.cmd [[packadd pylance]]
+    require 'pylance'
+    lspconfig.pylance.setup {
+        on_attach = on_attach,
+        python = {
+            analysis = {
+                autoSearchPaths = true,
+                useLibraryCodeForTypes = true,
+                autoImportCompletions = true,
+                typeCheckingMode = "strict" -- or "basic"
             }
         }
-    end
-
-    vim.api.nvim_exec([[
-        augroup pylance
-            autocmd!
-            autocmd FileType python lua init_pylance()
-        augroup END
-        ]], false)
+    }
 
     -- YAML
     -- https://github.com/redhat-developer/yaml-language-server

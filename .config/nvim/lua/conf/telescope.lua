@@ -53,6 +53,7 @@ function M.setup()
                             '<cmd>lua __telescope_buffers()<CR>', opts)
     vim.api.nvim_set_keymap('n', '<C-f>', '<cmd>lua __telescope_files()<CR>',
                             opts)
+    vim.api.nvim_set_keymap('n', '<C-g>', '<cmd>Telescope git_status<CR>', opts)
     -- vim.api.nvim_set_keymap('n', '<Space>s',
     --                         "<cmd>lua require('telescope').extensions.frecency.frecency({layout_strategy = 'vertical'})<CR>",
     --    opts)
@@ -69,6 +70,7 @@ function M.setup()
 end
 
 function M.config()
+    vim.cmd [[packadd nvim-web-devicons]]
     local actions = require('telescope.actions')
     local sorters = require('telescope.sorters')
     local previewers = require('telescope.previewers')

@@ -12,6 +12,7 @@ function M.config()
             "⌘ [event]", " [operator]", "⌂ [type]"
         }
 
+    vim.cmd [[packadd snippets.nvim]]
     require'compe'.setup {
         enabled = true,
         debug = false,
