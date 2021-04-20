@@ -2,6 +2,7 @@ vim.cmd [[packadd nvim-web-devicons]]
 local gl = require('galaxyline')
 local utils = require('conf.utils')
 local condition = require('galaxyline.condition')
+local diagnostic = require('galaxyline.provider_diagnostic')
 
 local gls = gl.section
 gl.short_line_list = {'defx', 'packager', 'vista', 'NvimTree'}
@@ -116,11 +117,17 @@ local GetGitRoot = function()
 end
 
 local LspStatus = function()
-    if #vim.lsp.buf_get_clients() > 0 then
-        local status = require'lsp-status'.status()
-        return status
-        -- return status:sub(2)
+    -- if #vim.lsp.buf_get_clients() > 0 then
+    if #vim.lsp.get_active_clients() > 0 then
+        return require'lsp-status'.status()
     end
+    return ''
+end
+
+local LspCheckDiagnostics = function()
+    if #vim.lsp.get_active_clients() > 0 and diagnostic.get_diagnostic_error() ==
+        nil and diagnostic.get_diagnostic_warn() == nil and
+        diagnostic.get_diagnostic_info() == nil then return ' ' end
     return ''
 end
 
@@ -189,6 +196,12 @@ gls.left[3] = {
 --         highlight = {colors.fg, colors.bg}
 --     }
 -- }
+gls.left[8] = {
+    DiagnosticsCheck = {
+        provider = {LspCheckDiagnostics},
+        highlight = {colors.middlegrey, colors.bg}
+    }
+}
 gls.left[9] = {
     DiagnosticError = {
         provider = {'DiagnosticError'},
