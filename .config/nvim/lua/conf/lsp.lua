@@ -56,6 +56,7 @@ function M.setup()
 end
 
 function M.config()
+    local home = os.getenv('HOME')
     vim.cmd [[packadd nvim-lspconfig]]
     vim.cmd [[packadd lsp-status.nvim]]
     local lspconfig = require 'lspconfig'
@@ -200,7 +201,8 @@ function M.config()
 
     -- lspconfig.pyright.setup {
     --     on_attach = on_attach,
-    --     capabilities = capabilities
+    --     capabilities = capabilities,
+    --     flags = {debounce_text_changes = 150}
     -- }
 
     vim.cmd [[packadd pylance]]
@@ -208,6 +210,7 @@ function M.config()
     lspconfig.pylance.setup {
         on_attach = on_attach,
         capabilities = capabilities,
+        flags = {debounce_text_changes = 150},
         python = {
             analysis = {
                 autoSearchPaths = true,
@@ -222,6 +225,7 @@ function M.config()
     -- https://github.com/redhat-developer/yaml-language-server
     lspconfig.yamlls.setup {
         on_attach = on_attach,
+        flags = {debounce_text_changes = 150},
         settings = {
             yaml = {
                 customTags = {
@@ -236,17 +240,16 @@ function M.config()
 
     -- TYPESCRIPT
     -- https://github.com/theia-ide/typescript-language-server
-    lspconfig.tsserver.setup {
-        on_attach = function(client)
-            client.resolved_capabilities.document_formatting = false
-            on_attach(client)
-        end
-    }
+    -- lspconfig.tsserver.setup {
+    --     on_attach = function(client)
+    --         client.resolved_capabilities.document_formatting = false
+    --         on_attach(client)
+    --     end
+    -- }
 
     -- EFM Universal Language Server
     -- https://github.com/mattn/efm-langserver
-    local efm_config = os.getenv('HOME') ..
-                           '/.config/efm-langserver/config.yaml'
+    local efm_config = home .. '/.config/efm-langserver/config.yaml'
     local log_dir = "/tmp/"
     local black = require "efm/black"
     local isort = require "efm/isort"
@@ -261,6 +264,7 @@ function M.config()
             "efm-langserver", "-c", efm_config, "-logfile", log_dir .. "efm.log"
         },
         on_attach = on_attach,
+        flags = {debounce_text_changes = 150},
         filetypes = {
             "python", "lua", "yaml", "json", "markdown", "rst", "html", "css",
             "javascript", "typescript", "javascriptreact", "typescriptreact",
@@ -295,23 +299,38 @@ function M.config()
     }
 
     -- RUST
-    vim.cmd [[packadd rust-tools.nvim]]
-    require'rust-tools'.setup({
-        tools = {
-            autoSetHints = true,
-            hover_with_actions = true,
-            runnables = {use_telescope = true},
-            inlay_hints = {
-                show_parameter_hints = true,
-                parameter_hints_prefix = " ", -- ⟵
-                other_hints_prefix = "⟹  "
+    init_rust_analyzer = function()
+        vim.cmd [[packadd rust-tools.nvim]]
+        require'rust-tools'.setup({
+            server = {
+                on_attach = on_attach,
+                flags = {debounce_text_changes = 150}
+            },
+            tools = {
+                autoSetHints = true,
+                hover_with_actions = true,
+                runnables = {use_telescope = true},
+                inlay_hints = {
+                    show_parameter_hints = true,
+                    parameter_hints_prefix = " ", -- ⟵
+                    other_hints_prefix = "⟹  "
+                }
             }
-        },
-        server = {on_attach = on_attach}
-    })
+        })
+    end
+
+    vim.api.nvim_exec([[
+        augroup rust_analyzer
+            autocmd!
+            autocmd FileType rust lua init_rust_analyzer()
+        augroup END
+        ]], false)
 
     -- GO
-    lspconfig.gopls.setup {on_attach = on_attach}
+    lspconfig.gopls.setup {
+        on_attach = on_attach,
+        flags = {debounce_text_changes = 150}
+    }
 
     -- DENO
     -- lspconfig.denols.setup {
@@ -330,12 +349,14 @@ function M.config()
         vim.cmd [[packadd nvim-jdtls]]
         require'jdtls'.start_or_attach({
             cmd = {
-                'jdtls', os.getenv('HOME') .. '/bakdata/workspace/' ..
+                'jdtls',
+                home .. '/bakdata/workspace/' ..
                     vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
             },
             on_attach = on_attach,
+            flags = {debounce_text_changes = 150},
             settings = {
-                ['java.format.settings.url'] = os.getenv('HOME') ..
+                ['java.format.settings.url'] = home ..
                     '/bakdata/dependencies/format-bakdata-codestyle.xml',
                 ['java.format.settings.profile'] = 'bakdata'
             }
@@ -350,12 +371,12 @@ function M.config()
         --     ]], false)
     end
 
-    vim.api.nvim_exec([[
-        augroup jdtls
-            autocmd!
-            autocmd FileType java lua init_jdtls()
-        augroup END
-        ]], false)
+    -- vim.api.nvim_exec([[
+    --     augroup jdtls
+    --         autocmd!
+    --         autocmd FileType java lua init_jdtls()
+    --     augroup END
+    --     ]], false)
 end
 
 return M
