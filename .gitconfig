@@ -59,6 +59,16 @@
     mergeoptions = --no-edit
     commitGraph = true
 
+[merge]
+    tool = nvimdiff
+
+[mergetool]
+    keepBackup = false
+    prompt = true
+    
+[mergetool "nvimdiff"]
+    cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+
 [help]
     # Autocorrect mistyped commands.
     autocorrect = 1
@@ -143,6 +153,7 @@
     branches = branch -a --sort=-authordate
     stashes = stash list
     remotes = remote -v
+    conflicts = !git --no-pager diff --name-only --diff-filter=U | xargs grep -c '^=======$'
     unstage = reset -q HEAD --
     uncommit = reset --mixed HEAD~
 
