@@ -1,7 +1,6 @@
 local cmd = vim.cmd -- to execute Vim commands e.g. cmd('pwd')
 local fn = vim.fn -- to call Vim functions e.g. fn.bufnr()
 
--- Install packer
 local execute = vim.api.nvim_command
 
 local install_path = fn.stdpath('data') .. '/site/pack/packer/opt/packer.nvim'
@@ -11,12 +10,12 @@ if fn.empty(fn.glob(install_path)) > 0 then
                 install_path)
 end
 
--- Only required if you have packer in your `opt` pack
 cmd [[packadd packer.nvim]]
+local packer = require 'packer'
+local use = packer.use
 -- cmd [[autocmd BufWritePost init.lua PackerCompile]]
 
-local use = require('packer').use
-require('packer').startup(function()
+packer.startup(function()
     use {'wbthomason/packer.nvim', opt = true}
     -- use 'jooize/vim-colemak' -- mapping for the colemak keyboard layout
     use {
@@ -25,19 +24,18 @@ require('packer').startup(function()
     }
     use {
         'blackCauldron7/surround.nvim',
-        event = {'VimEnter *'},
+        event = {'VimEnter'},
         config = require'conf.surround'.config
     }
     use {
         'b3nj5m1n/kommentary',
-        event = {'VimEnter *'},
+        event = {'VimEnter'},
         config = require'conf.kommentary'.config
     }
     use {
         'nvim-treesitter/nvim-treesitter',
-        event = {'BufRead *'},
+        event = {'BufRead', 'BufNewFile'},
         requires = {
-            -- treesitter plugins
             {
                 'nvim-treesitter/nvim-treesitter-refactor',
                 after = 'nvim-treesitter'
@@ -54,7 +52,7 @@ require('packer').startup(function()
     use {
         'neovim/nvim-lspconfig',
         opt = true,
-        event = {'BufRead *'},
+        event = {'BufRead'},
         setup = require'conf.lsp'.setup,
         config = require'conf.lsp'.config(),
         requires = {'nvim-lua/lsp-status.nvim', opt = true}
@@ -62,14 +60,14 @@ require('packer').startup(function()
     use {
         'L3MON4D3/LuaSnip',
         opt = true,
-        event = {'InsertEnter *'},
+        event = {'InsertEnter'},
         config = function() require 'conf.snippets' end,
         requires = {'rafamadriz/friendly-snippets', opt = true}
     }
     use {
         'hrsh7th/nvim-compe',
         opt = true,
-        event = {'InsertEnter *'},
+        event = {'InsertEnter'},
         config = require'conf.compe'.config,
         after = 'LuaSnip'
     }
@@ -99,7 +97,7 @@ require('packer').startup(function()
     }
     use {
         'nvim-telescope/telescope.nvim',
-        event = {'VimEnter *'},
+        event = {'VimEnter'},
         setup = require'conf.telescope'.setup,
         config = require'conf.telescope'.config,
         requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
@@ -109,12 +107,6 @@ require('packer').startup(function()
         after = {'telescope.nvim', 'nvim-dap'},
         config = function() require'telescope'.load_extension('dap') end
     }
-    -- use {
-    --     'sunjon/telescope-frecency',
-    --     after = {'telescope.nvim'},
-    --     config = function() require'telescope'.load_extension('frecency') end,
-    --     requires = {'tami5/sql.nvim'}
-    -- }
     use {
         'nvim-telescope/telescope-github.nvim',
         after = {'telescope.nvim'},
@@ -124,20 +116,20 @@ require('packer').startup(function()
         'glepnir/galaxyline.nvim',
         opt = true,
         branch = 'main',
-        event = {'VimEnter *'},
+        event = {'VimEnter'},
         config = function() require 'conf.statusline' end,
         requires = {'kyazdani42/nvim-web-devicons', opt = true}
     }
     use {
         'romgrk/barbar.nvim',
-        event = {'VimEnter *'},
+        event = {'VimEnter'},
         config = require'conf.bufferline'.config(),
         requires = {'kyazdani42/nvim-web-devicons', opt = true},
         disable = true
     }
     use {
         'lewis6991/gitsigns.nvim',
-        event = {'BufReadPre *', 'BufNewFile *'},
+        event = {'BufReadPre', 'BufNewFile'},
         config = require'conf.gitsigns'.config,
         requires = {'nvim-lua/plenary.nvim'}
     }
@@ -150,11 +142,10 @@ require('packer').startup(function()
     }
     use {
         'windwp/nvim-autopairs',
-        event = {'BufRead *'},
+        event = {'BufRead'},
         config = function() require'nvim-autopairs'.setup() end
     }
     use {'kosayoda/nvim-lightbulb', opt = true}
-    use {'kdheepak/lazygit.nvim', opt = true, disable = true}
     use {
         'numToStr/Navigator.nvim',
         cond = function() return os.getenv('TMUX') end,
@@ -166,19 +157,19 @@ require('packer').startup(function()
         config = require'conf.neoterm'.config
     }
     use {'hkupty/iron.nvim', opt = true} -- REPL
-    use {'mhinz/vim-sayonara', cmd = 'Sayonara'}
+    use {'mhinz/vim-sayonara', opt = true, cmd = 'Sayonara'}
     use {'phaazon/hop.nvim', opt = true}
     use {
         'lukas-reineke/indent-blankline.nvim',
         opt = true,
         branch = 'lua',
-        event = {'VimEnter *'},
+        event = {'BufRead'},
         config = require'conf.indentline'.config
     }
     use {'pylance', opt = true}
     use {'simrat39/rust-tools.nvim', opt = true}
     use {'mfussenegger/nvim-jdtls', opt = true}
-    use {'zsugabubus/crazy8.nvim', opt = true, event = {'BufRead *'}} -- detect indentation automatically
+    use {'zsugabubus/crazy8.nvim', opt = true, event = {'BufRead'}} -- detect indentation automatically
     use {
         'folke/lsp-trouble.nvim',
         opt = true,
