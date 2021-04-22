@@ -1,7 +1,6 @@
 local M = {}
 
 function M.config()
-    vim.cmd [[packadd Navigator.nvim]]
     require'Navigator'.setup()
 
     local opts = {noremap = true, silent = true}

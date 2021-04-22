@@ -26,12 +26,12 @@ require('packer').startup(function()
     use {
         'blackCauldron7/surround.nvim',
         event = {'VimEnter *'},
-        config = function() require'conf.surround'.config() end
+        config = require'conf.surround'.config
     }
     use {
         'b3nj5m1n/kommentary',
         event = {'VimEnter *'},
-        config = function() require'conf.kommentary'.config() end
+        config = require'conf.kommentary'.config
     }
     -- use {'terrortylor/nvim-comment', setup = require'conf.comment'.setup()}
     use {
@@ -50,7 +50,7 @@ require('packer').startup(function()
         },
         run = ':TSUpdate',
         setup = require'conf.treesitter'.setup(),
-        config = function() require'conf.treesitter'.config() end
+        config = require'conf.treesitter'.config
     }
     use {
         'neovim/nvim-lspconfig',
@@ -88,21 +88,21 @@ require('packer').startup(function()
             }
         },
         setup = require'conf.dap'.setup(),
-        config = function() require'conf.dap'.config() end
+        config = require'conf.dap'.config
     }
     use {
         'kyazdani42/nvim-tree.lua',
         opt = true,
         cmd = {'NvimTreeOpen', 'NvimTreeToggle'},
         setup = require'conf.nvim_tree'.setup(),
-        config = function() require'conf.nvim_tree'.config() end,
+        config = require'conf.nvim_tree'.config,
         requires = {'kyazdani42/nvim-web-devicons', opt = true}
     }
     use {
         'nvim-telescope/telescope.nvim',
         event = {'VimEnter *'},
         setup = require'conf.telescope'.setup(),
-        config = function() require'conf.telescope'.config() end,
+        config = require'conf.telescope'.config,
         requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
     }
     use {
@@ -139,7 +139,7 @@ require('packer').startup(function()
     use {
         'lewis6991/gitsigns.nvim',
         event = {'BufReadPre *', 'BufNewFile *'},
-        config = function() require'conf.gitsigns'.config() end,
+        config = require'conf.gitsigns'.config,
         requires = {'nvim-lua/plenary.nvim'}
     }
     use {
@@ -147,7 +147,7 @@ require('packer').startup(function()
         opt = true,
         cmd = 'Neogit',
         setup = require'conf.neogit'.setup(),
-        config = function() require'conf.neogit'.config() end
+        config = require'conf.neogit'.config
     }
     use {
         'windwp/nvim-autopairs',
@@ -159,12 +159,12 @@ require('packer').startup(function()
     use {
         'numToStr/Navigator.nvim',
         cond = function() return os.getenv('TMUX') end,
-        config = require'conf.navigator'.config()
+        config = require'conf.navigator'.config
     }
     use {
         'kassio/neoterm',
         cmd = {'Ttoggle'},
-        config = function() require'conf.neoterm'.config() end
+        config = require'conf.neoterm'.config
     }
     use {'hkupty/iron.nvim', opt = true} -- REPL
     use {'mhinz/vim-sayonara', cmd = 'Sayonara'}
@@ -173,7 +173,7 @@ require('packer').startup(function()
         'lukas-reineke/indent-blankline.nvim',
         branch = 'lua',
         event = {'VimEnter *'},
-        config = function() require'conf.indentline'.config() end
+        config = require'conf.indentline'.config
     }
     use {'pylance', opt = true}
     use {'simrat39/rust-tools.nvim', opt = true}
