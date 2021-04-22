@@ -171,6 +171,7 @@ require('packer').startup(function()
     use {'phaazon/hop.nvim', opt = true}
     use {
         'lukas-reineke/indent-blankline.nvim',
+        opt = true,
         branch = 'lua',
         event = {'VimEnter *'},
         config = require'conf.indentline'.config
@@ -179,6 +180,13 @@ require('packer').startup(function()
     use {'simrat39/rust-tools.nvim', opt = true}
     use {'mfussenegger/nvim-jdtls', opt = true}
     use {'zsugabubus/crazy8.nvim', opt = true, event = {'BufRead *'}} -- detect indentation automatically
+    use {
+        'folke/lsp-trouble.nvim',
+        opt = true,
+        cmd = 'LspTroubleToggle',
+        config = require'conf.lsp_trouble'.config,
+        requires = {'kyazdani42/nvim-web-devicons', opt = true}
+    }
 end)
 
 local executable = function(e) return fn.executable(e) > 0 end
