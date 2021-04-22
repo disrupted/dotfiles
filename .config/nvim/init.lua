@@ -61,11 +61,18 @@ require('packer').startup(function()
         requires = {'nvim-lua/lsp-status.nvim', opt = true}
     }
     use {
+        'L3MON4D3/LuaSnip',
+        opt = true,
+        event = {'InsertEnter *'},
+        config = function() require 'conf.snippets' end,
+        requires = {'rafamadriz/friendly-snippets', opt = true}
+    }
+    use {
         'hrsh7th/nvim-compe',
         opt = true,
         event = {'InsertEnter *'},
-        config = function() require'conf.compe'.config() end,
-        requires = {'norcalli/snippets.nvim', opt = true}
+        config = require'conf.compe'.config,
+        after = 'LuaSnip'
     }
     use {
         -- Debug Adapter Protocol client
@@ -161,7 +168,7 @@ require('packer').startup(function()
     }
     use {'hkupty/iron.nvim', opt = true} -- REPL
     use {'mhinz/vim-sayonara', cmd = 'Sayonara'}
-    use {'phaazon/hop.nvim', opt = false}
+    use {'phaazon/hop.nvim', opt = true}
     use {
         'lukas-reineke/indent-blankline.nvim',
         branch = 'lua',
