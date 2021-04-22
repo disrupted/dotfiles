@@ -33,7 +33,6 @@ require('packer').startup(function()
         event = {'VimEnter *'},
         config = require'conf.kommentary'.config
     }
-    -- use {'terrortylor/nvim-comment', setup = require'conf.comment'.setup()}
     use {
         'nvim-treesitter/nvim-treesitter',
         event = {'BufRead *'},
@@ -49,14 +48,14 @@ require('packer').startup(function()
             }
         },
         run = ':TSUpdate',
-        setup = require'conf.treesitter'.setup(),
+        setup = require'conf.treesitter'.setup,
         config = require'conf.treesitter'.config
     }
     use {
         'neovim/nvim-lspconfig',
         opt = true,
         event = {'BufRead *'},
-        setup = require'conf.lsp'.setup(),
+        setup = require'conf.lsp'.setup,
         config = require'conf.lsp'.config(),
         requires = {'nvim-lua/lsp-status.nvim', opt = true}
     }
@@ -87,21 +86,21 @@ require('packer').startup(function()
                 after = 'nvim-treesitter'
             }
         },
-        setup = require'conf.dap'.setup(),
+        setup = require'conf.dap'.setup,
         config = require'conf.dap'.config
     }
     use {
         'kyazdani42/nvim-tree.lua',
         opt = true,
         cmd = {'NvimTreeOpen', 'NvimTreeToggle'},
-        setup = require'conf.nvim_tree'.setup(),
+        setup = require'conf.nvim_tree'.setup,
         config = require'conf.nvim_tree'.config,
         requires = {'kyazdani42/nvim-web-devicons', opt = true}
     }
     use {
         'nvim-telescope/telescope.nvim',
         event = {'VimEnter *'},
-        setup = require'conf.telescope'.setup(),
+        setup = require'conf.telescope'.setup,
         config = require'conf.telescope'.config,
         requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
     }
@@ -146,7 +145,7 @@ require('packer').startup(function()
         'TimUntersberger/neogit',
         opt = true,
         cmd = 'Neogit',
-        setup = require'conf.neogit'.setup(),
+        setup = require'conf.neogit'.setup,
         config = require'conf.neogit'.config
     }
     use {
@@ -184,6 +183,7 @@ require('packer').startup(function()
         'folke/lsp-trouble.nvim',
         opt = true,
         cmd = 'LspTroubleToggle',
+        setup = require'conf.lsp_trouble'.setup,
         config = require'conf.lsp_trouble'.config,
         requires = {'kyazdani42/nvim-web-devicons', opt = true}
     }
