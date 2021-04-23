@@ -157,7 +157,12 @@ packer.startup(function()
         config = require'conf.neoterm'.config
     }
     use {'hkupty/iron.nvim', opt = true} -- REPL
-    use {'mhinz/vim-sayonara', opt = true, cmd = 'Sayonara'}
+    use {
+        'mhinz/vim-sayonara',
+        opt = true,
+        cmd = 'Sayonara',
+        setup = require'conf.sayonara'.setup
+    }
     use {
         'phaazon/hop.nvim',
         opt = true,
