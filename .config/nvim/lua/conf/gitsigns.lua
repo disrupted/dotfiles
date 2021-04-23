@@ -3,25 +3,38 @@ local M = {}
 function M.config()
     require'gitsigns'.setup {
         signs = {
-            add = {hl = 'DiffAdd', text = '+', numhl = 'GitSignsAddNr'},
-            change = {hl = 'DiffChange', text = '~', numhl = 'GitSignsChangeNr'},
+            add = {
+                hl = 'DiffAdd',
+                text = '+',
+                numhl = 'GitSignsAddNr',
+                linehl = 'GitSignsAddLn'
+            },
+            change = {
+                hl = 'DiffChange',
+                text = '~',
+                numhl = 'GitSignsChangeNr',
+                linehl = 'GitSignsChangeLn'
+            },
             delete = {
                 hl = 'DiffDelete',
                 text = '_',
                 show_count = true,
-                numhl = 'GitSignsDeleteNr'
+                numhl = 'GitSignsDeleteNr',
+                linehl = 'GitSignsDeleteLn'
             },
             topdelete = {
                 hl = 'DiffDelete',
                 text = '‾',
                 show_count = true,
-                numhl = 'GitSignsDeleteNr'
+                numhl = 'GitSignsDeleteNr',
+                linehl = 'GitSignsDeleteLn'
             },
             changedelete = {
                 hl = 'DiffChange',
                 text = '~',
                 show_count = true,
-                numhl = 'GitSignsChangeNr'
+                numhl = 'GitSignsChangeNr',
+                linehl = 'GitSignsChangeLn'
             }
         },
         count_chars = {
@@ -37,6 +50,7 @@ function M.config()
             ['+'] = '₊'
         },
         numhl = false,
+        linehl = false,
         keymaps = {
             -- Default keymap options
             noremap = true,
@@ -54,12 +68,17 @@ function M.config()
             ['n <leader>hs'] = '<cmd>lua require"gitsigns".stage_hunk()<CR>',
             ['n <leader>hu'] = '<cmd>lua require"gitsigns".undo_stage_hunk()<CR>',
             ['n <leader>hr'] = '<cmd>lua require"gitsigns".reset_hunk()<CR>',
+            ['n <leader>hR'] = '<cmd>lua require"gitsigns".reset_buffer()<CR>',
             ['n <leader>hp'] = '<cmd>lua require"gitsigns".preview_hunk()<CR>',
             ['n <leader>hb'] = '<cmd>lua require"gitsigns".blame_line()<CR>'
         },
         watch_index = {interval = 1000},
+        current_line_blame = false,
         sign_priority = 6,
+        update_debounce = 100,
         status_formatter = nil, -- Use default
+        use_decoration_api = true,
+        use_internal_diff = true,
         yadm = {enable = true}
     }
 end
