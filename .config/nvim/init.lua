@@ -20,7 +20,7 @@ packer.startup(function()
     -- use 'jooize/vim-colemak' -- mapping for the colemak keyboard layout
     use {
         'disrupted/one-nvim', -- personal tweaked colorscheme
-        config = function() cmd 'colorscheme one-nvim' end
+        config = function() vim.cmd 'colorscheme one-nvim' end
     }
     use {
         'blackCauldron7/surround.nvim',
@@ -324,7 +324,7 @@ vim.o.wildignore = add {
     ".git,.svn"
 }
 vim.o.wildoptions = "pum"
-vim.o.pumblend = 3 -- Make popup window translucent
+vim.o.pumblend = 7 -- Make popup window translucent
 vim.o.pumheight = 20 -- Limit the amount of autocomplete items shown
 
 -----------------------------------------------------------------------------//

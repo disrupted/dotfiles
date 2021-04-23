@@ -107,10 +107,6 @@ function M.config()
         end
         return helper.convert_lsp_orig(args)
     end
-
-    -- TODO
-    -- vim.cmd [[autocmd User CompeConfirmDone :lua vim.lsp.buf.signature_help()]]
-    -- vim.cmd [[autocmd User CompeConfirmDone :Lspsaga signature_help]]
 end
 
 return M

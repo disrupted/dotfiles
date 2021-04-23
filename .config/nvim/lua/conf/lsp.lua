@@ -53,6 +53,12 @@ function M.setup()
                 end
             end
         end
+
+    vim.lsp.handlers["textDocument/hover"] =
+        vim.lsp.with(vim.lsp.handlers.hover, {border = 'single'})
+
+    vim.lsp.handlers["textDocument/signatureHelp"] =
+        vim.lsp.with(vim.lsp.handlers.signature_help, {border = 'single'})
 end
 
 function M.config()
@@ -100,6 +106,8 @@ function M.config()
                        opts)
         buf_set_keymap('n', '<C-s>',
                        '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+        buf_set_keymap('i', '<C-s>',
+                       '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
         buf_set_keymap('n', '<space>wa',
                        '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
         buf_set_keymap('n', '<space>wr',
@@ -114,7 +122,7 @@ function M.config()
                        opts)
         buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
         buf_set_keymap('n', '<space>d',
-                       '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>',
+                       '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics({border = "single"})<CR>',
                        opts)
         buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>',
                        opts)
@@ -174,8 +182,19 @@ function M.config()
                            opts)
         end
 
-        vim.cmd [[autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics()]]
-        vim.cmd [[autocmd CursorHoldI * silent! lua vim.lsp.buf.signature_help()]]
+        -- vim.cmd [[autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics({border = 'single'})]]
+        vim.api.nvim_exec([[
+            augroup lsp_signature_help
+                autocmd! * <buffer>
+                autocmd CursorHoldI <buffer> silent! lua vim.lsp.buf.signature_help({border = 'single'})
+            augroup END
+        ]], false)
+        -- vim.api.nvim_exec([[
+        --     augroup lsp_signature_help
+        --         autocmd! * <buffer>
+        --         autocmd CursorHoldI <buffer> silent! :Lspsaga signature_help
+        --     augroup END
+        -- ]], false)
 
         print("LSP attached.")
     end
