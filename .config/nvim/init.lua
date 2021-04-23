@@ -20,7 +20,7 @@ packer.startup(function()
     -- use 'jooize/vim-colemak' -- mapping for the colemak keyboard layout
     use {
         'disrupted/one-nvim', -- personal tweaked colorscheme
-        config = function() vim.cmd 'colorscheme one-nvim' end
+        config = function() cmd 'colorscheme one-nvim' end
     }
     use {
         'blackCauldron7/surround.nvim',
@@ -209,10 +209,7 @@ vim.o.completeopt = add {"menuone", "noselect"} -- Completion options
 vim.o.clipboard = 'unnamedplus'
 vim.o.inccommand = 'nosplit'
 
--- if vim.fn.filereadable('/usr/local/bin/python3') then
---     vim.g.python3_host_prog = '/usr/local/bin/python3'
--- end
-if vim.fn.filereadable('~/.local/share/virtualenvs/debugpy/bin/python') then
+if fn.filereadable('~/.local/share/virtualenvs/debugpy/bin/python') then
     vim.g.python3_host_prog = '~/.local/share/virtualenvs/debugpy/bin/python'
 end
 
@@ -356,7 +353,7 @@ function _G.__split_term_right()
     execute('setlocal norelativenumber')
     execute('startinsert')
 end
-vim.cmd("command TermRight :call luaeval('_G.__split_term_right()')")
+cmd("command TermRight :call luaeval('_G.__split_term_right()')")
 -- Directly go into insert mode when switching to terminal
 cmd [[autocmd BufWinEnter,WinEnter term://* startinsert]]
 -- cmd [[autocmd BufLeave term://* stopinsert]]
@@ -456,6 +453,10 @@ map('n', ',s', ':luafile $MYVIMRC<CR>')
 map('n', '<leader>1', ':diffget //1<CR>')
 map('n', '<leader>2', ':diffget //2<CR>')
 map('n', '<leader>3', ':diffget //3<CR>')
+
+-- quickfix navigation
+map('n', ']q', ':cnext<CR>')
+map('n', '[q', ':cprevious<CR>')
 
 -----------------------------------------------------------------------------//
 -- }}}1
