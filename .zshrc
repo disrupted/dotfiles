@@ -162,7 +162,7 @@ zinit ice wait blockf atpull'zinit creinstall -q .'
 zinit ice wait"2" lucid as"program" pick"bin/git-dsf"
 zinit light zdharma/zsh-diff-so-fancy
 # BAT
-zinit ice from"gh-r" as"program" mv"bat* -> bat" pick"bat/bat" atload"alias cat=bat"
+zinit ice as"program" id-as"bat" from"gh-r" cp"bat/autocomplete/bat.zsh -> _bat" pick"bat*/bat" atload"alias cat=bat"
 zinit light sharkdp/bat
 # RIPGREP
 zinit ice from"gh-r" as"program" mv"ripgrep* -> ripgrep" pick"ripgrep/rg"
@@ -177,10 +177,12 @@ zinit wait'0' lucid \
   light-mode for @neovim/neovim
 # DELTA
 zinit wait'1' lucid \
-  from"gh-r" as"program" pick"delta*/delta" \
+  as"program" id-as"delta" from"gh-r" pick"delta*/delta" \
   light-mode for @dandavison/delta
+zinit ice wait'1' lucid as"delta-completion" has'delta' mv'completion.zsh -> _delta'
+zinit snippet https://github.com/dandavison/delta/blob/master/etc/completion/completion.zsh
 # FORGIT
-zinit ice wait lucid id-as'forgit' atload"alias gr='forgit::checkout::file'"
+zinit ice wait lucid id-as"forgit" atload"alias gr='forgit::checkout::file'"
 zinit load 'wfxr/forgit'
 # LAZYGIT
 zinit ice lucid wait"0" as"program" from"gh-r" mv"lazygit* -> lazygit" atload"alias lg='lazygit'"
@@ -192,7 +194,7 @@ zinit light 'jesseduffield/lazydocker'
 zinit ice depth'1' as"program" pick"ranger.py" atload'alias ranger=ranger.py'
 zinit light ranger/ranger
 # FD
-zinit ice as"command" from"gh-r" mv"fd* -> fd" pick"fd/fd"
+zinit ice as"program" id-as"fd" from"gh-r" cp"fd-*/autocomplete/_fd -> _fd" pick"fd*/fd"
 zinit light sharkdp/fd
 # GH-CLI
 zinit ice lucid wait"0" as"program" id-as"gh" from"gh-r" has"git" \
@@ -314,6 +316,7 @@ zinit light-mode lucid wait has"kubectl" for \
 zinit ice lucid wait"0" as"program" id-as"hyperfine" from"gh-r" \
   mv"hyperfine*/hyperfine -> hyperfine"
 zinit light sharkdp/hyperfine
+zinit light MichaelAquilina/zsh-autoswitch-virtualenv
 
 #####################
 # HISTORY           #
