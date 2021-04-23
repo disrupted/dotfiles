@@ -13,6 +13,7 @@ function M.config()
     })
 
     -- Python
+    vim.cmd [[packadd nvim-dap-python]]
     require('dap-python').setup('~/.local/share/virtualenvs/debugpy/bin/python',
                                 {console = 'internalConsole'})
     dap.configurations.python = {

@@ -8,7 +8,6 @@ local f = ls.f
 local c = ls.c
 local d = ls.d
 
--- Every unspecified option will be set to the default.
 ls.config.set_config({history = true})
 
 -- args is a table, where 1 is the text in Placeholder 1, 2 the text in

@@ -73,7 +73,10 @@ function M.config()
     vim.lsp.set_log_level('info')
 
     local capabilities = lsp_status.capabilities
+    -- local capabilities = vim.lsp.protocol.make_client_capabilities()
     capabilities.textDocument.completion.completionItem.snippetSupport = true
+    capabilities.textDocument.completion.completionItem.resolveSupport =
+        {properties = {'documentation', 'detail', 'additionalTextEdits'}}
 
     local on_attach = function(client, bufnr)
         lsp_status.on_attach(client)
@@ -216,7 +219,10 @@ function M.config()
                 autoSearchPaths = true,
                 useLibraryCodeForTypes = true,
                 autoImportCompletions = true,
-                typeCheckingMode = "strict" -- or "basic"
+                typeCheckingMode = "strict", -- or "basic"
+                indexing = true,
+                diagnosticMode = "workspace"
+                -- completeFunctionParens = true
             }
         }
     }
@@ -225,6 +231,7 @@ function M.config()
     -- https://github.com/redhat-developer/yaml-language-server
     lspconfig.yamlls.setup {
         on_attach = on_attach,
+        capabilities = capabilities,
         flags = {debounce_text_changes = 150},
         settings = {
             yaml = {
@@ -304,6 +311,7 @@ function M.config()
         require'rust-tools'.setup({
             server = {
                 on_attach = on_attach,
+                capabilities = capabilities,
                 flags = {debounce_text_changes = 150}
             },
             tools = {
@@ -329,6 +337,7 @@ function M.config()
     -- GO
     lspconfig.gopls.setup {
         on_attach = on_attach,
+        capabilities = capabilities,
         flags = {debounce_text_changes = 150}
     }
 
@@ -354,6 +363,7 @@ function M.config()
                     vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
             },
             on_attach = on_attach,
+            capabilities = capabilities,
             flags = {debounce_text_changes = 150},
             settings = {
                 ['java.format.settings.url'] = home ..

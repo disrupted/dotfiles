@@ -12,7 +12,6 @@ function M.config()
             "⌘ [event]", " [operator]", "⌂ [type]"
         }
 
-    -- vim.cmd [[packadd LuaSnip]]
     local compe = require 'compe'
     compe.setup {
         enabled = true,
@@ -70,33 +69,48 @@ function M.config()
         end
     end
 
+    local npairs = require 'nvim-autopairs'
+    vim.g.completion_confirm_key = ''
+    _G.completion_confirm = function()
+        if vim.fn.pumvisible() ~= 0 then
+            if vim.fn.complete_info()["selected"] ~= -1 then
+                return vim.fn["compe#confirm"](npairs.esc("<c-r>"))
+            else
+                return npairs.esc("<cr>")
+            end
+        else
+            return npairs.check_break_line_char()
+        end
+    end
+
     local opts = {silent = true, expr = true}
     vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", opts)
     vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", opts)
     vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", opts)
     vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", opts)
     vim.api.nvim_set_keymap('i', '<C-e>', [[compe#close('<C-e>')]], opts)
-    vim.api.nvim_set_keymap('i', '<CR>', [[compe#confirm('<CR>')]], opts)
+    vim.api.nvim_set_keymap('i', '<CR>', "v:lua.completion_confirm()", opts) --[[compe#confirm('<CR>')]]
     vim.api.nvim_set_keymap('i', '<C-Space>', [[compe#complete()]], opts)
 
-    -- From https://github.com/hydeik/dotfiles/blob/47d80c4d37a6bda7db236d61deefdd989dcd0f3b/editors/nvim/lua/plugins/completion.lua
-    -- We have to register sources manually, because packadd doesn't source
-    -- files from `after` directory inside `opt` directory.
-    -- See https://github.com/vim/vim/issues/1994
-    -- for _, src in ipairs {
-    --     "path", "buffer", "nvim_lua", "nvim_lsp", "snippets_nvim", "spell",
-    --     "treesitter"
-    -- } do
-    --     vim.g["loaded_compe_" .. src] = true
-    --     compe.register_source(src, require("compe_" .. src))
-    -- end
-    -- vim.g.loaded_compe_nvim_lsp = true
-    -- require("compe_nvim_lsp").attach()
-    --
-    -- vim.g.loaded_compe_luasnip = true
-    -- compe.register_source("luasnip", require 'compe_luasnip')
-    -- vim.g.loaded_compe_nvim_lsp = true
-    -- require'compe_nvim_lsp'.attach()
+    -- thanks to folke: https://github.com/hrsh7th/nvim-compe/issues/302#issuecomment-821100317
+    local helper = require 'compe.helper'
+    helper.convert_lsp_orig = helper.convert_lsp
+    helper.convert_lsp = function(args)
+        local response = args.response or {}
+        local items = response.items or response
+        for _, item in ipairs(items) do
+            if item.insertText == nil and
+                (item.kind == 2 or item.kind == 3 or item.kind == 4) then
+                item.insertText = item.label .. "(${1})"
+                item.insertTextFormat = 2
+            end
+        end
+        return helper.convert_lsp_orig(args)
+    end
+
+    -- TODO
+    -- vim.cmd [[autocmd User CompeConfirmDone :lua vim.lsp.buf.signature_help()]]
+    -- vim.cmd [[autocmd User CompeConfirmDone :Lspsaga signature_help]]
 end
 
 return M
