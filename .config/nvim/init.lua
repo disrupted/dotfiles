@@ -158,7 +158,12 @@ packer.startup(function()
     }
     use {'hkupty/iron.nvim', opt = true} -- REPL
     use {'mhinz/vim-sayonara', opt = true, cmd = 'Sayonara'}
-    use {'phaazon/hop.nvim', opt = true}
+    use {
+        'phaazon/hop.nvim',
+        opt = true,
+        cmd = {'HopWord', 'HopPattern'},
+        setup = require'conf.hop'.setup
+    }
     use {
         'lukas-reineke/indent-blankline.nvim',
         opt = true,
