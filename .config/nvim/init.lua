@@ -166,7 +166,7 @@ packer.startup(function()
     use {
         'phaazon/hop.nvim',
         opt = true,
-        cmd = {'HopWord', 'HopPattern'},
+        cmd = {'HopWord', 'HopChar1', 'HopPattern'},
         setup = require'conf.hop'.setup
     }
     use {
