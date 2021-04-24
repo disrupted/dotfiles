@@ -1,4 +1,4 @@
 return {
-    formatCommand = "dprint fmt --config ~/.config/dprint.json --stdin ${INPUT}",
+    formatCommand = "dprint fmt --config ~/.config/dprint.json --stdin ${FILEEXT}",
     formatStdin = true
 }
