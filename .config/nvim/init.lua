@@ -195,6 +195,12 @@ packer.startup(function()
         setup = require'conf.outline'.setup,
         config = require'conf.outline'.config
     }
+    use {
+        'kevinhwang91/nvim-bqf',
+        opt = true,
+        event = {'BufWinEnter quickfix'},
+        config = require'conf.quickfix'.config
+    }
 end)
 
 local executable = function(e) return fn.executable(e) > 0 end
@@ -386,9 +392,6 @@ vim.o.mouse = "a"
 -----------------------------------------------------------------------------//
 -- Netrw {{{1
 -----------------------------------------------------------------------------//
--- Nerdtree like sidepanel
--- absolute width of netrw window
--- vim.g.netrw_winsize = -28
 -- do not display info on the top of window
 vim.g.netrw_banner = 0
 
