@@ -69,6 +69,7 @@ function M.config()
         end
     end
 
+    vim.cmd [[packadd nvim-autopairs]]
     local npairs = require 'nvim-autopairs'
     vim.g.completion_confirm_key = ''
     _G.completion_confirm = function()

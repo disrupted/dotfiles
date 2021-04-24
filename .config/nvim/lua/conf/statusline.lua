@@ -5,7 +5,7 @@ local condition = require('galaxyline.condition')
 local diagnostic = require('galaxyline.provider_diagnostic')
 
 local gls = gl.section
-gl.short_line_list = {'defx', 'packager', 'vista', 'NvimTree'}
+gl.short_line_list = {'packer', 'NvimTree', 'Outline'}
 
 local colors = {
     bg = '#282c34',

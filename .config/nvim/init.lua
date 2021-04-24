@@ -188,6 +188,13 @@ packer.startup(function()
         config = require'conf.lsp_trouble'.config,
         requires = {'kyazdani42/nvim-web-devicons', opt = true}
     }
+    use {
+        'simrat39/symbols-outline.nvim',
+        opt = true,
+        cmd = 'SymbolsOutline',
+        setup = require'conf.outline'.setup,
+        config = require'conf.outline'.config
+    }
 end)
 
 local executable = function(e) return fn.executable(e) > 0 end
