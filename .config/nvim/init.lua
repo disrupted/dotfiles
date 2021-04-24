@@ -142,7 +142,7 @@ packer.startup(function()
     }
     use {
         'windwp/nvim-autopairs',
-        event = {'BufRead'},
+        event = {'BufRead', 'InsertEnter'},
         config = function() require'nvim-autopairs'.setup() end
     }
     use {'kosayoda/nvim-lightbulb', opt = true}
@@ -467,6 +467,9 @@ map('n', '<leader>3', ':diffget //3<CR>')
 -- quickfix navigation
 map('n', ']q', ':cnext<CR>')
 map('n', '[q', ':cprevious<CR>')
+
+--  ctrl + /: nohighlight
+map('n', '<C-_>', ':noh<CR>')
 
 -----------------------------------------------------------------------------//
 -- }}}1

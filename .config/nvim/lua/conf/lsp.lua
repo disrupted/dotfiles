@@ -25,7 +25,7 @@ function M.setup()
             -- signs = {severity_limit = 'Information'},
             virtual_text = {
                 spacing = 4,
-                prefix = ' ',
+                prefix = '■', -- ■ 
                 severity_limit = 'Warning'
             },
             update_in_insert = false -- delay update
@@ -170,7 +170,7 @@ function M.config()
         show_lightbulb = function()
             require'nvim-lightbulb'.update_lightbulb {
                 sign = {enabled = true, priority = 99},
-                virtual_text = {enabled = true, text = "💡"}
+                virtual_text = {enabled = true, text = "💡 "}
             }
         end
 
