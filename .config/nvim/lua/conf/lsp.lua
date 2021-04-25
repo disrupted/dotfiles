@@ -276,7 +276,7 @@ function M.config()
     -- EFM Universal Language Server
     -- https://github.com/mattn/efm-langserver
     local efm_config = home .. '/.config/efm-langserver/config.yaml'
-    local log_dir = "/tmp/"
+    local efm_log = "/tmp/efm.log"
     local black = require "efm/black"
     local isort = require "efm/isort"
     local lua_format = require "efm/lua-format"
@@ -287,15 +287,13 @@ function M.config()
     local whitespace = require "efm/whitespace"
 
     lspconfig.efm.setup {
-        cmd = {
-            "efm-langserver", "-c", efm_config, "-logfile", log_dir .. "efm.log"
-        },
+        cmd = {"efm-langserver", "-c", efm_config, "-logfile", efm_log},
         on_attach = on_attach,
         flags = {debounce_text_changes = 150},
         filetypes = {
             "python", "lua", "yaml", "json", "markdown", "rst", "html", "css",
             "javascript", "typescript", "javascriptreact", "typescriptreact",
-            "dockerfile"
+            "java", "vim", "dockerfile", "zsh", "sh", "cfg", "conf"
         },
         -- Fallback to .bashrc as a project root to enable LSP on loose files
         root_dir = function(fname)
@@ -320,7 +318,14 @@ function M.config()
                 javascript = {eslint_d, dprint},
                 typescript = {eslint_d, dprint},
                 javascriptreact = {eslint_d, dprint},
-                typescriptreact = {eslint_d, dprint}
+                typescriptreact = {eslint_d, dprint},
+                java = {whitespace},
+                vim = {whitespace},
+                dockerfile = {whitespace},
+                zsh = {whitespace},
+                sh = {whitespace},
+                cfg = {whitespace},
+                conf = {whitespace}
             }
         }
     }
