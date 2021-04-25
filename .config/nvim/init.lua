@@ -140,10 +140,15 @@ packer.startup(function()
         setup = require'conf.neogit'.setup,
         config = require'conf.neogit'.config
     }
+    -- use {
+    --     'windwp/nvim-autopairs',
+    --     event = {'BufRead'},
+    --     config = function() require'nvim-autopairs'.setup() end
+    -- }
     use {
-        'windwp/nvim-autopairs',
-        event = {'BufRead', 'InsertEnter'},
-        config = function() require'nvim-autopairs'.setup() end
+        'steelsojka/pears.nvim',
+        event = {'BufRead'},
+        config = require'conf.pears'.config
     }
     use {'kosayoda/nvim-lightbulb', opt = true}
     use {

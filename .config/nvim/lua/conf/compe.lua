@@ -69,20 +69,20 @@ function M.config()
         end
     end
 
-    vim.cmd [[packadd nvim-autopairs]]
-    local npairs = require 'nvim-autopairs'
-    vim.g.completion_confirm_key = ''
-    _G.completion_confirm = function()
-        if vim.fn.pumvisible() ~= 0 then
-            if vim.fn.complete_info()["selected"] ~= -1 then
-                return vim.fn["compe#confirm"](npairs.esc("<c-r>"))
-            else
-                return npairs.esc("<cr>")
-            end
-        else
-            return npairs.check_break_line_char()
-        end
-    end
+    -- vim.cmd [[packadd nvim-autopairs]]
+    -- local npairs = require 'nvim-autopairs'
+    -- vim.g.completion_confirm_key = ''
+    -- _G.completion_confirm = function()
+    --     if vim.fn.pumvisible() ~= 0 then
+    --         if vim.fn.complete_info()["selected"] ~= -1 then
+    --             return vim.fn["compe#confirm"](npairs.esc("<c-r>"))
+    --         else
+    --             return npairs.esc("<cr>")
+    --         end
+    --     else
+    --         return npairs.check_break_line_char()
+    --     end
+    -- end
 
     local opts = {silent = true, expr = true}
     vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", opts)
@@ -90,7 +90,7 @@ function M.config()
     vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", opts)
     vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", opts)
     vim.api.nvim_set_keymap('i', '<C-e>', [[compe#close('<C-e>')]], opts)
-    vim.api.nvim_set_keymap('i', '<CR>', "v:lua.completion_confirm()", opts) --[[compe#confirm('<CR>')]]
+    -- vim.api.nvim_set_keymap('i', '<CR>', "v:lua.completion_confirm()", opts) --[[compe#confirm('<CR>')]]
     vim.api.nvim_set_keymap('i', '<C-Space>', [[compe#complete()]], opts)
 
     -- thanks to folke: https://github.com/hrsh7th/nvim-compe/issues/302#issuecomment-821100317
