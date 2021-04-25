@@ -280,7 +280,7 @@ vim.o.list = true -- invisible chars
 vim.o.listchars = add {
     "eol: ", "tab:→ ", "extends:…", "precedes:…", "trail:·"
 }
-cmd('set list') -- workaround until vim.o mappings are fixed
+vim.wo.list = true
 vim.o.shortmess = vim.o.shortmess .. "I" -- disable :intro startup screen
 
 -----------------------------------------------------------------------------//
@@ -324,6 +324,12 @@ if executable("rg") then
         [[rg --hidden --glob "!.git" --no-heading --smart-case --vimgrep --follow $*]]
     vim.o.grepformat = add("%f:%l:%c:%m", vim.o.grepformat)
 end
+
+-----------------------------------------------------------------------------//
+-- Motions & Text Objects {{{1
+-----------------------------------------------------------------------------//
+vim.bo.iskeyword = add("-", vim.bo.iskeyword) -- treat dash separated words as a word text object
+
 -----------------------------------------------------------------------------//
 -- window splitting and buffers {{{1
 -----------------------------------------------------------------------------//
@@ -360,7 +366,7 @@ vim.o.pumheight = 20 -- Limit the amount of autocomplete items shown
 -----------------------------------------------------------------------------//
 vim.o.updatetime = 300
 vim.o.timeout = true
-vim.o.timeoutlen = 500
+vim.o.timeoutlen = 1000
 vim.o.ttimeoutlen = 10
 
 -----------------------------------------------------------------------------//
