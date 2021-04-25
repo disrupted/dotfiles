@@ -284,6 +284,7 @@ function M.config()
     local eslint_d = require "efm/eslint_d"
     local deno_fmt = require "efm/deno_fmt"
     local dprint = require "efm/dprint"
+    local whitespace = require "efm/whitespace"
 
     lspconfig.efm.setup {
         cmd = {
@@ -310,7 +311,7 @@ function M.config()
             rootMarkers = {"package.json", "go.mod", ".git/", ".zshrc"},
             languages = {
                 python = {isort, black},
-                lua = {lua_format},
+                lua = {whitespace, lua_format},
                 yaml = {prettier_d},
                 json = {dprint},
                 markdown = {dprint},
