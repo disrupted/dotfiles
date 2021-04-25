@@ -350,6 +350,7 @@ function M.config()
                 }
             }
         })
+        vim.api.nvim_command('noautocmd :edit')
     end
 
     vim.api.nvim_exec([[
@@ -412,6 +413,8 @@ function M.config()
     --         autocmd FileType java lua init_jdtls()
     --     augroup END
     --     ]], false)
+
+    vim.api.nvim_command('noautocmd :edit') -- reload file to attach LSP
 end
 
 return M
