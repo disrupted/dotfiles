@@ -167,7 +167,7 @@ function M.config()
               ]], false)
         end
 
-        show_lightbulb = function()
+        _G.show_lightbulb = function()
             require'nvim-lightbulb'.update_lightbulb {
                 sign = {enabled = true, priority = 99},
                 virtual_text = {enabled = true, text = "💡 "}
@@ -182,7 +182,7 @@ function M.config()
                            opts)
         end
 
-        -- vim.cmd [[autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics({border = 'single'})]]
+        vim.cmd [[autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics({border = 'single'})]]
         vim.api.nvim_exec([[
             augroup lsp_signature_help
                 autocmd! * <buffer>
@@ -282,7 +282,7 @@ function M.config()
     local lua_format = require "efm/lua-format"
     local prettier_d = require "efm/prettier_d"
     local eslint_d = require "efm/eslint_d"
-    local deno_fmt = require "efm/deno_fmt"
+    -- local deno_fmt = require "efm/deno_fmt"
     local dprint = require "efm/dprint"
     local whitespace = require "efm/whitespace"
 
@@ -293,7 +293,7 @@ function M.config()
         filetypes = {
             "python", "lua", "yaml", "json", "markdown", "rst", "html", "css",
             "javascript", "typescript", "javascriptreact", "typescriptreact",
-            "java", "vim", "dockerfile", "zsh", "sh", "cfg", "conf"
+            "java", "vim", "dockerfile", "zsh", "sh", "cfg", "conf", "toml"
         },
         -- Fallback to .bashrc as a project root to enable LSP on loose files
         root_dir = function(fname)
@@ -325,13 +325,14 @@ function M.config()
                 zsh = {whitespace},
                 sh = {whitespace},
                 cfg = {whitespace},
-                conf = {whitespace}
+                conf = {whitespace},
+                toml = {whitespace}
             }
         }
     }
 
     -- RUST
-    init_rust_analyzer = function()
+    _G.init_rust_analyzer = function()
         vim.cmd [[packadd rust-tools.nvim]]
         require'rust-tools'.setup({
             server = {
@@ -367,6 +368,42 @@ function M.config()
         flags = {debounce_text_changes = 150}
     }
 
+    -- LUA
+    local system_name
+    if vim.fn.has('mac') == 1 then
+        system_name = 'macOS'
+    elseif vim.fn.has('unix') == 1 then
+        system_name = 'Linux'
+    end
+    local sumneko_root_path = home .. '/dev/lua-language-server'
+    local sumneko_binary = sumneko_root_path .. '/bin/' .. system_name ..
+                               '/lua-language-server'
+
+    lspconfig.sumneko_lua.setup {
+        cmd = {sumneko_binary, '-E', sumneko_root_path .. '/main.lua'},
+        on_attach = on_attach,
+        capabilities = capabilities,
+        flags = {debounce_text_changes = 150},
+        settings = {
+            Lua = {
+                runtime = {
+                    version = 'LuaJIT',
+                    -- Setup your lua path
+                    path = vim.split(package.path, ';')
+                },
+                diagnostics = {globals = {'vim'}},
+                workspace = {
+                    -- Make the server aware of Neovim runtime files
+                    library = {
+                        [vim.fn.expand('$VIMRUNTIME/lua')] = true,
+                        [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true
+                    }
+                },
+                telemetry = {enable = false}
+            }
+        }
+    }
+
     -- DENO
     -- lspconfig.denols.setup {
     --     on_attach = on_attach,
@@ -379,7 +416,7 @@ function M.config()
     -- }
 
     -- JAVA
-    init_jdtls = function()
+    _G.init_jdtls = function()
         vim.wo.colorcolumn = '120'
         vim.cmd [[packadd nvim-jdtls]]
         require'jdtls'.start_or_attach({

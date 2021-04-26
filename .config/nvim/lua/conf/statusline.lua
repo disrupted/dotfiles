@@ -34,9 +34,7 @@ local checkwidth = function()
 end
 
 local function has_value(tab, val)
-    for index, value in ipairs(tab) do
-        if value[1] == val then return true end
-    end
+    for _, value in ipairs(tab) do if value[1] == val then return true end end
     return false
 end
 
@@ -54,9 +52,9 @@ local mode_color = function()
         [83] = colors.red1
     }
 
-    mode_color = mode_colors[vim.fn.mode():byte()]
-    if mode_color ~= nil then
-        return mode_color
+    local color = mode_colors[vim.fn.mode():byte()]
+    if color ~= nil then
+        return color
     else
         return colors.purple
     end
@@ -119,7 +117,7 @@ end
 local LspStatus = function()
     -- if #vim.lsp.buf_get_clients() > 0 then
     if #vim.lsp.get_active_clients() > 0 then
-        return require'lsp-status'.status()
+        return ' ' .. require'lsp-status'.status()
     end
     return ''
 end
@@ -148,7 +146,8 @@ gls.left[1] = {
                 [83] = 'S-LINE'
             }
             vim.api.nvim_command('hi GalaxyViMode guibg=' .. mode_color())
-            alias = aliases[vim.fn.mode():byte()]
+            local alias = aliases[vim.fn.mode():byte()]
+            local mode
             if alias ~= nil then
                 if utils.has_width_gt(35) then
                     mode = alias
@@ -236,9 +235,9 @@ gls.left[13] = {
     DiagnosticInfo = {
         provider = {'DiagnosticInfo'},
         icon = '  ',
-        highlight = {colors.blue, colors.section_bg},
-        separator = ' ',
-        separator_highlight = {colors.section_bg, colors.bg}
+        highlight = {colors.blue, colors.bg}
+        -- separator = ' ',
+        -- separator_highlight = {colors.section_bg, colors.bg}
     }
 }
 gls.left[14] = {
