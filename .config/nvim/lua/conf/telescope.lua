@@ -60,12 +60,12 @@ function M.setup()
     vim.api.nvim_set_keymap('n', '<Space>/', '<cmd>lua __telescope_grep()<CR>',
                             opts)
     vim.api.nvim_set_keymap('n', '<Space>h',
-                            "<cmd>lua require('telescope.builtin').help_tags(options)<CR>",
+                            '<cmd>lua require("telescope.builtin").help_tags(options)<CR>',
                             opts)
     vim.api.nvim_set_keymap('n', '<Space>c',
                             '<cmd>lua __telescope_commits()<CR>', opts)
     vim.api.nvim_set_keymap('n', ',pr',
-                            "<cmd>lua require('telescope.builtin').extensions.pull_request()<CR>",
+                            '<cmd>lua require("telescope.builtin").extensions.pull_request()<CR>',
                             opts)
 end
 
@@ -80,14 +80,14 @@ function M.config()
             prompt_prefix = ' ❯ ',
             mappings = {
                 i = {
-                    ["<ESC>"] = actions.close,
-                    ["<C-j>"] = actions.move_selection_next,
-                    ["<C-k>"] = actions.move_selection_previous
+                    ['<ESC>'] = actions.close,
+                    ['<C-j>'] = actions.move_selection_next,
+                    ['<C-k>'] = actions.move_selection_previous
                 },
-                n = {["<ESC>"] = actions.close}
+                n = {['<ESC>'] = actions.close}
             },
             file_ignore_patterns = {
-                "%.jpg", "%.jpeg", "%.png", "%.svg", "%.otf", "%.ttf"
+                '%.jpg', '%.jpeg', '%.png', '%.svg', '%.otf', '%.ttf'
             },
             file_sorter = sorters.get_fzy_sorter,
             generic_sorter = sorters.get_fzy_sorter,
@@ -96,7 +96,7 @@ function M.config()
             qflist_previewer = previewers.vim_buffer_qflist.new,
             layout_strategy = 'flex',
             winblend = 7,
-            set_env = {COLORTERM = "truecolor"},
+            set_env = {COLORTERM = 'truecolor'},
             color_devicons = true
         }
     }

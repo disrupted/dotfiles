@@ -104,7 +104,7 @@ end
 --     return #buffers
 -- end
 
-local function get_basename(file) return file:match("^.+/(.+)$") end
+local function get_basename(file) return file:match('^.+/(.+)$') end
 
 local GetGitRoot = function()
     local git_dir = require('galaxyline.provider_vcs').get_git_dir()

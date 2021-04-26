@@ -58,11 +58,11 @@ function M.config()
 
             ['n ]c'] = {
                 expr = true,
-                "&diff ? ']c' : '<cmd>lua require\"gitsigns\".next_hunk()<CR>'"
+                '&diff ? \']c\' : \'<cmd>lua require"gitsigns".next_hunk()<CR>\''
             },
             ['n [c'] = {
                 expr = true,
-                "&diff ? '[c' : '<cmd>lua require\"gitsigns\".prev_hunk()<CR>'"
+                '&diff ? \'[c\' : \'<cmd>lua require"gitsigns".prev_hunk()<CR>\''
             },
 
             ['n <leader>hs'] = '<cmd>lua require"gitsigns".stage_hunk()<CR>',

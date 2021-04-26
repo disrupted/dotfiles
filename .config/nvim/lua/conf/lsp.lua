@@ -1,24 +1,24 @@
 local M = {}
 
 function M.setup()
-    vim.fn.sign_define("LspDiagnosticsSignError",
-                       {text = "◉", texthl = "LspDiagnosticsDefaultError"})
-    vim.fn.sign_define("LspDiagnosticsSignWarning",
-                       {text = "●", texthl = "LspDiagnosticsDefaultWarning"})
-    vim.fn.sign_define("LspDiagnosticsSignInformation", {
-        text = "•",
-        texthl = "LspDiagnosticsDefaultInformation"
+    vim.fn.sign_define('LspDiagnosticsSignError',
+                       {text = '◉', texthl = 'LspDiagnosticsDefaultError'})
+    vim.fn.sign_define('LspDiagnosticsSignWarning',
+                       {text = '●', texthl = 'LspDiagnosticsDefaultWarning'})
+    vim.fn.sign_define('LspDiagnosticsSignInformation', {
+        text = '•',
+        texthl = 'LspDiagnosticsDefaultInformation'
     })
-    vim.fn.sign_define("LspDiagnosticsSignHint",
-                       {text = "·", texthl = "LspDiagnosticsDefaultHint"})
-    vim.fn.sign_define("LightBulbSign", {
-        text = "◎",
-        texthl = "LightBulb",
-        linehl = "",
-        numhl = ""
+    vim.fn.sign_define('LspDiagnosticsSignHint',
+                       {text = '·', texthl = 'LspDiagnosticsDefaultHint'})
+    vim.fn.sign_define('LightBulbSign', {
+        text = '◎',
+        texthl = 'LightBulb',
+        linehl = '',
+        numhl = ''
     })
 
-    vim.lsp.handlers["textDocument/publishDiagnostics"] =
+    vim.lsp.handlers['textDocument/publishDiagnostics'] =
         vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
             underline = false,
             signs = true,
@@ -34,7 +34,7 @@ function M.setup()
     -- Handle formatting in a smarter way
     -- If the buffer has been edited before formatting has completed, do not try to
     -- apply the changes, by Lukas Reineke
-    vim.lsp.handlers["textDocument/formatting"] =
+    vim.lsp.handlers['textDocument/formatting'] =
         function(err, _, result, _, bufnr)
             if err ~= nil or result == nil then return end
 
@@ -54,10 +54,10 @@ function M.setup()
             end
         end
 
-    vim.lsp.handlers["textDocument/hover"] =
+    vim.lsp.handlers['textDocument/hover'] =
         vim.lsp.with(vim.lsp.handlers.hover, {border = 'single'})
 
-    vim.lsp.handlers["textDocument/signatureHelp"] =
+    vim.lsp.handlers['textDocument/signatureHelp'] =
         vim.lsp.with(vim.lsp.handlers.signature_help, {border = 'single'})
 end
 
@@ -140,7 +140,7 @@ function M.config()
                        '<cmd>lua vim.lsp.buf.document_symbol()<CR>', opts)
         buf_set_keymap('n', '<leader>lS',
                        '<cmd>lua vim.lsp.buf.workspace_symbol()<CR>', opts)
-        vim.o.shortmess = vim.o.shortmess .. "c"
+        vim.o.shortmess = vim.o.shortmess .. 'c'
 
         -- Set autocommands conditional on server_capabilities
         if client.resolved_capabilities.document_formatting then
@@ -170,7 +170,7 @@ function M.config()
         _G.show_lightbulb = function()
             require'nvim-lightbulb'.update_lightbulb {
                 sign = {enabled = true, priority = 99},
-                virtual_text = {enabled = true, text = "💡 "}
+                virtual_text = {enabled = true, text = '💡 '}
             }
         end
 
@@ -196,7 +196,7 @@ function M.config()
         --     augroup END
         -- ]], false)
 
-        print("LSP attached.")
+        print('LSP attached.')
     end
 
     -- define language servers
@@ -238,9 +238,9 @@ function M.config()
                 autoSearchPaths = true,
                 useLibraryCodeForTypes = true,
                 autoImportCompletions = true,
-                typeCheckingMode = "strict", -- or "basic"
+                typeCheckingMode = 'strict', -- or "basic"
                 indexing = true,
-                diagnosticMode = "workspace"
+                diagnosticMode = 'workspace'
                 -- completeFunctionParens = true
             }
         }
@@ -255,9 +255,9 @@ function M.config()
         settings = {
             yaml = {
                 customTags = {
-                    "!secret", "!include_dir_named", "!include_dir_list",
-                    "!include_dir_merge_named", "!include_dir_merge_list",
-                    "!lambda", "!input"
+                    '!secret', '!include_dir_named', '!include_dir_list',
+                    '!include_dir_merge_named', '!include_dir_merge_list',
+                    '!lambda', '!input'
                 }
                 -- schemas = {kubernetes = {"*.yaml"}}
             }
@@ -276,37 +276,37 @@ function M.config()
     -- EFM Universal Language Server
     -- https://github.com/mattn/efm-langserver
     local efm_config = home .. '/.config/efm-langserver/config.yaml'
-    local efm_log = "/tmp/efm.log"
-    local black = require "efm/black"
-    local isort = require "efm/isort"
-    local lua_format = require "efm/lua-format"
-    local prettier_d = require "efm/prettier_d"
-    local eslint_d = require "efm/eslint_d"
+    local efm_log = '/tmp/efm.log'
+    local black = require 'efm/black'
+    local isort = require 'efm/isort'
+    local lua_format = require 'efm/lua-format'
+    local prettier_d = require 'efm/prettier_d'
+    local eslint_d = require 'efm/eslint_d'
     -- local deno_fmt = require "efm/deno_fmt"
-    local dprint = require "efm/dprint"
-    local whitespace = require "efm/whitespace"
+    local dprint = require 'efm/dprint'
+    local whitespace = require 'efm/whitespace'
 
     lspconfig.efm.setup {
-        cmd = {"efm-langserver", "-c", efm_config, "-logfile", efm_log},
+        cmd = {'efm-langserver', '-c', efm_config, '-logfile', efm_log},
         on_attach = on_attach,
         flags = {debounce_text_changes = 150},
         filetypes = {
-            "python", "lua", "yaml", "json", "markdown", "rst", "html", "css",
-            "javascript", "typescript", "javascriptreact", "typescriptreact",
-            "java", "vim", "dockerfile", "zsh", "sh", "cfg", "conf", "toml"
+            'python', 'lua', 'yaml', 'json', 'markdown', 'rst', 'html', 'css',
+            'javascript', 'typescript', 'javascriptreact', 'typescriptreact',
+            'java', 'vim', 'dockerfile', 'zsh', 'sh', 'cfg', 'conf', 'toml'
         },
         -- Fallback to .bashrc as a project root to enable LSP on loose files
         root_dir = function(fname)
             return lspconfig.util
-                       .root_pattern("tsconfig.json", "pyproject.toml")(fname) or
+                       .root_pattern('tsconfig.json', 'pyproject.toml')(fname) or
                        lspconfig.util
-                           .root_pattern(".eslintrc.js", ".git")(fname) or
-                       lspconfig.util.root_pattern("package.json", ".git/",
-                                                   ".zshrc")(fname);
+                           .root_pattern('.eslintrc.js', '.git')(fname) or
+                       lspconfig.util.root_pattern('package.json', '.git/',
+                                                   '.zshrc')(fname);
         end,
         init_options = {documentFormatting = true},
         settings = {
-            rootMarkers = {"package.json", "go.mod", ".git/", ".zshrc"},
+            rootMarkers = {'package.json', 'go.mod', '.git/', '.zshrc'},
             languages = {
                 python = {isort, black},
                 lua = {whitespace, lua_format},
@@ -346,8 +346,8 @@ function M.config()
                 runnables = {use_telescope = true},
                 inlay_hints = {
                     show_parameter_hints = true,
-                    parameter_hints_prefix = " ", -- ⟵
-                    other_hints_prefix = "⟹  "
+                    parameter_hints_prefix = ' ', -- ⟵
+                    other_hints_prefix = '⟹  '
                 }
             }
         })

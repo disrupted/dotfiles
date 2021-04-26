@@ -214,26 +214,26 @@ local opt = setmetatable({}, {
     __newindex = function(_, key, value)
         vim.o[key] = value
         local scope = opts_info[key].scope
-        if scope == "win" then
+        if scope == 'win' then
             vim.wo[key] = value
-        elseif scope == "buf" then
+        elseif scope == 'buf' then
             vim.bo[key] = value
         end
     end
 })
 local function add(value, str, sep)
-    sep = sep or ","
-    str = str or ""
-    value = type(value) == "table" and table.concat(value, sep) or value
-    return str ~= "" and table.concat({value, str}, sep) or value
+    sep = sep or ','
+    str = str or ''
+    value = type(value) == 'table' and table.concat(value, sep) or value
+    return str ~= '' and table.concat({value, str}, sep) or value
 end
 
 -----------------------------------------------------------------------------//
 -- Utils {{{1
 -----------------------------------------------------------------------------//
-vim.o.complete = add {"kspell"}
+vim.o.complete = add {'kspell'}
 -- vim.wo.spell = true
-vim.o.completeopt = add {"menuone", "noselect"} -- Completion options
+vim.o.completeopt = add {'menuone', 'noselect'} -- Completion options
 vim.o.clipboard = 'unnamedplus'
 vim.o.inccommand = 'nosplit'
 
@@ -271,22 +271,22 @@ opt.wrap = true
 opt.linebreak = true -- wrap, but on words, not randomly
 -- opt.textwidth = 80
 opt.synmaxcol = 1024 -- don't syntax highlight long lines
-vim.g.vimsyn_embed = "lPr" -- allow embedded syntax highlighting for lua, python, ruby
+vim.g.vimsyn_embed = 'lPr' -- allow embedded syntax highlighting for lua, python, ruby
 vim.o.showmode = false
 vim.o.lazyredraw = true
 vim.o.emoji = false -- turn off as they are treated as double width characters
 vim.o.virtualedit = 'all' -- allow cursor to move past end of line
 vim.o.list = true -- invisible chars
 vim.o.listchars = add {
-    "eol: ", "tab:→ ", "extends:…", "precedes:…", "trail:·"
+    'eol: ', 'tab:→ ', 'extends:…', 'precedes:…', 'trail:·'
 }
 vim.wo.list = true
-vim.o.shortmess = vim.o.shortmess .. "I" -- disable :intro startup screen
+vim.o.shortmess = vim.o.shortmess .. 'I' -- disable :intro startup screen
 
 -----------------------------------------------------------------------------//
 -- Title {{{1
 -----------------------------------------------------------------------------//
-vim.o.titlestring = "❐ %t"
+vim.o.titlestring = '❐ %t'
 vim.o.titleold = '%{fnamemodify(getcwd(), ":t")}'
 vim.o.title = true
 vim.o.titlelen = 70
@@ -294,10 +294,10 @@ vim.o.titlelen = 70
 -----------------------------------------------------------------------------//
 -- Folds {{{1
 -----------------------------------------------------------------------------//
-vim.o.foldtext = "folds#render()"
-vim.o.foldopen = add(vim.o.foldopen, "search")
+vim.o.foldtext = 'folds#render()'
+vim.o.foldopen = add(vim.o.foldopen, 'search')
 vim.o.foldlevelstart = 10
-opt.foldmethod = "syntax"
+opt.foldmethod = 'syntax'
 
 -----------------------------------------------------------------------------//
 -- Backup {{{1
@@ -319,16 +319,16 @@ vim.o.scrolloff = 4 -- Lines of context
 vim.o.showmatch = true
 
 -- Use faster grep alternatives if possible
-if executable("rg") then
+if executable('rg') then
     vim.o.grepprg =
         [[rg --hidden --glob "!.git" --no-heading --smart-case --vimgrep --follow $*]]
-    vim.o.grepformat = add("%f:%l:%c:%m", vim.o.grepformat)
+    vim.o.grepformat = add('%f:%l:%c:%m', vim.o.grepformat)
 end
 
 -----------------------------------------------------------------------------//
 -- Motions & Text Objects {{{1
 -----------------------------------------------------------------------------//
-vim.bo.iskeyword = add("-", vim.bo.iskeyword) -- treat dash separated words as a word text object
+vim.bo.iskeyword = add('-', vim.bo.iskeyword) -- treat dash separated words as a word text object
 
 -----------------------------------------------------------------------------//
 -- window splitting and buffers {{{1
@@ -337,27 +337,27 @@ vim.o.hidden = true -- Enable modified buffers in background
 vim.o.splitbelow = true -- Put new windows below current
 vim.o.splitright = true -- Put new windows right of current
 vim.o.fillchars = add {
-    "vert:│", "fold: ", "diff:", -- alternatives: ⣿ ░
-    "msgsep:‾", "foldopen:▾", "foldsep:│", "foldclose:▸"
+    'vert:│', 'fold: ', 'diff:', -- alternatives: ⣿ ░
+    'msgsep:‾', 'foldopen:▾', 'foldsep:│', 'foldclose:▸'
 }
 
 -----------------------------------------------------------------------------//
 -- Wild and file globbing stuff in command mode {{{1
 -----------------------------------------------------------------------------//
-vim.o.wildmode = "full"
+vim.o.wildmode = 'full'
 vim.o.wildignorecase = true -- Ignore case when completing file names and directories
 -- Binary
 vim.o.wildignore = add {
-    "*.aux,*.out,*.toc",
-    "*.o,*.obj,*.dll,*.jar,*.pyc,__pycache__,*.rbc,*.class", -- media
-    "*.ai,*.bmp,*.gif,*.ico,*.jpg,*.jpeg,*.png,*.psd,*.webp",
-    "*.avi,*.m4a,*.mp3,*.oga,*.ogg,*.wav,*.webm", "*.eot,*.otf,*.ttf,*.woff",
-    "*.doc,*.pdf", -- archives
-    "*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz", -- temp/system
-    "*.*~,*~ ", "*.swp,.lock,.DS_Store,._*,tags.lock", -- version control
-    ".git,.svn"
+    '*.aux,*.out,*.toc',
+    '*.o,*.obj,*.dll,*.jar,*.pyc,__pycache__,*.rbc,*.class', -- media
+    '*.ai,*.bmp,*.gif,*.ico,*.jpg,*.jpeg,*.png,*.psd,*.webp',
+    '*.avi,*.m4a,*.mp3,*.oga,*.ogg,*.wav,*.webm', '*.eot,*.otf,*.ttf,*.woff',
+    '*.doc,*.pdf', -- archives
+    '*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz', -- temp/system
+    '*.*~,*~ ', '*.swp,.lock,.DS_Store,._*,tags.lock', -- version control
+    '.git,.svn'
 }
-vim.o.wildoptions = "pum"
+vim.o.wildoptions = 'pum'
 vim.o.pumblend = 7 -- Make popup window translucent
 vim.o.pumheight = 20 -- Limit the amount of autocomplete items shown
 
@@ -374,8 +374,8 @@ vim.o.ttimeoutlen = 10
 -----------------------------------------------------------------------------//
 -- Use in vertical diff mode, blank lines to keep sides aligned, Ignore whitespace changes
 vim.o.diffopt = add({
-    "vertical", "iwhite", "hiddenoff", "foldcolumn:0", "context:4",
-    "algorithm:histogram", "indent-heuristic"
+    'vertical', 'iwhite', 'hiddenoff', 'foldcolumn:0', 'context:4',
+    'algorithm:histogram', 'indent-heuristic'
 }, vim.o.diffopt)
 
 -----------------------------------------------------------------------------//
@@ -387,7 +387,7 @@ function _G.__split_term_right()
     execute('setlocal norelativenumber')
     execute('startinsert')
 end
-cmd("command TermRight :call luaeval('_G.__split_term_right()')")
+cmd('command TermRight :call luaeval(\'_G.__split_term_right()\')')
 -- Directly go into insert mode when switching to terminal
 cmd [[autocmd BufWinEnter,WinEnter term://* startinsert]]
 -- cmd [[autocmd BufLeave term://* stopinsert]]
@@ -398,7 +398,7 @@ cmd [[autocmd BufWinEnter,WinEnter term://* startinsert]]
 -----------------------------------------------------------------------------//
 -- Mouse {{{1
 -----------------------------------------------------------------------------//
-vim.o.mouse = "a"
+vim.o.mouse = 'a'
 
 -----------------------------------------------------------------------------//
 -- Netrw {{{1
@@ -421,13 +421,13 @@ local function map(mode, lhs, rhs, opts)
 end
 
 -- set leader to space
-vim.g.mapleader = " "
+vim.g.mapleader = ' '
 -- <space><space> switches between buffers
 map('n', '<leader><leader>', ':b#<CR>')
 
 -- Sane movement defaults that works on long wrapped lines
-map('', 'j', "(v:count ? 'j' : 'gj')", {expr = true})
-map('', 'k', "(v:count ? 'k' : 'gk')", {expr = true})
+map('', 'j', '(v:count ? \'j\' : \'gj\')', {expr = true})
+map('', 'k', '(v:count ? \'k\' : \'gk\')', {expr = true})
 
 -- Disable arrow keys
 map('', '<Up>', '<Nop>')
@@ -466,8 +466,8 @@ map('v', '>', '>gv')
 -- Move selected line / block of text in visual mode
 -- shift + k to move up
 -- shift + j to move down
-map('x', 'K', ":move '<-2<CR>gv-gv")
-map('x', 'J', ":move '>+1<CR>gv-gv")
+map('x', 'K', ':move \'<-2<CR>gv-gv')
+map('x', 'J', ':move \'>+1<CR>gv-gv')
 
 -- ctrl + a: select all
 map('n', '<C-a>', '<esc>ggVG<CR>')

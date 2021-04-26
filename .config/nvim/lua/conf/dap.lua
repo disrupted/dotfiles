@@ -20,8 +20,8 @@ function M.config()
         {
             type = 'python',
             request = 'launch',
-            name = "Launch file",
-            program = "${file}",
+            name = 'Launch file',
+            program = '${file}',
             pythonPath = function() return 'python' end
         }
     }
@@ -38,22 +38,22 @@ function M.config()
     -- Key bindings
     local opts = {noremap = true, silent = true}
     vim.api
-        .nvim_set_keymap('n', '<Space>ds', "<cmd>lua __dap_start()<CR>", opts)
-    vim.api.nvim_set_keymap('n', '<Space>dq', "<cmd>lua __dap_exit()<CR>", opts)
+        .nvim_set_keymap('n', '<Space>ds', '<cmd>lua __dap_start()<CR>', opts)
+    vim.api.nvim_set_keymap('n', '<Space>dq', '<cmd>lua __dap_exit()<CR>', opts)
     vim.api.nvim_set_keymap('n', '<Space>do',
-                            "<cmd>lua require'dap'.step_over()<CR>", opts)
+                            '<cmd>lua require\'dap\'.step_over()<CR>', opts)
     vim.api.nvim_set_keymap('n', '<Space>di',
-                            "<cmd>lua require'dap'.step_into()<CR>", opts)
+                            '<cmd>lua require\'dap\'.step_into()<CR>', opts)
     vim.api.nvim_set_keymap('n', '<Space>db',
-                            "<cmd>lua require'dap'.toggle_breakpoint()<CR>",
+                            '<cmd>lua require\'dap\'.toggle_breakpoint()<CR>',
                             opts)
     vim.api.nvim_set_keymap('n', '<Space>dr',
-                            "<cmd>lua require'dap'.repl.open()<CR>", opts)
+                            '<cmd>lua require\'dap\'.repl.open()<CR>', opts)
     vim.api.nvim_set_keymap('n', '<Space>dn',
-                            "<cmd>lua require'dap-python'.test_method()<CR>",
+                            '<cmd>lua require\'dap-python\'.test_method()<CR>',
                             opts)
     vim.api.nvim_set_keymap('v', '<Space>ds',
-                            "<ESC>:lua require'dap-python'.debug_selection()<CR>",
+                            '<ESC>:lua require\'dap-python\'.debug_selection()<CR>',
                             opts)
 end
 

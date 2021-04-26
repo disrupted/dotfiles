@@ -1,7 +1,7 @@
 local M = {}
 
 function M.config()
-    vim.wo.colorcolumn = "99999" --  workaround for cursorline causing artifacts
+    vim.wo.colorcolumn = '99999' --  workaround for cursorline causing artifacts
     vim.g.indent_blankline_char = '▏'
     vim.g.indent_blankline_show_first_indent_level = false
     vim.g.indent_blankline_filetype_exclude =

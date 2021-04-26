@@ -3,13 +3,13 @@ local M = {}
 function M.config()
     vim.lsp.protocol.CompletionItemKind =
         {
-            "ﮜ [text]", " [method]", " [function]", " [constructor]",
-            "ﰠ [field]", " [variable]", " [class]", " [interface]",
-            " [module]", " [property]", " [unit]", " [value]",
-            " [enum]", " [key]", " [snippet]", " [color]",
-            " [file]", " [reference]", " [folder]",
-            " [enum member]", " [constant]", " [struct]",
-            "⌘ [event]", " [operator]", "⌂ [type]"
+            'ﮜ [text]', ' [method]', ' [function]', ' [constructor]',
+            'ﰠ [field]', ' [variable]', ' [class]', ' [interface]',
+            ' [module]', ' [property]', ' [unit]', ' [value]',
+            ' [enum]', ' [key]', ' [snippet]', ' [color]',
+            ' [file]', ' [reference]', ' [folder]',
+            ' [enum member]', ' [constant]', ' [struct]',
+            '⌘ [event]', ' [operator]', '⌂ [type]'
         }
 
     local compe = require 'compe'
@@ -50,22 +50,22 @@ function M.config()
     -- jump to prev/next snippet's placeholder
     _G.tab_complete = function()
         if vim.fn.pumvisible() == 1 then
-            return t "<C-n>"
+            return t '<C-n>'
         elseif require'luasnip'.expand_or_jumpable() then
-            return t "<Plug>luasnip-expand-or-jump"
+            return t '<Plug>luasnip-expand-or-jump'
         elseif check_back_space() then
-            return t "<Tab>"
+            return t '<Tab>'
         else
             return vim.fn['compe#complete']()
         end
     end
     _G.s_tab_complete = function()
         if vim.fn.pumvisible() == 1 then
-            return t "<C-p>"
+            return t '<C-p>'
         elseif require'luasnip'.jumpable(-1) then
-            return t "<Plug>luasnip-jump-prev"
+            return t '<Plug>luasnip-jump-prev'
         else
-            return t "<S-Tab>"
+            return t '<S-Tab>'
         end
     end
 
@@ -85,10 +85,10 @@ function M.config()
     -- end
 
     local opts = {silent = true, expr = true}
-    vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", opts)
-    vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", opts)
-    vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", opts)
-    vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", opts)
+    vim.api.nvim_set_keymap('i', '<Tab>', 'v:lua.tab_complete()', opts)
+    vim.api.nvim_set_keymap('s', '<Tab>', 'v:lua.tab_complete()', opts)
+    vim.api.nvim_set_keymap('i', '<S-Tab>', 'v:lua.s_tab_complete()', opts)
+    vim.api.nvim_set_keymap('s', '<S-Tab>', 'v:lua.s_tab_complete()', opts)
     vim.api.nvim_set_keymap('i', '<C-e>', [[compe#close('<C-e>')]], opts)
     -- vim.api.nvim_set_keymap('i', '<CR>', "v:lua.completion_confirm()", opts) --[[compe#confirm('<CR>')]]
     vim.api.nvim_set_keymap('i', '<C-Space>', [[compe#complete()]], opts)
@@ -102,7 +102,7 @@ function M.config()
         for _, item in ipairs(items) do
             if item.insertText == nil and
                 (item.kind == 2 or item.kind == 3 or item.kind == 4) then
-                item.insertText = item.label .. "(${1})"
+                item.insertText = item.label .. '(${1})'
                 item.insertTextFormat = 2
             end
         end
