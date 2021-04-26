@@ -1,1 +1,1 @@
-return {formatCommand = "deno fmt --ext ${FILEEXT} -", formatStdin = true}
+return {formatCommand = 'deno fmt --ext ${FILEEXT} -', formatStdin = true}

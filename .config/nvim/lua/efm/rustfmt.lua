@@ -1,7 +1,7 @@
 -- not needed with rust_analyzer
 return {
-    formatCommand = "rustfmt",
+    formatCommand = 'rustfmt',
     formatStdin = true,
-    lintCommand = "cargo clippy",
-    lintFormats = {"%f:%l:%c: %m"}
+    lintCommand = 'cargo clippy',
+    lintFormats = {'%f:%l:%c: %m'}
 }

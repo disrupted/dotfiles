@@ -1,2 +1,2 @@
 -- not needed with gopls
-return {formatCommand = "gofmt -s", formatStdin = true}
+return {formatCommand = 'gofmt -s', formatStdin = true}
