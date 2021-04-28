@@ -164,5 +164,10 @@
     # View the log and diff for a commit (previous if no SHA1 provided)
     details = log -n1 -p --format=fuller
 
+    # when Git loses upstream tracking branch (haven't figured out why exactly) run:
+    # git set-upstream
+    # git pull
+    set-upstream = !git branch --set-upstream-to=origin/`git symbolic-ref --short HEAD`
+
 [includeIf "gitdir:~/bakdata/"]
     path = ~/bakdata/.gitconfig
