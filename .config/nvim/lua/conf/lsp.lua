@@ -169,7 +169,7 @@ function M.config()
 
         _G.show_lightbulb = function()
             require'nvim-lightbulb'.update_lightbulb {
-                sign = {enabled = true, priority = 99},
+                sign = {enabled = false, priority = 99},
                 virtual_text = {enabled = true, text = '💡 '}
             }
         end
@@ -230,7 +230,10 @@ function M.config()
     vim.cmd [[packadd pylance]]
     require 'pylance'
     lspconfig.pylance.setup {
-        on_attach = on_attach,
+        on_attach = function(client, bufnr)
+            client.resolved_capabilities.document_formatting = false
+            on_attach(client, bufnr)
+        end,
         capabilities = capabilities,
         flags = {debounce_text_changes = 150},
         python = {
@@ -278,7 +281,9 @@ function M.config()
     local efm_config = home .. '/.config/efm-langserver/config.yaml'
     local efm_log = '/tmp/efm.log'
     local black = require 'efm/black'
+    local blackd = require 'efm/blackd' -- experimental
     local isort = require 'efm/isort'
+    local isortd = require 'efm/isortd' -- experimental
     local lua_format = require 'efm/lua-format'
     local prettier_d = require 'efm/prettier_d'
     local eslint_d = require 'efm/eslint_d'
@@ -308,7 +313,7 @@ function M.config()
         settings = {
             rootMarkers = {'package.json', 'go.mod', '.git/', '.zshrc'},
             languages = {
-                python = {isort, black},
+                python = {isortd, blackd},
                 lua = {whitespace, lua_format},
                 yaml = {prettier_d},
                 json = {dprint},
