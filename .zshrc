@@ -199,7 +199,7 @@ zinit light sharkdp/fd
 # GH-CLI
 zinit ice lucid wait"0" as"program" id-as"gh" from"gh-r" has"git" \
   atclone'**/gh completion -s zsh > _gh' atpull'%atclone' pick'**/gh'
-zinit light "cli/cli"
+zinit light cli/cli
 # tldr (rust implementation tealdeer)
 zinit wait'1' lucid \
   from"gh-r" as"program" id-as"tldr" mv"tldr* -> tldr" pick"tldr" \
@@ -239,10 +239,6 @@ zinit wait"2b" lucid \
   mv"cheat* -> _cheat" \
   as"completion" \
   for https://github.com/cheat/cheat/blob/master/scripts/cheat.zsh
-# emoji
-# zinit wait'1' lucid \
-#   atload"source $ZHOMEDIR/rc/pluginconfig/emoji-cli_atload.zsh" \
-#   light-mode for @b4b4r07/emoji-cli
 # mmv (rename multiple files in vim)
 zinit wait'1' lucid \
   from"gh-r" as"program" pick"mmv*/mmv" \
