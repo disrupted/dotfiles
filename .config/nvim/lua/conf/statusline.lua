@@ -115,9 +115,8 @@ local GetGitRoot = function()
 end
 
 local LspStatus = function()
-    -- if #vim.lsp.buf_get_clients() > 0 then
     if #vim.lsp.get_active_clients() > 0 then
-        return ' ' .. require'lsp-status'.status()
+        return require'lsp-status'.status()
     end
     return ''
 end
@@ -125,7 +124,8 @@ end
 local LspCheckDiagnostics = function()
     if #vim.lsp.get_active_clients() > 0 and diagnostic.get_diagnostic_error() ==
         nil and diagnostic.get_diagnostic_warn() == nil and
-        diagnostic.get_diagnostic_info() == nil then return ' ' end
+        diagnostic.get_diagnostic_info() == nil and require'lsp-status'.status() ==
+        ' ' then return ' ' end
     return ''
 end
 
