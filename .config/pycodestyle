@@ -1,3 +1,4 @@
+# vim: ft=cfg
 [pycodestyle]
 ignore =
     # W503: line break before binary operator
