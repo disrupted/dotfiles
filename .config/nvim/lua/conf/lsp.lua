@@ -424,6 +424,7 @@ function M.config()
 
     -- JAVA
     _G.init_jdtls = function()
+        vim.bo.shiftwidth = 4
         vim.wo.colorcolumn = '120'
         vim.cmd [[packadd nvim-jdtls]]
         require'jdtls'.start_or_attach({
@@ -451,12 +452,12 @@ function M.config()
         --     ]], false)
     end
 
-    -- vim.api.nvim_exec([[
-    --     augroup jdtls
-    --         autocmd!
-    --         autocmd FileType java lua init_jdtls()
-    --     augroup END
-    --     ]], false)
+    vim.api.nvim_exec([[
+        augroup jdtls
+            autocmd!
+            autocmd FileType java lua init_jdtls()
+        augroup END
+        ]], false)
 
     vim.api.nvim_command('noautocmd :edit') -- reload file to attach LSP
 end
