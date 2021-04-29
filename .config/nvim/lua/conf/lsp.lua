@@ -236,15 +236,17 @@ function M.config()
         end,
         capabilities = capabilities,
         flags = {debounce_text_changes = 150},
-        python = {
-            analysis = {
-                autoSearchPaths = true,
-                useLibraryCodeForTypes = true,
-                autoImportCompletions = true,
-                typeCheckingMode = 'strict', -- or "basic"
-                indexing = true,
-                diagnosticMode = 'workspace'
-                -- completeFunctionParens = true
+        settings = {
+            python = {
+                analysis = {
+                    autoSearchPaths = true,
+                    useLibraryCodeForTypes = true,
+                    autoImportCompletions = true,
+                    typeCheckingMode = 'basic', -- 'strict' or 'basic'
+                    indexing = true,
+                    diagnosticMode = 'workspace',
+                    completeFunctionParens = true
+                }
             }
         }
     }
