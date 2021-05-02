@@ -282,12 +282,12 @@ function M.config()
     -- https://github.com/mattn/efm-langserver
     local efm_config = home .. '/.config/efm-langserver/config.yaml'
     local efm_log = '/tmp/efm.log'
-    local black = require 'efm/black'
+    -- local black = require 'efm/black'
     local blackd = require 'efm/blackd' -- experimental
-    local isort = require 'efm/isort'
+    -- local isort = require 'efm/isort'
     local isortd = require 'efm/isortd' -- experimental
     local lua_format = require 'efm/lua-format'
-    local prettier = require 'efm/prettier'
+    -- local prettier = require 'efm/prettier'
     local prettierd = require 'efm/prettierd'
     local prettier_d = require 'efm/prettier_d'
     local eslint_d = require 'efm/eslint_d'
