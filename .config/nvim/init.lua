@@ -201,6 +201,12 @@ packer.startup(function()
         config = require'conf.outline'.config
     }
     use {
+        'rmagatti/auto-session',
+        opt = true,
+        event = {'VimEnter'},
+        setup = require'conf.auto-session'.setup
+    }
+    use {
         'kevinhwang91/nvim-bqf',
         opt = true,
         event = {'BufWinEnter quickfix'},
