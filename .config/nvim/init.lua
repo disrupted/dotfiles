@@ -206,6 +206,7 @@ packer.startup(function()
         event = {'BufWinEnter quickfix'},
         config = require'conf.quickfix'.config
     }
+    use {'sindrets/diffview.nvim', opt = true, cmd = 'DiffviewOpen'}
 end)
 
 local executable = function(e) return fn.executable(e) > 0 end
@@ -258,7 +259,7 @@ vim.o.joinspaces = false -- No double spaces with join after a dot
 vim.wo.number = true -- Print line number
 vim.wo.relativenumber = true -- Relative line numbers
 vim.wo.numberwidth = 2
-vim.wo.signcolumn = 'auto'
+vim.wo.signcolumn = 'yes:1' -- 'auto:1-2'
 vim.wo.cursorline = true
 vim.api.nvim_exec([[
     augroup cursorline_focus
