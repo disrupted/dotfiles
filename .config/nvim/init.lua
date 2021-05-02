@@ -344,7 +344,7 @@ vim.o.hidden = true -- Enable modified buffers in background
 vim.o.splitbelow = true -- Put new windows below current
 vim.o.splitright = true -- Put new windows right of current
 vim.o.fillchars = add {
-    'vert:│', 'fold: ', 'diff:', -- alternatives: ⣿ ░
+    'vert:│', 'fold: ', 'diff:-', -- alternatives: ⣿ ░
     'msgsep:‾', 'foldopen:▾', 'foldsep:│', 'foldclose:▸'
 }
 

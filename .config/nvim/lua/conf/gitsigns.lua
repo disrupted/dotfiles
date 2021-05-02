@@ -4,33 +4,33 @@ function M.config()
     require'gitsigns'.setup {
         signs = {
             add = {
-                hl = 'DiffAdd',
+                hl = 'GitSignsAdd',
                 text = '+',
                 numhl = 'GitSignsAddNr',
                 linehl = 'GitSignsAddLn'
             },
             change = {
-                hl = 'DiffChange',
+                hl = 'GitSignsChange',
                 text = '~',
                 numhl = 'GitSignsChangeNr',
                 linehl = 'GitSignsChangeLn'
             },
             delete = {
-                hl = 'DiffDelete',
+                hl = 'GitSignsDelete',
                 text = '_',
                 show_count = true,
                 numhl = 'GitSignsDeleteNr',
                 linehl = 'GitSignsDeleteLn'
             },
             topdelete = {
-                hl = 'DiffDelete',
+                hl = 'GitSignsDelete',
                 text = '‾',
                 show_count = true,
                 numhl = 'GitSignsDeleteNr',
                 linehl = 'GitSignsDeleteLn'
             },
             changedelete = {
-                hl = 'DiffChange',
+                hl = 'GitSignsChange',
                 text = '~',
                 show_count = true,
                 numhl = 'GitSignsChangeNr',
