@@ -335,7 +335,7 @@ end
 -----------------------------------------------------------------------------//
 -- Motions & Text Objects {{{1
 -----------------------------------------------------------------------------//
-vim.bo.iskeyword = add('-', vim.bo.iskeyword) -- treat dash separated words as a word text object
+opt.iskeyword = add('-', vim.bo.iskeyword) -- treat dash separated words as a word textobject
 
 -----------------------------------------------------------------------------//
 -- window splitting and buffers {{{1
