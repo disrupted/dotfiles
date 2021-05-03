@@ -351,8 +351,9 @@ vim.o.fillchars = add {
 -----------------------------------------------------------------------------//
 -- Wild and file globbing stuff in command mode {{{1
 -----------------------------------------------------------------------------//
-vim.o.wildmode = 'full'
 vim.o.wildignorecase = true -- Ignore case when completing file names and directories
+vim.o.wildcharm = 26 -- equals set wildcharm=<C-Z>, used in the mapping section
+
 -- Binary
 vim.o.wildignore = add {
     '*.aux,*.out,*.toc',
@@ -465,6 +466,13 @@ map('t', '<C-j>', '<C-\\><C-N><C-w>j', {noremap = false})
 map('t', '<C-k>', '<C-\\><C-N><C-w>k', {noremap = false})
 map('t', '<C-l>', '<C-\\><C-N><C-w>l', {noremap = false})
 map('t', '<C-[><C-[>', '<C-\\><C-N>') -- double ESC to escape terminal
+
+-- more intuitive wildmenu navigation
+map('c', '<up>', [[wildmenumode() ? "\<left>" : "\<up>"]], {expr = true})
+map('c', '<down>', [[wildmenumode() ? "\<right>" : "\<down>"]], {expr = true})
+map('c', '<left>', [[wildmenumode() ? "\<up>" : "\<left>"]], {expr = true})
+map('c', '<right>', [[wildmenumode() ? " \<bs>\<C-Z>" : "\<right>"]],
+    {expr = true})
 
 -- Better indenting
 map('v', '<', '<gv')
