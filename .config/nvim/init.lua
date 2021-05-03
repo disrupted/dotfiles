@@ -488,8 +488,11 @@ map('x', 'J', ':move \'>+1<CR>gv-gv')
 map('n', '<C-a>', '<esc>ggVG<CR>')
 
 -- sensible defaults
-map('', 'Y', 'y$')
-map('', 'Q', '')
+map('', 'Y', 'y$') -- yank to end of line (for consistency)
+map('', 'Q', '') -- disable
+map('n', 'x', '"_x') -- delete char without yank
+map('x', 'x', '"_x') -- delete visual selection without yank
+map('x', '<leader>p', '"_dP') -- paste in visual mode and keep available
 
 -- edit & source init.lua
 map('n', ',v', ':e $MYVIMRC<CR>')
