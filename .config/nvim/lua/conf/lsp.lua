@@ -315,7 +315,13 @@ function M.config()
                        lspconfig.util.root_pattern('package.json', '.git/',
                                                    '.zshrc')(fname);
         end,
-        init_options = {documentFormatting = true},
+        init_options = {
+            documentFormatting = true,
+            documentSymbol = false,
+            completion = false,
+            codeAction = false,
+            hover = false
+        },
         settings = {
             rootMarkers = {'package.json', 'go.mod', '.git/', '.zshrc'},
             languages = {

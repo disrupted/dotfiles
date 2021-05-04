@@ -3,5 +3,6 @@ return {
     formatCommand = 'rustfmt',
     formatStdin = true,
     lintCommand = 'cargo clippy',
+    lintSource = 'cargo',
     lintFormats = {'%f:%l:%c: %m'}
 }
