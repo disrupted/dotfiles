@@ -282,7 +282,7 @@ vim.g.vimsyn_embed = 'lPr' -- allow embedded syntax highlighting for lua, python
 vim.o.showmode = false
 vim.o.lazyredraw = true
 vim.o.emoji = false -- turn off as they are treated as double width characters
-vim.o.virtualedit = 'all' -- allow cursor to move past end of line
+-- vim.o.virtualedit = 'block' -- allow cursor to move past end of line in visual block mode
 vim.o.list = true -- invisible chars
 vim.o.listchars = add {
     'eol: ', 'tab:→ ', 'extends:…', 'precedes:…', 'trail:·'
