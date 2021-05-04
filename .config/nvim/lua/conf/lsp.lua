@@ -295,7 +295,7 @@ function M.config()
     local dprint = require 'efm/dprint'
     local shellcheck = require 'efm/shellcheck'
     local shfmt = require 'efm/shfmt'
-    local whitespace = require 'efm/whitespace'
+    -- local whitespace = require 'efm/whitespace'
 
     lspconfig.efm.setup {
         cmd = {'efm-langserver', '-c', efm_config, '-logfile', efm_log},
@@ -326,7 +326,7 @@ function M.config()
             rootMarkers = {'package.json', 'go.mod', '.git/', '.zshrc'},
             languages = {
                 python = {isortd, blackd},
-                lua = {whitespace, lua_format},
+                lua = {lua_format},
                 yaml = {prettierd},
                 json = {dprint},
                 markdown = {dprint},
@@ -336,14 +336,8 @@ function M.config()
                 typescript = {eslint_d, prettierd},
                 javascriptreact = {eslint_d, prettierd},
                 typescriptreact = {eslint_d, prettierd},
-                java = {whitespace},
-                vim = {whitespace},
-                dockerfile = {whitespace},
-                zsh = {shellcheck, shfmt, whitespace},
-                sh = {shellcheck, shfmt, whitespace},
-                cfg = {whitespace},
-                conf = {whitespace},
-                toml = {whitespace}
+                zsh = {shellcheck, shfmt},
+                sh = {shellcheck, shfmt}
             }
         }
     }

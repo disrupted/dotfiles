@@ -248,6 +248,34 @@ if fn.filereadable('~/.local/share/virtualenvs/debugpy/bin/python') then
     vim.g.python3_host_prog = '~/.local/share/virtualenvs/debugpy/bin/python'
 end
 
+-- Trim trailing whitespace and trailing blank lines on save
+vim.api.nvim_exec([[
+    function TrimWhitespace()
+        let l:save = winsaveview()
+        keeppatterns %s/\s\+$//e
+        call winrestview(l:save)
+    endfunction
+    command! TrimWhitespace call TrimWhitespace()
+
+    function TrimTrailingLines()
+        let lastLine = line('$')
+        let lastNonblankLine = prevnonblank(lastLine)
+        if lastLine > 0 && lastNonblankLine != lastLine
+            silent! execute lastNonblankLine + 1 . ',$delete _'
+        endif
+    endfunction
+    command! TrimTrailingLines call TrimTrailingLines()
+
+    " function TrimTrailingLinesAlt()
+    "     keeppatterns 0;/^\%(\n*.\)\@!/,$d
+    " endfunction
+
+    augroup trim_on_save
+        autocmd! * <buffer>
+        autocmd BufWritePre <buffer> call TrimWhitespace()
+    augroup END
+]], false)
+
 -----------------------------------------------------------------------------//
 -- Indentation {{{1
 -----------------------------------------------------------------------------//
