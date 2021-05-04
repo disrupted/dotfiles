@@ -54,8 +54,15 @@ function M.setup()
             end
         end
 
+    local overridden_hover = vim.lsp.with(vim.lsp.handlers.hover,
+                                          {border = 'single'})
     vim.lsp.handlers['textDocument/hover'] =
-        vim.lsp.with(vim.lsp.handlers.hover, {border = 'single'})
+        function(...)
+            local buf = overridden_hover(...)
+            vim.api.nvim_buf_set_keymap(buf, 'n', 'K', '<cmd>wincmd p<CR>',
+                                        {noremap = true, silent = true})
+            -- TODO: close the floating window directly without having to execute wincmd p twice
+        end
 
     vim.lsp.handlers['textDocument/signatureHelp'] =
         vim.lsp.with(vim.lsp.handlers.signature_help, {border = 'single'})
@@ -120,7 +127,9 @@ function M.config()
                        '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
         buf_set_keymap('n', '<space>r', '<cmd>lua vim.lsp.buf.rename()<CR>',
                        opts)
-        buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+        buf_set_keymap('n', 'gr', '<cmd>LspTroubleToggle lsp_references<CR>',
+                       opts)
+        buf_set_keymap('n', 'gR', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
         buf_set_keymap('n', '<space>d',
                        '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics({border = "single"})<CR>',
                        opts)
@@ -287,6 +296,7 @@ function M.config()
     -- local isort = require 'efm/isort'
     local isortd = require 'efm/isortd' -- experimental
     local lua_format = require 'efm/lua-format'
+    -- local stylua = require 'efm/stylua'
     -- local prettier = require 'efm/prettier'
     local prettierd = require 'efm/prettierd'
     local prettier_d = require 'efm/prettier_d'
