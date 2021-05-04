@@ -293,6 +293,8 @@ function M.config()
     local eslint_d = require 'efm/eslint_d'
     -- local deno_fmt = require "efm/deno_fmt"
     local dprint = require 'efm/dprint'
+    local shellcheck = require 'efm/shellcheck'
+    local shfmt = require 'efm/shfmt'
     local whitespace = require 'efm/whitespace'
 
     lspconfig.efm.setup {
@@ -331,8 +333,8 @@ function M.config()
                 java = {whitespace},
                 vim = {whitespace},
                 dockerfile = {whitespace},
-                zsh = {whitespace},
-                sh = {whitespace},
+                zsh = {shellcheck, shfmt, whitespace},
+                sh = {shellcheck, shfmt, whitespace},
                 cfg = {whitespace},
                 conf = {whitespace},
                 toml = {whitespace}
