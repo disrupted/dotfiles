@@ -313,6 +313,9 @@ zinit ice lucid wait"0" as"program" id-as"hyperfine" from"gh-r" \
   mv"hyperfine*/hyperfine -> hyperfine"
 zinit light sharkdp/hyperfine
 zinit light MichaelAquilina/zsh-autoswitch-virtualenv
+zinit ice lucid wait"0" as"program" id-as"himalaya" from"gh-r" \
+  mv"**/himalaya.exe -> himalaya"
+zinit light soywod/himalaya
 
 #####################
 # HISTORY           #
