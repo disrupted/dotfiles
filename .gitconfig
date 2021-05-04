@@ -153,9 +153,11 @@
     branches = branch -a --sort=-authordate
     stashes = stash list
     remotes = remote -v
+    tags = tag --list
     conflicts = !git --no-pager diff --name-only --diff-filter=U | xargs grep -c '^=======$'
     unstage = reset -q HEAD --
     uncommit = reset --mixed HEAD~
+    recommit = commit --reuse-message=HEAD
 
     # preferred git log view
     lg = log --graph --abbrev-commit --decorate --format=format:'%C(yellow)%h%C(reset) %C(white)%s%C(reset) %C(dim white)-%C(reset) %ar %C(dim white)<%an>%C(reset)%C(auto)%d%C(reset)' --all
