@@ -65,7 +65,7 @@
 [mergetool]
     keepBackup = false
     prompt = true
-    
+
 [mergetool "nvimdiff"]
     cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
 
@@ -155,9 +155,20 @@
     remotes = remote -v
     tags = tag --list
     conflicts = !git --no-pager diff --name-only --diff-filter=U | xargs grep -c '^=======$'
+    # Show name of default origin branch
+    main = !git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'
     unstage = reset -q HEAD --
     uncommit = reset --mixed HEAD~
+    # Repeat last commit message
     recommit = commit --reuse-message=HEAD
+    # Create new branch off of default origin branch (origin/master or origin/main)
+    newbranch = "!f() { [[ -n $@ ]] && git fetch origin && git checkout -b \"$@\" origin/$(git main); }; f"
+
+    # Open repository in the browser
+    open = "!open $(git remote get-url origin)"
+
+    # Rebase interactive for all commits on feature branch
+    rebase-branch = !git rebase -i `git merge-base master HEAD`
 
     # preferred git log view
     lg = log --graph --abbrev-commit --decorate --format=format:'%C(yellow)%h%C(reset) %C(white)%s%C(reset) %C(dim white)-%C(reset) %ar %C(dim white)<%an>%C(reset)%C(auto)%d%C(reset)' --all

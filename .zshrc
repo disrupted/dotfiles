@@ -317,6 +317,10 @@ zinit ice lucid wait"0" as"program" id-as"himalaya" from"gh-r" \
   mv"**/himalaya.exe -> himalaya" \
   atclone'himalaya completion zsh > _himalaya' atpull'%atclone'
 zinit light soywod/himalaya
+zinit ice lucid wait"0" as"program" id-as"gitlab" from"gh-r" \
+  mv"gitlab* -> gitlab" \
+  atclone'./gitlab completion zsh > _gitlab' atpull'%atclone'
+zinit light makkes/gitlab-cli
 
 #####################
 # HISTORY           #
