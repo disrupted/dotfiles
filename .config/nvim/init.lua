@@ -204,7 +204,8 @@ packer.startup(function()
         'rmagatti/auto-session',
         opt = true,
         event = {'VimEnter'},
-        setup = require'conf.auto-session'.setup
+        setup = require'conf.auto-session'.setup,
+        config = require'conf.auto-session'.config
     }
     use {
         'kevinhwang91/nvim-bqf',
