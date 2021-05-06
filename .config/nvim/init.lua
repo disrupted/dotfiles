@@ -503,6 +503,16 @@ map('c', '<left>', [[wildmenumode() ? "\<up>" : "\<left>"]], {expr = true})
 map('c', '<right>', [[wildmenumode() ? " \<bs>\<C-Z>" : "\<right>"]],
     {expr = true})
 
+-- command mode
+map('c', '<C-a>', '<Home>')
+map('c', '<C-e>', '<End>')
+
+-- insert mode
+map('i', '<C-j>', '<Down>')
+map('i', '<C-k>', '<Up>')
+map('i', '<C-h>', '<Left>')
+map('i', '<C-l>', '<Right>')
+
 -- Better indenting
 map('v', '<', '<gv')
 map('v', '>', '>gv')
@@ -521,7 +531,10 @@ map('', 'Y', 'y$') -- yank to end of line (for consistency)
 map('', 'Q', '') -- disable
 map('n', 'x', '"_x') -- delete char without yank
 map('x', 'x', '"_x') -- delete visual selection without yank
-map('x', 'p', '"_dP') -- paste in visual mode and keep available
+
+-- paste in visual mode and keep available
+map('x', 'p', '"_dP')
+-- map('x', 'P', '"_dP')
 
 -- edit & source init.lua
 map('n', ',v', ':e $MYVIMRC<CR>')
