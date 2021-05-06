@@ -282,8 +282,8 @@ zinit light mikefarah/yq
 zinit ice lucid wait"0" as"program" id-as"sd" from"gh-r" pick"sd" mv"sd-* -> sd"
 zinit light chmln/sd
 # zoxide autojumper
-zinit lucid wait"0" as'program' id-as'zoxide' from'gh-r' mv'zoxide* -> zoxide' \
-  atclone'chmod +x ./zoxide; ./zoxide init zsh --hook pwd >! zhook.zsh' atpull'%atclone' \
+zinit lucid wait"0" as'program' id-as'zoxide' from'gh-r' pick'zoxide*/zoxide' \
+  atclone'./zoxide*/zoxide init zsh --hook pwd >! zhook.zsh' atpull'%atclone' \
   src'zhook.zsh' for \
   'ajeetdsouza/zoxide'
 # nnn file manager
