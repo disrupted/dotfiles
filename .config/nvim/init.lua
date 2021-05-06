@@ -214,6 +214,18 @@ packer.startup(function()
         config = require'conf.quickfix'.config
     }
     use {'sindrets/diffview.nvim', opt = true, cmd = 'DiffviewOpen'}
+    use {
+        'michaelb/sniprun',
+        opt = true,
+        run = 'bash ./install.sh',
+        cmd = {'SnipRun', 'SnipInfo'}
+    }
+    use {
+        'NTBBloodbath/rest.nvim',
+        opt = true,
+        cmd = 'Rest',
+        requires = {'nvim-lua/plenary.nvim'}
+    }
 end)
 
 local executable = function(e) return fn.executable(e) > 0 end
