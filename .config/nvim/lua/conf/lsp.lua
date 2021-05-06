@@ -280,12 +280,14 @@ function M.config()
 
     -- TYPESCRIPT
     -- https://github.com/theia-ide/typescript-language-server
-    -- lspconfig.tsserver.setup {
-    --     on_attach = function(client)
-    --         client.resolved_capabilities.document_formatting = false
-    --         on_attach(client)
-    --     end
-    -- }
+    lspconfig.tsserver.setup {
+        on_attach = function(client)
+            client.resolved_capabilities.document_formatting = false
+            on_attach(client)
+        end,
+        capabilities = capabilities,
+        flags = {debounce_text_changes = 150}
+    }
 
     -- EFM Universal Language Server
     -- https://github.com/mattn/efm-langserver
@@ -314,7 +316,7 @@ function M.config()
         filetypes = {
             'python', 'lua', 'yaml', 'json', 'markdown', 'rst', 'html', 'css',
             'javascript', 'typescript', 'javascriptreact', 'typescriptreact',
-            'java', 'vim', 'dockerfile', 'zsh', 'sh', 'cfg', 'conf', 'toml'
+            'zsh', 'sh'
         },
         -- Fallback to .bashrc as a project root to enable LSP on loose files
         root_dir = function(fname)
@@ -440,6 +442,10 @@ function M.config()
     _G.init_jdtls = function()
         vim.bo.shiftwidth = 4
         vim.wo.colorcolumn = '120'
+        local settings = {
+            ['java.format.settings.url'] = '~/bakdata/dependencies/format-bakdata-codestyle.xml',
+            ['java.format.settings.profile'] = 'bakdata'
+        }
         vim.cmd [[packadd nvim-jdtls]]
         require'jdtls'.start_or_attach({
             cmd = {
@@ -449,12 +455,12 @@ function M.config()
             },
             on_attach = on_attach,
             capabilities = capabilities,
-            flags = {debounce_text_changes = 150},
-            settings = {
-                ['java.format.settings.url'] = home ..
-                    '/bakdata/dependencies/format-bakdata-codestyle.xml',
-                ['java.format.settings.profile'] = 'bakdata'
-            }
+            flags = {debounce_text_changes = 150, allow_incremental_sync = true},
+            on_init = function(client, _)
+                client.notify('workspace/didChangeConfiguration',
+                              {settings = settings})
+            end,
+            settings = settings
         })
 
         -- vim.api.nvim_exec([[
