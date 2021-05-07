@@ -35,7 +35,7 @@ function M.setup()
     -- If the buffer has been edited before formatting has completed, do not try to
     -- apply the changes, by Lukas Reineke
     vim.lsp.handlers['textDocument/formatting'] =
-        function(err, _, result, _, bufnr)
+        function(err, _, result, _, bufnr) -- FIXME: bufnr is nil
             if err ~= nil or result == nil then return end
 
             -- If the buffer hasn't been modified before the formatting has finished,
@@ -44,13 +44,14 @@ function M.setup()
                 local view = vim.fn.winsaveview()
                 vim.lsp.util.apply_text_edits(result, bufnr)
                 vim.fn.winrestview(view)
-                if bufnr == vim.api.nvim_get_current_buf() then
-                    vim.api.nvim_command('noautocmd :update')
+                -- FIXME: commented out as a workaround
+                -- if bufnr == vim.api.nvim_get_current_buf() then
+                vim.api.nvim_command('noautocmd :update')
 
-                    -- Trigger post-formatting autocommand which can be used to refresh gitgutter
-                    vim.api.nvim_command(
-                        'silent doautocmd <nomodeline> User FormatterPost')
-                end
+                -- Trigger post-formatting autocommand which can be used to refresh gitgutter
+                vim.api.nvim_command(
+                    'silent doautocmd <nomodeline> User FormatterPost')
+                -- end
             end
         end
 
@@ -455,7 +456,7 @@ function M.config()
             },
             on_attach = on_attach,
             capabilities = capabilities,
-            flags = {debounce_text_changes = 150, allow_incremental_sync = true},
+            flags = {debounce_text_changes = 150},
             on_init = function(client, _)
                 client.notify('workspace/didChangeConfiguration',
                               {settings = settings})
