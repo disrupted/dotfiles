@@ -223,7 +223,8 @@ packer.startup(function()
     use {
         'NTBBloodbath/rest.nvim',
         opt = true,
-        cmd = 'Rest',
+        ft = {'http'},
+        config = require'conf.rest'.config,
         requires = {'nvim-lua/plenary.nvim'}
     }
 end)
