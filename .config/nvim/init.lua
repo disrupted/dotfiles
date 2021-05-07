@@ -103,6 +103,13 @@ packer.startup(function()
         requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
     }
     use {
+        'nvim-telescope/telescope-fzy-native.nvim',
+        after = {'telescope.nvim'},
+        config = function()
+            require'telescope'.load_extension('fzy_native')
+        end
+    }
+    use {
         'nvim-telescope/telescope-dap.nvim',
         after = {'telescope.nvim', 'nvim-dap'},
         config = function() require'telescope'.load_extension('dap') end
