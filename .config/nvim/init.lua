@@ -262,7 +262,7 @@ end
 -----------------------------------------------------------------------------//
 -- Utils {{{1
 -----------------------------------------------------------------------------//
-vim.o.complete = add {'kspell'}
+vim.o.complete = add('kspell', vim.o.complete)
 -- vim.wo.spell = true
 vim.o.completeopt = add {'menuone', 'noselect'} -- Completion options
 vim.o.clipboard = 'unnamedplus'
@@ -273,7 +273,7 @@ if fn.filereadable('~/.local/share/virtualenvs/debugpy/bin/python') then
 end
 
 -- Trim trailing whitespace and trailing blank lines on save
-vim.api.nvim_exec([[
+cmd [[
     function TrimWhitespace()
         let l:save = winsaveview()
         keeppatterns %s/\s\+$//e
@@ -298,7 +298,7 @@ vim.api.nvim_exec([[
         autocmd! * <buffer>
         autocmd BufWritePre <buffer> call TrimWhitespace()
     augroup END
-]], false)
+]]
 
 -----------------------------------------------------------------------------//
 -- Indentation {{{1
@@ -319,13 +319,13 @@ vim.wo.relativenumber = true -- Relative line numbers
 vim.wo.numberwidth = 2
 vim.wo.signcolumn = 'yes:1' -- 'auto:1-2'
 vim.wo.cursorline = true
-vim.api.nvim_exec([[
+cmd [[
     augroup cursorline_focus
         autocmd!
         autocmd WinEnter * setlocal cursorline
         autocmd WinLeave * setlocal nocursorline
     augroup END
-    ]], false)
+    ]]
 opt.wrap = true
 opt.linebreak = true -- wrap, but on words, not randomly
 -- opt.textwidth = 80

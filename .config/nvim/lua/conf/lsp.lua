@@ -155,12 +155,12 @@ function M.config()
 
         -- Set autocommands conditional on server_capabilities
         if client.resolved_capabilities.document_formatting then
-            vim.api.nvim_exec([[
+            vim.cmd [[
                 augroup format_on_save
                   autocmd! * <buffer>
                   autocmd BufWritePost <buffer> lua vim.lsp.buf.formatting()
                 augroup END
-              ]], false)
+              ]]
         end
 
         if client.resolved_capabilities.document_range_formatting then
@@ -169,13 +169,13 @@ function M.config()
         end
 
         if client.resolved_capabilities.document_highlight then
-            vim.api.nvim_exec([[
+            vim.cmd [[
                 augroup lsp_document_highlight
                   autocmd! * <buffer>
                   autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
                   autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
                 augroup END
-              ]], false)
+              ]]
         end
 
         _G.show_lightbulb = function()
@@ -194,18 +194,18 @@ function M.config()
         end
 
         vim.cmd [[autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics({border = 'single'})]]
-        vim.api.nvim_exec([[
+        vim.cmd [[
             augroup lsp_signature_help
                 autocmd! * <buffer>
                 autocmd CursorHoldI <buffer> silent! lua vim.lsp.buf.signature_help({border = 'single'})
             augroup END
-        ]], false)
-        -- vim.api.nvim_exec([[
+        ]]
+        -- vim.cmd [[
         --     augroup lsp_signature_help
         --         autocmd! * <buffer>
         --         autocmd CursorHoldI <buffer> silent! :Lspsaga signature_help
         --     augroup END
-        -- ]], false)
+        -- ]]
 
         print('LSP attached.')
     end
@@ -376,12 +376,12 @@ function M.config()
         vim.api.nvim_command('noautocmd :edit')
     end
 
-    vim.api.nvim_exec([[
+    vim.cmd [[
         augroup rust_analyzer
             autocmd!
             autocmd FileType rust lua init_rust_analyzer()
         augroup END
-        ]], false)
+        ]]
 
     -- GO
     lspconfig.gopls.setup {
@@ -462,21 +462,21 @@ function M.config()
             settings = settings
         })
 
-        -- vim.api.nvim_exec([[
+        -- vim.cmd [[
         --     augroup organize_imports_on_save
         --         autocmd! * <buffer>
         --         autocmd FileType java
         --         autocmd BufWritePre <buffer> lua require'jdtls'.organize_imports()
         --     augroup END
-        --     ]], false)
+        --     ]]
     end
 
-    vim.api.nvim_exec([[
+    vim.cmd [[
         augroup jdtls
             autocmd!
             autocmd FileType java lua init_jdtls()
         augroup END
-        ]], false)
+        ]]
 
     vim.api.nvim_command('noautocmd :edit') -- reload file to attach LSP
 end
