@@ -46,7 +46,6 @@ packer.startup(function()
             }
         },
         run = ':TSUpdate',
-        setup = require'conf.treesitter'.setup,
         config = require'conf.treesitter'.config
     }
     use {
