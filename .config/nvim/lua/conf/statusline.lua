@@ -71,6 +71,16 @@ local function get_current_file_name()
     return file .. ' '
 end
 
+local function split(str, sep)
+    local res = {}
+    local n = 1
+    for w in str:gmatch('([^' .. sep .. ']*)') do
+        res[n] = res[n] or w -- only set once (so the blank after a string is ignored)
+        if w == '' then n = n + 1 end -- step forwards on a blank but not a string
+    end
+    return res
+end
+
 -- local function trailing_whitespace()
 --     local trail = vim.fn.search('\\s$', 'nw')
 --     if trail ~= 0 then
@@ -170,7 +180,16 @@ gls.left[2] = {
 gls.left[3] = {
     FilePath = {
         provider = function()
-            return vim.fn.fnamemodify(vim.fn.expand '%', ':~:.:h') .. '/'
+            local fp = vim.fn.fnamemodify(vim.fn.expand '%', ':~:.:h')
+            local tbl = split(fp, '/')
+
+            if #tbl > 2 then
+                return '…/' .. table.concat(tbl, '/', #tbl - 1) .. '/' -- shorten filepath to last 2 folders
+                -- alternative: only 1 containing folder using vim builtin function
+                -- return '…/' .. vim.fn.fnamemodify(vim.fn.expand '%', ':p:h:t') .. '/'
+            else
+                return fp .. '/'
+            end
         end,
         condition = checkwidth,
         highlight = {colors.middlegrey, colors.section_bg}
