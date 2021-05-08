@@ -18,8 +18,9 @@ function M.setup()
         numhl = ''
     })
 
+    vim.cmd [[packadd lsp_extensions.nvim]]
     vim.lsp.handlers['textDocument/publishDiagnostics'] =
-        vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+        vim.lsp.with(require('lsp_extensions.workspace.diagnostic').handler, {
             underline = false,
             signs = true,
             -- signs = {severity_limit = 'Information'},
@@ -240,10 +241,7 @@ function M.config()
     vim.cmd [[packadd pylance]]
     require 'pylance'
     lspconfig.pylance.setup {
-        on_attach = function(client, bufnr)
-            client.resolved_capabilities.document_formatting = false
-            on_attach(client, bufnr)
-        end,
+        on_attach = on_attach,
         capabilities = capabilities,
         flags = {debounce_text_changes = 150},
         settings = {

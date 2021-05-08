@@ -55,7 +55,10 @@ packer.startup(function()
         event = {'BufRead'},
         setup = require'conf.lsp'.setup,
         config = require'conf.lsp'.config,
-        requires = {'nvim-lua/lsp-status.nvim', opt = true}
+        requires = {
+            {'nvim-lua/lsp-status.nvim', opt = true},
+            {'nvim-lua/lsp_extensions.nvim', opt = true}
+        }
     }
     use {
         'L3MON4D3/LuaSnip',
