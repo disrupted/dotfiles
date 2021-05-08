@@ -9,20 +9,15 @@ gl.short_line_list = {'packer', 'NvimTree', 'Outline', 'LspTrouble'}
 
 local colors = {
     bg = '#282c34',
-    fg = '#aab2bf',
+    fg = '#abb2bf',
     section_bg = '#38393f',
     blue = '#61afef',
     green = '#98c379',
     purple = '#c678dd',
     orange = '#e5c07b',
-    red1 = '#e06c75',
-    red2 = '#be5046',
+    red = '#e06c75',
     yellow = '#e5c07b',
-    gray1 = '#5c6370',
-    gray2 = '#2c323d',
-    gray3 = '#3e4452',
-    darkgrey = '#5c6370',
-    grey = '#848586',
+    darkgrey = '#2c323d',
     middlegrey = '#8791A5'
 }
 
@@ -47,9 +42,9 @@ local mode_color = function()
         [118] = colors.purple,
         [22] = colors.purple,
         [86] = colors.purple,
-        [82] = colors.red1,
-        [115] = colors.red1,
-        [83] = colors.red1
+        [82] = colors.red,
+        [115] = colors.red,
+        [83] = colors.red
     }
 
     local color = mode_colors[vim.fn.mode():byte()]
@@ -173,6 +168,15 @@ gls.left[2] = {
     }
 }
 gls.left[3] = {
+    FilePath = {
+        provider = function()
+            return vim.fn.fnamemodify(vim.fn.expand '%', ':~:.:h') .. '/'
+        end,
+        condition = checkwidth,
+        highlight = {colors.middlegrey, colors.section_bg}
+    }
+}
+gls.left[4] = {
     FileName = {
         provider = get_current_file_name,
         condition = buffer_not_empty,
@@ -205,7 +209,7 @@ gls.left[9] = {
     DiagnosticError = {
         provider = {'DiagnosticError'},
         icon = '  ',
-        highlight = {colors.red1, colors.bg}
+        highlight = {colors.red, colors.bg}
         -- separator = ' ',
         -- separator_highlight = {colors.bg, colors.bg}
     }
@@ -287,7 +291,7 @@ gls.right[3] = {
         provider = 'DiffRemove',
         condition = checkwidth,
         icon = '-',
-        highlight = {colors.red1, colors.bg}
+        highlight = {colors.red, colors.bg}
     }
 }
 gls.right[4] = {
@@ -322,7 +326,7 @@ gls.right[8] = {
         provider = 'LinePercent',
         separator = ' ',
         separator_highlight = {colors.blue, colors.bg},
-        highlight = {colors.gray2, colors.blue}
+        highlight = {colors.darkgrey, colors.blue}
     }
 }
 -- gls.right[9] = {
