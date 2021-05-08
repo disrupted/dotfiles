@@ -314,7 +314,6 @@ zinit ice lucid wait"0" as"program" id-as"hyperfine" from"gh-r" \
 zinit light sharkdp/hyperfine
 zinit light MichaelAquilina/zsh-autoswitch-virtualenv
 zinit ice lucid wait"0" as"program" id-as"himalaya" from"gh-r" \
-  mv"**/himalaya.exe -> himalaya" \
   atclone'himalaya completion zsh > _himalaya' atpull'%atclone'
 zinit light soywod/himalaya
 zinit ice lucid wait"0" as"program" id-as"gitlab" from"gh-r" \
