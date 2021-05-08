@@ -45,13 +45,21 @@ function M.config()
         end
     end
 
+    local function prequire(...)
+        local status, lib = pcall(require, ...)
+        if (status) then return lib end
+        return nil
+    end
+
+    local luasnip = prequire 'luasnip'
+
     -- Use Tab / S-Tab to:
     -- move to prev/next item in completion menuone
     -- jump to prev/next snippet's placeholder
     _G.tab_complete = function()
         if vim.fn.pumvisible() == 1 then
             return t '<C-n>'
-        elseif require'luasnip'.expand_or_jumpable() then
+        elseif luasnip and luasnip.expand_or_jumpable() then
             return t '<Plug>luasnip-expand-or-jump'
         elseif check_back_space() then
             return t '<Tab>'
@@ -62,7 +70,7 @@ function M.config()
     _G.s_tab_complete = function()
         if vim.fn.pumvisible() == 1 then
             return t '<C-p>'
-        elseif require'luasnip'.jumpable(-1) then
+        elseif luasnip and luasnip.jumpable(-1) then
             return t '<Plug>luasnip-jump-prev'
         else
             return t '<S-Tab>'
