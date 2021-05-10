@@ -27,6 +27,7 @@ function M.config()
         },
         action_keys = {jump = {'<cr>'}, toggle_fold = {'<tab>'}}
     }
+    vim.cmd [[highlight link LspTroubleText CursorLineNr]]
 end
 
 return M
