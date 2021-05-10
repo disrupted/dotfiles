@@ -426,6 +426,8 @@ function M.config()
         }
     }
 
+    lspconfig.clangd.setup {}
+
     -- DENO
     -- lspconfig.denols.setup {
     --     on_attach = on_attach,
