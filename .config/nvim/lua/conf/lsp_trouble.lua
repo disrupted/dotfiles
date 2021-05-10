@@ -13,6 +13,20 @@ function M.setup()
                             '<cmd>LspTroubleToggle quickfix<CR>', opts)
 end
 
-function M.config() require'trouble'.setup {} end
+function M.config()
+    require'trouble'.setup {
+        fold_open = '▾',
+        fold_closed = '▸',
+        indent_lines = false,
+        signs = {
+            error = '',
+            warning = '',
+            hint = '',
+            information = '',
+            other = ''
+        },
+        action_keys = {jump = {'<cr>'}, toggle_fold = {'<tab>'}}
+    }
+end
 
 return M
