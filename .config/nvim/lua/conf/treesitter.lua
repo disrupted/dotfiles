@@ -30,7 +30,9 @@ function M.config()
                 enable = true,
                 keymaps = {
                     goto_definition = 'gnd', -- mapping to go to definition of symbol under cursor
-                    list_definitions = 'gnD' -- mapping to list all definitions in current file
+                    list_definitions = 'gnD', -- mapping to list all definitions in current file
+                    goto_next_usage = '<space>n',
+                    goto_previous_usage = '<space>N'
                 }
             }
         },
