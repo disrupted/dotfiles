@@ -29,14 +29,14 @@ function M.setup()
                 prefix = '■', -- ■ 
                 severity_limit = 'Warning'
             },
-            update_in_insert = false -- delay update
+            update_in_insert = false -- delay update until InsertLeave
         })
 
     -- Handle formatting in a smarter way
     -- If the buffer has been edited before formatting has completed, do not try to
     -- apply the changes, by Lukas Reineke
     vim.lsp.handlers['textDocument/formatting'] =
-        function(err, _, result, _, bufnr) -- FIXME: bufnr is nil
+        function(err, _, result, _, bufnr)
             if err ~= nil or result == nil then return end
 
             -- If the buffer hasn't been modified before the formatting has finished,
@@ -45,14 +45,13 @@ function M.setup()
                 local view = vim.fn.winsaveview()
                 vim.lsp.util.apply_text_edits(result, bufnr)
                 vim.fn.winrestview(view)
-                -- FIXME: commented out as a workaround
-                -- if bufnr == vim.api.nvim_get_current_buf() then
-                vim.api.nvim_command('noautocmd :update')
+                if not bufnr or bufnr == vim.api.nvim_get_current_buf() then
+                    vim.api.nvim_command('noautocmd :update')
 
-                -- Trigger post-formatting autocommand which can be used to refresh gitgutter
-                vim.api.nvim_command(
-                    'silent doautocmd <nomodeline> User FormatterPost')
-                -- end
+                    -- Trigger post-formatting autocommand which can be used to refresh gitgutter
+                    vim.api.nvim_command(
+                        'silent doautocmd <nomodeline> User FormatterPost')
+                end
             end
         end
 
@@ -206,7 +205,8 @@ function M.config()
         --     augroup END
         -- ]]
 
-        print('LSP attached.')
+        -- print('LSP attached.')
+        vim.api.nvim_echo({{'LSP attached.'}}, false, {})
     end
 
     -- define language servers
@@ -284,7 +284,19 @@ function M.config()
             on_attach(client)
         end,
         capabilities = capabilities,
-        flags = {debounce_text_changes = 150}
+        flags = {debounce_text_changes = 500},
+        commands = {
+            OrganizeImports = {
+                function()
+                    local params = {
+                        command = '_typescript.organizeImports',
+                        arguments = {vim.api.nvim_buf_get_name(0)},
+                        title = ''
+                    }
+                    vim.lsp.buf.execute_command(params)
+                end
+            }
+        }
     }
 
     -- EFM Universal Language Server
@@ -425,7 +437,12 @@ function M.config()
         }
     }
 
-    lspconfig.clangd.setup {}
+    lspconfig.clangd.setup {
+        -- cmd = {'clangd', '--background-index', '-xc++', '-Wall'},
+        on_attach = on_attach,
+        capabilities = capabilities,
+        flags = {debounce_text_changes = 150}
+    }
 
     -- DENO
     -- lspconfig.denols.setup {
