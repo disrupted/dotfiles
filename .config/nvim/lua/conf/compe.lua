@@ -76,6 +76,12 @@ function M.config()
             return t '<S-Tab>'
         end
     end
+    _G.enter_complete = function()
+        if luasnip and luasnip.choice_active() then
+            return t '<Plug>luasnip-next-choice'
+        end
+        return vim.fn['compe#confirm'](t '<CR>')
+    end
 
     -- vim.cmd [[packadd nvim-autopairs]]
     -- local npairs = require 'nvim-autopairs'
@@ -98,6 +104,10 @@ function M.config()
     vim.api.nvim_set_keymap('i', '<S-Tab>', 'v:lua.s_tab_complete()', opts)
     vim.api.nvim_set_keymap('s', '<S-Tab>', 'v:lua.s_tab_complete()', opts)
     vim.api.nvim_set_keymap('i', '<C-e>', [[compe#close('<C-e>')]], opts)
+    vim.api.nvim_set_keymap('i', '<CR>', 'v:lua.enter_complete()', opts)
+    vim.api.nvim_set_keymap('s', '<CR>',
+                            '<cmd>lua require("luasnip").expand_or_jumpable()<CR>',
+                            {})
     -- vim.api.nvim_set_keymap('i', '<CR>', "v:lua.completion_confirm()", opts) --[[compe#confirm('<CR>')]]
     vim.api.nvim_set_keymap('i', '<C-Space>', [[compe#complete()]], opts)
 
