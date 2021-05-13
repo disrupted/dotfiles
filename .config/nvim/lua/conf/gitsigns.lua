@@ -81,6 +81,8 @@ function M.config()
         use_internal_diff = true,
         yadm = {enable = true}
     }
+
+    vim.cmd [[autocmd User FormatterPost lua require'gitsigns'.refresh()]]
 end
 
 return M

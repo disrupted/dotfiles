@@ -48,7 +48,7 @@ function M.setup()
                 if not bufnr or bufnr == vim.api.nvim_get_current_buf() then
                     vim.api.nvim_command('noautocmd :update')
 
-                    -- Trigger post-formatting autocommand which can be used to refresh gitgutter
+                    -- Trigger post-formatting autocommand which can be used to refresh gitsigns
                     vim.api.nvim_command(
                         'silent doautocmd <nomodeline> User FormatterPost')
                 end
