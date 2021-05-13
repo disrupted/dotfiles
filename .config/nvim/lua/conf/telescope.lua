@@ -59,6 +59,9 @@ function M.setup()
     --    opts)
     vim.api.nvim_set_keymap('n', '<Space>/', '<cmd>lua __telescope_grep()<CR>',
                             opts)
+    -- vim.api.nvim_set_keymap('n', '<Space>/',
+    --                         '<cmd>lua require("telescope.builtin").grep_string { search = vim.fn.expand("<cword>") }<CR>',
+    --                         opts)  -- grep for word under the cursor
     vim.api.nvim_set_keymap('n', '<Space>h',
                             '<cmd>lua require("telescope.builtin").help_tags(options)<CR>',
                             opts)
@@ -98,6 +101,13 @@ function M.config()
             winblend = 7,
             set_env = {COLORTERM = 'truecolor'},
             color_devicons = true
+        },
+        extensions = {
+            fzf = {
+                override_generic_sorter = true,
+                override_file_sorter = true,
+                case_mode = 'smart_case'
+            }
         }
     }
 end
