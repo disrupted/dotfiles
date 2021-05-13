@@ -195,11 +195,11 @@ packer.startup(function()
     use {'mfussenegger/nvim-jdtls', opt = true}
     use {'zsugabubus/crazy8.nvim', opt = true, event = {'BufRead'}} -- detect indentation automatically
     use {
-        'folke/lsp-trouble.nvim',
+        'folke/trouble.nvim',
         opt = true,
-        cmd = 'LspTroubleToggle',
-        setup = require'conf.lsp_trouble'.setup,
-        config = require'conf.lsp_trouble'.config,
+        cmd = {'Trouble', 'TroubleToggle'},
+        setup = require'conf.trouble'.setup,
+        config = require'conf.trouble'.config,
         requires = {'kyazdani42/nvim-web-devicons', opt = true}
     }
     use {

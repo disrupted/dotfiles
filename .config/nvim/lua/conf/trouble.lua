@@ -2,15 +2,15 @@ local M = {}
 
 function M.setup()
     local opts = {silent = true, noremap = true}
-    vim.api.nvim_set_keymap('n', '<space>xx', '<cmd>LspTroubleToggle<CR>', opts)
+    vim.api.nvim_set_keymap('n', '<space>xx', '<cmd>TroubleToggle<CR>', opts)
     vim.api.nvim_set_keymap('n', '<space>xw',
-                            '<cmd>LspTroubleToggle lsp_workspace_diagnostics<CR>',
+                            '<cmd>TroubleToggle lsp_workspace_diagnostics<CR>',
                             opts)
     vim.api.nvim_set_keymap('n', '<space>xb',
-                            '<cmd>LspTroubleToggle lsp_document_diagnostics<CR>',
+                            '<cmd>TroubleToggle lsp_document_diagnostics<CR>',
                             opts)
-    vim.api.nvim_set_keymap('n', '<space>xq',
-                            '<cmd>LspTroubleToggle quickfix<CR>', opts)
+    vim.api.nvim_set_keymap('n', '<space>xq', '<cmd>TroubleToggle quickfix<CR>',
+                            opts)
 end
 
 function M.config()
@@ -27,7 +27,7 @@ function M.config()
         },
         action_keys = {jump = {'<cr>'}, toggle_fold = {'<tab>'}}
     }
-    vim.cmd [[highlight link LspTroubleText CursorLineNr]]
+    vim.cmd [[highlight link TroubleText CursorLineNr]]
 end
 
 return M
