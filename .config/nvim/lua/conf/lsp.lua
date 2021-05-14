@@ -266,16 +266,17 @@ function M.config()
             buf_set_keymap(
                 'n',
                 '<leader>a',
-                '<cmd>lua require\'telescope.builtin\'.lsp_code_actions()<CR>',
+                -- FIX: add initial_mode="normal" when it's working again
+                '<cmd>lua require"telescope.builtin".lsp_code_actions(require"telescope.themes".get_dropdown { winblend = 0 })<CR>',
                 opts
             )
         end
 
-        vim.cmd [[autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics({border = 'single'})]]
+        vim.cmd [[autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics {border = 'single'}]]
         vim.cmd [[
             augroup lsp_signature_help
                 autocmd! * <buffer>
-                autocmd CursorHoldI <buffer> silent! lua vim.lsp.buf.signature_help({border = 'single'})
+                autocmd CursorHoldI <buffer> silent! lua vim.lsp.buf.signature_help {border = 'single'}
             augroup END
         ]]
         -- vim.cmd [[

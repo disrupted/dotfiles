@@ -74,7 +74,7 @@ function M.setup()
     vim.api.nvim_set_keymap(
         'n',
         '<Space>h',
-        '<cmd>lua require("telescope.builtin").help_tags(options)<CR>',
+        '<cmd>lua require "telescope.builtin".help_tags(options)<CR>',
         opts
     )
     vim.api.nvim_set_keymap(
@@ -86,7 +86,7 @@ function M.setup()
     vim.api.nvim_set_keymap(
         'n',
         ',pr',
-        '<cmd>lua require("telescope.builtin").extensions.pull_request()<CR>',
+        '<cmd>lua require "telescope.builtin".extensions.pull_request()<CR>',
         opts
     )
 end
