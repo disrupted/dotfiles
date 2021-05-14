@@ -262,6 +262,14 @@ packer.startup(function()
     }
     use 'tversteeg/registers.nvim'
     use { 'soywod/himalaya', opt = true, cmd = 'Himalaya' }
+    use {
+        'folke/todo-comments.nvim',
+        opt = true,
+        cmd = { 'TodoQuickFix', 'TodoTrouble', 'TodoTelescope' },
+        config = function()
+            require 'todo-comments'.setup {}
+        end,
+    }
 end)
 
 local executable = function(e)
