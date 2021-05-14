@@ -24,12 +24,12 @@ packer.startup(function()
     }
     use {
         'blackCauldron7/surround.nvim',
-        event = {'VimEnter'},
+        event = {'BufRead', 'BufNewFile'},
         config = require'conf.surround'.config
     }
     use {
         'b3nj5m1n/kommentary',
-        event = {'VimEnter'},
+        event = {'BufRead', 'BufNewFile'},
         config = require'conf.kommentary'.config
     }
     use {
@@ -43,6 +43,13 @@ packer.startup(function()
             {
                 'nvim-treesitter/nvim-treesitter-textobjects',
                 after = 'nvim-treesitter'
+            }, {
+                'lewis6991/spellsitter.nvim',
+                after = 'nvim-treesitter',
+                config = function()
+                    require'spellsitter'.setup {hl = 'SpellBad', captures = {}}
+                end,
+                disable = true -- not working for now
             }
         },
         run = ':TSUpdate',
@@ -235,6 +242,8 @@ packer.startup(function()
         config = require'conf.rest'.config,
         requires = {'nvim-lua/plenary.nvim'}
     }
+    use 'tversteeg/registers.nvim'
+    use {'soywod/himalaya', opt = true, cmd = 'Himalaya'}
 end)
 
 local executable = function(e) return fn.executable(e) > 0 end
