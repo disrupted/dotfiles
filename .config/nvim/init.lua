@@ -299,6 +299,9 @@ if fn.filereadable '~/.local/share/virtualenvs/debugpy/bin/python' then
     vim.g.python3_host_prog = '~/.local/share/virtualenvs/debugpy/bin/python'
 end
 
+-- highlight yanked text briefly
+cmd [[autocmd TextYankPost * silent! lua vim.highlight.on_yank {higroup="Search", timeout=250, on_visual=false}]]
+
 -- Trim trailing whitespace and trailing blank lines on save
 cmd [[
     function TrimWhitespace()
