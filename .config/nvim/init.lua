@@ -360,8 +360,8 @@ vim.wo.cursorline = true
 cmd [[
     augroup cursorline_focus
         autocmd!
-        autocmd WinEnter * setlocal cursorline
-        autocmd WinLeave * setlocal nocursorline
+        autocmd WinEnter * if &bt != 'terminal' | setlocal cursorline
+        autocmd WinLeave * if &bt != 'terminal' | setlocal nocursorline
     augroup END
     ]]
 opt.wrap = true
@@ -499,19 +499,20 @@ vim.o.diffopt = add({
 -----------------------------------------------------------------------------//
 -- Terminal {{{1
 -----------------------------------------------------------------------------//
-function _G.__split_term_right()
-    execute 'botright vsplit term://$SHELL'
-    execute 'setlocal nonumber'
-    execute 'setlocal norelativenumber'
-    execute 'startinsert'
-end
-cmd 'command TermRight :call luaeval(\'_G.__split_term_right()\')'
--- Directly go into insert mode when switching to terminal
-cmd [[autocmd BufWinEnter,WinEnter term://* startinsert]]
--- cmd [[autocmd BufLeave term://* stopinsert]]
--- Automatically close terminal buffer on process exit
--- cmd [[autocmd TermClose term://* call nvim_input('<CR>')]]
--- cmd [[autocmd TermClose * call feedkeys("i")]]
+-- Open a terminal pane on the right using :Term
+cmd [[command Term :botright vsplit term://$SHELL]]
+
+-- Terminal visual tweaks
+-- Enter insert mode when switching to terminal
+-- Close terminal buffer on process exit
+cmd [[
+	autocmd TermOpen * setlocal listchars= nonumber norelativenumber nocursorline
+	autocmd TermOpen * startinsert
+	autocmd BufEnter,BufWinEnter,WinEnter term://* startinsert
+	autocmd BufLeave term://* stopinsert
+	autocmd TermClose term://* call nvim_input('<CR>')
+	autocmd TermClose * call feedkeys("i")
+]]
 
 -----------------------------------------------------------------------------//
 -- Mouse {{{1
