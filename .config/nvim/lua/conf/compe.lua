@@ -1,16 +1,33 @@
 local M = {}
 
 function M.config()
-    vim.lsp.protocol.CompletionItemKind =
-        {
-            'ﮜ [text]', ' [method]', ' [function]', ' [constructor]',
-            'ﰠ [field]', ' [variable]', ' [class]', ' [interface]',
-            ' [module]', ' [property]', ' [unit]', ' [value]',
-            ' [enum]', ' [key]', ' [snippet]', ' [color]',
-            ' [file]', ' [reference]', ' [folder]',
-            ' [enum member]', ' [constant]', ' [struct]',
-            '⌘ [event]', ' [operator]', '⌂ [type]'
-        }
+    vim.lsp.protocol.CompletionItemKind = {
+        'ﮜ [text]',
+        ' [method]',
+        ' [function]',
+        ' [constructor]',
+        'ﰠ [field]',
+        ' [variable]',
+        ' [class]',
+        ' [interface]',
+        ' [module]',
+        ' [property]',
+        ' [unit]',
+        ' [value]',
+        ' [enum]',
+        ' [key]',
+        ' [snippet]',
+        ' [color]',
+        ' [file]',
+        ' [reference]',
+        ' [folder]',
+        ' [enum member]',
+        ' [constant]',
+        ' [struct]',
+        '⌘ [event]',
+        ' [operator]',
+        '⌂ [type]',
+    }
 
     local compe = require 'compe'
     compe.setup {
@@ -22,14 +39,14 @@ function M.config()
         incomplete_delay = 400,
         allow_prefix_unmatch = false,
         source = {
-            path = {menu = '[PATH]', priority = 9},
+            path = { menu = '[PATH]', priority = 9 },
             -- treesitter = {menu = '[TS]', priority = 9},
-            buffer = {menu = '[BUF]', priority = 8},
-            nvim_lsp = {menu = '[LSP]', priority = 10, sort = false},
-            nvim_lua = {menu = '[LUA]', priority = 6},
-            luasnip = {menu = '[SNP]', priority = 10},
-            spell = true
-        }
+            buffer = { menu = '[BUF]', priority = 8 },
+            nvim_lsp = { menu = '[LSP]', priority = 10, sort = false },
+            nvim_lua = { menu = '[LUA]', priority = 6 },
+            luasnip = { menu = '[SNP]', priority = 10 },
+            spell = true,
+        },
     }
 
     local t = function(str)
@@ -37,8 +54,8 @@ function M.config()
     end
 
     local check_back_space = function()
-        local col = vim.fn.col('.') - 1
-        if col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') then
+        local col = vim.fn.col '.' - 1
+        if col == 0 or vim.fn.getline '.':sub(col, col):match '%s' then
             return true
         else
             return false
@@ -47,7 +64,9 @@ function M.config()
 
     local function prequire(...)
         local status, lib = pcall(require, ...)
-        if (status) then return lib end
+        if status then
+            return lib
+        end
         return nil
     end
 
@@ -98,16 +117,19 @@ function M.config()
     --     end
     -- end
 
-    local opts = {silent = true, expr = true}
+    local opts = { silent = true, expr = true }
     vim.api.nvim_set_keymap('i', '<Tab>', 'v:lua.tab_complete()', opts)
     vim.api.nvim_set_keymap('s', '<Tab>', 'v:lua.tab_complete()', opts)
     vim.api.nvim_set_keymap('i', '<S-Tab>', 'v:lua.s_tab_complete()', opts)
     vim.api.nvim_set_keymap('s', '<S-Tab>', 'v:lua.s_tab_complete()', opts)
     vim.api.nvim_set_keymap('i', '<C-e>', [[compe#close('<C-e>')]], opts)
     vim.api.nvim_set_keymap('i', '<CR>', 'v:lua.enter_complete()', opts)
-    vim.api.nvim_set_keymap('s', '<CR>',
-                            '<cmd>lua require("luasnip").expand_or_jumpable()<CR>',
-                            {})
+    vim.api.nvim_set_keymap(
+        's',
+        '<CR>',
+        '<cmd>lua require("luasnip").expand_or_jumpable()<CR>',
+        {}
+    )
     -- vim.api.nvim_set_keymap('i', '<CR>', "v:lua.completion_confirm()", opts) --[[compe#confirm('<CR>')]]
     vim.api.nvim_set_keymap('i', '<C-Space>', [[compe#complete()]], opts)
 
@@ -118,8 +140,10 @@ function M.config()
         local response = args.response or {}
         local items = response.items or response
         for _, item in ipairs(items) do
-            if item.insertText == nil and
-                (item.kind == 2 or item.kind == 3 or item.kind == 4) then
+            if
+                item.insertText == nil
+                and (item.kind == 2 or item.kind == 3 or item.kind == 4)
+            then
                 item.insertText = item.label .. '(${1})'
                 item.insertTextFormat = 2
             end

@@ -3,5 +3,5 @@ return {
     lintSource = 'eslint',
     lintIgnoreExitCode = true,
     lintStdin = true,
-    lintFormats = {'%f(%l,%c): %tarning %m', '%f(%l,%c): %rror %m'}
+    lintFormats = { '%f(%l,%c): %tarning %m', '%f(%l,%c): %rror %m' },
 }

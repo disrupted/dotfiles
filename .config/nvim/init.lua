@@ -3,11 +3,14 @@ local fn = vim.fn -- to call Vim functions e.g. fn.bufnr()
 
 local execute = vim.api.nvim_command
 
-local install_path = fn.stdpath('data') .. '/site/pack/packer/opt/packer.nvim'
+local install_path = fn.stdpath 'data' .. '/site/pack/packer/opt/packer.nvim'
 
 if fn.empty(fn.glob(install_path)) > 0 then
-    execute('!git clone https://github.com/wbthomason/packer.nvim' .. ' ' ..
-                install_path)
+    execute(
+        '!git clone https://github.com/wbthomason/packer.nvim'
+            .. ' '
+            .. install_path
+    )
 end
 
 cmd [[packadd packer.nvim]]
@@ -16,144 +19,157 @@ local use = packer.use
 -- cmd [[autocmd BufWritePost init.lua PackerCompile]]
 
 packer.startup(function()
-    use {'wbthomason/packer.nvim', opt = true}
+    use { 'wbthomason/packer.nvim', opt = true }
     -- use 'jooize/vim-colemak' -- mapping for the colemak keyboard layout
     use {
         'disrupted/one-nvim', -- personal tweaked colorscheme
-        config = function() vim.cmd 'colorscheme one-nvim' end
+        config = function()
+            vim.cmd 'colorscheme one-nvim'
+        end,
     }
     use {
         'blackCauldron7/surround.nvim',
-        event = {'BufRead', 'BufNewFile'},
-        config = require'conf.surround'.config
+        event = { 'BufRead', 'BufNewFile' },
+        config = require 'conf.surround'.config,
     }
     use {
         'b3nj5m1n/kommentary',
-        event = {'BufRead', 'BufNewFile'},
-        config = require'conf.kommentary'.config
+        event = { 'BufRead', 'BufNewFile' },
+        config = require 'conf.kommentary'.config,
     }
     use {
         'nvim-treesitter/nvim-treesitter',
-        event = {'BufRead', 'BufNewFile'},
+        event = { 'BufRead', 'BufNewFile' },
         requires = {
             {
                 'nvim-treesitter/nvim-treesitter-refactor',
-                after = 'nvim-treesitter'
+                after = 'nvim-treesitter',
             },
             {
                 'nvim-treesitter/nvim-treesitter-textobjects',
-                after = 'nvim-treesitter'
-            }, {
+                after = 'nvim-treesitter',
+            },
+            {
                 'lewis6991/spellsitter.nvim',
                 after = 'nvim-treesitter',
                 config = function()
-                    require'spellsitter'.setup {hl = 'SpellBad', captures = {}}
+                    require 'spellsitter'.setup { hl = 'SpellBad', captures = {} }
                 end,
-                disable = true -- not working for now
-            }
+                disable = true, -- not working for now
+            },
         },
         run = ':TSUpdate',
-        config = require'conf.treesitter'.config
+        config = require 'conf.treesitter'.config,
     }
     use {
         'neovim/nvim-lspconfig',
         opt = true,
-        event = {'BufRead'},
-        setup = require'conf.lsp'.setup,
-        config = require'conf.lsp'.config,
+        event = { 'BufRead' },
+        setup = require 'conf.lsp'.setup,
+        config = require 'conf.lsp'.config,
         requires = {
-            {'nvim-lua/lsp-status.nvim', opt = true},
-            {'nvim-lua/lsp_extensions.nvim', opt = true}
-        }
+            { 'nvim-lua/lsp-status.nvim', opt = true },
+            { 'nvim-lua/lsp_extensions.nvim', opt = true },
+        },
     }
     use {
         'L3MON4D3/LuaSnip',
         opt = true,
-        event = {'InsertEnter'},
-        config = function() require 'conf.snippets' end,
-        requires = {'rafamadriz/friendly-snippets', opt = true}
+        event = { 'InsertEnter' },
+        config = function()
+            require 'conf.snippets'
+        end,
+        requires = { 'rafamadriz/friendly-snippets', opt = true },
     }
     use {
         'hrsh7th/nvim-compe',
         opt = true,
-        event = {'InsertEnter'},
-        config = require'conf.compe'.config,
-        after = 'LuaSnip'
+        event = { 'InsertEnter' },
+        config = require 'conf.compe'.config,
+        after = 'LuaSnip',
     }
     use {
         -- Debug Adapter Protocol client
         'mfussenegger/nvim-dap',
         opt = true,
-        ft = {'python'},
+        ft = { 'python' },
         requires = {
-            {'mfussenegger/nvim-dap-python', opt = true},
+            { 'mfussenegger/nvim-dap-python', opt = true },
             {
                 'theHamsta/nvim-dap-virtual-text',
                 opt = true,
-                after = 'nvim-treesitter'
-            }
+                after = 'nvim-treesitter',
+            },
         },
-        setup = require'conf.dap'.setup,
-        config = require'conf.dap'.config
+        setup = require 'conf.dap'.setup,
+        config = require 'conf.dap'.config,
     }
     use {
         'kyazdani42/nvim-tree.lua',
         opt = true,
-        cmd = {'NvimTreeOpen', 'NvimTreeToggle'},
-        setup = require'conf.nvim_tree'.setup,
-        config = require'conf.nvim_tree'.config,
-        requires = {'kyazdani42/nvim-web-devicons', opt = true}
+        cmd = { 'NvimTreeOpen', 'NvimTreeToggle' },
+        setup = require 'conf.nvim_tree'.setup,
+        config = require 'conf.nvim_tree'.config,
+        requires = { 'kyazdani42/nvim-web-devicons', opt = true },
     }
     use {
         'nvim-telescope/telescope.nvim',
-        event = {'VimEnter'},
-        setup = require'conf.telescope'.setup,
-        config = require'conf.telescope'.config,
-        requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
+        event = { 'VimEnter' },
+        setup = require 'conf.telescope'.setup,
+        config = require 'conf.telescope'.config,
+        requires = { { 'nvim-lua/popup.nvim' }, { 'nvim-lua/plenary.nvim' } },
     }
     use {
         'nvim-telescope/telescope-fzf-native.nvim',
         run = 'make',
-        after = {'telescope.nvim'},
-        config = function() require'telescope'.load_extension('fzf') end
+        after = { 'telescope.nvim' },
+        config = function()
+            require 'telescope'.load_extension 'fzf'
+        end,
     }
     use {
         'nvim-telescope/telescope-dap.nvim',
-        after = {'telescope.nvim', 'nvim-dap'},
-        config = function() require'telescope'.load_extension('dap') end
+        after = { 'telescope.nvim', 'nvim-dap' },
+        config = function()
+            require 'telescope'.load_extension 'dap'
+        end,
     }
     use {
         'nvim-telescope/telescope-github.nvim',
-        after = {'telescope.nvim'},
-        config = function() require'telescope'.load_extension('gh') end
+        after = { 'telescope.nvim' },
+        config = function()
+            require 'telescope'.load_extension 'gh'
+        end,
     }
     use {
         'glepnir/galaxyline.nvim',
         opt = true,
         branch = 'main',
-        event = {'VimEnter'},
-        config = function() require 'conf.statusline' end,
-        requires = {'kyazdani42/nvim-web-devicons', opt = true}
+        event = { 'VimEnter' },
+        config = function()
+            require 'conf.statusline'
+        end,
+        requires = { 'kyazdani42/nvim-web-devicons', opt = true },
     }
     use {
         'romgrk/barbar.nvim',
-        event = {'VimEnter'},
-        config = require'conf.bufferline'.config(),
-        requires = {'kyazdani42/nvim-web-devicons', opt = true},
-        disable = true
+        event = { 'VimEnter' },
+        config = require 'conf.bufferline'.config(),
+        requires = { 'kyazdani42/nvim-web-devicons', opt = true },
+        disable = true,
     }
     use {
         'lewis6991/gitsigns.nvim',
-        event = {'BufReadPre', 'BufNewFile'},
-        config = require'conf.gitsigns'.config,
-        requires = {'nvim-lua/plenary.nvim'}
+        event = { 'BufReadPre', 'BufNewFile' },
+        config = require 'conf.gitsigns'.config,
+        requires = { 'nvim-lua/plenary.nvim' },
     }
     use {
         'TimUntersberger/neogit',
         opt = true,
         cmd = 'Neogit',
-        setup = require'conf.neogit'.setup,
-        config = require'conf.neogit'.config
+        setup = require 'conf.neogit'.setup,
+        config = require 'conf.neogit'.config,
     }
     -- use {
     --     'windwp/nvim-autopairs',
@@ -162,91 +178,95 @@ packer.startup(function()
     -- }
     use {
         'steelsojka/pears.nvim',
-        event = {'BufRead'},
-        config = require'conf.pears'.config
+        event = { 'BufRead' },
+        config = require 'conf.pears'.config,
     }
-    use {'kosayoda/nvim-lightbulb', opt = true}
+    use { 'kosayoda/nvim-lightbulb', opt = true }
     use {
         'numToStr/Navigator.nvim',
-        cond = function() return os.getenv('TMUX') end,
-        config = require'conf.navigator'.config
+        cond = function()
+            return os.getenv 'TMUX'
+        end,
+        config = require 'conf.navigator'.config,
     }
     use {
         'kassio/neoterm',
-        cmd = {'Ttoggle'},
-        config = require'conf.neoterm'.config
+        cmd = { 'Ttoggle' },
+        config = require 'conf.neoterm'.config,
     }
-    use {'hkupty/iron.nvim', opt = true} -- REPL
+    use { 'hkupty/iron.nvim', opt = true } -- REPL
     use {
         'mhinz/vim-sayonara',
         opt = true,
         cmd = 'Sayonara',
-        setup = require'conf.sayonara'.setup
+        setup = require 'conf.sayonara'.setup,
     }
     use {
         'phaazon/hop.nvim',
         opt = true,
-        cmd = {'HopWord', 'HopChar1', 'HopPattern'},
-        setup = require'conf.hop'.setup
+        cmd = { 'HopWord', 'HopChar1', 'HopPattern' },
+        setup = require 'conf.hop'.setup,
     }
     use {
         'lukas-reineke/indent-blankline.nvim',
         opt = true,
         branch = 'lua',
-        event = {'BufRead'},
-        config = require'conf.indentline'.config
+        event = { 'BufRead' },
+        config = require 'conf.indentline'.config,
     }
-    use {'pylance', opt = true}
-    use {'simrat39/rust-tools.nvim', opt = true}
-    use {'mfussenegger/nvim-jdtls', opt = true}
-    use {'zsugabubus/crazy8.nvim', opt = true, event = {'BufRead'}} -- detect indentation automatically
+    use { 'pylance', opt = true }
+    use { 'simrat39/rust-tools.nvim', opt = true }
+    use { 'mfussenegger/nvim-jdtls', opt = true }
+    use { 'zsugabubus/crazy8.nvim', opt = true, event = { 'BufRead' } } -- detect indentation automatically
     use {
         'folke/trouble.nvim',
         opt = true,
-        cmd = {'Trouble', 'TroubleToggle'},
-        setup = require'conf.trouble'.setup,
-        config = require'conf.trouble'.config,
-        requires = {'kyazdani42/nvim-web-devicons', opt = true}
+        cmd = { 'Trouble', 'TroubleToggle' },
+        setup = require 'conf.trouble'.setup,
+        config = require 'conf.trouble'.config,
+        requires = { 'kyazdani42/nvim-web-devicons', opt = true },
     }
     use {
         'simrat39/symbols-outline.nvim',
         opt = true,
         cmd = 'SymbolsOutline',
-        setup = require'conf.outline'.setup,
-        config = require'conf.outline'.config
+        setup = require 'conf.outline'.setup,
+        config = require 'conf.outline'.config,
     }
     use {
         'rmagatti/auto-session',
         opt = true,
-        event = {'VimEnter'},
-        setup = require'conf.auto-session'.setup,
-        config = require'conf.auto-session'.config
+        event = { 'VimEnter' },
+        setup = require 'conf.auto-session'.setup,
+        config = require 'conf.auto-session'.config,
     }
     use {
         'kevinhwang91/nvim-bqf',
         opt = true,
-        event = {'BufWinEnter quickfix'},
-        config = require'conf.quickfix'.config
+        event = { 'BufWinEnter quickfix' },
+        config = require 'conf.quickfix'.config,
     }
-    use {'sindrets/diffview.nvim', opt = true, cmd = 'DiffviewOpen'}
+    use { 'sindrets/diffview.nvim', opt = true, cmd = 'DiffviewOpen' }
     use {
         'michaelb/sniprun',
         opt = true,
         run = 'bash ./install.sh',
-        cmd = {'SnipRun', 'SnipInfo'}
+        cmd = { 'SnipRun', 'SnipInfo' },
     }
     use {
         'NTBBloodbath/rest.nvim',
         opt = true,
-        ft = {'http'},
-        config = require'conf.rest'.config,
-        requires = {'nvim-lua/plenary.nvim'}
+        ft = { 'http' },
+        config = require 'conf.rest'.config,
+        requires = { 'nvim-lua/plenary.nvim' },
     }
     use 'tversteeg/registers.nvim'
-    use {'soywod/himalaya', opt = true, cmd = 'Himalaya'}
+    use { 'soywod/himalaya', opt = true, cmd = 'Himalaya' }
 end)
 
-local executable = function(e) return fn.executable(e) > 0 end
+local executable = function(e)
+    return fn.executable(e) > 0
+end
 local opts_info = vim.api.nvim_get_all_options_info()
 local opt = setmetatable({}, {
     __newindex = function(_, key, value)
@@ -257,13 +277,13 @@ local opt = setmetatable({}, {
         elseif scope == 'buf' then
             vim.bo[key] = value
         end
-    end
+    end,
 })
 local function add(value, str, sep)
     sep = sep or ','
     str = str or ''
     value = type(value) == 'table' and table.concat(value, sep) or value
-    return str ~= '' and table.concat({value, str}, sep) or value
+    return str ~= '' and table.concat({ value, str }, sep) or value
 end
 
 -----------------------------------------------------------------------------//
@@ -271,11 +291,11 @@ end
 -----------------------------------------------------------------------------//
 vim.o.complete = add('kspell', vim.o.complete)
 -- vim.wo.spell = true
-vim.o.completeopt = add {'menuone', 'noselect'} -- Completion options
+vim.o.completeopt = add { 'menuone', 'noselect' } -- Completion options
 vim.o.clipboard = 'unnamedplus'
 vim.o.inccommand = 'nosplit'
 
-if fn.filereadable('~/.local/share/virtualenvs/debugpy/bin/python') then
+if fn.filereadable '~/.local/share/virtualenvs/debugpy/bin/python' then
     vim.g.python3_host_prog = '~/.local/share/virtualenvs/debugpy/bin/python'
 end
 
@@ -344,7 +364,11 @@ vim.o.emoji = false -- turn off as they are treated as double width characters
 -- vim.o.virtualedit = 'block' -- allow cursor to move past end of line in visual block mode
 vim.o.list = true -- invisible chars
 vim.o.listchars = add {
-    'eol: ', 'tab:→ ', 'extends:…', 'precedes:…', 'trail:·'
+    'eol: ',
+    'tab:→ ',
+    'extends:…',
+    'precedes:…',
+    'trail:·',
 }
 vim.wo.list = true
 vim.o.shortmess = vim.o.shortmess .. 'I' -- disable :intro startup screen
@@ -385,7 +409,7 @@ vim.o.scrolloff = 4 -- Lines of context
 vim.o.showmatch = true
 
 -- Use faster grep alternatives if possible
-if executable('rg') then
+if executable 'rg' then
     vim.o.grepprg =
         [[rg --hidden --glob "!.git" --no-heading --smart-case --vimgrep --follow $*]]
     vim.o.grepformat = add('%f:%l:%c:%m', vim.o.grepformat)
@@ -403,8 +427,13 @@ vim.o.hidden = true -- Enable modified buffers in background
 vim.o.splitbelow = true -- Put new windows below current
 vim.o.splitright = true -- Put new windows right of current
 vim.o.fillchars = add {
-    'vert:│', 'fold: ', 'diff:-', -- alternatives: ⣿ ░
-    'msgsep:‾', 'foldopen:▾', 'foldsep:│', 'foldclose:▸'
+    'vert:│',
+    'fold: ',
+    'diff:-', -- alternatives: ⣿ ░
+    'msgsep:‾',
+    'foldopen:▾',
+    'foldsep:│',
+    'foldclose:▸',
 }
 
 -----------------------------------------------------------------------------//
@@ -416,13 +445,19 @@ vim.o.wildcharm = 26 -- equals set wildcharm=<C-Z>, used in the mapping section
 -- Binary
 vim.o.wildignore = add {
     '*.aux,*.out,*.toc',
-    '*.o,*.obj,*.dll,*.jar,*.pyc,__pycache__,*.rbc,*.class', -- media
+    '*.o,*.obj,*.dll,*.jar,*.pyc,__pycache__,*.rbc,*.class',
+    -- media
     '*.ai,*.bmp,*.gif,*.ico,*.jpg,*.jpeg,*.png,*.psd,*.webp',
-    '*.avi,*.m4a,*.mp3,*.oga,*.ogg,*.wav,*.webm', '*.eot,*.otf,*.ttf,*.woff',
-    '*.doc,*.pdf', -- archives
-    '*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz', -- temp/system
-    '*.*~,*~ ', '*.swp,.lock,.DS_Store,._*,tags.lock', -- version control
-    '.git,.svn'
+    '*.avi,*.m4a,*.mp3,*.oga,*.ogg,*.wav,*.webm',
+    '*.eot,*.otf,*.ttf,*.woff',
+    '*.doc,*.pdf',
+    -- archives
+    '*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz',
+    -- temp/system
+    '*.*~,*~ ',
+    '*.swp,.lock,.DS_Store,._*,tags.lock',
+    -- version control
+    '.git,.svn',
 }
 vim.o.wildoptions = 'pum'
 vim.o.pumblend = 7 -- Make popup window translucent
@@ -441,20 +476,25 @@ vim.o.ttimeoutlen = 10
 -----------------------------------------------------------------------------//
 -- Use in vertical diff mode, blank lines to keep sides aligned, Ignore whitespace changes
 vim.o.diffopt = add({
-    'vertical', 'iwhite', 'hiddenoff', 'foldcolumn:0', 'context:4',
-    'algorithm:histogram', 'indent-heuristic'
+    'vertical',
+    'iwhite',
+    'hiddenoff',
+    'foldcolumn:0',
+    'context:4',
+    'algorithm:histogram',
+    'indent-heuristic',
 }, vim.o.diffopt)
 
 -----------------------------------------------------------------------------//
 -- Terminal {{{1
 -----------------------------------------------------------------------------//
 function _G.__split_term_right()
-    execute('botright vsplit term://$SHELL')
-    execute('setlocal nonumber')
-    execute('setlocal norelativenumber')
-    execute('startinsert')
+    execute 'botright vsplit term://$SHELL'
+    execute 'setlocal nonumber'
+    execute 'setlocal norelativenumber'
+    execute 'startinsert'
 end
-cmd('command TermRight :call luaeval(\'_G.__split_term_right()\')')
+cmd 'command TermRight :call luaeval(\'_G.__split_term_right()\')'
 -- Directly go into insert mode when switching to terminal
 cmd [[autocmd BufWinEnter,WinEnter term://* startinsert]]
 -- cmd [[autocmd BufLeave term://* stopinsert]]
@@ -482,8 +522,10 @@ vim.o.termguicolors = true
 -- Mappings {{{1
 -----------------------------------------------------------------------------//
 local function map(mode, lhs, rhs, opts)
-    local options = {noremap = true}
-    if opts then options = vim.tbl_extend('force', options, opts) end
+    local options = { noremap = true }
+    if opts then
+        options = vim.tbl_extend('force', options, opts)
+    end
     vim.api.nvim_set_keymap(mode, lhs, rhs, options)
 end
 
@@ -493,8 +535,8 @@ vim.g.mapleader = ' '
 map('n', '<leader><leader>', ':b#<CR>')
 
 -- Sane movement defaults that works on long wrapped lines
-map('', 'j', '(v:count ? \'j\' : \'gj\')', {expr = true})
-map('', 'k', '(v:count ? \'k\' : \'gk\')', {expr = true})
+map('', 'j', '(v:count ? \'j\' : \'gj\')', { expr = true })
+map('', 'k', '(v:count ? \'k\' : \'gk\')', { expr = true })
 
 -- Disable arrow keys
 map('', '<Up>', '<Nop>')
@@ -503,10 +545,10 @@ map('', '<Left>', '<Nop>')
 map('', '<Right>', '<Nop>')
 
 -- Easier splits navigation
-map('n', '<C-j>', '<C-w>j', {noremap = false})
-map('n', '<C-k>', '<C-w>k', {noremap = false})
-map('n', '<C-h>', '<C-w>h', {noremap = false})
-map('n', '<C-l>', '<C-w>l', {noremap = false})
+map('n', '<C-j>', '<C-w>j', { noremap = false })
+map('n', '<C-k>', '<C-w>k', { noremap = false })
+map('n', '<C-h>', '<C-w>h', { noremap = false })
+map('n', '<C-l>', '<C-w>l', { noremap = false })
 
 -- Use alt + hjkl to resize windows
 map('n', '<M-j>', '<cmd>resize -2<CR>')
@@ -520,18 +562,22 @@ map('n', '˙', '<cmd>vertical resize -2<CR>')
 map('n', '¬', '<cmd>vertical resize +2<CR>')
 
 -- Terminal window navigation
-map('t', '<C-h>', '<C-\\><C-N><C-w>h', {noremap = false})
-map('t', '<C-j>', '<C-\\><C-N><C-w>j', {noremap = false})
-map('t', '<C-k>', '<C-\\><C-N><C-w>k', {noremap = false})
-map('t', '<C-l>', '<C-\\><C-N><C-w>l', {noremap = false})
+map('t', '<C-h>', '<C-\\><C-N><C-w>h', { noremap = false })
+map('t', '<C-j>', '<C-\\><C-N><C-w>j', { noremap = false })
+map('t', '<C-k>', '<C-\\><C-N><C-w>k', { noremap = false })
+map('t', '<C-l>', '<C-\\><C-N><C-w>l', { noremap = false })
 map('t', '<C-[><C-[>', '<C-\\><C-N>') -- double ESC to escape terminal
 
 -- more intuitive wildmenu navigation
-map('c', '<up>', [[wildmenumode() ? "\<left>" : "\<up>"]], {expr = true})
-map('c', '<down>', [[wildmenumode() ? "\<right>" : "\<down>"]], {expr = true})
-map('c', '<left>', [[wildmenumode() ? "\<up>" : "\<left>"]], {expr = true})
-map('c', '<right>', [[wildmenumode() ? " \<bs>\<C-Z>" : "\<right>"]],
-    {expr = true})
+map('c', '<up>', [[wildmenumode() ? "\<left>" : "\<up>"]], { expr = true })
+map('c', '<down>', [[wildmenumode() ? "\<right>" : "\<down>"]], { expr = true })
+map('c', '<left>', [[wildmenumode() ? "\<up>" : "\<left>"]], { expr = true })
+map(
+    'c',
+    '<right>',
+    [[wildmenumode() ? " \<bs>\<C-Z>" : "\<right>"]],
+    { expr = true }
+)
 
 -- command mode
 map('c', '<C-a>', '<Home>')

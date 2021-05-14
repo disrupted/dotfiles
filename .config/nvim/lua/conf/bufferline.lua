@@ -31,9 +31,9 @@ function M.config()
         semantic_letters = true,
 
         -- Sets the maximum padding width with which to surround each tab
-        maximum_padding = 2
+        maximum_padding = 2,
     }
-    local opts = {noremap = true, silent = true}
+    local opts = { noremap = true, silent = true }
     vim.api.nvim_set_keymap('n', '<space>x', '<cmd>BufferDelete<CR>', opts)
 end
 

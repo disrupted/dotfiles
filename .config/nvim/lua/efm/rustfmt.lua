@@ -4,5 +4,5 @@ return {
     formatStdin = true,
     lintCommand = 'cargo clippy',
     lintSource = 'cargo',
-    lintFormats = {'%f:%l:%c: %m'}
+    lintFormats = { '%f:%l:%c: %m' },
 }

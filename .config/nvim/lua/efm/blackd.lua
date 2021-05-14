@@ -1,1 +1,1 @@
-return {formatCommand = 'blackd-client -', formatStdin = true}
+return { formatCommand = 'blackd-client -', formatStdin = true }

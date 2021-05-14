@@ -1,41 +1,41 @@
 local M = {}
 
 function M.config()
-    require'gitsigns'.setup {
+    require 'gitsigns'.setup {
         signs = {
             add = {
                 hl = 'GitSignsAdd',
                 text = '+',
                 numhl = 'GitSignsAddNr',
-                linehl = 'GitSignsAddLn'
+                linehl = 'GitSignsAddLn',
             },
             change = {
                 hl = 'GitSignsChange',
                 text = '~',
                 numhl = 'GitSignsChangeNr',
-                linehl = 'GitSignsChangeLn'
+                linehl = 'GitSignsChangeLn',
             },
             delete = {
                 hl = 'GitSignsDelete',
                 text = '_',
                 show_count = true,
                 numhl = 'GitSignsDeleteNr',
-                linehl = 'GitSignsDeleteLn'
+                linehl = 'GitSignsDeleteLn',
             },
             topdelete = {
                 hl = 'GitSignsDelete',
                 text = '‾',
                 show_count = true,
                 numhl = 'GitSignsDeleteNr',
-                linehl = 'GitSignsDeleteLn'
+                linehl = 'GitSignsDeleteLn',
             },
             changedelete = {
                 hl = 'GitSignsChange',
                 text = '~',
                 show_count = true,
                 numhl = 'GitSignsChangeNr',
-                linehl = 'GitSignsChangeLn'
-            }
+                linehl = 'GitSignsChangeLn',
+            },
         },
         count_chars = {
             [1] = '',
@@ -47,7 +47,7 @@ function M.config()
             [7] = '₇',
             [8] = '₈',
             [9] = '₉',
-            ['+'] = '₊'
+            ['+'] = '₊',
         },
         numhl = false,
         linehl = false,
@@ -58,11 +58,11 @@ function M.config()
 
             ['n ]c'] = {
                 expr = true,
-                '&diff ? \']c\' : \'<cmd>lua require"gitsigns".next_hunk()<CR>\''
+                '&diff ? \']c\' : \'<cmd>lua require"gitsigns".next_hunk()<CR>\'',
             },
             ['n [c'] = {
                 expr = true,
-                '&diff ? \'[c\' : \'<cmd>lua require"gitsigns".prev_hunk()<CR>\''
+                '&diff ? \'[c\' : \'<cmd>lua require"gitsigns".prev_hunk()<CR>\'',
             },
 
             ['n <leader>hs'] = '<cmd>lua require"gitsigns".stage_hunk()<CR>',
@@ -70,16 +70,16 @@ function M.config()
             ['n <leader>hr'] = '<cmd>lua require"gitsigns".reset_hunk()<CR>',
             ['n <leader>hR'] = '<cmd>lua require"gitsigns".reset_buffer()<CR>',
             ['n <leader>hp'] = '<cmd>lua require"gitsigns".preview_hunk()<CR>',
-            ['n <leader>hb'] = '<cmd>lua require"gitsigns".blame_line()<CR>'
+            ['n <leader>hb'] = '<cmd>lua require"gitsigns".blame_line()<CR>',
         },
-        watch_index = {interval = 1000},
+        watch_index = { interval = 1000 },
         current_line_blame = false,
         sign_priority = 6,
         update_debounce = 100,
         status_formatter = nil, -- Use default
         use_decoration_api = true,
         use_internal_diff = true,
-        yadm = {enable = true}
+        yadm = { enable = true },
     }
 
     vim.cmd [[autocmd User FormatterPost lua require'gitsigns'.refresh()]]
