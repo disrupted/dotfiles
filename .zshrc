@@ -312,14 +312,21 @@ zinit light-mode lucid wait has"kubectl" for \
 zinit ice lucid wait"0" as"program" id-as"hyperfine" from"gh-r" \
   mv"hyperfine*/hyperfine -> hyperfine"
 zinit light sharkdp/hyperfine
+# python automatic virtualenv
 zinit light MichaelAquilina/zsh-autoswitch-virtualenv
+# Himalaya terminal email client
 zinit ice lucid wait"0" as"program" id-as"himalaya" from"gh-r" \
   atclone'himalaya completion zsh > _himalaya' atpull'%atclone'
 zinit light soywod/himalaya
+# GitLab cli
 zinit ice lucid wait"0" as"program" id-as"gitlab" from"gh-r" \
   mv"gitlab* -> gitlab" \
   atclone'./gitlab completion zsh > _gitlab' atpull'%atclone'
 zinit light makkes/gitlab-cli
+# rust-analyzer
+zinit ice lucid wait"0" as"program" id-as"rust-analyzer" from"gh-r" \
+  ver"latest" mv"rust-analyzer* -> rust-analyzer"
+zinit light rust-analyzer/rust-analyzer
 
 #####################
 # HISTORY           #
