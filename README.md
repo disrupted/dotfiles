@@ -54,3 +54,7 @@ If you want to make a backup of the current description, run this command:
 `infocmp -x $TERM >term.desc.backup`
 And to restore your original description, run:
 `tic -sx term.desc.backup`
+
+[Installing tmux-256color for macOS](https://gist.github.com/bbqtd/a4ac060d6f6b9ea6fe3aabe735aa9d95)
+
+[Patched tmux-256color terminfo from tmux maintainer](https://gist.github.com/nicm/ea9cf3c93f22e0246ec858122d9abea1)
