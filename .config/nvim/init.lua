@@ -236,7 +236,7 @@ packer.startup(function()
     use {
         'rmagatti/auto-session',
         opt = true,
-        event = { 'VimEnter' },
+        cmd = { 'SaveSession', 'RestoreSession' },
         setup = require 'conf.auto-session'.setup,
         config = require 'conf.auto-session'.config,
     }
@@ -306,6 +306,11 @@ vim.o.inccommand = 'nosplit'
 if fn.filereadable '~/.local/share/virtualenvs/debugpy/bin/python' then
     vim.g.python3_host_prog = '~/.local/share/virtualenvs/debugpy/bin/python'
 end
+
+-- Restore cursor position
+cmd [[
+    autocmd BufReadPost * if &ft !~# 'commit' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+]]
 
 -- highlight yanked text briefly
 cmd [[autocmd TextYankPost * silent! lua vim.highlight.on_yank {higroup="Search", timeout=250, on_visual=false}]]
@@ -549,12 +554,8 @@ map('n', '<leader><leader>', ':b#<CR>')
 -- Sane movement defaults that works on long wrapped lines
 map('', 'j', '(v:count ? \'j\' : \'gj\')', { expr = true })
 map('', 'k', '(v:count ? \'k\' : \'gk\')', { expr = true })
-
--- Disable arrow keys
-map('', '<Up>', '<Nop>')
-map('', '<Down>', '<Nop>')
-map('', '<Left>', '<Nop>')
-map('', '<Right>', '<Nop>')
+map('', '<Down>', '(v:count ? \'j\' : \'gj\')', { expr = true })
+map('', '<Up>', '(v:count ? \'k\' : \'gk\')', { expr = true })
 
 -- Easier splits navigation
 map('n', '<C-j>', '<C-w>j', { noremap = false })
@@ -581,13 +582,13 @@ map('t', '<C-l>', '<C-\\><C-N><C-w>l', { noremap = false })
 map('t', '<C-[><C-[>', '<C-\\><C-N>') -- double ESC to escape terminal
 
 -- more intuitive wildmenu navigation
-map('c', '<up>', [[wildmenumode() ? "\<left>" : "\<up>"]], { expr = true })
-map('c', '<down>', [[wildmenumode() ? "\<right>" : "\<down>"]], { expr = true })
-map('c', '<left>', [[wildmenumode() ? "\<up>" : "\<left>"]], { expr = true })
+map('c', '<Up>', [[wildmenumode() ? "\<Left>" : "\<Up>"]], { expr = true })
+map('c', '<Down>', [[wildmenumode() ? "\<Right>" : "\<Down>"]], { expr = true })
+map('c', '<Left>', [[wildmenumode() ? "\<Up>" : "\<Left>"]], { expr = true })
 map(
     'c',
-    '<right>',
-    [[wildmenumode() ? " \<bs>\<C-Z>" : "\<right>"]],
+    '<Right>',
+    [[wildmenumode() ? " \<BS>\<C-Z>" : "\<Right>"]],
     { expr = true }
 )
 
