@@ -211,9 +211,10 @@ gls.left[3] = {
         provider = function()
             local fp = vim.fn.fnamemodify(vim.fn.expand '%', ':~:.:h')
             local tbl = split(fp, '/')
+            local len = #tbl
 
-            if #tbl > 2 then
-                return '…/' .. table.concat(tbl, '/', #tbl - 1) .. '/' -- shorten filepath to last 2 folders
+            if len > 2 and not len == 3 and not tbl[0] == '~' then
+                return '…/' .. table.concat(tbl, '/', len - 1) .. '/' -- shorten filepath to last 2 folders
                 -- alternative: only 1 containing folder using vim builtin function
                 -- return '…/' .. vim.fn.fnamemodify(vim.fn.expand '%', ':p:h:t') .. '/'
             else
