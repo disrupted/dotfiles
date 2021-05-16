@@ -28,7 +28,7 @@ function M.setup()
     vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(
         require 'lsp_extensions.workspace.diagnostic'.handler,
         {
-            underline = false,
+            underline = true,
             signs = true,
             -- signs = {severity_limit = 'Information'},
             virtual_text = {
@@ -177,7 +177,7 @@ function M.config()
         buf_set_keymap(
             'n',
             '<space>d',
-            '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics({border = "single"})<CR>',
+            '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics {border = "single"}<CR>',
             opts
         )
         buf_set_keymap(

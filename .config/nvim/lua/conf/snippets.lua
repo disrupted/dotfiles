@@ -38,7 +38,7 @@ local function jdocsnip(args, old_state)
     end
 
     local insert = 2
-    for indx, arg in ipairs(vim.split(args[2][1], ', ', true)) do
+    for _, arg in ipairs(vim.split(args[2][1], ', ', true)) do
         -- Get actual name parameter.
         arg = vim.split(arg, ' ', true)[2]
         if arg then
