@@ -42,7 +42,7 @@ function M.config()
             path = { menu = '[PATH]', priority = 9 },
             -- treesitter = {menu = '[TS]', priority = 9},
             buffer = { menu = '[BUF]', priority = 8 },
-            nvim_lsp = { menu = '[LSP]', priority = 10, sort = false },
+            nvim_lsp = { menu = '[LSP]', priority = 10, sort = true },
             nvim_lua = { menu = '[LUA]', priority = 6 },
             luasnip = { menu = '[SNP]', priority = 10 },
             spell = true,
