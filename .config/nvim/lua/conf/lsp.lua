@@ -172,7 +172,7 @@ function M.config()
             '<cmd>lua vim.lsp.buf.rename()<CR>',
             opts
         )
-        buf_set_keymap('n', 'gr', '<cmd>TroubleToggle lsp_references<CR>', opts)
+        buf_set_keymap('n', 'gr', '<cmd>Trouble lsp_references<CR>', opts)
         buf_set_keymap('n', 'gR', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
         buf_set_keymap(
             'n',
