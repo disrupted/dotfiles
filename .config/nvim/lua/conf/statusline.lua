@@ -30,6 +30,10 @@ local checkwidth = function()
     return utils.has_width_gt(35) and buffer_not_empty()
 end
 
+local is_file = function()
+    return vim.bo.buftype ~= 'nofile'
+end
+
 local function has_value(tab, val)
     for _, value in ipairs(tab) do
         if value[1] == val then
@@ -221,7 +225,9 @@ gls.left[3] = {
                 return fp .. '/'
             end
         end,
-        condition = checkwidth,
+        condition = function()
+            return is_file() and checkwidth()
+        end,
         highlight = { colors.middlegrey, colors.section_bg },
     },
 }
