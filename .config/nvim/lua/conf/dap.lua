@@ -16,7 +16,7 @@ function M.config()
 
     -- Python
     vim.cmd [[packadd nvim-dap-python]]
-    require 'dap-python'.setup('~/.local/share/virtualenvs/debugpy/bin/python', {
+    require('dap-python').setup('~/.local/share/virtualenvs/debugpy/bin/python', {
         console = 'internalConsole',
     })
     dap.configurations.python = {
@@ -30,7 +30,7 @@ function M.config()
             end,
         },
     }
-    require 'dap-python'.test_runner = 'pytest'
+    require('dap-python').test_runner = 'pytest'
 
     function _G.__dap_start()
         dap.continue()
@@ -42,7 +42,12 @@ function M.config()
     end
     -- Key bindings
     local opts = { noremap = true, silent = true }
-    vim.api.nvim_set_keymap('n', '<Space>ds', '<cmd>lua __dap_start()<CR>', opts)
+    vim.api.nvim_set_keymap(
+        'n',
+        '<Space>ds',
+        '<cmd>lua __dap_start()<CR>',
+        opts
+    )
     vim.api.nvim_set_keymap('n', '<Space>dq', '<cmd>lua __dap_exit()<CR>', opts)
     vim.api.nvim_set_keymap(
         'n',

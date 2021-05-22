@@ -3,7 +3,7 @@ local M = {}
 function M.config()
     vim.cmd [[packadd nvim-treesitter-refactor]]
     vim.cmd [[packadd nvim-treesitter-textobjects]]
-    require 'nvim-treesitter.configs'.setup {
+    require('nvim-treesitter.configs').setup {
         ensure_installed = 'maintained',
         highlight = { enable = true },
         indent = { enable = true },

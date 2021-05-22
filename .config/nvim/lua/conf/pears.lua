@@ -1,7 +1,7 @@
 local M = {}
 
 function M.config()
-    require 'pears'.setup(function(conf)
+    require('pears').setup(function(conf)
         conf.pair('<', '>')
         conf.preset 'tag_matching'
         conf.on_enter(function(pears_handle)

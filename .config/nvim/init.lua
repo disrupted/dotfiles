@@ -30,12 +30,12 @@ packer.startup(function()
     use {
         'blackCauldron7/surround.nvim',
         event = { 'BufRead', 'BufNewFile' },
-        config = require 'conf.surround'.config,
+        config = require('conf.surround').config,
     }
     use {
         'b3nj5m1n/kommentary',
         event = { 'BufRead', 'BufNewFile' },
-        config = require 'conf.kommentary'.config,
+        config = require('conf.kommentary').config,
     }
     use {
         'nvim-treesitter/nvim-treesitter',
@@ -53,20 +53,20 @@ packer.startup(function()
                 'lewis6991/spellsitter.nvim',
                 after = 'nvim-treesitter',
                 config = function()
-                    require 'spellsitter'.setup { hl = 'SpellBad', captures = {} }
+                    require('spellsitter').setup { hl = 'SpellBad', captures = {} }
                 end,
                 disable = true, -- not working for now
             },
         },
         run = ':TSUpdate',
-        config = require 'conf.treesitter'.config,
+        config = require('conf.treesitter').config,
     }
     use {
         'neovim/nvim-lspconfig',
         opt = true,
         event = { 'BufRead' },
-        setup = require 'conf.lsp'.setup,
-        config = require 'conf.lsp'.config,
+        setup = require('conf.lsp').setup,
+        config = require('conf.lsp').config,
         requires = {
             { 'nvim-lua/lsp-status.nvim', opt = true },
             { 'nvim-lua/lsp_extensions.nvim', opt = true },
@@ -85,7 +85,7 @@ packer.startup(function()
         'hrsh7th/nvim-compe',
         opt = true,
         event = { 'InsertEnter' },
-        config = require 'conf.compe'.config,
+        config = require('conf.compe').config,
         after = 'LuaSnip',
     }
     use {
@@ -101,22 +101,22 @@ packer.startup(function()
                 after = 'nvim-treesitter',
             },
         },
-        setup = require 'conf.dap'.setup,
-        config = require 'conf.dap'.config,
+        setup = require('conf.dap').setup,
+        config = require('conf.dap').config,
     }
     use {
         'kyazdani42/nvim-tree.lua',
         opt = true,
         cmd = { 'NvimTreeOpen', 'NvimTreeToggle' },
-        setup = require 'conf.nvim_tree'.setup,
-        config = require 'conf.nvim_tree'.config,
+        setup = require('conf.nvim_tree').setup,
+        config = require('conf.nvim_tree').config,
         requires = { 'kyazdani42/nvim-web-devicons', opt = true },
     }
     use {
         'nvim-telescope/telescope.nvim',
         event = { 'VimEnter' },
-        setup = require 'conf.telescope'.setup,
-        config = require 'conf.telescope'.config,
+        setup = require('conf.telescope').setup,
+        config = require('conf.telescope').config,
         requires = { { 'nvim-lua/popup.nvim' }, { 'nvim-lua/plenary.nvim' } },
     }
     use {
@@ -124,21 +124,21 @@ packer.startup(function()
         run = 'make',
         after = { 'telescope.nvim' },
         config = function()
-            require 'telescope'.load_extension 'fzf'
+            require('telescope').load_extension 'fzf'
         end,
     }
     use {
         'nvim-telescope/telescope-dap.nvim',
         after = { 'telescope.nvim', 'nvim-dap' },
         config = function()
-            require 'telescope'.load_extension 'dap'
+            require('telescope').load_extension 'dap'
         end,
     }
     use {
         'nvim-telescope/telescope-github.nvim',
         after = { 'telescope.nvim' },
         config = function()
-            require 'telescope'.load_extension 'gh'
+            require('telescope').load_extension 'gh'
         end,
     }
     use {
@@ -154,22 +154,22 @@ packer.startup(function()
     use {
         'romgrk/barbar.nvim',
         event = { 'VimEnter' },
-        config = require 'conf.bufferline'.config(),
+        config = require('conf.bufferline').config,
         requires = { 'kyazdani42/nvim-web-devicons', opt = true },
         disable = true,
     }
     use {
         'lewis6991/gitsigns.nvim',
         event = { 'BufReadPre', 'BufNewFile' },
-        config = require 'conf.gitsigns'.config,
+        config = require('conf.gitsigns').config,
         requires = { 'nvim-lua/plenary.nvim' },
     }
     use {
         'TimUntersberger/neogit',
         opt = true,
         cmd = 'Neogit',
-        setup = require 'conf.neogit'.setup,
-        config = require 'conf.neogit'.config,
+        setup = require('conf.neogit').setup,
+        config = require('conf.neogit').config,
     }
     -- use {
     --     'windwp/nvim-autopairs',
@@ -179,7 +179,7 @@ packer.startup(function()
     use {
         'steelsojka/pears.nvim',
         event = { 'BufRead' },
-        config = require 'conf.pears'.config,
+        config = require('conf.pears').config,
     }
     use { 'kosayoda/nvim-lightbulb', opt = true }
     use {
@@ -187,32 +187,32 @@ packer.startup(function()
         cond = function()
             return os.getenv 'TMUX'
         end,
-        config = require 'conf.navigator'.config,
+        config = require('conf.navigator').config,
     }
     use {
         'kassio/neoterm',
         cmd = { 'Ttoggle' },
-        config = require 'conf.neoterm'.config,
+        config = require('conf.neoterm').config,
     }
     use { 'hkupty/iron.nvim', opt = true } -- REPL
     use {
         'mhinz/vim-sayonara',
         opt = true,
         cmd = 'Sayonara',
-        setup = require 'conf.sayonara'.setup,
+        setup = require('conf.sayonara').setup,
     }
     use {
         'phaazon/hop.nvim',
         opt = true,
         cmd = { 'HopWord', 'HopChar1', 'HopPattern' },
-        setup = require 'conf.hop'.setup,
+        setup = require('conf.hop').setup,
     }
     use {
         'lukas-reineke/indent-blankline.nvim',
         opt = true,
         branch = 'lua',
         event = { 'BufRead' },
-        config = require 'conf.indentline'.config,
+        config = require('conf.indentline').config,
     }
     use { 'pylance', opt = true }
     use { 'simrat39/rust-tools.nvim', opt = true }
@@ -222,29 +222,29 @@ packer.startup(function()
         'folke/trouble.nvim',
         opt = true,
         cmd = { 'Trouble', 'TroubleToggle' },
-        setup = require 'conf.trouble'.setup,
-        config = require 'conf.trouble'.config,
+        setup = require('conf.trouble').setup,
+        config = require('conf.trouble').config,
         requires = { 'kyazdani42/nvim-web-devicons', opt = true },
     }
     use {
         'simrat39/symbols-outline.nvim',
         opt = true,
         cmd = 'SymbolsOutline',
-        setup = require 'conf.outline'.setup,
-        config = require 'conf.outline'.config,
+        setup = require('conf.outline').setup,
+        config = require('conf.outline').config,
     }
     use {
         'rmagatti/auto-session',
         opt = true,
         cmd = { 'SaveSession', 'RestoreSession' },
-        setup = require 'conf.auto-session'.setup,
-        config = require 'conf.auto-session'.config,
+        setup = require('conf.auto-session').setup,
+        config = require('conf.auto-session').config,
     }
     use {
         'kevinhwang91/nvim-bqf',
         opt = true,
         event = { 'BufWinEnter quickfix' },
-        config = require 'conf.quickfix'.config,
+        config = require('conf.quickfix').config,
     }
     use { 'sindrets/diffview.nvim', opt = true, cmd = 'DiffviewOpen' }
     use {
@@ -257,7 +257,7 @@ packer.startup(function()
         'NTBBloodbath/rest.nvim',
         opt = true,
         ft = { 'http' },
-        config = require 'conf.rest'.config,
+        config = require('conf.rest').config,
         requires = { 'nvim-lua/plenary.nvim' },
     }
     use 'tversteeg/registers.nvim'
@@ -267,7 +267,7 @@ packer.startup(function()
         opt = true,
         cmd = { 'TodoQuickFix', 'TodoTrouble', 'TodoTelescope' },
         config = function()
-            require 'todo-comments'.setup {}
+            require('todo-comments').setup {}
         end,
     }
 end)

@@ -14,14 +14,14 @@ function M.setup()
         --     require'telescope.builtin'.git_files(options)
         -- else
         -- otherwise, use :Telescope find_files
-        require 'telescope.builtin'.find_files(options)
+        require('telescope.builtin').find_files(options)
         -- end
     end
     function _G.__telescope_buffers()
-        require 'telescope.builtin'.buffers {
+        require('telescope.builtin').buffers {
             sort_lastused = true,
             ignore_current_buffer = true,
-            sorter = require 'telescope.sorters'.get_substr_matcher(),
+            sorter = require('telescope.sorters').get_substr_matcher(),
             shorten_path = true,
             height = 10,
             layout_strategy = 'horizontal',
@@ -31,7 +31,7 @@ function M.setup()
         }
     end
     function _G.__telescope_grep()
-        require 'telescope.builtin'.live_grep {
+        require('telescope.builtin').live_grep {
             shorten_path = false,
             height = 10,
             layout_strategy = 'horizontal',
@@ -39,7 +39,7 @@ function M.setup()
         }
     end
     function _G.__telescope_commits()
-        require 'telescope.builtin'.git_commits {
+        require('telescope.builtin').git_commits {
             height = 10,
             layout_strategy = 'horizontal',
             layout_config = { preview_width = 0.55 },
@@ -97,7 +97,7 @@ function M.config()
     local sorters = require 'telescope.sorters'
     local previewers = require 'telescope.previewers'
 
-    require 'telescope'.setup {
+    require('telescope').setup {
         defaults = {
             prompt_prefix = ' ❯ ',
             mappings = {

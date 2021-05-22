@@ -6,7 +6,7 @@ function M.setup()
 end
 
 function M.config()
-    require 'symbols-outline'.setup {}
+    require('symbols-outline').setup {}
 end
 
 return M

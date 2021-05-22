@@ -1,7 +1,7 @@
 local M = {}
 
 function M.config()
-    require 'bqf'.enable()
+    require('bqf').enable()
 end
 
 return M

@@ -6,7 +6,7 @@ function M.setup()
 end
 
 function M.config()
-    require 'neogit'.setup {
+    require('neogit').setup {
         signs = {
             section = { '', '' },
             item = { '▸', '▾' },

@@ -24,7 +24,7 @@ function M.setup()
 end
 
 function M.config()
-    require 'trouble'.setup {
+    require('trouble').setup {
         fold_open = '▾',
         fold_closed = '▸',
         indent_lines = false,

@@ -2,20 +2,24 @@ local M = {}
 
 function M.setup()
     vim.fn.sign_define('LspDiagnosticsSignError', {
-        text = '◉',
+        -- text = '◉',
         texthl = 'LspDiagnosticsDefaultError',
+        numhl = 'LspDiagnosticsDefaultError',
     })
     vim.fn.sign_define('LspDiagnosticsSignWarning', {
-        text = '●',
+        -- text = '●',
         texthl = 'LspDiagnosticsDefaultWarning',
+        numhl = 'LspDiagnosticsDefaultWarning',
     })
     vim.fn.sign_define('LspDiagnosticsSignInformation', {
-        text = '•',
+        -- text = '•',
         texthl = 'LspDiagnosticsDefaultInformation',
+        numhl = 'LspDiagnosticsDefaultInformation',
     })
     vim.fn.sign_define('LspDiagnosticsSignHint', {
-        text = '·',
+        -- text = '·',
         texthl = 'LspDiagnosticsDefaultHint',
+        numhl = 'LspDiagnosticsDefaultHint',
     })
     vim.fn.sign_define('LightBulbSign', {
         text = '◎',
@@ -26,7 +30,7 @@ function M.setup()
 
     vim.cmd [[packadd lsp_extensions.nvim]]
     vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(
-        require 'lsp_extensions.workspace.diagnostic'.handler,
+        require('lsp_extensions.workspace.diagnostic').handler,
         {
             underline = true,
             signs = true,
@@ -121,7 +125,12 @@ function M.config()
 
         -- Mappings
         local opts = { noremap = true, silent = true }
-        buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+        buf_set_keymap(
+            'n',
+            'gD',
+            '<Cmd>lua vim.lsp.buf.declaration()<CR>',
+            opts
+        )
         buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
         buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
         buf_set_keymap(
@@ -254,7 +263,7 @@ function M.config()
         end
 
         _G.show_lightbulb = function()
-            require 'nvim-lightbulb'.update_lightbulb {
+            require('nvim-lightbulb').update_lightbulb {
                 sign = { enabled = false, priority = 99 },
                 virtual_text = { enabled = true, text = '💡 ' },
             }
@@ -426,9 +435,17 @@ function M.config()
         },
         -- Fallback to .bashrc as a project root to enable LSP on loose files
         root_dir = function(fname)
-            return lspconfig.util.root_pattern('tsconfig.json', 'pyproject.toml')(fname)
-                or lspconfig.util.root_pattern('.eslintrc.js', '.git')(fname)
-                or lspconfig.util.root_pattern('package.json', '.git/', '.zshrc')(fname)
+            return lspconfig.util.root_pattern(
+                'tsconfig.json',
+                'pyproject.toml'
+            )(fname) or lspconfig.util.root_pattern(
+                '.eslintrc.js',
+                '.git'
+            )(fname) or lspconfig.util.root_pattern(
+                'package.json',
+                '.git/',
+                '.zshrc'
+            )(fname)
         end,
         init_options = {
             documentFormatting = true,
@@ -460,7 +477,7 @@ function M.config()
     -- RUST
     _G.init_rust_analyzer = function()
         vim.cmd [[packadd rust-tools.nvim]]
-        require 'rust-tools'.setup {
+        require('rust-tools').setup {
             server = {
                 on_attach = on_attach,
                 capabilities = capabilities,
@@ -559,7 +576,7 @@ function M.config()
             ['java.format.settings.profile'] = 'bakdata',
         }
         vim.cmd [[packadd nvim-jdtls]]
-        require 'jdtls'.start_or_attach {
+        require('jdtls').start_or_attach {
             cmd = {
                 'jdtls',
                 home .. '/bakdata/workspace/' .. vim.fn.fnamemodify(
@@ -587,14 +604,15 @@ function M.config()
         --     ]]
     end
 
-    vim.cmd [[
-        augroup jdtls
-            autocmd!
-            autocmd FileType java lua init_jdtls()
-        augroup END
-        ]]
+    -- vim.cmd [[
+    --     augroup jdtls
+    --         autocmd!
+    --         autocmd FileType java lua init_jdtls()
+    --     augroup END
+    --     ]]
 
-    vim.api.nvim_command 'noautocmd :edit'
+    -- vim.api.nvim_command 'noautocmd :edit'
+    vim.cmd 'bufdo e'
 end
 
 return M

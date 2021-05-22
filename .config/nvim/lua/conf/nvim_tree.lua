@@ -21,7 +21,7 @@ function M.config()
     vim.g.nvim_tree_allow_resize = 1 -- 0 by default, will not resize the tree when opening a file
     vim.g.nvim_tree_disable_keybindings = 0
     --  modify some of the key mappings
-    local tree_cb = require 'nvim-tree.config'.nvim_tree_callback
+    local tree_cb = require('nvim-tree.config').nvim_tree_callback
     vim.g.nvim_tree_bindings = {
         ['<CR>'] = tree_cb 'edit',
         ['o'] = tree_cb 'edit',
@@ -67,7 +67,7 @@ function M.config()
     ]]
 
     -- lazy-loading
-    require 'nvim-tree.events'.on_nvim_tree_ready(function()
+    require('nvim-tree.events').on_nvim_tree_ready(function()
         vim.cmd 'NvimTreeRefresh'
     end)
 end

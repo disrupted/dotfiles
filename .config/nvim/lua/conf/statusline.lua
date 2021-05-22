@@ -136,7 +136,7 @@ local function get_basename(file)
 end
 
 local GetGitRoot = function()
-    local git_dir = require 'galaxyline.provider_vcs'.get_git_dir()
+    local git_dir = require('galaxyline.provider_vcs').get_git_dir()
     if not git_dir then
         return ''
     end
@@ -147,7 +147,7 @@ end
 
 local LspStatus = function()
     if #vim.lsp.get_active_clients() > 0 then
-        return require 'lsp-status'.status()
+        return require('lsp-status').status()
     end
     return ''
 end
@@ -158,7 +158,7 @@ local LspCheckDiagnostics = function()
         and diagnostic.get_diagnostic_error() == nil
         and diagnostic.get_diagnostic_warn() == nil
         and diagnostic.get_diagnostic_info() == nil
-        and require 'lsp-status'.status() == ' '
+        and require('lsp-status').status() == ' '
     then
         return ' '
     end
@@ -205,7 +205,7 @@ gls.left[2] = {
         end, 'FileIcon' },
         condition = buffer_not_empty,
         highlight = {
-            require 'galaxyline.provider_fileinfo'.get_file_icon,
+            require('galaxyline.provider_fileinfo').get_file_icon,
             colors.section_bg,
         },
     },
@@ -411,7 +411,7 @@ gls.short_line_left[1] = {
             )
         end,
         highlight = {
-            require 'galaxyline.provider_fileinfo'.get_file_icon,
+            require('galaxyline.provider_fileinfo').get_file_icon,
             colors.section_bg,
         },
     },

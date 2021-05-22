@@ -1,7 +1,7 @@
 local M = {}
 
 function M.config()
-    require 'Navigator'.setup { auto_save = 'all', disable_on_zoom = false }
+    require('Navigator').setup { auto_save = 'all', disable_on_zoom = false }
 
     local opts = { noremap = true, silent = true }
 

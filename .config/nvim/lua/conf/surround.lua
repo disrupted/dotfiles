@@ -7,7 +7,7 @@ function M.config()
         linear = { { '\'', '\'' }, { '"', '"' }, { '`', '`' } },
     }
     vim.g.surround_brackets = { '(', '{', '[', '<' }
-    require 'surround'.setup {}
+    require('surround').setup {}
 end
 
 return M

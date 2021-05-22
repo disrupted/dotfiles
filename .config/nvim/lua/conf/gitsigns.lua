@@ -1,7 +1,7 @@
 local M = {}
 
 function M.config()
-    require 'gitsigns'.setup {
+    require('gitsigns').setup {
         signs = {
             add = {
                 hl = 'GitSignsAdd',
@@ -82,7 +82,7 @@ function M.config()
         yadm = { enable = true },
     }
 
-    vim.cmd [[autocmd User FormatterPost lua require'gitsigns'.refresh()]]
+    -- vim.cmd [[autocmd User FormatterPost lua require'gitsigns'.refresh()]]
 end
 
 return M
