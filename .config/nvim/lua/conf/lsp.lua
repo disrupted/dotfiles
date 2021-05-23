@@ -549,8 +549,16 @@ function M.config()
         },
     }
 
+    -- C / C++
     lspconfig.clangd.setup {
         -- cmd = {'clangd', '--background-index', '-xc++', '-Wall'},
+        on_attach = on_attach,
+        capabilities = capabilities,
+        flags = { debounce_text_changes = 150 },
+    }
+
+    -- LATEX
+    lspconfig.texlab.setup {
         on_attach = on_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },

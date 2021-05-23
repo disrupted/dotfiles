@@ -212,7 +212,7 @@ zinit wait"2" lucid \
   from"gh-r" \
   pick"navi" \
   as"program" \
-  atload'eval "$(navi widget zsh)";' \
+  atload"eval '$(navi widget zsh)';" \
   for @denisidoro/navi
 # cheat.sh
 zinit wait"2a" lucid \
@@ -327,6 +327,9 @@ zinit light makkes/gitlab-cli
 zinit ice lucid wait"0" as"program" id-as"rust-analyzer" from"gh-r" \
   ver"latest" mv"rust-analyzer* -> rust-analyzer"
 zinit light rust-analyzer/rust-analyzer
+# texlab LaTeX LSP
+zinit ice lucid wait"0" as"program" id-as"texlab" from"gh-r"
+zinit light latex-lsp/texlab
 
 #####################
 # HISTORY           #
