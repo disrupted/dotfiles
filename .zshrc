@@ -198,7 +198,7 @@ zinit ice as"program" id-as"fd" from"gh-r" cp"fd-*/autocomplete/_fd -> _fd" pick
 zinit light sharkdp/fd
 # GH-CLI
 zinit ice lucid wait"0" as"program" id-as"gh" from"gh-r" has"git" \
-  atclone'**/bin/gh completion -s zsh > _gh' atpull'%atclone' pick'**/bin/gh'
+  atclone'./gh completion -s zsh > _gh' atpull'%atclone' mv'**/bin/gh -> gh'
 zinit light cli/cli
 # tldr (rust implementation tealdeer)
 zinit wait'1' lucid \
