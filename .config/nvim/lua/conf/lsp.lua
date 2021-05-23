@@ -611,6 +611,29 @@ function M.config()
     --     augroup END
     --     ]]
 
+    -- EXTEND LSPCONFIG
+    local lspconfigs = require 'lspconfig/configs'
+
+    -- Markdown language server
+    -- https://github.com/kitten/prosemd-lsp
+    lspconfigs.prosemd = {
+        default_config = {
+            cmd = { 'prosemd-lsp', '--stdio' },
+            filetypes = { 'markdown' },
+            root_dir = function(fname)
+                return lspconfig.util.find_git_ancestor(fname)
+                    or vim.fn.getcwd()
+            end,
+            settings = {},
+        },
+    }
+
+    lspconfig.prosemd.setup {
+        on_attach = on_attach,
+        capabilities = capabilities,
+        flags = { debounce_text_changes = 150 },
+    }
+
     -- vim.api.nvim_command 'noautocmd :edit'
     vim.cmd 'bufdo e'
 end
