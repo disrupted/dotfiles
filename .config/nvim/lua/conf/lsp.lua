@@ -430,7 +430,7 @@ function M.config()
             'typescript',
             'javascriptreact',
             'typescriptreact',
-            'zsh',
+            'bash',
             'sh',
         },
         -- Fallback to .bashrc as a project root to enable LSP on loose files
@@ -468,7 +468,7 @@ function M.config()
                 typescript = { eslint_d, prettierd },
                 javascriptreact = { eslint_d, prettierd },
                 typescriptreact = { eslint_d, prettierd },
-                zsh = { shellcheck, shfmt },
+                bash = { shellcheck, shfmt },
                 sh = { shellcheck, shfmt },
             },
         },
