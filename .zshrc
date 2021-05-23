@@ -165,7 +165,7 @@ zinit light zdharma/zsh-diff-so-fancy
 zinit ice as"program" id-as"bat" from"gh-r" cp"bat/autocomplete/bat.zsh -> _bat" pick"bat*/bat" atload"alias cat=bat"
 zinit light sharkdp/bat
 # RIPGREP
-zinit ice from"gh-r" as"program" mv"ripgrep* -> ripgrep" pick"ripgrep/rg"
+zinit ice from'gh-r' as'program' id-as'rg' mv'ripgrep* -> rg' cp'rg/complete/_rg -> _rg' pick'rg/rg'
 zinit light BurntSushi/ripgrep
 # neovim
 zinit wait'0' lucid \
@@ -177,9 +177,9 @@ zinit wait'0' lucid \
   light-mode for @neovim/neovim
 # DELTA
 zinit wait'1' lucid \
-  as"program" id-as"delta" from"gh-r" pick"delta*/delta" \
+  as'program' id-as'delta' from'gh-r' mv'delta* -> delta' pick'delta/delta' \
   light-mode for @dandavison/delta
-zinit ice wait'1' lucid as"delta-completion" has'delta' mv'completion.zsh -> _delta'
+zinit ice wait'1' lucid as'delta-completion' has'delta' mv'completion.zsh -> _delta'
 zinit snippet https://github.com/dandavison/delta/blob/master/etc/completion/completion.zsh
 # FORGIT
 zinit ice wait lucid id-as"forgit" atload"alias gr='forgit::checkout::file'"
@@ -194,7 +194,7 @@ zinit light 'jesseduffield/lazydocker'
 zinit ice depth'1' as"program" pick"ranger.py" atload'alias ranger=ranger.py'
 zinit light ranger/ranger
 # FD
-zinit ice as"program" id-as"fd" from"gh-r" cp"fd-*/autocomplete/_fd -> _fd" pick"fd*/fd"
+zinit ice as"program" id-as"fd" from"gh-r" mv"fd* -> fd" cp"fd/autocomplete/_fd -> _fd" pick"fd/fd"
 zinit light sharkdp/fd
 # GH-CLI
 zinit ice lucid wait"0" as"program" id-as"gh" from"gh-r" has"git" \
@@ -362,7 +362,7 @@ setopt emacs  # vi            # emacs / vim keybindings
 setopt interactivecomments    # recognize comments
 setopt sharehistory           # global history
 
-chpwd() exa --icons -Fla  # -Flaigh
+chpwd() { exa --icons -Fla; }  # -Flaigh
 
 #####################
 # VI KEYBINDINGS    #
