@@ -309,7 +309,12 @@ end
 
 -- Restore cursor position
 cmd [[
-    autocmd BufReadPost * if &ft !~# 'gitcommit' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+    autocmd BufReadPost * if line("'\"") >= 1 && line("'\"") <= line("$") && @% !~? 'commit' | exe "normal! g`\"" | endif
+]] -- FIXME: &ft !~# 'commit' doesn't work here, comparing filename as a workaround
+
+-- nonumber for commits
+cmd [[
+    autocmd BufReadPost * if &ft =~ "commit" | setlocal nonumber norelativenumber | endif
 ]]
 
 -- highlight yanked text briefly
