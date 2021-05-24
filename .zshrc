@@ -163,7 +163,7 @@ zinit ice wait blockf atpull'zinit creinstall -q .'
 zinit ice wait'2' lucid as'program' pick'bin/git-dsf'
 zinit light zdharma/zsh-diff-so-fancy
 # BAT
-zinit ice as'program' id-as'bat' from'gh-r' cp'bat/autocomplete/bat.zsh -> _bat' pick'bat*/bat' atload'alias cat=bat'
+zinit ice as'program' id-as'bat' from'gh-r' mv'bat* -> bat' cp'bat/autocomplete/bat.zsh -> _bat' pick'bat/bat' atload'alias cat=bat'
 zinit light sharkdp/bat
 # RIPGREP
 zinit ice from'gh-r' as'program' id-as'rg' mv'ripgrep* -> rg' cp'rg/complete/_rg -> _rg' pick'rg/rg'
@@ -202,11 +202,11 @@ zinit ice lucid wait'0' as'program' id-as'gh' from'gh-r' has'git' \
   atclone'./gh completion -s zsh > _gh' atpull'%atclone' mv'**/bin/gh -> gh'
 zinit light cli/cli
 # tldr (rust implementation tealdeer)
-zinit wait'1' lucid \
-  from'gh-r' as'program' id-as'tldr' mv'tldr* -> tldr' pick'tldr' \
-  light-mode for @dbrgn/tealdeer
-zinit ice wait'1' lucid as'tldr-completion' has'tldr' mv'zsh_tealdeer -> _tldr'
-zinit snippet https://github.com/dbrgn/tealdeer/blob/master/zsh_tealdeer
+# zinit wait'1' lucid \
+#   from'gh-r' as'program' id-as'tldr' mv'tldr* -> tldr' pick'tldr' \
+#   light-mode for @dbrgn/tealdeer
+# zinit ice wait'1' lucid as'tldr-completion' has'tldr' mv'zsh_tealdeer -> _tldr'
+# zinit snippet https://github.com/dbrgn/tealdeer/blob/master/zsh_tealdeer
 # navi for cheat sheets including tldr & cheat.sh
 zinit wait'2' lucid \
   id-as'navi' \
@@ -240,10 +240,6 @@ zinit wait'2b' lucid \
   mv'cheat* -> _cheat' \
   as'completion' \
   for https://github.com/cheat/cheat/blob/master/scripts/cheat.zsh
-# mmv (rename multiple files in vim)
-zinit wait'1' lucid \
-  from'gh-r' as'program' pick'mmv*/mmv' \
-  light-mode for @itchyny/mmv
 # procs (modern replacement for ps written in rust)
 zinit wait'1' lucid \
   from'gh-r' as'program' \
@@ -255,22 +251,22 @@ zinit ice wait lucid as'program' mv'prettyping* -> prettyping' \
     atload"alias ping='prettyping --nolegend'"
 zinit light denilsonsa/prettyping
 # sad
-zinit ice lucid wait'0' as'program' from'gh-r' pick'sad*/sad'
+zinit ice lucid wait'0' as'program' from'gh-r' id-as'sad' mv'sad* -> sad'
 zinit light 'ms-jpq/sad'
 # bottom system monitor
-zinit ice from'gh-r' ver'nightly' as'program' \
-  atclone'echo '' > ._zinit/is_release' \
+zinit ice from'gh-r' ver'nightly' as'program' id-as'bottom' \
+  atclone'touch ._zinit/is_release' \
   atpull'%atclone' \
   atload'alias top=btm' \
   atload'alias htop=btm'
 zinit light ClementTsang/bottom
 # hexyl hex viewer
-zinit ice lucid wait'0' as'program' from'gh-r' \
-    pick'hexyl*/hexyl'
+zinit ice lucid wait'0' as'program' id-as'hexyl' from'gh-r' \
+  mv'hexyl* -> hexyl' pick'hexyl/hexyl'
 zinit light sharkdp/hexyl
 # mmv renamer
-zinit ice lucid wait'0' as'program' from'gh-r' \
-    pick'mmv*/mmv'
+zinit ice lucid wait'0' as'program' id-as'mmv' from'gh-r' \
+  mv'mmv* -> mmv' pick'mmv/mmv'
 zinit light 'itchyny/mmv'
 # jq
 zinit ice lucid wait'0' as'program' id-as'jq' from'gh-r' mv'jq-* -> jq'
@@ -331,6 +327,9 @@ zinit light rust-analyzer/rust-analyzer
 # texlab LaTeX LSP
 zinit ice lucid wait'0' as'program' id-as'texlab' from'gh-r'
 zinit light latex-lsp/texlab
+# carapace completion
+zinit ice lucid wait'0' as'program' id-as'carapace' from'gh-r'
+zinit light rsteube/carapace-bin
 
 #####################
 # HISTORY           #
