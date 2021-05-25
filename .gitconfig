@@ -37,6 +37,9 @@
     short = true
     branch = false
 
+[fetch]
+    prune = true
+
 [push]
     # Push to the set upstream branch being tracked by default.
     default = current
@@ -165,6 +168,7 @@
     recommit = commit --reuse-message=HEAD
     # Create new branch off of default origin branch (origin/master or origin/main)
     newbranch = "!f() { [[ -n $@ ]] && git fetch origin && git checkout -b \"$@\" origin/$(git main); }; f"
+    bclone = clone --bare
 
     # Open repository in the browser
     open = "!open $(git remote get-url origin)"
