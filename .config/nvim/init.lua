@@ -83,7 +83,6 @@ packer.startup(function()
     }
     use {
         'hrsh7th/nvim-compe',
-        opt = true,
         event = { 'InsertEnter' },
         config = require('conf.compe').config,
         after = 'LuaSnip',
@@ -91,7 +90,6 @@ packer.startup(function()
     use {
         -- Debug Adapter Protocol client
         'mfussenegger/nvim-dap',
-        opt = true,
         ft = { 'python' },
         requires = {
             { 'mfussenegger/nvim-dap-python', opt = true },
@@ -166,7 +164,6 @@ packer.startup(function()
     }
     use {
         'TimUntersberger/neogit',
-        opt = true,
         cmd = 'Neogit',
         setup = require('conf.neogit').setup,
         config = require('conf.neogit').config,
@@ -197,19 +194,16 @@ packer.startup(function()
     use { 'hkupty/iron.nvim', opt = true } -- REPL
     use {
         'mhinz/vim-sayonara',
-        opt = true,
         cmd = 'Sayonara',
         setup = require('conf.sayonara').setup,
     }
     use {
         'phaazon/hop.nvim',
-        opt = true,
         cmd = { 'HopWord', 'HopChar1', 'HopPattern' },
         setup = require('conf.hop').setup,
     }
     use {
         'lukas-reineke/indent-blankline.nvim',
-        opt = true,
         branch = 'lua',
         event = { 'BufRead' },
         config = require('conf.indentline').config,
@@ -217,10 +211,9 @@ packer.startup(function()
     use { 'pylance', opt = true }
     use { 'simrat39/rust-tools.nvim', opt = true }
     use { 'mfussenegger/nvim-jdtls', opt = true }
-    use { 'zsugabubus/crazy8.nvim', opt = true, event = { 'BufRead' } } -- detect indentation automatically
+    use { 'zsugabubus/crazy8.nvim', event = { 'BufRead' } } -- detect indentation automatically
     use {
         'folke/trouble.nvim',
-        opt = true,
         cmd = { 'Trouble', 'TroubleToggle' },
         setup = require('conf.trouble').setup,
         config = require('conf.trouble').config,
@@ -228,48 +221,43 @@ packer.startup(function()
     }
     use {
         'simrat39/symbols-outline.nvim',
-        opt = true,
         cmd = 'SymbolsOutline',
         setup = require('conf.outline').setup,
         config = require('conf.outline').config,
     }
     use {
         'rmagatti/auto-session',
-        opt = true,
         cmd = { 'SaveSession', 'RestoreSession' },
         setup = require('conf.auto-session').setup,
         config = require('conf.auto-session').config,
     }
     use {
         'kevinhwang91/nvim-bqf',
-        opt = true,
         event = { 'BufWinEnter quickfix' },
         config = require('conf.quickfix').config,
     }
     use { 'sindrets/diffview.nvim', opt = true, cmd = 'DiffviewOpen' }
     use {
         'michaelb/sniprun',
-        opt = true,
         run = 'bash ./install.sh',
         cmd = { 'SnipRun', 'SnipInfo' },
     }
     use {
         'NTBBloodbath/rest.nvim',
-        opt = true,
         ft = { 'http' },
         config = require('conf.rest').config,
         requires = { 'nvim-lua/plenary.nvim' },
     }
-    use 'tversteeg/registers.nvim'
+    use { 'tversteeg/registers.nvim', opt = true }
     use { 'soywod/himalaya', opt = true, cmd = 'Himalaya' }
     use {
         'folke/todo-comments.nvim',
-        opt = true,
         cmd = { 'TodoQuickFix', 'TodoTrouble', 'TodoTelescope' },
         config = function()
             require('todo-comments').setup {}
         end,
     }
+    use { 'famiu/bufdelete.nvim', cmd = { 'Bdelete', 'Bwipeout' } }
 end)
 
 local executable = function(e)
