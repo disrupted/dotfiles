@@ -2,7 +2,6 @@
 (defcfg
   ;; ** For Linux **
   ;; input  (device-file "/dev/input/by-id/usb-04d9_USB-HID_Keyboard-event-kbd")
-  ;; input  (device-file "/dev/input/by-id/usb-Matias_Ergo_Pro_Keyboard-event-kbd")
   ;; output (uinput-sink "KMonad output")
 
   ;; ** For Windows **
@@ -43,16 +42,16 @@
 )
 
 (deflayer colemak-dh
-  esc     brdn   brup   f3   f4   f5   f6   previoussong   play   nextsong   mute   vold  volu
+  esc     brdn   brup   f3   f4   f5   f6   previoussong   pp   nextsong   mute   vold  volu
   grv      1    2    3    4    5    6    7    8    9    0    -    =    bspc
   tab      q    w    f    p    b    j    l    u    y    ;    [    ]    \\
   @ext     a    r    s    t    g    m    n    e    i    o    '    ret
   lsft      z    x    c    d    v    k    h    ,    .    /    rsft
-  lctl     lmet lalt           @spc            @sym rmet _    _
+  lctl     lmet lalt           @spc            @sym bspc _    _
 )
 
 (deflayer extend
-  _        play rewind previoussong nextsong ejectcd refresh brdn brup www mail prog1 prog2
+  _        pp rewind previoussong nextsong ejectcd refresh brdn brup www mail prog1 prog2
   _        f1   f2   f3   f4   f5   f6   f7   f8   f9  f10   f11  f12  ret
   _        esc  @bk  @fnd @fw  ins  pgup home up   end  menu prnt slck _
   _        @all tab  lsft lctl lalt pgdn lft  down  up  rght del  _
