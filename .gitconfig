@@ -167,7 +167,7 @@
     # Repeat last commit message
     recommit = commit --reuse-message=HEAD
     # Create new branch off of default origin branch (origin/master or origin/main)
-    newbranch = "!f() { [[ -n $@ ]] && git fetch origin && git checkout -b \"$@\" origin/$(git main); }; f"
+    newbranch = "!f() { [[ -n $@ ]] && git fetch origin && git checkout -b \"$@\" origin/$(git main) && git branch --unset-upstream; }; f"
     bclone = clone --bare
 
     # Open repository in the browser
