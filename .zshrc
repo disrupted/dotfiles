@@ -171,7 +171,7 @@ zinit light BurntSushi/ripgrep
 # neovim
 zinit wait'0' lucid \
   id-as'nvim' from'gh-r' ver'nightly' as'program' pick'nvim*/bin/nvim' \
-  atclone'touch ._zinit/is_release' \
+  atclone'echo "" > ._zinit/is_release' \
   atpull'%atclone' \
   run-atpull \
   atload'alias v=nvim' \
@@ -255,7 +255,7 @@ zinit ice lucid wait'0' as'program' from'gh-r' id-as'sad' mv'sad* -> sad'
 zinit light 'ms-jpq/sad'
 # bottom system monitor
 zinit ice from'gh-r' ver'nightly' as'program' id-as'bottom' \
-  atclone'touch ._zinit/is_release' \
+  atclone'echo "" > ._zinit/is_release' \
   atpull'%atclone' \
   atload'alias top=btm' \
   atload'alias htop=btm'
