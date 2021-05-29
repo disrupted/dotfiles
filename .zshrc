@@ -461,8 +461,9 @@ bindkey '^Z' fancy-ctrl-z
 #####################
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_CTRL_T_OPTS='--preview="bat {}" --preview-window=right:60%:wrap'
-export FZF_ALT_C_OPTS='--preview="ls {}" --preview-window=right:60%:wrap'
+export FZF_CTRL_T_OPTS='--preview="bat --color=always --decorations=never {}" --preview-window=right:60%:wrap'
+export FZF_ALT_C_COMMAND='fd -t d -d 1'
+export FZF_ALT_C_OPTS='--preview="exa -1 --icons --git --git-ignore {}" --preview-window=right:60%:wrap'
 bindkey '^F' fzf-file-widget
 # export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 # --height=50%
