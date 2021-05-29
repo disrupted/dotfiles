@@ -231,7 +231,7 @@ function M.config()
             '<cmd>lua vim.lsp.buf.workspace_symbol()<CR>',
             opts
         )
-        vim.opt.shortmess:append { 'c' }
+        vim.opt.shortmess:append 'c'
 
         -- Set autocommands conditional on server_capabilities
         if client.resolved_capabilities.document_formatting then
