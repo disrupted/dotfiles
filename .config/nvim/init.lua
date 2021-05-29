@@ -246,6 +246,7 @@ packer.startup(function()
     }
     use {
         'NTBBloodbath/rest.nvim',
+        opt = true,
         ft = { 'http' },
         config = require('conf.rest').config,
         requires = { 'nvim-lua/plenary.nvim' },
@@ -386,6 +387,8 @@ opt.foldtext = 'folds#render()'
 opt.foldopen:append { 'search' }
 opt.foldlevelstart = 10
 opt.foldmethod = 'syntax'
+-- opt.foldmethod = 'expr'
+-- opt.foldexpr='nvim_treesitter#foldexpr()'
 
 -----------------------------------------------------------------------------//
 -- Backup {{{1
