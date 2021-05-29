@@ -34,11 +34,11 @@ function M.config()
 
     function _G.__dap_start()
         dap.continue()
-        vim.wo.signcolumn = 'auto:2'
+        vim.opt.signcolumn = 'yes:2'
     end
     function _G.__dap_exit()
         dap.disconnect()
-        vim.wo.signcolumn = 'auto'
+        vim.opt.signcolumn = 'yes:1'
     end
     -- Key bindings
     local opts = { noremap = true, silent = true }

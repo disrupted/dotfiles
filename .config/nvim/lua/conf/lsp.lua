@@ -231,7 +231,7 @@ function M.config()
             '<cmd>lua vim.lsp.buf.workspace_symbol()<CR>',
             opts
         )
-        vim.o.shortmess = vim.o.shortmess .. 'c'
+        vim.opt.shortmess:append { 'c' }
 
         -- Set autocommands conditional on server_capabilities
         if client.resolved_capabilities.document_formatting then
@@ -551,7 +551,6 @@ function M.config()
 
     -- C / C++
     lspconfig.clangd.setup {
-        -- cmd = {'clangd', '--background-index', '-xc++', '-Wall'},
         on_attach = on_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
@@ -568,17 +567,25 @@ function M.config()
     -- lspconfig.denols.setup {
     --     on_attach = on_attach,
     --     filetypes = {
-    --         "javascript", "javascriptreact", "javascript.jsx", "typescript",
-    --         "typescriptreact", "typescript.tsx", "yaml", "json", "markdown",
-    --         "html", "css"
+    --         'javascript',
+    --         'javascriptreact',
+    --         'javascript.jsx',
+    --         'typescript',
+    --         'typescriptreact',
+    --         'typescript.tsx',
+    --         'yaml',
+    --         'json',
+    --         'markdown',
+    --         'html',
+    --         'css',
     --     },
-    --     init_options = {enable = true, lint = true, unstable = true}
+    --     init_options = { enable = true, lint = true, unstable = true },
     -- }
 
     -- JAVA
     _G.init_jdtls = function()
-        vim.bo.shiftwidth = 4
-        vim.wo.colorcolumn = '120'
+        vim.opt.shiftwidth = 4
+        vim.opt.colorcolumn = '120'
         local settings = {
             ['java.format.settings.url'] = '~/bakdata/dependencies/format-bakdata-codestyle.xml',
             ['java.format.settings.profile'] = 'bakdata',

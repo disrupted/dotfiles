@@ -1,5 +1,6 @@
 local cmd = vim.cmd -- to execute Vim commands e.g. cmd('pwd')
 local fn = vim.fn -- to call Vim functions e.g. fn.bufnr()
+local opt = vim.opt
 
 local execute = vim.api.nvim_command
 
@@ -270,33 +271,15 @@ end)
 local executable = function(e)
     return fn.executable(e) > 0
 end
-local opts_info = vim.api.nvim_get_all_options_info()
-local opt = setmetatable({}, {
-    __newindex = function(_, key, value)
-        vim.o[key] = value
-        local scope = opts_info[key].scope
-        if scope == 'win' then
-            vim.wo[key] = value
-        elseif scope == 'buf' then
-            vim.bo[key] = value
-        end
-    end,
-})
-local function add(value, str, sep)
-    sep = sep or ','
-    str = str or ''
-    value = type(value) == 'table' and table.concat(value, sep) or value
-    return str ~= '' and table.concat({ value, str }, sep) or value
-end
 
 -----------------------------------------------------------------------------//
 -- Utils {{{1
 -----------------------------------------------------------------------------//
-vim.o.complete = add('kspell', vim.o.complete)
--- vim.wo.spell = true
-vim.o.completeopt = add { 'menuone', 'noselect' } -- Completion options
-vim.o.clipboard = 'unnamedplus'
-vim.o.inccommand = 'nosplit'
+opt.complete:prepend { 'kspell' }
+-- opt.spell = true
+opt.completeopt = { 'menuone', 'noselect' } -- Completion options
+opt.clipboard = 'unnamedplus'
+opt.inccommand = 'nosplit'
 
 if fn.filereadable '~/.local/share/virtualenvs/debugpy/bin/python' then
     vim.g.python3_host_prog = '~/.local/share/virtualenvs/debugpy/bin/python'
@@ -351,17 +334,17 @@ opt.shiftwidth = 4 -- Size of an indent
 opt.smartindent = true -- Insert indents automatically
 opt.tabstop = 4 -- Number of spaces tabs count for
 opt.softtabstop = 4
-vim.o.shiftround = true -- Round indent
-vim.o.joinspaces = false -- No double spaces with join after a dot
+opt.shiftround = true -- Round indent
+opt.joinspaces = false -- No double spaces with join after a dot
 
 -----------------------------------------------------------------------------//
 -- Display {{{1
 -----------------------------------------------------------------------------//
-vim.wo.number = true -- Print line number
-vim.wo.relativenumber = true -- Relative line numbers
-vim.wo.numberwidth = 2
-vim.wo.signcolumn = 'yes:1' -- 'auto:1-2'
-vim.wo.cursorline = true
+opt.number = true -- Print line number
+opt.relativenumber = true -- Relative line numbers
+opt.numberwidth = 2
+opt.signcolumn = 'yes:1' -- 'auto:1-2'
+opt.cursorline = true
 cmd [[
     augroup cursorline_focus
         autocmd!
@@ -374,92 +357,91 @@ opt.linebreak = true -- wrap, but on words, not randomly
 -- opt.textwidth = 80
 opt.synmaxcol = 1024 -- don't syntax highlight long lines
 vim.g.vimsyn_embed = 'lPr' -- allow embedded syntax highlighting for lua, python, ruby
-vim.o.showmode = false
-vim.o.lazyredraw = true
-vim.o.emoji = false -- turn off as they are treated as double width characters
-vim.o.virtualedit = 'onemore' -- allow cursor to move past end of line in visual block mode, needed for my custom paste mapping
-vim.o.list = true -- invisible chars
-vim.o.listchars = add {
-    'eol: ',
-    'tab:→ ',
-    'extends:…',
-    'precedes:…',
-    'trail:·',
+opt.showmode = false
+opt.lazyredraw = true
+opt.emoji = false -- turn off as they are treated as double width characters
+opt.virtualedit = 'onemore' -- allow cursor to move past end of line in visual block mode, needed for my custom paste mapping
+opt.list = true -- show invisible characters
+opt.listchars = {
+    eol = ' ',
+    tab = '→ ',
+    extends = '…',
+    precedes = '…',
+    trail = '·',
 }
-vim.wo.list = true
-vim.o.shortmess = vim.o.shortmess .. 'I' -- disable :intro startup screen
+opt.shortmess:append 'I' -- disable :intro startup screen
 
 -----------------------------------------------------------------------------//
 -- Title {{{1
 -----------------------------------------------------------------------------//
-vim.o.titlestring = '❐ %t'
-vim.o.titleold = '%{fnamemodify(getcwd(), ":t")}'
-vim.o.title = true
-vim.o.titlelen = 70
+opt.titlestring = '❐ %t'
+opt.titleold = '%{fnamemodify(getcwd(), ":t")}'
+opt.title = true
+opt.titlelen = 70
 
 -----------------------------------------------------------------------------//
 -- Folds {{{1
 -----------------------------------------------------------------------------//
-vim.o.foldtext = 'folds#render()'
-vim.o.foldopen = add(vim.o.foldopen, 'search')
-vim.o.foldlevelstart = 10
+opt.foldtext = 'folds#render()'
+opt.foldopen:append { 'search' }
+opt.foldlevelstart = 10
 opt.foldmethod = 'syntax'
 
 -----------------------------------------------------------------------------//
 -- Backup {{{1
 -----------------------------------------------------------------------------//
-vim.o.swapfile = false
-vim.o.backup = false
-vim.o.writebackup = false
+opt.swapfile = false
+opt.backup = false
+opt.writebackup = false
 opt.undofile = true -- Save undo history
-vim.o.confirm = true -- prompt to save before destructive actions
+opt.confirm = true -- prompt to save before destructive actions
 
 -----------------------------------------------------------------------------//
 -- Search {{{1
 -----------------------------------------------------------------------------//
-vim.o.ignorecase = true -- Ignore case
-vim.o.smartcase = true -- Don't ignore case with capitals
-vim.o.wrapscan = true -- Search wraps at end of file
-vim.o.scrolloff = 4 -- Lines of context
--- vim.o.sidescrolloff = 8 -- Columns of context
-vim.o.showmatch = true
+opt.ignorecase = true -- Ignore case
+opt.smartcase = true -- Don't ignore case with capitals
+opt.wrapscan = true -- Search wraps at end of file
+opt.scrolloff = 4 -- Lines of context
+-- opt.sidescrolloff = 8 -- Columns of context
+opt.showmatch = true
 
 -- Use faster grep alternatives if possible
 if executable 'rg' then
-    vim.o.grepprg =
+    opt.grepprg =
         [[rg --hidden --glob "!.git" --no-heading --smart-case --vimgrep --follow $*]]
-    vim.o.grepformat = add('%f:%l:%c:%m', vim.o.grepformat)
+    opt.grepformat:prepend { '%f:%l:%c:%m' }
 end
 
 -----------------------------------------------------------------------------//
 -- Motions & Text Objects {{{1
 -----------------------------------------------------------------------------//
-opt.iskeyword = add('-', vim.bo.iskeyword) -- treat dash separated words as a word textobject
+opt.iskeyword:prepend { '-' } -- treat dash separated words as a word textobject
 
 -----------------------------------------------------------------------------//
 -- window splitting and buffers {{{1
 -----------------------------------------------------------------------------//
-vim.o.hidden = true -- Enable modified buffers in background
-vim.o.splitbelow = true -- Put new windows below current
-vim.o.splitright = true -- Put new windows right of current
-vim.o.fillchars = add {
-    'vert:│',
-    'fold: ',
-    'diff:-', -- alternatives: ⣿ ░
-    'msgsep:‾',
-    'foldopen:▾',
-    'foldsep:│',
-    'foldclose:▸',
+opt.hidden = true -- Enable modified buffers in background
+opt.splitbelow = true -- Put new windows below current
+opt.splitright = true -- Put new windows right of current
+opt.fillchars = {
+    vert = '│',
+    fold = ' ',
+    diff = '-', -- alternatives: ⣿ ░
+    msgsep = '‾',
+    foldopen = '▾',
+    foldsep = '│',
+    foldclose = '▸',
 }
 
 -----------------------------------------------------------------------------//
 -- Wild and file globbing stuff in command mode {{{1
 -----------------------------------------------------------------------------//
-vim.o.wildignorecase = true -- Ignore case when completing file names and directories
-vim.o.wildcharm = 26 -- equals set wildcharm=<C-Z>, used in the mapping section
+opt.wildignorecase = true -- Ignore case when completing file names and directories
+opt.wildcharm = 26 -- equals set wildcharm=<C-Z>, used in the mapping section
 
 -- Binary
-vim.o.wildignore = add {
+opt.wildignore:append {
     '*.aux,*.out,*.toc',
     '*.o,*.obj,*.dll,*.jar,*.pyc,__pycache__,*.rbc,*.class',
     -- media
@@ -475,23 +457,23 @@ vim.o.wildignore = add {
     -- version control
     '.git,.svn',
 }
-vim.o.wildoptions = 'pum'
-vim.o.pumblend = 7 -- Make popup window translucent
-vim.o.pumheight = 20 -- Limit the amount of autocomplete items shown
+opt.wildoptions = 'pum'
+opt.pumblend = 7 -- Make popup window translucent
+opt.pumheight = 20 -- Limit the amount of autocomplete items shown
 
 -----------------------------------------------------------------------------//
 -- Timings {{{1
 -----------------------------------------------------------------------------//
-vim.o.updatetime = 300
-vim.o.timeout = true
-vim.o.timeoutlen = 1000
-vim.o.ttimeoutlen = 10
+opt.updatetime = 300
+opt.timeout = true
+opt.timeoutlen = 1000
+opt.ttimeoutlen = 10
 
 -----------------------------------------------------------------------------//
 -- Diff {{{1
 -----------------------------------------------------------------------------//
 -- Use in vertical diff mode, blank lines to keep sides aligned, Ignore whitespace changes
-vim.o.diffopt = add({
+opt.diffopt:prepend {
     'vertical',
     'iwhite',
     'hiddenoff',
@@ -499,7 +481,7 @@ vim.o.diffopt = add({
     'context:4',
     'algorithm:histogram',
     'indent-heuristic',
-}, vim.o.diffopt)
+}
 
 -----------------------------------------------------------------------------//
 -- Terminal {{{1
@@ -522,7 +504,7 @@ cmd [[
 -----------------------------------------------------------------------------//
 -- Mouse {{{1
 -----------------------------------------------------------------------------//
-vim.o.mouse = 'a'
+opt.mouse = 'a'
 
 -----------------------------------------------------------------------------//
 -- Netrw {{{1
@@ -533,7 +515,7 @@ vim.g.netrw_banner = 0
 -----------------------------------------------------------------------------//
 -- Colorscheme {{{1
 -----------------------------------------------------------------------------//
-vim.o.termguicolors = true
+opt.termguicolors = true
 
 -----------------------------------------------------------------------------//
 -- Mappings {{{1
