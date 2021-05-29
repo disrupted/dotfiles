@@ -233,6 +233,7 @@ packer.startup(function()
     }
     use {
         'kevinhwang91/nvim-bqf',
+        opt = true,
         event = { 'BufWinEnter quickfix' },
         config = require('conf.quickfix').config,
     }
@@ -258,6 +259,12 @@ packer.startup(function()
         end,
     }
     use { 'famiu/bufdelete.nvim', cmd = { 'Bdelete', 'Bwipeout' } }
+    use {
+        'pwntester/octo.nvim',
+        opt = true,
+        cmd = 'Octo',
+        config = require('conf.octo').config,
+    }
 end)
 
 local executable = function(e)
