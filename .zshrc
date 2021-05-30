@@ -459,19 +459,26 @@ bindkey '^Z' fancy-ctrl-z
 #####################
 # FZF SETTINGS      #
 #####################
-export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2>/dev/null'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_CTRL_T_OPTS='--preview="bat --color=always --decorations=never {}" --preview-window=right:60%:wrap'
+export FZF_CTRL_T_OPTS='--preview="bat --color=always --style=header {} 2>/dev/null" --preview-window=right:60%:wrap'
 export FZF_ALT_C_COMMAND='fd -t d -d 1'
 export FZF_ALT_C_OPTS='--preview="exa -1 --icons --git --git-ignore {}" --preview-window=right:60%:wrap'
 bindkey '^F' fzf-file-widget
-# export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
-# --height=50%
-# --color=fg:#e5e9f0,bg:#2e3440,hl:#81a1c1
-# --color=fg+:#e5e9f0,bg+:#2e3440,hl+:#81a1c1
-# --color=info:#eacb8a,prompt:#bf6069,pointer:#b48dac
-# --color=marker:#a3be8b,spinner:#b48dac,header:#a3be8b'
+# FZF custom OneDark theme
+export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
+--height=50%
+--color=fg:-1,bg:-1,border:#4B5164,hl:#d19a66
+--color=fg+:#5cb0ff,bg+:#2c323d,hl+:#e5c07b
+--color=info:#828997,prompt:#e06c75,pointer:#45cdff
+--color=marker:#98c379,spinner:#e06c75,header:#98c379'
+# FZF options for zoxide prompt (zi)
+export _ZO_FZF_OPTS=$FZF_DEFAULT_OPTS'
+--height=7'
 
+#####################
+# MISC              #
+#####################
 # For compilers and pkgconfig to find zlib
 export LDFLAGS="-L/usr/local/opt/zlib/lib -L/usr/local/opt/bzip2/lib"
 export CPPFLAGS="-I/usr/local/opt/zlib/include -I/usr/local/opt/bzip2/include"
