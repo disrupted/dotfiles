@@ -362,7 +362,17 @@ setopt emacs  # vi            # emacs / vim keybindings
 setopt interactivecomments    # recognize comments
 setopt sharehistory           # global history
 
-chpwd() { exa --icons -Fla; }  # -Flaigh
+chpwd() {
+  if [[ $(ls | wc -l) -ge 20 ]]; then
+    # print as grid
+    exa -G -a -F --icons --group-directories-first --git --color=always --ignore-glob=".DS_Store|__*"
+  else
+    # print as list and add left padding
+    exa -1 -a -F --icons --group-directories-first --git --color=always --ignore-glob=".DS_Store|__*" | sed 's/^/  /'
+  fi
+}
+
+# chpwd() { exa -l -a -F --icons --group-directories-first --git --color=always --no-permissions --no-user --no-filesize --time=modified | sed 's/^/  /'; }  # alternative showing last modified date for files
 
 #####################
 # VI KEYBINDINGS    #
@@ -467,6 +477,7 @@ export FZF_ALT_C_OPTS='--preview="exa -1 --icons --git --git-ignore {}" --previe
 bindkey '^F' fzf-file-widget
 # FZF custom OneDark theme
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
+--ansi
 --height=50%
 --color=fg:-1,bg:-1,border:#4B5164,hl:#d19a66
 --color=fg+:#5cb0ff,bg+:#2c323d,hl+:#e5c07b
