@@ -66,7 +66,7 @@ zstyle :bracketed-paste-magic paste-init pasteinit
 zstyle :bracketed-paste-magic paste-finish pastefinish
 
 # and finally, make sure zsh-autosuggestions does not interfere with it:
-ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(bracketed-paste)
+ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(expand-or-complete bracketed-paste accept-line push-line-or-edit)
 
 # ENHANCD
 zinit ice wait'0b' lucid
