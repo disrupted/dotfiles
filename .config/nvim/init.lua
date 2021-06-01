@@ -451,7 +451,7 @@ opt.wildignorecase = true -- Ignore case when completing file names and director
 opt.wildcharm = 26 -- equals set wildcharm=<C-Z>, used in the mapping section
 
 -- Binary
-opt.wildignore:append {
+opt.wildignore = {
     '*.aux,*.out,*.toc',
     '*.o,*.obj,*.dll,*.jar,*.pyc,__pycache__,*.rbc,*.class',
     -- media
