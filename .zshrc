@@ -330,6 +330,9 @@ zinit light latex-lsp/texlab
 # carapace completion
 zinit ice lucid wait'0' as'program' id-as'carapace' from'gh-r'
 zinit light rsteube/carapace-bin
+# dprint code formatter
+zinit ice lucid wait'0' as'program' id-as'dprint' from'gh-r'
+zinit light dprint/dprint
 
 #####################
 # HISTORY           #

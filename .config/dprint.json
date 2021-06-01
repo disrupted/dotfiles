@@ -16,8 +16,8 @@
     "**/target"
   ],
   "plugins": [
-    "https://plugins.dprint.dev/typescript-0.44.2.wasm",
-    "https://plugins.dprint.dev/json-0.10.2.wasm",
+    "https://plugins.dprint.dev/typescript-0.46.0.wasm",
+    "https://plugins.dprint.dev/json-0.11.0.wasm",
     "https://plugins.dprint.dev/markdown-0.7.1.wasm"
   ]
 }
