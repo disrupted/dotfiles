@@ -267,6 +267,13 @@ packer.startup(function()
         cmd = 'Octo',
         config = require('conf.octo').config,
     }
+    use {
+        'ThePrimeagen/harpoon',
+        opt = true,
+        event = { 'VimEnter' },
+        setup = require('conf.harpoon').setup,
+        config = require('conf.harpoon').config,
+    }
 end)
 
 local executable = function(e)

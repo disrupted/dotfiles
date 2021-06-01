@@ -73,7 +73,7 @@ function M.setup()
     --                         opts)  -- grep for word under the cursor
     vim.api.nvim_set_keymap(
         'n',
-        '<Space>h',
+        ',h',
         '<cmd>lua require "telescope.builtin".help_tags(options)<CR>',
         opts
     )

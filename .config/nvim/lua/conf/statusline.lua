@@ -357,6 +357,14 @@ gls.right[4] = {
         highlight = { colors.section_bg, colors.bg },
     },
 }
+gls.right[5] = {
+    Harpoon = {
+        provider = function()
+            return require('harpoon.mark').status()
+        end,
+        highlight = { colors.middlegrey, colors.bg },
+    },
+}
 gls.right[6] = {
     GitBranch = {
         provider = {
