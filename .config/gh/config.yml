@@ -10,5 +10,6 @@ pager: !!null delta
 aliases:
   co: '!id="$(gh pr list -L100 | fzf | cut -f1)"; [ -n "$id" ] && gh pr checkout "$id"'
   i: issue view --comments
+  p: pr view --comments
   issues: issue list
   prs: pr list
