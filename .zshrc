@@ -480,7 +480,7 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 --ansi
 --height=50%
 --color=fg:-1,bg:-1,border:#4B5164,hl:#d19a66
---color=fg+:#5cb0ff,bg+:#2c323d,hl+:#e5c07b
+--color=fg+:#f7f7f7,bg+:#2c323d,hl+:#e5c07b
 --color=info:#828997,prompt:#e06c75,pointer:#45cdff
 --color=marker:#98c379,spinner:#e06c75,header:#98c379'
 # FZF options for zoxide prompt (zi)
