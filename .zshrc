@@ -292,7 +292,8 @@ zinit wait'1' lucid \
  from'gh-r' as'program' id-as'rip' pick'rip*/rip' \
  light-mode for @nivekuil/rip
 # gitui rust
-zinit ice lucid wait'0' as'program' id-as'gitui' from'gh-r'
+zinit ice lucid wait'0' as'program' id-as'gitui' from'gh-r' \
+  atload"alias yadmui='gitui -d ~/.local/share/yadm/repo.git'"
 zinit light extrawurst/gitui
 # xh faster HTTPie clone written in Rust
 zinit ice lucid wait'0' as'program' id-as'xh' from'gh-r' pick'xh*/xh'
