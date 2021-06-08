@@ -70,19 +70,16 @@ function M.setup()
 
     local overridden_hover = vim.lsp.with(vim.lsp.handlers.hover, {
         border = 'single',
+        focusable = false,
     })
     vim.lsp.handlers['textDocument/hover'] = function(...)
         local buf = overridden_hover(...)
-        vim.api.nvim_buf_set_keymap(buf, 'n', 'K', '<cmd>wincmd p<CR>', {
-            noremap = true,
-            silent = true,
-        })
         -- TODO: close the floating window directly without having to execute wincmd p twice
     end
 
     vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
         vim.lsp.handlers.signature_help,
-        { border = 'single' }
+        { border = 'single', focusable = false }
     )
 end
 
