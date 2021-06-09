@@ -479,6 +479,21 @@ function M.config()
                 on_attach = on_attach,
                 capabilities = capabilities,
                 flags = { debounce_text_changes = 150 },
+                settings = {
+                    ['rust-analyzer'] = {
+                        checkOnSave = {
+                            allFeatures = true,
+                            overrideCommand = {
+                                'cargo',
+                                'clippy',
+                                '--workspace',
+                                '--message-format=json',
+                                '--all-targets',
+                                '--all-features',
+                            },
+                        },
+                    },
+                },
             },
             tools = {
                 autoSetHints = true,
@@ -491,7 +506,7 @@ function M.config()
                 },
             },
         }
-        vim.api.nvim_command 'noautocmd :edit'
+        -- vim.api.nvim_command 'noautocmd :edit'
     end
 
     vim.cmd [[
