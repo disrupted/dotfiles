@@ -9,6 +9,8 @@
   },
   "markdown": {
   },
+  "cargo_toml": {
+  },
   "includes": ["**/*.{ts,tsx,js,jsx,json,md}"],
   "excludes": [
     "**/node_modules",
@@ -18,6 +20,7 @@
   "plugins": [
     "https://plugins.dprint.dev/typescript-0.46.0.wasm",
     "https://plugins.dprint.dev/json-0.12.0.wasm",
-    "https://plugins.dprint.dev/markdown-0.8.0.wasm"
+    "https://plugins.dprint.dev/markdown-0.8.0.wasm",
+    "https://github.com/thomaseizinger/dprint-plugin-cargo-toml/releases/download/0.1.0/cargo-toml-0.1.0.wasm"
   ]
 }
