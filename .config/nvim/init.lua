@@ -260,7 +260,11 @@ packer.startup(function()
             require('todo-comments').setup {}
         end,
     }
-    use { 'famiu/bufdelete.nvim', cmd = { 'Bdelete', 'Bwipeout' } }
+    use {
+        'famiu/bufdelete.nvim',
+        cmd = { 'Bdelete', 'Bwipeout' },
+        setup = require('conf.bufdelete').setup,
+    }
     use {
         'pwntester/octo.nvim',
         opt = true,
