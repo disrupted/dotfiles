@@ -1,6 +1,5 @@
 {
   "$schema": "https://dprint.dev/schemas/v0.json",
-  "projectType": "openSource",
   "incremental": true,
   "typescript": {
     "indentWidth": 2
@@ -11,7 +10,7 @@
   },
   "cargo_toml": {
   },
-  "includes": ["**/*.{ts,tsx,js,jsx,json,md}"],
+  "includes": ["**/*.{ts,tsx,js,jsx,json,md}", "Cargo.toml"],
   "excludes": [
     "**/node_modules",
     "**/*-lock.json",
