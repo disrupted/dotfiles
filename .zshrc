@@ -338,6 +338,9 @@ zinit light rsteube/carapace-bin
 # dprint code formatter
 zinit ice lucid wait'0' as'program' id-as'dprint' from'gh-r'
 zinit light dprint/dprint
+# stylua lua code formatter
+zinit ice lucid wait'0' as'program' id-as'stylua' from'gh-r'
+zinit light JohnnyMorganz/StyLua
 
 #####################
 # HISTORY           #
