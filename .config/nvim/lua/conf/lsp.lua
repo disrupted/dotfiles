@@ -324,7 +324,7 @@ function M.config()
     --     flags = {debounce_text_changes = 150}
     -- }
 
-    vim.cmd [[packadd pylance]]
+    vim.cmd [[packadd pylance.nvim]]
     require 'pylance'
     lspconfig.pylance.setup {
         on_attach = on_attach,
@@ -614,11 +614,11 @@ function M.config()
             on_attach = on_attach,
             capabilities = capabilities,
             flags = { debounce_text_changes = 150 },
-            on_init = function(client, _)
-                client.notify('workspace/didChangeConfiguration', {
-                    settings = settings,
-                })
-            end,
+            -- on_init = function(client, _)
+            --     client.notify('workspace/didChangeConfiguration', {
+            --         settings = settings,
+            --     })
+            -- end,
             settings = settings,
         }
 

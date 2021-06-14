@@ -45,7 +45,7 @@ function M.config()
             nvim_lsp = { menu = '[LSP]', priority = 10, sort = true },
             nvim_lua = { menu = '[LUA]', priority = 6 },
             luasnip = { menu = '[SNP]', priority = 10 },
-            spell = true,
+            spell = false,
         },
     }
 

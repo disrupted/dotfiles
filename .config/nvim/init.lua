@@ -209,7 +209,11 @@ packer.startup(function()
         event = { 'BufRead' },
         config = require('conf.indentline').config,
     }
-    use { 'pylance', opt = true }
+    use {
+        'disrupted/pylance.nvim',
+        run = 'bash ./install.sh',
+        opt = true,
+    }
     use { 'simrat39/rust-tools.nvim', opt = true }
     use { 'mfussenegger/nvim-jdtls', opt = true }
     use { 'zsugabubus/crazy8.nvim', event = { 'BufRead' } } -- detect indentation automatically
