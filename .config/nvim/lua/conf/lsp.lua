@@ -59,11 +59,11 @@ function M.setup()
                 local view = vim.fn.winsaveview()
                 vim.lsp.util.apply_text_edits(result, bufnr)
                 vim.fn.winrestview(view)
-                if not bufnr or bufnr == vim.api.nvim_get_current_buf() then
-                    vim.api.nvim_command 'noautocmd :update'
+                if bufnr == vim.api.nvim_get_current_buf() then
+                    vim.cmd 'noautocmd :update'
 
                     -- Trigger post-formatting autocommand which can be used to refresh gitsigns
-                    vim.api.nvim_command 'silent doautocmd <nomodeline> User FormatterPost'
+                    vim.cmd 'silent doautocmd <nomodeline> User FormatterPost'
                 end
             end
         end
