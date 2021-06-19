@@ -347,6 +347,9 @@ zinit light pemistahl/grex
 # tokei count codebase
 zinit ice lucid wait'0' as'program' id-as'tokei' from'gh-r'
 zinit light XAMPPRocky/tokei
+# duf modern df replacement
+zinit ice lucid wait'0' as'program' id-as'duf' from'gh-r'
+zinit light muesli/duf
 
 #####################
 # HISTORY           #
