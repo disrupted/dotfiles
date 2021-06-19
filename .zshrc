@@ -341,6 +341,12 @@ zinit light dprint/dprint
 # stylua lua code formatter
 zinit ice lucid wait'0' as'program' id-as'stylua' from'gh-r' pick'stylua'
 zinit light JohnnyMorganz/StyLua
+# grex generate regexes
+zinit ice lucid wait'0' as'program' id-as'grex' from'gh-r'
+zinit light pemistahl/grex
+# tokei count codebase
+zinit ice lucid wait'0' as'program' id-as'tokei' from'gh-r'
+zinit light XAMPPRocky/tokei
 
 #####################
 # HISTORY           #
