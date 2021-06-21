@@ -340,6 +340,12 @@ function M.config()
         },
     }
 
+    lspconfig.dockerls.setup {
+        on_attach = on_attach,
+        capabilities = capabilities,
+        flags = { debounce_text_changes = 150 },
+    }
+
     -- YAML
     -- https://github.com/redhat-developer/yaml-language-server
     lspconfig.yamlls.setup {
