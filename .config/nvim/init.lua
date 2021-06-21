@@ -54,7 +54,10 @@ packer.startup(function()
                 'lewis6991/spellsitter.nvim',
                 after = 'nvim-treesitter',
                 config = function()
-                    require('spellsitter').setup { hl = 'SpellBad', captures = {} }
+                    require('spellsitter').setup {
+                        hl = 'SpellBad',
+                        captures = {},
+                    }
                 end,
                 disable = true, -- not working for now
             },
@@ -72,6 +75,21 @@ packer.startup(function()
             { 'nvim-lua/lsp-status.nvim', opt = true },
             { 'nvim-lua/lsp_extensions.nvim', opt = true },
         },
+    }
+    use {
+        'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim',
+        opt = true,
+        event = { 'BufRead' },
+        after = 'nvim-lspconfig',
+        config = function()
+            require('toggle_lsp_diagnostics').init()
+            vim.api.nvim_set_keymap(
+                'n',
+                '<space>tv',
+                '<Plug>(toggle-lsp-diag-vtext)',
+                {}
+            )
+        end,
     }
     use {
         'L3MON4D3/LuaSnip',
