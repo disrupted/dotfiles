@@ -498,7 +498,6 @@ bindkey '^F' fzf-file-widget
 # FZF custom OneDark theme
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 --ansi
---height=50%
 --color=fg:-1,bg:-1,border:#4B5164,hl:#d19a66
 --color=fg+:#f7f7f7,bg+:#2c323d,hl+:#e5c07b
 --color=info:#828997,prompt:#e06c75,pointer:#45cdff
