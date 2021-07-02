@@ -3,7 +3,6 @@ local M = {}
 function M.setup()
     local options = {
         shorten_path = false,
-        height = 10,
         layout_strategy = 'horizontal',
         layout_config = { preview_width = 0.65 },
     }
@@ -23,7 +22,6 @@ function M.setup()
             ignore_current_buffer = true,
             sorter = require('telescope.sorters').get_substr_matcher(),
             shorten_path = true,
-            height = 10,
             layout_strategy = 'horizontal',
             layout_config = { preview_width = 0.65 },
             show_all_buffers = true,
@@ -33,14 +31,12 @@ function M.setup()
     function _G.__telescope_grep()
         require('telescope.builtin').live_grep {
             shorten_path = false,
-            height = 10,
             layout_strategy = 'horizontal',
             layout_config = { preview_width = 0.4 },
         }
     end
     function _G.__telescope_commits()
         require('telescope.builtin').git_commits {
-            height = 10,
             layout_strategy = 'horizontal',
             layout_config = { preview_width = 0.55 },
         }
