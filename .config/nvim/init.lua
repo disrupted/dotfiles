@@ -223,7 +223,6 @@ packer.startup(function()
     }
     use {
         'lukas-reineke/indent-blankline.nvim',
-        branch = 'lua',
         event = { 'BufRead' },
         config = require('conf.indentline').config,
     }
