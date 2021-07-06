@@ -163,9 +163,6 @@ zinit ice wait'2' lucid id-as'exa' from'gh-r' as'program' mv'bin/exa* -> exa' \
     "
 zinit light ogham/exa
 zinit ice wait blockf atpull'zinit creinstall -q .'
-# ZSH DIFF SO FANCY
-zinit ice wait'2' lucid as'program' pick'bin/git-dsf'
-zinit light zdharma/zsh-diff-so-fancy
 # BAT
 zinit ice as'program' id-as'bat' from'gh-r' mv'bat* -> bat' cp'bat/autocomplete/bat.zsh -> _bat' pick'bat/bat' atload'alias cat=bat'
 zinit light sharkdp/bat
@@ -261,6 +258,7 @@ zinit light 'ms-jpq/sad'
 zinit ice from'gh-r' ver'nightly' as'program' id-as'bottom' \
   atclone'echo "" > ._zinit/is_release' \
   atpull'%atclone' \
+  run-atpull \
   atload'alias top=btm' \
   atload'alias htop=btm'
 zinit light ClementTsang/bottom
@@ -335,6 +333,9 @@ zinit light latex-lsp/texlab
 # carapace completion
 zinit ice lucid wait'0' as'program' id-as'carapace' from'gh-r'
 zinit light rsteube/carapace-bin
+# glab GitLab cli
+zinit ice lucid wait'0' as'program' id-as'glab' from'gh-r' pick'bin/glab'
+zinit light profclems/glab
 # dprint code formatter
 zinit ice lucid wait'0' as'program' id-as'dprint' from'gh-r'
 zinit light dprint/dprint
