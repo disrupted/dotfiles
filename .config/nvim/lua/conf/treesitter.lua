@@ -71,8 +71,8 @@ function M.config()
             },
             swap = {
                 enable = true,
-                swap_next = { ['<Leader>s'] = '@parameter.inner' },
-                swap_previous = { ['<Leader>S'] = '@parameter.inner' },
+                swap_next = { ['<Leader>>'] = '@parameter.inner' },
+                swap_previous = { ['<Leader><'] = '@parameter.inner' },
             },
         },
     }
