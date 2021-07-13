@@ -219,4 +219,4 @@ ls.snippets = {
 -- will need to extend the table yourself instead of setting a new one.
 ]]
 
-require('luasnip.loaders.from_vscode').load()
+require('luasnip.loaders.from_vscode').lazy_load()
