@@ -254,11 +254,18 @@ packer.startup(function()
         setup = require('conf.outline').setup,
         config = require('conf.outline').config,
     }
+    -- use {
+    --     'rmagatti/auto-session',
+    --     cmd = { 'SaveSession', 'RestoreSession' },
+    --     setup = require('conf.auto-session').setup,
+    --     config = require('conf.auto-session').config,
+    -- }
     use {
-        'rmagatti/auto-session',
-        cmd = { 'SaveSession', 'RestoreSession' },
-        setup = require('conf.auto-session').setup,
-        config = require('conf.auto-session').config,
+        'folke/persistence.nvim',
+        event = 'VimEnter',
+        module = 'persistence',
+        setup = require('conf.persistence').setup,
+        config = require('conf.persistence').config,
     }
     use {
         'kevinhwang91/nvim-bqf',
