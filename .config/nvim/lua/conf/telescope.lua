@@ -2,7 +2,7 @@ local M = {}
 
 function M.setup()
     local options = {
-        shorten_path = false,
+        path_display = {},
         layout_strategy = 'horizontal',
         layout_config = { preview_width = 0.65 },
     }
@@ -21,7 +21,7 @@ function M.setup()
             sort_lastused = true,
             ignore_current_buffer = true,
             sorter = require('telescope.sorters').get_substr_matcher(),
-            shorten_path = true,
+            path_display = { 'shorten' },
             layout_strategy = 'horizontal',
             layout_config = { preview_width = 0.65 },
             show_all_buffers = true,
@@ -30,7 +30,7 @@ function M.setup()
     end
     function _G.__telescope_grep()
         require('telescope.builtin').live_grep {
-            shorten_path = false,
+            path_display = {},
             layout_strategy = 'horizontal',
             layout_config = { preview_width = 0.4 },
         }
