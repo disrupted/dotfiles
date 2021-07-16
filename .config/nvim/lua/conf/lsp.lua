@@ -536,31 +536,35 @@ function M.config()
         .. '/bin/'
         .. system_name
         .. '/lua-language-server'
-
-    lspconfig.sumneko_lua.setup {
-        cmd = { sumneko_binary, '-E', sumneko_root_path .. '/main.lua' },
-        on_attach = on_attach,
-        capabilities = capabilities,
-        flags = { debounce_text_changes = 150 },
-        settings = {
-            Lua = {
-                runtime = {
-                    version = 'LuaJIT',
-                    -- Setup your lua path
-                    path = vim.split(package.path, ';'),
-                },
-                diagnostics = { globals = { 'vim' } },
-                workspace = {
-                    -- Make the server aware of Neovim runtime files
-                    library = {
-                        [vim.fn.expand '$VIMRUNTIME/lua'] = true,
-                        [vim.fn.expand '$VIMRUNTIME/lua/vim/lsp'] = true,
+    local luadev = require('lua-dev').setup {
+        -- add any options here, or leave empty to use the default settings
+        lspconfig = {
+            cmd = { sumneko_binary, '-E', sumneko_root_path .. '/main.lua' },
+            on_attach = on_attach,
+            capabilities = capabilities,
+            flags = { debounce_text_changes = 150 },
+            settings = {
+                Lua = {
+                    runtime = {
+                        version = 'LuaJIT',
+                        -- Setup your lua path
+                        path = vim.split(package.path, ';'),
                     },
+                    diagnostics = { globals = { 'vim' } },
+                    workspace = {
+                        -- Make the server aware of Neovim runtime files
+                        library = {
+                            [vim.fn.expand '$VIMRUNTIME/lua'] = true,
+                            [vim.fn.expand '$VIMRUNTIME/lua/vim/lsp'] = true,
+                        },
+                    },
+                    telemetry = { enable = false },
                 },
-                telemetry = { enable = false },
             },
         },
     }
+
+    lspconfig.sumneko_lua.setup(luadev)
 
     -- C / C++
     lspconfig.clangd.setup {
