@@ -43,7 +43,7 @@ function M.config()
             -- treesitter = {menu = '[TS]', priority = 9},
             buffer = { menu = '[BUF]', priority = 8 },
             nvim_lsp = { menu = '[LSP]', priority = 10, sort = true },
-            nvim_lua = { menu = '[LUA]', priority = 6 },
+            nvim_lua = false, -- using lua-dev.nvim instead
             luasnip = { menu = '[SNP]', priority = 10 },
             spell = false,
         },

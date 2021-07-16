@@ -76,6 +76,7 @@ packer.startup(function()
             { 'nvim-lua/lsp_extensions.nvim', opt = true },
         },
     }
+    use 'folke/lua-dev.nvim'
     use {
         'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim',
         opt = true,
