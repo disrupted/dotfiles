@@ -18,7 +18,7 @@ function M.setup()
     end
     function _G.__telescope_buffers()
         require('telescope.builtin').buffers {
-            sort_lastused = true,
+            sort_mru = true,
             ignore_current_buffer = true,
             sorter = require('telescope.sorters').get_substr_matcher(),
             path_display = { 'shorten' },
