@@ -273,7 +273,7 @@ function M.config()
                 'n',
                 '<leader>a',
                 -- FIX: add initial_mode="normal" when it's working again
-                '<cmd>lua require"telescope.builtin".lsp_code_actions(require"telescope.themes".get_dropdown { winblend = 0 })<CR>',
+                '<cmd>lua require"telescope.builtin".lsp_code_actions(require"telescope.themes".get_cursor { winblend = 0 })<CR>',
                 opts
             )
         end
