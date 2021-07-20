@@ -145,7 +145,7 @@
 
 [credential]
     # Use macOS Keychain to store HTTP passwords.
-    helper = osxkeychain
+	helper = osxkeychain
 
 [hub]
     # Use HTTPS rather than SSH protocol in Hub
