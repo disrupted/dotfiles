@@ -175,7 +175,7 @@ function M.config()
         buf_set_keymap(
             'n',
             '<space>r',
-            '<cmd>lua vim.lsp.buf.rename()<CR>',
+            '<cmd>lua require(\'conf.nui_lsp\').lsp_rename()<CR>',
             opts
         )
         buf_set_keymap('n', 'gr', '<cmd>Trouble lsp_references<CR>', opts)

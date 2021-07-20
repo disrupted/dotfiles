@@ -314,6 +314,10 @@ packer.startup(function()
         setup = require('conf.harpoon').setup,
         config = require('conf.harpoon').config,
     }
+    -- UI component library
+    use {
+        'MunifTanjim/nui.nvim',
+    }
 end)
 
 local executable = function(e)
