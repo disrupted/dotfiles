@@ -318,6 +318,8 @@ packer.startup(function()
     use {
         'MunifTanjim/nui.nvim',
     }
+    -- Syntax for Helm chart templates
+    use { 'towolf/vim-helm', opt = true, ft = 'helm' }
 end)
 
 local executable = function(e)
