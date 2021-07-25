@@ -108,6 +108,13 @@ packer.startup(function()
         after = 'LuaSnip',
     }
     use {
+        'abecodes/tabout.nvim',
+        event = { 'InsertEnter' },
+        config = require('conf.tabout').config,
+        wants = { 'nvim-treesitter' },
+        after = { 'nvim-compe' },
+    }
+    use {
         -- Debug Adapter Protocol client
         'mfussenegger/nvim-dap',
         ft = {
