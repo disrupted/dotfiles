@@ -327,6 +327,12 @@ packer.startup(function()
     }
     -- Syntax for Helm chart templates
     use { 'towolf/vim-helm', opt = true, ft = 'helm' }
+    use {
+        'henriquehbr/nvim-startup.lua',
+        config = function()
+            require('nvim-startup').setup()
+        end,
+    }
 end)
 
 local executable = function(e)
