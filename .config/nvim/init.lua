@@ -667,7 +667,6 @@ map('x', 'J', ':move \'>+1<CR>gv-gv')
 map('n', '<C-a>', '<esc>ggVG<CR>')
 
 -- sensible defaults
-map('', 'Y', 'y$') -- yank to end of line (for consistency)
 map('', 'Q', '') -- disable
 map('n', 'x', '"_x') -- delete char without yank
 map('x', 'x', '"_x') -- delete visual selection without yank
