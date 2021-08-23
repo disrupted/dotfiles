@@ -12,6 +12,9 @@ function M.config()
             item = { '▸', '▾' },
             hunk = { '', '' },
         },
+        integrations = {
+            diffview = true,
+        },
     }
 end
 
