@@ -415,8 +415,8 @@ opt.cursorline = true
 cmd [[
     augroup cursorline_focus
         autocmd!
-        autocmd WinEnter * if &bt != 'terminal' | setlocal cursorline
-        autocmd WinLeave * if &bt != 'terminal' | setlocal nocursorline
+        autocmd WinEnter * if (&bt == '') | setlocal cursorline
+        autocmd WinLeave * if (&bt == '') | setlocal nocursorline
     augroup END
     ]]
 opt.wrap = true
