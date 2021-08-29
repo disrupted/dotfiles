@@ -83,7 +83,7 @@ function M.config()
         elseif check_back_space() then
             return t '<Tab>'
         else
-            return vim.fn['compe#complete']()
+            return t '<Plug>(Tabout)'
         end
     end
     _G.s_tab_complete = function()
@@ -92,7 +92,7 @@ function M.config()
         elseif luasnip and luasnip.jumpable(-1) then
             return t '<Plug>luasnip-jump-prev'
         else
-            return t '<S-Tab>'
+            return t '<Plug>(TaboutBack)'
         end
     end
     _G.enter_complete = function()

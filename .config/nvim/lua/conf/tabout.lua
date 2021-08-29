@@ -2,9 +2,10 @@ local M = {}
 
 function M.config()
     require('tabout').setup {
-        tabkey = '<Tab>',
-        act_as_tab = false,
-        completion = true,
+        tabkey = '',
+        backwards_tabkey = '',
+        -- act_as_tab = false,
+        -- completion = true,
         tabouts = {
             { open = '\'', close = '\'' },
             { open = '"', close = '"' },
@@ -13,8 +14,9 @@ function M.config()
             { open = '[', close = ']' },
             { open = '{', close = '}' },
         },
-        ignore_beginning = true,
-        exclude = {},
+        -- ignore_beginning = true,
+        -- exclude = {},
     }
 end
+
 return M
