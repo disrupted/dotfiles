@@ -146,7 +146,7 @@ packer.startup(function()
     }
     use {
         'nvim-telescope/telescope.nvim',
-        event = { 'VimEnter' },
+        module = 'telescope',
         setup = require('conf.telescope').setup,
         config = require('conf.telescope').config,
         requires = { { 'nvim-lua/popup.nvim' }, { 'nvim-lua/plenary.nvim' } },
@@ -332,6 +332,14 @@ packer.startup(function()
         config = function()
             require('nvim-startup').setup()
         end,
+    }
+    use {
+        'AckslD/nvim-neoclip.lua',
+        opt = true,
+        module = 'neoclip',
+        event = { 'TextYankPost' },
+        setup = require('conf.neoclip').setup,
+        config = require('conf.neoclip').config,
     }
 end)
 
