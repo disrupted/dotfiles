@@ -125,9 +125,9 @@ zstyle ':completion:*:exa' file-sort modification
 zstyle ':completion:*:exa' sort false
 
 # TMUX
-zinit ice as'program' id-as'tmux' atpull'%atclone' make \
-  atclone'ln -fs $HOME/.zinit/plugins/tmux/tmux /usr/local/bin/tmux; ./autogen.sh; ./configure'
-zinit light tmux/tmux
+# zinit ice as'program' id-as'tmux' atpull'%atclone' make \
+#   atclone'ln -fs $HOME/.zinit/plugins/tmux/tmux /opt/homebrew/bin/tmux; ./autogen.sh; ./configure'
+# zinit light tmux/tmux
 # TMUX plugin manager
 zinit ice lucid wait'!0a' as'null' id-as'tpm' \
   atclone' \
@@ -136,8 +136,8 @@ zinit ice lucid wait'!0a' as'null' id-as'tpm' \
     setup_my_tmux_plugin tpm;'
 zinit light tmux-plugins/tpm
 # FZF
-zinit ice lucid wait'0b' from'gh-r' as'program'
-zinit light junegunn/fzf
+# zinit ice lucid wait'0b' from'gh-r' as'program'
+# zinit light junegunn/fzf
 # FZF TMUX HELPER SCRIPT
 zinit ice lucid wait'0c' as'command' pick'bin/fzf-tmux'
 zinit light junegunn/fzf
@@ -151,38 +151,38 @@ zinit light Aloxaf/fzf-tab
 zinit ice wait'0c' lucid atinit'zpcompinit;zpcdreplay'
 zinit light zdharma/fast-syntax-highlighting
 # EXA
-zinit ice wait'2' lucid id-as'exa' from'gh-r' as'program' mv'bin/exa* -> exa' \
-    cp'completions/exa.zsh -> _exa' \
-  atload"
-        alias l='exa --sort=changed --icons -la --git --git-ignore --ignore-glob=\".DS_Store|__MACOSX|__pycache__\"'
-        alias la='exa --group-directories-first --icons -la'
-        alias ll='exa --group-directories-first --icons -la --color-scale --time-style=long-iso --git --git-ignore --ignore-glob=\".git|.DS_Store|__MACOSX|__pycache__\" -T -L2'
-        alias ll3='exa --group-directories-first --icons -la --git --git-ignore --ignore-glob=\".git|.DS_Store|__MACOSX\" -T -L3'
-        alias ll4='exa --group-directories-first --icons -la --git --git-ignore --ignore-glob=\".git|.DS_Store|__MACOSX\" -T -L4'
-        alias tree='exa --group-directories-first -T --icons'
-    "
-zinit light ogham/exa
-zinit ice wait blockf atpull'zinit creinstall -q .'
+# zinit ice wait'2' lucid id-as'exa' from'gh-r' as'program' mv'bin/exa* -> exa' \
+#     cp'completions/exa.zsh -> _exa' \
+#   atload"
+#         alias l='exa --sort=changed --icons -la --git --git-ignore --ignore-glob=\".DS_Store|__MACOSX|__pycache__\"'
+#         alias la='exa --group-directories-first --icons -la'
+#         alias ll='exa --group-directories-first --icons -la --color-scale --time-style=long-iso --git --git-ignore --ignore-glob=\".git|.DS_Store|__MACOSX|__pycache__\" -T -L2'
+#         alias ll3='exa --group-directories-first --icons -la --git --git-ignore --ignore-glob=\".git|.DS_Store|__MACOSX\" -T -L3'
+#         alias ll4='exa --group-directories-first --icons -la --git --git-ignore --ignore-glob=\".git|.DS_Store|__MACOSX\" -T -L4'
+#         alias tree='exa --group-directories-first -T --icons'
+#     "
+# zinit light ogham/exa
+# zinit ice wait blockf atpull'zinit creinstall -q .'
 # BAT
-zinit ice as'program' id-as'bat' from'gh-r' mv'bat* -> bat' cp'bat/autocomplete/bat.zsh -> _bat' pick'bat/bat' atload'alias cat=bat'
-zinit light sharkdp/bat
+# zinit ice as'program' id-as'bat' from'gh-r' mv'bat* -> bat' cp'bat/autocomplete/bat.zsh -> _bat' pick'bat/bat' atload'alias cat=bat'
+# zinit light sharkdp/bat
 # RIPGREP
-zinit ice from'gh-r' as'program' id-as'rg' mv'ripgrep* -> rg' cp'rg/complete/_rg -> _rg' pick'rg/rg'
-zinit light BurntSushi/ripgrep
+# zinit ice from'gh-r' as'program' id-as'rg' mv'ripgrep* -> rg' cp'rg/complete/_rg -> _rg' pick'rg/rg'
+# zinit light BurntSushi/ripgrep
 # neovim
-zinit wait'0' lucid \
-  id-as'nvim' from'gh-r' ver'nightly' as'program' pick'nvim*/bin/nvim' \
-  atclone'echo "" > ._zinit/is_release' \
-  atpull'%atclone' \
-  run-atpull \
-  atload'alias v=nvim' \
-  light-mode for @neovim/neovim
+# zinit wait'0' lucid \
+#   id-as'nvim' from'gh-r' ver'nightly' as'program' pick'nvim*/bin/nvim' \
+#   atclone'echo "" > ._zinit/is_release' \
+#   atpull'%atclone' \
+#   run-atpull \
+#   atload'alias v=nvim' \
+#   light-mode for @neovim/neovim
 # DELTA
-zinit wait'1' lucid \
-  as'program' id-as'delta' from'gh-r' mv'delta* -> delta' pick'delta/delta' \
-  light-mode for @dandavison/delta
-zinit ice wait'1' lucid as'delta-completion' has'delta' mv'completion.zsh -> _delta'
-zinit snippet https://github.com/dandavison/delta/blob/master/etc/completion/completion.zsh
+# zinit wait'1' lucid \
+#   as'program' id-as'delta' from'gh-r' mv'delta* -> delta' pick'delta/delta' \
+#   light-mode for @dandavison/delta
+# zinit ice wait'1' lucid as'delta-completion' has'delta' mv'completion.zsh -> _delta'
+# zinit snippet https://github.com/dandavison/delta/blob/master/etc/completion/completion.zsh
 # FORGIT
 zinit ice wait lucid id-as'forgit' atload'alias gr=forgit::checkout::file'
 zinit load 'wfxr/forgit'
@@ -196,12 +196,12 @@ zinit light 'jesseduffield/lazydocker'
 zinit ice depth'1' as'program' pick'ranger.py' atload'alias ranger=ranger.py'
 zinit light ranger/ranger
 # FD
-zinit ice as'program' id-as'fd' from'gh-r' mv'fd* -> fd' cp'fd/autocomplete/_fd -> _fd' pick'fd/fd'
-zinit light sharkdp/fd
+# zinit ice as'program' id-as'fd' from'gh-r' mv'fd* -> fd' cp'fd/autocomplete/_fd -> _fd' pick'fd/fd'
+# zinit light sharkdp/fd
 # GH-CLI
-zinit ice lucid wait'0' as'program' id-as'gh' from'gh-r' has'git' \
-  atclone'./gh completion -s zsh > _gh' atpull'%atclone' mv'**/bin/gh -> gh'
-zinit light cli/cli
+# zinit ice lucid wait'0' as'program' id-as'gh' from'gh-r' has'git' \
+#   atclone'./gh completion -s zsh > _gh' atpull'%atclone' mv'**/bin/gh -> gh'
+# zinit light cli/cli
 # tldr (rust implementation tealdeer)
 # zinit wait'1' lucid \
 #   from'gh-r' as'program' id-as'tldr' mv'tldr* -> tldr' pick'tldr' \
@@ -209,13 +209,13 @@ zinit light cli/cli
 # zinit ice wait'1' lucid as'tldr-completion' has'tldr' mv'zsh_tealdeer -> _tldr'
 # zinit snippet https://github.com/dbrgn/tealdeer/blob/master/zsh_tealdeer
 # navi for cheat sheets including tldr & cheat.sh
-zinit wait'2' lucid \
-  id-as'navi' \
-  from'gh-r' \
-  pick'navi' \
-  as'program' \
-  atload"eval '$(navi widget zsh)';" \
-  for @denisidoro/navi
+# zinit wait'2' lucid \
+#   id-as'navi' \
+#   from'gh-r' \
+#   pick'navi' \
+#   as'program' \
+#   atload"eval '$(navi widget zsh)';" \
+#   for @denisidoro/navi
 # cheat.sh
 zinit wait'2a' lucid \
   id-as'cht.sh' \
@@ -271,20 +271,20 @@ zinit ice lucid wait'0' as'program' id-as'mmv' from'gh-r' \
   mv'mmv* -> mmv' pick'mmv/mmv'
 zinit light 'itchyny/mmv'
 # jq
-zinit ice lucid wait'0' as'program' id-as'jq' from'gh-r' mv'jq-* -> jq'
-zinit light stedolan/jq
+# zinit ice lucid wait'0' as'program' id-as'jq' from'gh-r' mv'jq-* -> jq'
+# zinit light stedolan/jq
 # yq
-zinit ice lucid wait'0' as'program' id-as'yq' from'gh-r' mv'yq_* -> yq' \
- atclone'yq shell-completion zsh > _yq' atpull'%atclone'
-zinit light mikefarah/yq
+# zinit ice lucid wait'0' as'program' id-as'yq' from'gh-r' mv'yq_* -> yq' \
+#  atclone'yq shell-completion zsh > _yq' atpull'%atclone'
+# zinit light mikefarah/yq
 # sd sed alternative
-zinit ice lucid wait'0' as'program' id-as'sd' from'gh-r' pick'sd' mv'sd-* -> sd'
-zinit light chmln/sd
+# zinit ice lucid wait'0' as'program' id-as'sd' from'gh-r' pick'sd' mv'sd-* -> sd'
+# zinit light chmln/sd
 # zoxide autojumper
-zinit lucid wait'0' as'program' id-as'zoxide' from'gh-r' pick'zoxide*/zoxide' \
-  atclone'./zoxide*/zoxide init zsh --hook pwd >! zhook.zsh' atpull'%atclone' \
-  src'zhook.zsh' for \
-  'ajeetdsouza/zoxide'
+# zinit lucid wait'0' as'program' id-as'zoxide' from'gh-r' pick'zoxide*/zoxide' \
+#   atclone'./zoxide*/zoxide init zsh --hook pwd >! zhook.zsh' atpull'%atclone' \
+#   src'zhook.zsh' for \
+#   'ajeetdsouza/zoxide'
 # nnn file manager
 zinit wait lucid id-as'nnn' from'github' as'program' for \
   sbin'nnn' make='O_NERD=1' src'misc/quitcd/quitcd.bash_zsh' \
@@ -294,24 +294,24 @@ zinit wait'1' lucid \
  from'gh-r' as'program' id-as'rip' pick'rip*/rip' \
  light-mode for @nivekuil/rip
 # gitui rust
-zinit ice lucid wait'0' as'program' id-as'gitui' from'gh-r' \
-  atload"alias yadmui='gitui -d ~/.local/share/yadm/repo.git'"
-zinit light extrawurst/gitui
+# zinit ice lucid wait'0' as'program' id-as'gitui' from'gh-r' \
+#   atload"alias yadmui='gitui -d ~/.local/share/yadm/repo.git'"
+# zinit light extrawurst/gitui
 # xh faster HTTPie clone written in Rust
-zinit ice lucid wait'0' as'program' id-as'xh' from'gh-r' pick'xh*/xh'
-zinit light ducaale/xh
+# zinit ice lucid wait'0' as'program' id-as'xh' from'gh-r' pick'xh*/xh'
+# zinit light ducaale/xh
 # bandwhich network bandwidth monitor
-zinit ice lucid wait'0' as'program' id-as'bandwhich' from'gh-r'
-zinit light imsnif/bandwhich
+# zinit ice lucid wait'0' as'program' id-as'bandwhich' from'gh-r'
+# zinit light imsnif/bandwhich
 # load kubectl completion
 zinit light-mode lucid wait has'kubectl' for \
   id-as'kubectl_completion' as'completion' \
   atclone'kubectl completion zsh > _kubectl' \
   atpull'%atclone' run-atpull zdharma/null
 # Hyperfine benchmarking tool
-zinit ice lucid wait'0' as'program' id-as'hyperfine' from'gh-r' \
-  mv'hyperfine*/hyperfine -> hyperfine'
-zinit light sharkdp/hyperfine
+# zinit ice lucid wait'0' as'program' id-as'hyperfine' from'gh-r' \
+#   mv'hyperfine*/hyperfine -> hyperfine'
+# zinit light sharkdp/hyperfine
 # python automatic virtualenv
 zinit light MichaelAquilina/zsh-autoswitch-virtualenv
 # Himalaya terminal email client
@@ -319,29 +319,30 @@ zinit ice lucid wait'0' as'program' id-as'himalaya' from'gh-r' \
   atclone'himalaya completion zsh > _himalaya' atpull'%atclone'
 zinit light soywod/himalaya
 # GitLab cli
-zinit ice lucid wait'0' as'program' id-as'gitlab' from'gh-r' \
-  mv'gitlab* -> gitlab' \
-  atclone'./gitlab completion zsh > _gitlab' atpull'%atclone'
-zinit light makkes/gitlab-cli
+# zinit ice lucid wait'0' as'program' id-as'gitlab' from'gh-r' \
+#   mv'gitlab* -> gitlab' \
+#   atclone'./gitlab completion zsh > _gitlab' atpull'%atclone'
+# zinit light makkes/gitlab-cli
 # rust-analyzer
-zinit ice lucid wait'0' as'program' id-as'rust-analyzer' from'gh-r' \
-  ver'latest' mv'rust-analyzer* -> rust-analyzer'
-zinit light rust-analyzer/rust-analyzer
+# zinit ice lucid wait'0' as'program' id-as'rust-analyzer' from'gh-r' \
+#   ver'latest' mv'rust-analyzer* -> rust-analyzer'
+# zinit light rust-analyzer/rust-analyzer
 # texlab LaTeX LSP
 zinit ice lucid wait'0' as'program' id-as'texlab' from'gh-r'
 zinit light latex-lsp/texlab
 # carapace completion
-zinit ice lucid wait'0' as'program' id-as'carapace' from'gh-r'
+zinit ice lucid wait'0' as'program' id-as'carapace' from'gh-r' \
+  atload'source <(carapace _carapace zsh)'
 zinit light rsteube/carapace-bin
 # glab GitLab cli
-zinit ice lucid wait'0' as'program' id-as'glab' from'gh-r' pick'bin/glab'
-zinit light profclems/glab
+# zinit ice lucid wait'0' as'program' id-as'glab' from'gh-r' pick'bin/glab'
+# zinit light profclems/glab
 # dprint code formatter
-zinit ice lucid wait'0' as'program' id-as'dprint' from'gh-r'
-zinit light dprint/dprint
+# zinit ice lucid wait'0' as'program' id-as'dprint' from'gh-r'
+# zinit light dprint/dprint
 # stylua lua code formatter
-zinit ice lucid wait'0' as'program' id-as'stylua' from'gh-r' pick'stylua'
-zinit light JohnnyMorganz/StyLua
+# zinit ice lucid wait'0' as'program' id-as'stylua' from'gh-r' pick'stylua'
+# zinit light JohnnyMorganz/StyLua
 # grex generate regexes
 zinit ice lucid wait'0' as'program' id-as'grex' from'gh-r'
 zinit light pemistahl/grex
@@ -448,15 +449,26 @@ export LESS_TERMCAP_me=$'\E[0m'     # end mode
 export LESS_TERMCAP_ue=$'\E[0m'     # end underline
 export LESS_TERMCAP_se=$'\E[0m'     # end standout-mode
 export MANPAGER="nvim -c 'set ft=man' -"
-export SHELL='/bin/zsh'
+export SHELL='/opt/homebrew/bin/zsh'
 export LANG='en_US.UTF-8'
 export LC_ALL='en_US.UTF-8'
 export WORDCHARS='~!#$%^&*(){}[]<>?.+;'  # sane moving between words on the prompt
 export GPG_TTY=$(tty)
+export PATH="/opt/homebrew/bin:$PATH"
 export PATH="$PATH:~/.local/bin"  # for pipx
 export GOPATH="$HOME/go"
 export PATH="$PATH:$GOPATH/bin"
 export PROMPT_EOL_MARK=''  # hide % at end of output
+
+#####################
+# COMPLETIONS       #
+#####################
+# if type brew &>/dev/null; then
+#   FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
+
+#   autoload -Uz compinit
+#   compinit
+# fi
 
 #####################
 # COLORING          #
@@ -468,6 +480,7 @@ autoload colors && colors
 #####################
 source $HOME/.zsh_aliases
 source $HOME/.zsh_aliases_private
+eval "$(zoxide init zsh)"
 
 #####################
 # FANCY-CTRL-Z      #
@@ -511,10 +524,9 @@ export _ZO_FZF_OPTS=$FZF_DEFAULT_OPTS'
 # MISC              #
 #####################
 # For compilers and pkgconfig to find zlib
-export LDFLAGS="-L/usr/local/opt/zlib/lib -L/usr/local/opt/bzip2/lib"
-export CPPFLAGS="-I/usr/local/opt/zlib/include -I/usr/local/opt/bzip2/include"
-export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} /usr/local/opt/zlib/lib/pkgconfig"
+export LDFLAGS="-L/opt/homebrew/opt/zlib/lib -L/opt/homebrew/opt/bzip2/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/zlib/include -I/opt/homebrew/opt/bzip2/include"
+export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} /opt/homebrew/opt/zlib/lib/pkgconfig"
 
-export CLOUDSDK_PYTHON="/usr/local/opt/python@3.8/libexec/bin/python"
-source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
-source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
+source "/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
+source "/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
