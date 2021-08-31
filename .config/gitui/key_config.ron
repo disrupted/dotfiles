@@ -77,6 +77,12 @@
             bits: 2,
         ),
     ),
+    quit: (
+        code: Char('q'),
+        modifiers: (
+            bits: 0,
+        ),
+    ),
     exit_popup: (
         code: Esc,
         modifiers: (
@@ -97,6 +103,12 @@
     ),
     open_help: (
         code: Char('h'),
+        modifiers: (
+            bits: 0,
+        ),
+    ),
+    open_options: (
+        code: Char('o'),
         modifiers: (
             bits: 0,
         ),
@@ -269,6 +281,12 @@
             bits: 0,
         ),
     ),
+    log_mark_commit: (
+        code: Char(' '),
+        modifiers: (
+            bits: 0,
+        ),
+    ),
     commit_amend: (
         code: Char('a'),
         modifiers: (
@@ -309,6 +327,12 @@
         code: Char('m'),
         modifiers: (
             bits: 0,
+        ),
+    ),
+    compare_commits: (
+        code: Char('C'),
+        modifiers: (
+            bits: 1,
         ),
     ),
     tags: (
@@ -355,6 +379,12 @@
     ),
     abort_merge: (
         code: Char('M'),
+        modifiers: (
+            bits: 1,
+        ),
+    ),
+    undo_commit: (
+        code: Char('U'),
         modifiers: (
             bits: 1,
         ),
