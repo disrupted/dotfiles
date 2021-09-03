@@ -76,6 +76,7 @@ packer.startup(function()
             { 'nvim-lua/lsp_extensions.nvim', opt = true },
         },
     }
+    use { 'jose-elias-alvarez/null-ls.nvim', opt = true, module = 'null-ls' }
     use 'folke/lua-dev.nvim'
     use {
         'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim',
@@ -332,6 +333,7 @@ packer.startup(function()
         config = function()
             require('nvim-startup').setup()
         end,
+        disable = true,
     }
     use {
         'AckslD/nvim-neoclip.lua',

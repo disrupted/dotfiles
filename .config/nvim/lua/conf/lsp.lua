@@ -402,83 +402,143 @@ function M.config()
 
     -- EFM Universal Language Server
     -- https://github.com/mattn/efm-langserver
-    local efm_config = home .. '/.config/efm-langserver/config.yaml'
-    local efm_log = '/tmp/efm.log'
-    -- local black = require 'efm/black'
-    local blackd = require 'efm/blackd' -- experimental
-    -- local isort = require 'efm/isort'
-    local isortd = require 'efm/isortd' -- experimental
-    -- local lua_format = require 'efm/lua-format'
-    local stylua = require 'efm/stylua'
-    -- local prettier = require 'efm/prettier'
-    local prettierd = require 'efm/prettierd'
-    local prettier_d = require 'efm/prettier_d'
-    local eslint_d = require 'efm/eslint_d'
-    -- local deno_fmt = require "efm/deno_fmt"
-    local dprint = require 'efm/dprint'
-    local shellcheck = require 'efm/shellcheck'
-    local shfmt = require 'efm/shfmt'
-    -- local whitespace = require 'efm/whitespace'
+    -- local efm_config = home .. '/.config/efm-langserver/config.yaml'
+    -- local efm_log = '/tmp/efm.log'
+    -- -- local black = require 'efm/black'
+    -- local blackd = require 'efm/blackd' -- experimental
+    -- -- local isort = require 'efm/isort'
+    -- local isortd = require 'efm/isortd' -- experimental
+    -- -- local lua_format = require 'efm/lua-format'
+    -- local stylua = require 'efm/stylua'
+    -- -- local prettier = require 'efm/prettier'
+    -- local prettierd = require 'efm/prettierd'
+    -- local prettier_d = require 'efm/prettier_d'
+    -- local eslint_d = require 'efm/eslint_d'
+    -- -- local deno_fmt = require "efm/deno_fmt"
+    -- local dprint = require 'efm/dprint'
+    -- local shellcheck = require 'efm/shellcheck'
+    -- local shfmt = require 'efm/shfmt'
+    -- -- local whitespace = require 'efm/whitespace'
 
-    lspconfig.efm.setup {
-        cmd = { 'efm-langserver', '-c', efm_config, '-logfile', efm_log },
-        on_attach = on_attach,
-        flags = { debounce_text_changes = 150 },
-        filetypes = {
-            'python',
-            'lua',
-            'yaml',
-            'json',
-            'markdown',
-            'rst',
-            'html',
-            'css',
-            'javascript',
-            'typescript',
-            'javascriptreact',
-            'typescriptreact',
-            'bash',
-            'sh',
+    -- lspconfig.efm.setup {
+    --     cmd = { 'efm-langserver', '-c', efm_config, '-logfile', efm_log },
+    --     on_attach = on_attach,
+    --     flags = { debounce_text_changes = 150 },
+    --     filetypes = {
+    --         'python',
+    --         'lua',
+    --         'yaml',
+    --         'json',
+    --         'markdown',
+    --         'rst',
+    --         'html',
+    --         'css',
+    --         'javascript',
+    --         'typescript',
+    --         'javascriptreact',
+    --         'typescriptreact',
+    --         'bash',
+    --         'sh',
+    --     },
+    --     -- Fallback to .bashrc as a project root to enable LSP on loose files
+    --     root_dir = function(fname)
+    --         return lspconfig.util.root_pattern(
+    --             'tsconfig.json',
+    --             'pyproject.toml'
+    --         )(fname) or lspconfig.util.root_pattern(
+    --             '.eslintrc.js',
+    --             '.git'
+    --         )(fname) or lspconfig.util.root_pattern(
+    --             'package.json',
+    --             '.git/',
+    --             '.zshrc'
+    --         )(fname)
+    --     end,
+    --     init_options = {
+    --         documentFormatting = true,
+    --         documentSymbol = false,
+    --         completion = false,
+    --         codeAction = false,
+    --         hover = false,
+    --     },
+    --     settings = {
+    --         rootMarkers = { 'package.json', 'go.mod', '.git/', '.zshrc' },
+    --         formatDebounce = '1000ms',
+    --         -- lintDebounce = '2000ms',
+    --         languages = {
+    --             python = { isortd, blackd },
+    --             lua = { stylua },
+    --             yaml = { prettierd },
+    --             json = { dprint },
+    --             markdown = { dprint },
+    --             html = { prettierd },
+    --             css = { prettierd },
+    --             javascript = { eslint_d, prettierd },
+    --             typescript = { eslint_d, prettierd },
+    --             javascriptreact = { eslint_d, prettierd },
+    --             typescriptreact = { eslint_d, prettierd },
+    --             bash = { shellcheck, shfmt },
+    --             sh = { shellcheck, shfmt },
+    --         },
+    --     },
+    -- }
+
+    -- NULL-LS
+    local null_ls = require 'null-ls'
+
+    -- custom sources
+    local h = require 'null-ls.helpers'
+
+    local blackd = {
+        name = 'blackd',
+        method = null_ls.methods.FORMATTING,
+        filetypes = { 'python' },
+        generator = h.formatter_factory {
+            command = 'blackd-client',
+            to_stdin = true,
         },
-        -- Fallback to .bashrc as a project root to enable LSP on loose files
-        root_dir = function(fname)
-            return lspconfig.util.root_pattern(
-                'tsconfig.json',
-                'pyproject.toml'
-            )(fname) or lspconfig.util.root_pattern(
-                '.eslintrc.js',
-                '.git'
-            )(fname) or lspconfig.util.root_pattern(
-                'package.json',
-                '.git/',
-                '.zshrc'
-            )(fname)
-        end,
-        init_options = {
-            documentFormatting = true,
-            documentSymbol = false,
-            completion = false,
-            codeAction = false,
-            hover = false,
+    }
+
+    local isortd = {
+        name = 'isortd',
+        method = null_ls.methods.FORMATTING,
+        filetypes = { 'python' },
+        generator = h.formatter_factory {
+            command = 'curl',
+            args = {
+                '-s',
+                '-X',
+                'POST',
+                'localhost:47393',
+                '-H',
+                'XX-SRC: $ROOT',
+                '-H',
+                'XX-PATH: $FILENAME',
+                '--data-binary',
+                '@-',
+            },
+            to_stdin = true,
         },
-        settings = {
-            rootMarkers = { 'package.json', 'go.mod', '.git/', '.zshrc' },
-            languages = {
-                python = { isortd, blackd },
-                lua = { stylua },
-                yaml = { prettierd },
-                json = { dprint },
-                markdown = { dprint },
-                html = { prettierd },
-                css = { prettierd },
-                javascript = { eslint_d, prettierd },
-                typescript = { eslint_d, prettierd },
-                javascriptreact = { eslint_d, prettierd },
-                typescriptreact = { eslint_d, prettierd },
-                bash = { shellcheck, shfmt },
-                sh = { shellcheck, shfmt },
+    }
+
+    -- sources
+    local sources = {
+        null_ls.builtins.formatting.stylua.with {
+            extra_args = {
+                '--config-path',
+                vim.fn.expand '~/.config/stylua.toml',
             },
         },
+        blackd,
+        isortd,
+    }
+    null_ls.config {
+        sources = sources,
+        debug = true,
+    }
+
+    lspconfig['null-ls'].setup {
+        on_attach = on_attach,
     }
 
     -- RUST
