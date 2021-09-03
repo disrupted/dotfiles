@@ -595,6 +595,29 @@ vim.g.netrw_banner = 0
 opt.termguicolors = true
 
 -----------------------------------------------------------------------------//
+-- Providers {{{1
+-----------------------------------------------------------------------------//
+-- disable some builtin providers we don't use
+vim.tbl_map(function(p)
+    vim.g['loaded_' .. p] = vim.endswith(p, 'provider') and 0 or 1
+end, {
+    '2html_plugin',
+    'gzip',
+    'matchit',
+    'netrw',
+    'netrwPlugin',
+    'python_provider',
+    'ruby_provider',
+    'perl_provider',
+    'tar',
+    'tarPlugin',
+    'vimball',
+    'vimballPlugin',
+    'zip',
+    'zipPlugin',
+})
+
+-----------------------------------------------------------------------------//
 -- Mappings {{{1
 -----------------------------------------------------------------------------//
 local function map(mode, lhs, rhs, opts)
