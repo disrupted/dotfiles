@@ -103,9 +103,17 @@ packer.startup(function()
         requires = { 'rafamadriz/friendly-snippets', opt = true },
     }
     use {
-        'hrsh7th/nvim-compe',
+        'hrsh7th/nvim-cmp',
+        module = 'cmp',
         event = { 'InsertEnter' },
-        config = require('conf.compe').config,
+        config = require('conf.cmp').config,
+        requires = {
+            { 'saadparwaiz1/cmp_luasnip', after = 'nvim-cmp' },
+            { 'hrsh7th/cmp-nvim-lsp' },
+            { 'hrsh7th/cmp-buffer', after = 'nvim-cmp' },
+            { 'hrsh7th/cmp-path', after = 'nvim-cmp' },
+            { 'f3fora/cmp-spell', after = 'nvim-cmp' },
+        },
         after = 'LuaSnip',
     }
     use {
@@ -113,7 +121,7 @@ packer.startup(function()
         event = { 'InsertEnter' },
         config = require('conf.tabout').config,
         wants = { 'nvim-treesitter' },
-        after = { 'nvim-compe' },
+        after = { 'nvim-cmp' },
     }
     use {
         -- Debug Adapter Protocol client
