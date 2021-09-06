@@ -22,7 +22,7 @@ local function nui_lsp_rename()
             0,
             'textDocument/rename',
             params,
-            function(_, _, result)
+            function(_, result, _, _)
                 if not result then
                     -- do nothing if server returns empty result
                     return

@@ -47,26 +47,26 @@ function M.setup()
     -- Handle formatting in a smarter way
     -- If the buffer has been edited before formatting has completed, do not try to
     -- apply the changes, by Lukas Reineke
-    vim.lsp.handlers['textDocument/formatting'] =
-        function(err, _, result, _, bufnr)
-            if err ~= nil or result == nil then
-                return
-            end
+    vim.lsp.handlers['textDocument/formatting'] = function(err, result, ctx, _)
+        if err ~= nil or result == nil then
+            return
+        end
 
-            -- If the buffer hasn't been modified before the formatting has finished,
-            -- update the buffer
-            if not vim.api.nvim_buf_get_option(bufnr, 'modified') then
-                local view = vim.fn.winsaveview()
-                vim.lsp.util.apply_text_edits(result, bufnr)
-                vim.fn.winrestview(view)
-                if bufnr == vim.api.nvim_get_current_buf() then
-                    vim.cmd 'noautocmd :update'
+        local bufnr = ctx.bufnr
+        -- If the buffer hasn't been modified before the formatting has finished,
+        -- update the buffer
+        if not vim.api.nvim_buf_get_option(bufnr, 'modified') then
+            local view = vim.fn.winsaveview()
+            vim.lsp.util.apply_text_edits(result, bufnr)
+            vim.fn.winrestview(view)
+            if bufnr == vim.api.nvim_get_current_buf() then
+                vim.cmd 'noautocmd :update'
 
-                    -- Trigger post-formatting autocommand which can be used to refresh gitsigns
-                    vim.cmd 'silent doautocmd <nomodeline> User FormatterPost'
-                end
+                -- Trigger post-formatting autocommand which can be used to refresh gitsigns
+                vim.cmd 'silent doautocmd <nomodeline> User FormatterPost'
             end
         end
+    end
 
     local overridden_hover = vim.lsp.with(vim.lsp.handlers.hover, {
         border = 'single',
