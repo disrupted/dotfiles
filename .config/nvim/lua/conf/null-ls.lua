@@ -46,12 +46,14 @@ function M.config()
                 vim.fn.expand '~/.config/stylua.toml',
             },
         },
-        blackd,
         isortd,
+        blackd,
         null_ls.builtins.formatting.eslint_d,
         null_ls.builtins.formatting.prettierd,
         null_ls.builtins.diagnostics.eslint_d,
-        null_ls.builtins.formatting.shfmt,
+        null_ls.builtins.formatting.shfmt.with {
+            extra_args = { '-i', '4', '-ci' },
+        },
         null_ls.builtins.diagnostics.shellcheck,
     }
     null_ls.config {
