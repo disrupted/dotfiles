@@ -488,6 +488,20 @@ function M.config()
     require('conf.null-ls').config()
     lspconfig['null-ls'].setup {
         on_attach = on_attach,
+        -- Fallback to .bashrc as a project root to enable LSP on loose files
+        root_dir = function(fname)
+            return lspconfig.util.root_pattern(
+                'tsconfig.json',
+                'pyproject.toml'
+            )(fname) or lspconfig.util.root_pattern(
+                '.eslintrc.js',
+                '.git'
+            )(fname) or lspconfig.util.root_pattern(
+                'package.json',
+                '.git/',
+                '.zshrc'
+            )(fname)
+        end,
     }
 
     -- RUST
