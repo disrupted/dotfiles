@@ -201,7 +201,7 @@ packer.startup(function()
     }
     use {
         'lewis6991/gitsigns.nvim',
-        event = { 'BufReadPre', 'BufNewFile' },
+        event = { 'BufRead', 'BufNewFile' },
         config = require('conf.gitsigns').config,
         requires = { 'nvim-lua/plenary.nvim' },
     }
