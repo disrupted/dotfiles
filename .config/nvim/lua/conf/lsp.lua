@@ -31,13 +31,16 @@ function M.setup()
     vim.diagnostic.config {
         underline = true,
         signs = false,
+        -- signs = { severity = { min = vim.diagnostic.severity.WARN } },
         -- signs = {severity_limit = 'Information'},
-        virtual_text = {
-            spacing = 4,
-            prefix = '■', -- ■ 
-            severity_limit = 'Warning',
-        },
+        virtual_text = false,
+        -- virtual_text = {
+        --     -- spacing = 4,
+        --     -- prefix = '■', -- ■ 
+        --     severity = 'Warning',
+        -- },
         update_in_insert = false, -- delay update until InsertLeave
+        severity_sort = true,
     }
 
     -- vim.cmd [[packadd lsp_extensions.nvim]]
@@ -214,19 +217,19 @@ function M.config()
         buf_set_keymap(
             'n',
             '[e',
-            '<cmd>lua vim.diagnostic.goto_prev { enable_popup = false, severity_limit = "Warning" }<CR>',
+            '<cmd>lua vim.diagnostic.goto_prev { enable_popup = false, severity = { min = vim.diagnostic.severity.WARN } }<CR>',
             opts
         )
         buf_set_keymap(
             'n',
             ']e',
-            '<cmd>lua vim.diagnostic.goto_next { enable_popup = false, severity_limit = "Warning" }<CR>',
+            '<cmd>lua vim.diagnostic.goto_next { enable_popup = false, severity = { min = vim.diagnostic.severity.WARN } }<CR>',
             opts
         )
         buf_set_keymap(
             'n',
             '<space>q',
-            '<cmd>lua vim.diagnostic.set_loclist()<CR>',
+            '<cmd>lua vim.diagnostic.setloclist()<CR>',
             opts
         )
         buf_set_keymap(
