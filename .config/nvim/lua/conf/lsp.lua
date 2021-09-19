@@ -1,25 +1,25 @@
 local M = {}
 
 function M.setup()
-    vim.fn.sign_define('LspDiagnosticsSignError', {
+    vim.fn.sign_define('DiagnosticSignError', {
         -- text = '◉',
-        texthl = 'LspDiagnosticsDefaultError',
-        numhl = 'LspDiagnosticsDefaultError',
+        texthl = 'DiagnosticError',
+        numhl = 'DiagnosticError',
     })
-    vim.fn.sign_define('LspDiagnosticsSignWarning', {
+    vim.fn.sign_define('DiagnosticSignWarning', {
         -- text = '●',
-        texthl = 'LspDiagnosticsDefaultWarning',
-        numhl = 'LspDiagnosticsDefaultWarning',
+        texthl = 'DiagnosticWarning',
+        numhl = 'DiagnosticWarning',
     })
-    vim.fn.sign_define('LspDiagnosticsSignInformation', {
+    vim.fn.sign_define('DiagnosticSignInformation', {
         -- text = '•',
-        texthl = 'LspDiagnosticsDefaultInformation',
-        numhl = 'LspDiagnosticsDefaultInformation',
+        texthl = 'DiagnosticInformation',
+        numhl = 'DiagnosticInformation',
     })
-    vim.fn.sign_define('LspDiagnosticsSignHint', {
-        -- text = '·',
-        texthl = 'LspDiagnosticsDefaultHint',
-        numhl = 'LspDiagnosticsDefaultHint',
+    vim.fn.sign_define('DiagnosticSignHint', {
+        text = '·',
+        texthl = 'DiagnosticHint',
+        numhl = 'DiagnosticHint',
     })
     vim.fn.sign_define('LightBulbSign', {
         text = '◎',
@@ -28,21 +28,33 @@ function M.setup()
         numhl = '',
     })
 
-    vim.cmd [[packadd lsp_extensions.nvim]]
-    vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(
-        require('lsp_extensions.workspace.diagnostic').handler,
-        {
-            underline = true,
-            signs = true,
-            -- signs = {severity_limit = 'Information'},
-            virtual_text = {
-                spacing = 4,
-                prefix = '■', -- ■ 
-                severity_limit = 'Warning',
-            },
-            update_in_insert = false, -- delay update until InsertLeave
-        }
-    )
+    vim.diagnostic.config {
+        underline = true,
+        signs = false,
+        -- signs = {severity_limit = 'Information'},
+        virtual_text = {
+            spacing = 4,
+            prefix = '■', -- ■ 
+            severity_limit = 'Warning',
+        },
+        update_in_insert = false, -- delay update until InsertLeave
+    }
+
+    -- vim.cmd [[packadd lsp_extensions.nvim]]
+    -- vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(
+    --     require('lsp_extensions.workspace.diagnostic').handler,
+    --     {
+    --         underline = true,
+    --         signs = false,
+    --         -- signs = {severity_limit = 'Information'},
+    --         virtual_text = {
+    --             spacing = 4,
+    --             prefix = '■', -- ■ 
+    --             severity_limit = 'Warning',
+    --         },
+    --         update_in_insert = false, -- delay update until InsertLeave
+    --     }
+    -- )
 
     -- Handle formatting in a smarter way
     -- If the buffer has been edited before formatting has completed, do not try to
@@ -184,37 +196,37 @@ function M.config()
         buf_set_keymap(
             'n',
             '<space>d',
-            '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics { border = "single", show_header = false, focusable = false }<CR>',
+            '<cmd>lua vim.diagnostic.show_line_diagnostics { border = "single", show_header = false, focusable = false }<CR>',
             opts
         )
         buf_set_keymap(
             'n',
             '[d',
-            '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>',
+            '<cmd>lua vim.diagnostic.goto_prev { enable_popup = false }<CR>',
             opts
         )
         buf_set_keymap(
             'n',
             ']d',
-            '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>',
+            '<cmd>lua vim.diagnostic.goto_next { enable_popup = false }<CR>',
             opts
         )
         buf_set_keymap(
             'n',
             '[e',
-            '<cmd>lua vim.lsp.diagnostic.goto_prev({severity_limit = "Warning"})<CR>',
+            '<cmd>lua vim.diagnostic.goto_prev { enable_popup = false, severity_limit = "Warning" }<CR>',
             opts
         )
         buf_set_keymap(
             'n',
             ']e',
-            '<cmd>lua vim.lsp.diagnostic.goto_next({severity_limit = "Warning"})<CR>',
+            '<cmd>lua vim.diagnostic.goto_next { enable_popup = false, severity_limit = "Warning" }<CR>',
             opts
         )
         buf_set_keymap(
             'n',
             '<space>q',
-            '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>',
+            '<cmd>lua vim.diagnostic.set_loclist()<CR>',
             opts
         )
         buf_set_keymap(
@@ -268,8 +280,8 @@ function M.config()
         end
 
         if client.resolved_capabilities.code_action then
-            vim.cmd [[packadd nvim-lightbulb]]
-            vim.cmd [[autocmd CursorHold,CursorHoldI * if &ft != 'java' | lua show_lightbulb()]]
+            -- vim.cmd [[packadd nvim-lightbulb]]
+            -- vim.cmd [[autocmd CursorHold,CursorHoldI * if &ft != 'java' | lua show_lightbulb()]]
             buf_set_keymap(
                 'n',
                 '<leader>a',
@@ -279,7 +291,7 @@ function M.config()
             )
         end
 
-        -- vim.cmd [[autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics { border = 'single', focusable = false }]]
+        vim.cmd [[autocmd CursorHold * lua vim.diagnostic.show_line_diagnostics { border = 'single', focusable = false }]]
         vim.cmd [[autocmd CursorHoldI <buffer> silent! lua vim.lsp.buf.signature_help { border = 'single', focusable = false }]]
         -- vim.cmd [[
         --     augroup lsp_signature_help
@@ -291,28 +303,6 @@ function M.config()
         -- print('LSP attached.')
         vim.api.nvim_echo({ { 'LSP attached.' } }, false, {})
     end
-
-    -- define language servers
-    -- PYTHON
-    -- https://github.com/palantir/python-language-server
-    -- lspconfig.pyls.setup {
-    --     on_attach = on_attach,
-    --     cmd = {"pyls", "--log-file", "/tmp/pyls.log", "--verbose"},
-    --     settings = {
-    --         pyls = {
-    --             configurationSources = {"pycodestyle", "flake8"},
-    --             plugins = {
-    --                 yapf = {enabled = false},
-    --                 pylint = {enabled = false},
-    --                 pycodestyle = {enabled = false},
-    --                 pyflakes = {enabled = false},
-    --                 pydocstyle = {enabled = false},
-    --                 flake8 = {enabled = true},
-    --                 pyls_mypy = {enabled = true}
-    --             }
-    --         }
-    --     }
-    -- }
 
     -- lspconfig.pyright.setup {
     --     on_attach = on_attach,
