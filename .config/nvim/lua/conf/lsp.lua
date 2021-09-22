@@ -199,7 +199,7 @@ function M.config()
         buf_set_keymap(
             'n',
             '<space>d',
-            '<cmd>lua vim.diagnostic.show_line_diagnostics { border = "single", show_header = false, focusable = false }<CR>',
+            '<cmd>lua vim.diagnostic.show_position_diagnostics { show_header = false, source = "always", border = "single", show_header = false, focusable = false }<CR>',
             opts
         )
         buf_set_keymap(
@@ -294,7 +294,7 @@ function M.config()
             )
         end
 
-        vim.cmd [[autocmd CursorHold * lua vim.diagnostic.show_line_diagnostics { border = 'single', focusable = false }]]
+        vim.cmd [[autocmd CursorHold * lua vim.diagnostic.show_position_diagnostics { show_header = false, source = "if_many", border = 'single', focusable = false }]]
         vim.cmd [[autocmd CursorHoldI <buffer> silent! lua vim.lsp.buf.signature_help { border = 'single', focusable = false }]]
         -- vim.cmd [[
         --     augroup lsp_signature_help
