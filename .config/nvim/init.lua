@@ -217,12 +217,7 @@ packer.startup(function()
         after = { 'nvim-cmp', 'nvim-treesitter' },
         config = require('conf.autopairs').config,
     }
-    -- use {
-    --     'steelsojka/pears.nvim',
-    --     event = { 'BufRead' },
-    --     config = require('conf.pears').config,
-    -- }
-    use { 'kosayoda/nvim-lightbulb', opt = true }
+    use { 'kosayoda/nvim-lightbulb', opt = true, module = 'nvim-lightbulb' }
     use {
         'numToStr/Navigator.nvim',
         cond = function()
