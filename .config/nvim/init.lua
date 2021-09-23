@@ -192,13 +192,6 @@ packer.startup(function()
         requires = { 'kyazdani42/nvim-web-devicons', opt = true },
     }
     use {
-        'romgrk/barbar.nvim',
-        event = { 'VimEnter' },
-        config = require('conf.bufferline').config,
-        requires = { 'kyazdani42/nvim-web-devicons', opt = true },
-        disable = true,
-    }
-    use {
         'lewis6991/gitsigns.nvim',
         event = { 'BufRead', 'BufNewFile' },
         config = require('conf.gitsigns').config,
