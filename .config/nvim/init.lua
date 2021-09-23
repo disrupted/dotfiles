@@ -21,11 +21,10 @@ local use = packer.use
 
 packer.startup(function()
     use { 'wbthomason/packer.nvim', opt = true }
-    -- use 'jooize/vim-colemak' -- mapping for the colemak keyboard layout
     use {
-        'disrupted/one-nvim', -- personal tweaked colorscheme
+        'disrupted/one.nvim', -- personal tweaked colorscheme
         config = function()
-            vim.cmd 'colorscheme one-nvim'
+            vim.cmd 'colorscheme one'
         end,
     }
     use {
