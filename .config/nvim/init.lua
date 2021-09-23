@@ -384,30 +384,32 @@ cmd [[
 cmd [[autocmd TextYankPost * silent! lua vim.highlight.on_yank {higroup="Search", timeout=250, on_visual=false}]]
 
 -- Trim trailing whitespace and trailing blank lines on save
+function _G.trim_trailing_whitespace()
+    local current_view = fn.winsaveview()
+    cmd [[keeppatterns %s/\s\+$//e]]
+    fn.winrestview(current_view)
+end
+cmd [[command! TrimWhitespace lua trim_trailing_whitespace()]]
+
+function _G.trim_trailing_lines()
+    local last_line = vim.api.nvim_buf_line_count(0)
+    local last_nonblank_line = fn.prevnonblank(last_line)
+    if last_line > 0 and last_nonblank_line ~= last_line then
+        vim.api.nvim_buf_set_lines(0, last_nonblank_line, -1, true, {})
+    end
+end
+cmd [[command! TrimTrailingLines lua trim_trailing_lines()]]
+
+function _G.trim()
+    if not vim.o.binary and vim.o.filetype ~= 'diff' then
+        trim_trailing_lines()
+        trim_trailing_whitespace()
+    end
+end
 cmd [[
-    function TrimWhitespace()
-        let l:save = winsaveview()
-        keeppatterns %s/\s\+$//e
-        call winrestview(l:save)
-    endfunction
-    command! TrimWhitespace call TrimWhitespace()
-
-    function TrimTrailingLines()
-        let lastLine = line('$')
-        let lastNonblankLine = prevnonblank(lastLine)
-        if lastLine > 0 && lastNonblankLine != lastLine
-            silent! execute lastNonblankLine + 1 . ',$delete _'
-        endif
-    endfunction
-    command! TrimTrailingLines call TrimTrailingLines()
-
-    " function TrimTrailingLinesAlt()
-    "     keeppatterns 0;/^\%(\n*.\)\@!/,$d
-    " endfunction
-
     augroup trim_on_save
         autocmd! * <buffer>
-        autocmd BufWritePre <buffer> call TrimWhitespace()
+        autocmd BufWritePre <buffer> lua trim()
     augroup END
 ]]
 
