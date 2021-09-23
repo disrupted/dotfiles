@@ -576,12 +576,12 @@ cmd [[command Term :botright vsplit term://$SHELL]]
 -- Enter insert mode when switching to terminal
 -- Close terminal buffer on process exit
 cmd [[
-	autocmd TermOpen * setlocal listchars= nonumber norelativenumber nocursorline
-	autocmd TermOpen * startinsert
-	autocmd BufEnter,BufWinEnter,WinEnter term://* startinsert
-	autocmd BufLeave term://* stopinsert
-	autocmd TermClose term://* call nvim_input('<CR>')
-	autocmd TermClose * call feedkeys("i")
+    autocmd TermOpen * setlocal listchars= nonumber norelativenumber nocursorline
+    autocmd TermOpen * startinsert
+    autocmd BufEnter,BufWinEnter,WinEnter term://* startinsert
+    autocmd BufLeave term://* stopinsert
+    autocmd TermClose term://* call nvim_input('<CR>')
+    autocmd TermClose * call feedkeys("i")
 ]]
 
 -----------------------------------------------------------------------------//
@@ -671,7 +671,9 @@ map('t', '<C-[><C-[>', '<C-\\><C-N>') -- double ESC to escape terminal
 
 -- more intuitive wildmenu navigation
 map('c', '<Up>', [[wildmenumode() ? "\<Left>" : "\<Up>"]], { expr = true })
-map('c', '<Down>', [[wildmenumode() ? "\<Right>" : "\<Down>"]], { expr = true })
+map('c', '<Down>', [[wildmenumode() ? "\<Right>" : "\<Down>"]], {
+    expr = true,
+})
 map('c', '<Left>', [[wildmenumode() ? "\<Up>" : "\<Left>"]], { expr = true })
 map(
     'c',
@@ -737,7 +739,7 @@ map('n', '<C-_>', ':noh<CR>')
 -- at some point I'd like to write a more powerful tabline in Lua
 
 cmd [[
-	:set tabline=%!TabLine()
+    :set tabline=%!TabLine()
 
     function TabLine()
     let s = ''
