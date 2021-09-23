@@ -4,17 +4,20 @@ function M.setup()
     local opts = { silent = true, noremap = true }
     vim.api.nvim_set_keymap(
         'n',
-        '<space>h',
-        '<cmd>lua require"harpoon.ui".toggle_quick_menu()<CR>',
+        '"',
+        '<cmd>lua require("harpoon.ui").toggle_quick_menu()<CR>',
         opts
     )
-    vim.cmd [[ autocmd FileType harpoon nnoremap <buffer> q :q<cr> ]]
+    vim.api.nvim_set_keymap(
+        'n',
+        'm',
+        '<cmd>lua require("harpoon.mark").toggle_file()<CR>',
+        opts
+    )
 
-    -- vim.api.nvim_buf_set_keymap(buf, 'n', 'q', ':q', {
-    --     silent = true,
-    --     noremap = true,
-    --     nowait = true,
-    -- })
+    -- Use common mappings to close popup
+    vim.cmd [[ autocmd FileType harpoon nnoremap <buffer> q :q<cr> ]]
+    vim.cmd [[ autocmd FileType harpoon nnoremap <buffer> <esc> :q<cr> ]]
 end
 
 function M.config()

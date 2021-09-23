@@ -323,7 +323,7 @@ packer.startup(function()
     use {
         'ThePrimeagen/harpoon',
         opt = true,
-        event = { 'VimEnter' },
+        module = 'harpoon',
         setup = require('conf.harpoon').setup,
         config = require('conf.harpoon').config,
     }
