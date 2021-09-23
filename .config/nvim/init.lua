@@ -315,6 +315,14 @@ packer.startup(function()
         setup = require('conf.bufdelete').setup,
     }
     use {
+        'kwkarlwang/bufresize.nvim',
+        opt = true,
+        event = { 'VimResized' },
+        config = function()
+            require('bufresize').setup()
+        end,
+    }
+    use {
         'pwntester/octo.nvim',
         opt = true,
         cmd = 'Octo',
