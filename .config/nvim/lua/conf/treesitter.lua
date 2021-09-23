@@ -75,6 +75,7 @@ function M.config()
                 swap_previous = { ['<Leader><'] = '@parameter.inner' },
             },
         },
+        autopairs = { enable = true },
     }
 end
 

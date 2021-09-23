@@ -211,16 +211,18 @@ packer.startup(function()
         setup = require('conf.neogit').setup,
         config = require('conf.neogit').config,
     }
-    -- use {
-    --     'windwp/nvim-autopairs',
-    --     event = {'BufRead'},
-    --     config = function() require'nvim-autopairs'.setup() end
-    -- }
     use {
-        'steelsojka/pears.nvim',
-        event = { 'BufRead' },
-        config = require('conf.pears').config,
+        'windwp/nvim-autopairs',
+        opt = true,
+        event = { 'InsertEnter' },
+        after = { 'nvim-cmp', 'nvim-treesitter' },
+        config = require('conf.autopairs').config,
     }
+    -- use {
+    --     'steelsojka/pears.nvim',
+    --     event = { 'BufRead' },
+    --     config = require('conf.pears').config,
+    -- }
     use { 'kosayoda/nvim-lightbulb', opt = true }
     use {
         'numToStr/Navigator.nvim',
