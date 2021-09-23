@@ -8,19 +8,20 @@ function M.setup()
     }
     function _G.__telescope_files()
         -- Launch file search using Telescope
-        -- if vim.fn.isdirectory(".git") then
-        --     -- if in a git project, use :Telescope git_files
-        --     require'telescope.builtin'.git_files(options)
-        -- else
-        -- otherwise, use :Telescope find_files
-        require('telescope.builtin').find_files(options)
-        -- end
+        if vim.fn.isdirectory '.git' ~= 0 then
+            -- if in a git project, use :Telescope git_files
+            require('telescope.builtin').git_files(options)
+        else
+            -- otherwise, use :Telescope find_files
+            require('telescope.builtin').find_files(options)
+        end
     end
     function _G.__telescope_buffers()
         require('telescope.builtin').buffers {
             sort_mru = true,
             ignore_current_buffer = true,
             sorter = require('telescope.sorters').get_substr_matcher(),
+            selection_strategy = 'closest',
             path_display = { 'shorten' },
             layout_strategy = 'horizontal',
             layout_config = { preview_width = 0.65 },
@@ -54,7 +55,12 @@ function M.setup()
         '<cmd>lua __telescope_files()<CR>',
         opts
     )
-    vim.api.nvim_set_keymap('n', '<C-g>', '<cmd>Telescope git_status<CR>', opts)
+    vim.api.nvim_set_keymap(
+        'n',
+        '<C-g>',
+        '<cmd>lua require "telescope.builtin".git_status(options)<CR>',
+        opts
+    )
     -- vim.api.nvim_set_keymap('n', '<Space>s',
     --                         "<cmd>lua require('telescope').extensions.frecency.frecency({layout_strategy = 'vertical'})<CR>",
     --    opts)
