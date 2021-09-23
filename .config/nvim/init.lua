@@ -255,12 +255,6 @@ packer.startup(function()
         setup = require('conf.outline').setup,
         config = require('conf.outline').config,
     }
-    -- use {
-    --     'rmagatti/auto-session',
-    --     cmd = { 'SaveSession', 'RestoreSession' },
-    --     setup = require('conf.auto-session').setup,
-    --     config = require('conf.auto-session').config,
-    -- }
     use {
         'folke/persistence.nvim',
         event = 'VimEnter',
