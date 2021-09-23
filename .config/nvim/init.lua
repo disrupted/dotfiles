@@ -238,11 +238,6 @@ packer.startup(function()
     }
     use { 'hkupty/iron.nvim', opt = true } -- REPL
     use {
-        'mhinz/vim-sayonara',
-        cmd = 'Sayonara',
-        setup = require('conf.sayonara').setup,
-    }
-    use {
         'phaazon/hop.nvim',
         cmd = { 'HopWord', 'HopChar1', 'HopPattern' },
         setup = require('conf.hop').setup,
