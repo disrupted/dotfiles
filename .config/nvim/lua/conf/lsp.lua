@@ -288,8 +288,7 @@ function M.config()
             buf_set_keymap(
                 'n',
                 '<leader>a',
-                -- FIX: add initial_mode="normal" when it's working again
-                '<cmd>lua require"telescope.builtin".lsp_code_actions(require"telescope.themes".get_cursor { winblend = 0 })<CR>',
+                '<cmd>lua require("telescope.builtin").lsp_code_actions(require("telescope.themes").get_cursor { winblend = 0, initial_mode = "normal" })<CR>',
                 opts
             )
         end
