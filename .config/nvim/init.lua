@@ -213,9 +213,8 @@ packer.startup(function()
     use { 'kosayoda/nvim-lightbulb', opt = true, module = 'nvim-lightbulb' }
     use {
         'numToStr/Navigator.nvim',
-        cond = function()
-            return os.getenv 'TMUX'
-        end,
+        module = 'Navigator',
+        setup = require('conf.navigator').setup,
         config = require('conf.navigator').config,
     }
     use {
