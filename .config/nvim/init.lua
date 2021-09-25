@@ -109,13 +109,15 @@ packer.startup(function()
     use {
         -- Debug Adapter Protocol client
         'mfussenegger/nvim-dap',
-        ft = {
-            'python',
-            'javascript',
-            'typescript',
-            'javascriptreact',
-            'typescriptreact',
-        },
+        opt = true,
+        -- ft = {
+        --     'python',
+        --     'javascript',
+        --     'typescript',
+        --     'javascriptreact',
+        --     'typescriptreact',
+        -- },
+        module = 'dap',
         requires = {
             { 'mfussenegger/nvim-dap-python', opt = true },
             {
@@ -124,6 +126,10 @@ packer.startup(function()
                 after = 'nvim-treesitter',
             },
             { 'David-Kunz/jester', opt = true },
+            {
+                'rcarriga/nvim-dap-ui',
+                opt = true,
+            },
         },
         setup = require('conf.dap').setup,
         config = require('conf.dap').config,
