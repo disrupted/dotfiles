@@ -72,9 +72,8 @@ local function nui_lsp_rename()
             row = 1,
             col = 0,
         },
-        -- 25 cells wide, should be enough for most identifier names
         size = {
-            width = 25,
+            width = math.max(#curr_name + 10, 25),
             height = 1,
         },
     }
@@ -88,6 +87,10 @@ local function nui_lsp_rename()
     })
 
     input:mount()
+
+    -- make it easier to move around long words
+    local kw = vim.opt.iskeyword - '_' - '-'
+    vim.bo.iskeyword = table.concat(kw:get(), ',')
 
     -- close on <esc> in normal mode
     input:map('n', '<esc>', input.input_props.on_close, { noremap = true })
