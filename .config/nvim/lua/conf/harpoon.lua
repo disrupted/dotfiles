@@ -10,7 +10,7 @@ function M.setup()
     )
     vim.api.nvim_set_keymap(
         'n',
-        'm',
+        'M',
         '<cmd>lua require("harpoon.mark").toggle_file()<CR>',
         opts
     )

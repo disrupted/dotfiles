@@ -42,13 +42,7 @@ function M.config()
         return col == 0 or vim.fn.getline('.'):sub(col, col):match '%s' ~= nil
     end
 
-    local function prequire(...)
-        local status, lib = pcall(require, ...)
-        if status then
-            return lib
-        end
-        return nil
-    end
+    local prequire = require('utils').prequire
     local luasnip = prequire 'luasnip'
 
     -- supertab-like mapping
@@ -88,7 +82,7 @@ function M.config()
     cmp.setup {
         snippet = {
             expand = function(args)
-                require('luasnip').lsp_expand(args.body)
+                luasnip.lsp_expand(args.body)
             end,
         },
         mapping = mapping,

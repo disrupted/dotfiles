@@ -72,7 +72,7 @@ function M.config()
             ['n <leader>hp'] = '<cmd>lua require"gitsigns".preview_hunk()<CR>',
             ['n <leader>hb'] = '<cmd>lua require"gitsigns".blame_line()<CR>',
         },
-        watch_index = { interval = 1000 },
+        watch_gitdir = { interval = 1000 },
         current_line_blame = false,
         sign_priority = 6,
         update_debounce = 100,

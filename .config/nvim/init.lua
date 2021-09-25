@@ -195,7 +195,7 @@ packer.startup(function()
     use {
         'windwp/nvim-autopairs',
         opt = true,
-        event = { 'InsertEnter' },
+        event = { 'InsertCharPre' },
         after = { 'nvim-cmp', 'nvim-treesitter' },
         config = require('conf.autopairs').config,
     }
@@ -229,7 +229,7 @@ packer.startup(function()
     }
     use { 'simrat39/rust-tools.nvim', opt = true }
     use { 'mfussenegger/nvim-jdtls', opt = true }
-    use { 'zsugabubus/crazy8.nvim', event = { 'BufRead' } } -- detect indentation automatically
+    -- use { 'zsugabubus/crazy8.nvim', event = { 'BufRead' } } -- detect indentation automatically
     use {
         'folke/trouble.nvim',
         cmd = { 'Trouble', 'TroubleToggle' },
@@ -245,7 +245,7 @@ packer.startup(function()
     }
     use {
         'folke/persistence.nvim',
-        event = 'VimEnter',
+        event = 'VimLeavePre',
         module = 'persistence',
         setup = require('conf.persistence').setup,
         config = require('conf.persistence').config,
@@ -267,7 +267,7 @@ packer.startup(function()
         opt = true,
         ft = { 'http' },
         config = require('conf.rest').config,
-        requires = { 'nvim-lua/plenary.nvim' },
+        wants = { 'nvim-lua/plenary.nvim' },
     }
     use { 'tversteeg/registers.nvim', opt = true }
     use { 'soywod/himalaya', opt = true, cmd = 'Himalaya' }
@@ -325,6 +325,7 @@ packer.startup(function()
         setup = require('conf.neoclip').setup,
         config = require('conf.neoclip').config,
     }
+    use { 'ellisonleao/glow.nvim', opt = true, cmd = 'Glow' }
 end)
 
 local executable = function(e)
