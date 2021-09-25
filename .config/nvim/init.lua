@@ -179,6 +179,19 @@ packer.startup(function()
             require 'conf.statusline'
         end,
         requires = { 'kyazdani42/nvim-web-devicons', opt = true },
+        disable = true,
+    }
+    use {
+        'famiu/feline.nvim',
+        opt = true,
+        -- branch = 'develop',
+        tag = 'v0.2',
+        event = { 'VimEnter' },
+        config = function()
+            vim.cmd [[packadd nvim-web-devicons]]
+            require 'conf.feline'
+        end,
+        requires = { 'kyazdani42/nvim-web-devicons', opt = true },
     }
     use {
         'lewis6991/gitsigns.nvim',
