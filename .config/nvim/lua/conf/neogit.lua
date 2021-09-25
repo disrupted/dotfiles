@@ -1,8 +1,8 @@
 local M = {}
 
 function M.setup()
-    local opts = { noremap = true, silent = true }
-    vim.api.nvim_set_keymap('n', '<space>g', '<cmd>Neogit<CR>', opts)
+    local map = require('utils').map
+    map('n', '<space>g', '<cmd>lua require("neogit").open()<CR>')
 end
 
 function M.config()

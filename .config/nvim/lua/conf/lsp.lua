@@ -1,28 +1,18 @@
 local M = {}
 
 function M.setup()
-    local sign = vim.fn.sign_define
+    local function sign(severity, icon)
+        local hl = 'Diagnostic' .. severity
+        vim.fn.sign_define(
+            'DiagnosticSign' .. severity,
+            { text = icon, texthl = hl, numhl = hl }
+        )
+    end
 
-    sign('DiagnosticSignError', {
-        text = '', -- ◉
-        texthl = 'DiagnosticError',
-        numhl = 'DiagnosticError',
-    })
-    sign('DiagnosticSignWarn', {
-        text = '', -- ●
-        texthl = 'DiagnosticWarn',
-        numhl = 'DiagnosticWarn',
-    })
-    sign('DiagnosticSignInfo', {
-        text = '', -- •
-        texthl = 'DiagnosticInfo',
-        numhl = 'DiagnosticInfo',
-    })
-    sign('DiagnosticSignHint', {
-        text = '', -- ·
-        texthl = 'DiagnosticHint',
-        numhl = 'DiagnosticHint',
-    })
+    sign('Error', '') -- ◉
+    sign('Warn', '') -- ●
+    sign('Info', '') -- •
+    sign('Hint', '') -- ·
 
     vim.diagnostic.config {
         underline = true,

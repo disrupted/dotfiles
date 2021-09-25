@@ -229,7 +229,7 @@ packer.startup(function()
     }
     use {
         'TimUntersberger/neogit',
-        cmd = 'Neogit',
+        module = 'neogit',
         setup = function()
             require('conf.neogit').setup()
         end,
@@ -694,13 +694,7 @@ end, {
 -----------------------------------------------------------------------------//
 -- Mappings {{{1
 -----------------------------------------------------------------------------//
-local function map(mode, lhs, rhs, opts)
-    local options = { noremap = true }
-    if opts then
-        options = vim.tbl_extend('force', options, opts)
-    end
-    vim.api.nvim_set_keymap(mode, lhs, rhs, options)
-end
+local map = require('utils').map
 
 -- set leader to space
 vim.g.mapleader = ' '

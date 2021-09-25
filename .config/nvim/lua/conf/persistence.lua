@@ -1,13 +1,8 @@
 local M = {}
 
 function M.setup()
-    local opts = { silent = true, noremap = true }
-    vim.api.nvim_set_keymap(
-        'n',
-        ',r',
-        '<cmd>lua require("persistence").load()<cr>',
-        opts
-    )
+    local map = require('utils').map
+    map('n', ',r', '<cmd>lua require("persistence").load()<cr>')
 end
 
 function M.config()

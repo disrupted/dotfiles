@@ -1,10 +1,8 @@
 local M = {}
 
 function M.setup()
-    vim.api.nvim_set_keymap('n', '<C-e>', '<cmd>NvimTreeToggle<CR>', {
-        noremap = true,
-        silent = true,
-    })
+    local map = require('utils').map
+    map('n', '<C-e>', '<cmd>NvimTreeToggle<CR>')
 end
 
 function M.config()

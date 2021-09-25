@@ -42,54 +42,35 @@ function M.setup()
             layout_config = { preview_width = 0.55 },
         }
     end
-    local opts = { noremap = true, silent = true }
-    vim.api.nvim_set_keymap(
-        'n',
-        '<Space>b',
-        '<cmd>lua __telescope_buffers()<CR>',
-        opts
-    )
-    vim.api.nvim_set_keymap(
-        'n',
-        '<C-f>',
-        '<cmd>lua __telescope_files()<CR>',
-        opts
-    )
-    vim.api.nvim_set_keymap(
+    local map = require('utils').map
+    map('n', '<Space>b', '<cmd>lua __telescope_buffers()<CR>')
+    map('n', '<C-f>', '<cmd>lua __telescope_files()<CR>')
+    map(
         'n',
         '<C-g>',
-        '<cmd>lua require "telescope.builtin".git_status(options)<CR>',
-        opts
+        '<cmd>lua require "telescope.builtin".git_status(options)<CR>'
     )
-    -- vim.api.nvim_set_keymap('n', '<Space>s',
-    --                         "<cmd>lua require('telescope').extensions.frecency.frecency({layout_strategy = 'vertical'})<CR>",
-    --    opts)
-    vim.api.nvim_set_keymap(
-        'n',
-        '<Space>/',
-        '<cmd>lua __telescope_grep()<CR>',
-        opts
-    )
-    -- vim.api.nvim_set_keymap('n', '<Space>/',
-    --                         '<cmd>lua require("telescope.builtin").grep_string { search = vim.fn.expand("<cword>") }<CR>',
-    --                         opts)  -- grep for word under the cursor
-    vim.api.nvim_set_keymap(
+    -- map(
+    --     'n',
+    --     '<Space>s',
+    --     '<cmd>lua require(\'telescope\').extensions.frecency.frecency({layout_strategy = \'vertical\'})<CR>'
+    -- )
+    map('n', '<Space>/', '<cmd>lua __telescope_grep()<CR>')
+    -- map(
+    --     'n',
+    --     '<Space>/',
+    --     '<cmd>lua require("telescope.builtin").grep_string { search = vim.fn.expand("<cword>") }<CR>'
+    -- ) -- grep for word under the cursor
+    map(
         'n',
         ',h',
-        '<cmd>lua require "telescope.builtin".help_tags(options)<CR>',
-        opts
+        '<cmd>lua require "telescope.builtin".help_tags(options)<CR>'
     )
-    vim.api.nvim_set_keymap(
-        'n',
-        '<Space>c',
-        '<cmd>lua __telescope_commits()<CR>',
-        opts
-    )
-    vim.api.nvim_set_keymap(
+    map('n', '<Space>c', '<cmd>lua __telescope_commits()<CR>')
+    map(
         'n',
         ',pr',
-        '<cmd>lua require "telescope.builtin".extensions.pull_request()<CR>',
-        opts
+        '<cmd>lua require "telescope.builtin".extensions.pull_request()<CR>'
     )
 end
 

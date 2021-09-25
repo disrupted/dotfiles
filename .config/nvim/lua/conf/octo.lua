@@ -1,8 +1,8 @@
 local M = {}
 
 -- function M.setup()
---     local opts = { silent = true, noremap = true }
---     vim.api.nvim_set_keymap('n', '<space>o', '<cmd>Octo<CR>', opts)
+--     local map = require('utils').map
+--     map('n', '<space>o', '<cmd>Octo<CR>')
 -- end
 
 function M.config()

@@ -6,11 +6,11 @@ function M.config()
     vim.g.neoterm_autoinsert = 1
     vim.g.neoterm_autoscroll = 1
     vim.g.neoterm_term_per_tab = 1
-    -- Key bindings
-    local opts = { noremap = true, silent = true }
-    vim.api.nvim_set_keymap('n', '<C-q>', ':Ttoggle<CR>', opts)
-    vim.api.nvim_set_keymap('i', '<C-q>', '<Esc>:Ttoggle<CR>', opts)
-    vim.api.nvim_set_keymap('t', '<C-q>', '<C-\\><C-N>:Ttoggle<CR>', opts)
+
+    local map = require('utils').map
+    map('n', '<C-q>', ':Ttoggle<CR>')
+    map('i', '<C-q>', '<Esc>:Ttoggle<CR>')
+    map('t', '<C-q>', '<C-\\><C-N>:Ttoggle<CR>')
 end
 
 return M

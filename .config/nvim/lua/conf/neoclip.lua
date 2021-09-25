@@ -1,12 +1,11 @@
 local M = {}
 
 function M.setup()
-    local opts = { silent = true, noremap = true }
-    vim.api.nvim_set_keymap(
+    local map = require('utils').map
+    map(
         'n',
         '\'',
-        '<cmd>lua require("neoclip"); require("telescope").extensions.neoclip.default()<CR>',
-        opts
+        '<cmd>lua require("neoclip"); require("telescope").extensions.neoclip.default()<CR>'
     )
 end
 

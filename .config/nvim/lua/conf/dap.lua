@@ -95,16 +95,18 @@ function M.config()
         },
     }
 
-    vim.cmd [[highlight! link DapUIScope bold]]
-    vim.cmd [[highlight! link DapUIDecoration CursorLineNr]]
-    vim.cmd [[highlight! link DapUIThread GitSignsAdd]]
-    vim.cmd [[highlight! link DapUIStoppedThread Special]]
-    vim.cmd [[highlight! link DapUILineNumber Normal]]
-    vim.cmd [[highlight! link DapUIType Type]]
-    vim.cmd [[highlight! link DapUISource Keyword]]
-    vim.cmd [[highlight! link DapUIWatchesEmpty Comment]]
-    vim.cmd [[highlight! link DapUIWatchesValue GitSignsAdd]]
-    vim.cmd [[highlight! link DapUIWatchesError DiagnosticError]]
+    vim.cmd [[
+        highlight! link DapUIScope bold
+        highlight! link DapUIDecoration CursorLineNr
+        highlight! link DapUIThread GitSignsAdd
+        highlight! link DapUIStoppedThread Special
+        highlight! link DapUILineNumber Normal
+        highlight! link DapUIType Type
+        highlight! link DapUISource Keyword
+        highlight! link DapUIWatchesEmpty Comment
+        highlight! link DapUIWatchesValue GitSignsAdd
+        highlight! link DapUIWatchesError DiagnosticError
+    ]]
 end
 
 return M
