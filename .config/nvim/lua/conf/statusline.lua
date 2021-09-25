@@ -11,7 +11,7 @@ gl.short_line_list = {
     'packer',
     'NvimTree',
     'Outline',
-    'LspTrouble',
+    'Trouble',
     'dap-repl',
     'dapui_scopes',
     'dapui_breakpoints',
