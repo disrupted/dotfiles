@@ -30,12 +30,16 @@ packer.startup(function()
     use {
         'blackCauldron7/surround.nvim',
         event = { 'BufRead', 'BufNewFile' },
-        config = require('conf.surround').config,
+        config = function()
+            require('conf.surround').config()
+        end,
     }
     use {
         'b3nj5m1n/kommentary',
         event = { 'BufRead', 'BufNewFile' },
-        config = require('conf.kommentary').config,
+        config = function()
+            require('conf.kommentary').config()
+        end,
     }
     use {
         'nvim-treesitter/nvim-treesitter',
@@ -62,14 +66,20 @@ packer.startup(function()
             },
         },
         run = ':TSUpdate',
-        config = require('conf.treesitter').config,
+        config = function()
+            require('conf.treesitter').config()
+        end,
     }
     use {
         'neovim/nvim-lspconfig',
         opt = true,
         event = { 'BufRead' },
-        setup = require('conf.lsp').setup,
-        config = require('conf.lsp').config,
+        setup = function()
+            require('conf.lsp').setup()
+        end,
+        config = function()
+            require('conf.lsp').config()
+        end,
         requires = {
             { 'nvim-lua/lsp-status.nvim', opt = true },
         },
@@ -89,7 +99,9 @@ packer.startup(function()
         'hrsh7th/nvim-cmp',
         -- module = 'cmp',
         event = { 'InsertEnter' },
-        config = require('conf.cmp').config,
+        config = function()
+            require('conf.cmp').config()
+        end,
         requires = {
             { 'saadparwaiz1/cmp_luasnip', after = 'nvim-cmp' },
             { 'hrsh7th/cmp-nvim-lsp', opt = true },
@@ -102,7 +114,9 @@ packer.startup(function()
     use {
         'abecodes/tabout.nvim',
         event = { 'InsertEnter' },
-        config = require('conf.tabout').config,
+        config = function()
+            require('conf.tabout').config()
+        end,
         wants = { 'nvim-treesitter' },
         after = { 'nvim-cmp' },
     }
@@ -131,22 +145,34 @@ packer.startup(function()
                 opt = true,
             },
         },
-        setup = require('conf.dap').setup,
-        config = require('conf.dap').config,
+        setup = function()
+            require('conf.dap').setup()
+        end,
+        config = function()
+            require('conf.dap').config()
+        end,
     }
     use {
         'kyazdani42/nvim-tree.lua',
         opt = true,
         cmd = { 'NvimTreeOpen', 'NvimTreeToggle' },
-        setup = require('conf.nvim_tree').setup,
-        config = require('conf.nvim_tree').config,
+        setup = function()
+            require('conf.nvim_tree').setup()
+        end,
+        config = function()
+            require('conf.nvim_tree').config()
+        end,
         requires = { 'kyazdani42/nvim-web-devicons', opt = true },
     }
     use {
         'nvim-telescope/telescope.nvim',
         module = 'telescope',
-        setup = require('conf.telescope').setup,
-        config = require('conf.telescope').config,
+        setup = function()
+            require('conf.telescope').setup()
+        end,
+        config = function()
+            require('conf.telescope').config()
+        end,
         requires = { { 'nvim-lua/popup.nvim' }, { 'nvim-lua/plenary.nvim' } },
     }
     use {
@@ -196,44 +222,62 @@ packer.startup(function()
     use {
         'lewis6991/gitsigns.nvim',
         event = { 'BufRead', 'BufNewFile' },
-        config = require('conf.gitsigns').config,
+        config = function()
+            require('conf.gitsigns').config()
+        end,
         requires = { 'nvim-lua/plenary.nvim' },
     }
     use {
         'TimUntersberger/neogit',
         cmd = 'Neogit',
-        setup = require('conf.neogit').setup,
-        config = require('conf.neogit').config,
+        setup = function()
+            require('conf.neogit').setup()
+        end,
+        config = function()
+            require('conf.neogit').config()
+        end,
     }
     use {
         'windwp/nvim-autopairs',
         opt = true,
         event = { 'InsertCharPre' },
         after = { 'nvim-cmp', 'nvim-treesitter' },
-        config = require('conf.autopairs').config,
+        config = function()
+            require('conf.autopairs').config()
+        end,
     }
     use { 'kosayoda/nvim-lightbulb', opt = true, module = 'nvim-lightbulb' }
     use {
         'numToStr/Navigator.nvim',
         module = 'Navigator',
-        setup = require('conf.navigator').setup,
-        config = require('conf.navigator').config,
+        setup = function()
+            require('conf.navigator').setup()
+        end,
+        config = function()
+            require('conf.navigator').config()
+        end,
     }
     use {
         'kassio/neoterm',
         cmd = { 'Ttoggle' },
-        config = require('conf.neoterm').config,
+        config = function()
+            require('conf.neoterm').config()
+        end,
     }
     use { 'hkupty/iron.nvim', opt = true } -- REPL
     use {
         'phaazon/hop.nvim',
         cmd = { 'HopWord', 'HopChar1', 'HopPattern' },
-        setup = require('conf.hop').setup,
+        setup = function()
+            require('conf.hop').setup()
+        end,
     }
     use {
         'lukas-reineke/indent-blankline.nvim',
         event = { 'BufRead' },
-        config = require('conf.indentline').config,
+        config = function()
+            require('conf.indentline').config()
+        end,
     }
     use {
         'disrupted/pylance.nvim',
@@ -246,28 +290,42 @@ packer.startup(function()
     use {
         'folke/trouble.nvim',
         cmd = { 'Trouble', 'TroubleToggle' },
-        setup = require('conf.trouble').setup,
-        config = require('conf.trouble').config,
+        setup = function()
+            require('conf.trouble').setup()
+        end,
+        config = function()
+            require('conf.trouble').config()
+        end,
         requires = { 'kyazdani42/nvim-web-devicons', opt = true },
     }
     use {
         'simrat39/symbols-outline.nvim',
         cmd = 'SymbolsOutline',
-        setup = require('conf.outline').setup,
-        config = require('conf.outline').config,
+        setup = function()
+            require('conf.outline').setup()
+        end,
+        config = function()
+            require('conf.outline').config()
+        end,
     }
     use {
         'folke/persistence.nvim',
         event = 'VimLeavePre',
         module = 'persistence',
-        setup = require('conf.persistence').setup,
-        config = require('conf.persistence').config,
+        setup = function()
+            require('conf.persistence').setup()
+        end,
+        config = function()
+            require('conf.persistence').config()
+        end,
     }
     use {
         'kevinhwang91/nvim-bqf',
         opt = true,
         event = { 'BufWinEnter quickfix' },
-        config = require('conf.quickfix').config,
+        config = function()
+            require('conf.quickfix').config()
+        end,
     }
     use { 'sindrets/diffview.nvim', opt = true, cmd = 'DiffviewOpen' }
     use {
@@ -279,7 +337,9 @@ packer.startup(function()
         'NTBBloodbath/rest.nvim',
         opt = true,
         ft = { 'http' },
-        config = require('conf.rest').config,
+        config = function()
+            require('conf.rest').config()
+        end,
         wants = { 'nvim-lua/plenary.nvim' },
     }
     use { 'tversteeg/registers.nvim', opt = true }
@@ -294,7 +354,9 @@ packer.startup(function()
     use {
         'famiu/bufdelete.nvim',
         cmd = { 'Bdelete', 'Bwipeout' },
-        setup = require('conf.bufdelete').setup,
+        setup = function()
+            require('conf.bufdelete').setup()
+        end,
     }
     use {
         'kwkarlwang/bufresize.nvim',
@@ -308,14 +370,20 @@ packer.startup(function()
         'pwntester/octo.nvim',
         opt = true,
         cmd = 'Octo',
-        config = require('conf.octo').config,
+        config = function()
+            require('conf.octo').config()
+        end,
     }
     use {
         'ThePrimeagen/harpoon',
         opt = true,
         module = 'harpoon',
-        setup = require('conf.harpoon').setup,
-        config = require('conf.harpoon').config,
+        setup = function()
+            require('conf.harpoon').setup()
+        end,
+        config = function()
+            require('conf.harpoon').config()
+        end,
     }
     -- UI component library
     use {
@@ -335,8 +403,12 @@ packer.startup(function()
         opt = true,
         module = 'neoclip',
         event = { 'TextYankPost' },
-        setup = require('conf.neoclip').setup,
-        config = require('conf.neoclip').config,
+        setup = function()
+            require('conf.neoclip').setup()
+        end,
+        config = function()
+            require('conf.neoclip').config()
+        end,
     }
     use { 'ellisonleao/glow.nvim', opt = true, cmd = 'Glow' }
 end)
