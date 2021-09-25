@@ -166,9 +166,8 @@ packer.startup(function()
         end,
     }
     use {
-        'glepnir/galaxyline.nvim',
+        'NTBBloodbath/galaxyline.nvim',
         opt = true,
-        branch = 'main',
         event = { 'VimEnter' },
         config = function()
             require 'conf.statusline'

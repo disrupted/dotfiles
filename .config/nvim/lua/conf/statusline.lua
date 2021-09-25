@@ -2,10 +2,22 @@ vim.cmd [[packadd nvim-web-devicons]]
 local gl = require 'galaxyline'
 local utils = require 'conf.utils'
 local condition = require 'galaxyline.condition'
-local diagnostic = require 'galaxyline.provider_diagnostic'
+local vcs = require 'galaxyline.providers.vcs'
+local fileinfo = require 'galaxyline.providers.fileinfo'
+local lspstatus = require 'lsp-status'
 
 local gls = gl.section
-gl.short_line_list = { 'packer', 'NvimTree', 'Outline', 'LspTrouble' }
+gl.short_line_list = {
+    'packer',
+    'NvimTree',
+    'Outline',
+    'LspTrouble',
+    'dap-repl',
+    'dapui_scopes',
+    'dapui_breakpoints',
+    'dapui_stacks',
+    'dapui_watches',
+}
 
 local colors = {
     bg = '#282c34',
@@ -19,6 +31,30 @@ local colors = {
     yellow = '#e5c07b',
     darkgrey = '#2c323d',
     middlegrey = '#8791A5',
+}
+local mode_colors = {
+    ['n'] = colors.green,
+    ['i'] = colors.blue,
+    ['c'] = colors.green,
+    ['t'] = colors.blue,
+    ['v'] = colors.purple,
+    ['\x16'] = colors.purple,
+    ['V'] = colors.purple,
+    ['R'] = colors.red,
+    ['s'] = colors.red,
+    ['S'] = colors.red,
+}
+local mode_names = {
+    ['n'] = 'NORMAL',
+    ['i'] = 'INSERT',
+    ['c'] = 'COMMAND',
+    ['t'] = 'TERMINAL',
+    ['v'] = 'VISUAL',
+    ['\x16'] = 'V-BLOCK',
+    ['V'] = 'V-LINE',
+    ['R'] = 'REPLACE',
+    ['s'] = 'SELECT',
+    ['S'] = 'S-LINE',
 }
 
 -- Local helper functions
@@ -43,50 +79,54 @@ local function has_value(tab, val)
     return false
 end
 
-local mode_color = function()
-    local mode_colors = {
-        [110] = colors.green,
-        [105] = colors.blue,
-        [99] = colors.green,
-        [116] = colors.blue,
-        [118] = colors.purple,
-        [22] = colors.purple,
-        [86] = colors.purple,
-        [82] = colors.red,
-        [115] = colors.red,
-        [83] = colors.red,
-    }
+local get_mode = function()
+    return vim.api.nvim_get_mode()['mode']
+end
 
-    local color = mode_colors[vim.fn.mode():byte()]
+local mode_color = function(mode)
+    local color = mode_colors[mode]
     if color ~= nil then
         return color
-    else
-        return colors.purple
     end
+    print 'statusline: error looking up vi mode color'
+    return colors.middlegrey
+end
+
+local vi_mode = function()
+    local mode = get_mode()
+    local color = mode_color(mode)
+    vim.cmd('hi GalaxyViMode guibg=' .. color)
+    local alias = mode_names[mode]
+    if alias ~= nil then
+        if not utils.has_width_gt(35) then
+            alias = alias:sub(1, 1)
+        end
+    else
+        alias = mode
+    end
+    return '  ' .. alias .. ' '
 end
 
 local function file_readonly()
     if vim.bo.filetype == 'help' then
-        return ''
+        return false
     end
-    if vim.bo.readonly == true then
-        return '  '
+    if vim.bo.readonly then
+        return true
     end
-    return ''
+    return false
 end
 
-local function get_current_file_name()
+local function file_name()
     local file = vim.fn.expand '%:t'
-    if vim.fn.empty(file) == 1 then
+    if not file then
         return ''
     end
-    if string.len(file_readonly()) ~= 0 then
-        return file .. file_readonly()
+    if file_readonly() then
+        return file .. '  '
     end
-    if vim.bo.modifiable then
-        if vim.bo.modified then
-            return file .. '  '
-        end
+    if vim.bo.modifiable and vim.bo.modified then
+        return file .. '  '
     end
     return file .. ' '
 end
@@ -101,6 +141,20 @@ local function split(str, sep)
         end -- step forwards on a blank but not a string
     end
     return res
+end
+
+local function file_path()
+    local fp = vim.fn.fnamemodify(vim.fn.expand '%', ':~:.:h')
+    local tbl = split(fp, '/')
+    local len = #tbl
+
+    if len > 2 and not len == 3 and not tbl[0] == '~' then
+        return '…/' .. table.concat(tbl, '/', len - 1) .. '/' -- shorten filepath to last 2 folders
+        -- alternative: only 1 containing folder using vim builtin function
+        -- return '…/' .. vim.fn.fnamemodify(vim.fn.expand '%', ':p:h:t') .. '/'
+    else
+        return fp .. '/'
+    end
 end
 
 -- local function trailing_whitespace()
@@ -135,8 +189,8 @@ local function get_basename(file)
     return file:match '^.+/(.+)$'
 end
 
-local GetGitRoot = function()
-    local git_dir = require('galaxyline.provider_vcs').get_git_dir()
+local git_root = function()
+    local git_dir = vcs.get_git_dir()
     if not git_dir then
         return ''
     end
@@ -145,86 +199,57 @@ local GetGitRoot = function()
     return get_basename(git_root)
 end
 
-local LspStatus = function()
+local lsp_status = function()
     if #vim.lsp.get_active_clients() > 0 then
-        return require('lsp-status').status()
+        return lspstatus.status()
     end
     return ''
 end
 
-local LspCheckDiagnostics = function()
-    if
-        #vim.lsp.get_active_clients() > 0
-        and diagnostic.get_diagnostic_error() == nil
-        and diagnostic.get_diagnostic_warn() == nil
-        and diagnostic.get_diagnostic_info() == nil
-        and require('lsp-status').status() == ' '
-    then
+local lsp_check_diagnostics = function()
+    if vim.tbl_isempty(vim.lsp.buf_get_clients(0)) then
+        return ''
+    end
+    local diagnostics = vim.diagnostic.get(
+        0,
+        { severity = { min = vim.diagnostic.severity.INFO } }
+    )
+    if vim.tbl_isempty(diagnostics) and lspstatus.status() == ' ' then
         return ' '
     end
     return ''
 end
 
+local function get_diagnostic_count(severity)
+    local count = #vim.diagnostic.get(0, { severity = severity })
+    return count ~= 0 and count .. ' ' or ''
+end
+
 -- Left side
 gls.left[1] = {
     ViMode = {
-        provider = function()
-            local aliases = {
-                [110] = 'NORMAL',
-                [105] = 'INSERT',
-                [99] = 'COMMAND',
-                [116] = 'TERMINAL',
-                [118] = 'VISUAL',
-                [22] = 'V-BLOCK',
-                [86] = 'V-LINE',
-                [82] = 'REPLACE',
-                [115] = 'SELECT',
-                [83] = 'S-LINE',
-            }
-            vim.api.nvim_command('hi GalaxyViMode guibg=' .. mode_color())
-            local alias = aliases[vim.fn.mode():byte()]
-            local mode
-            if alias ~= nil then
-                if utils.has_width_gt(35) then
-                    mode = alias
-                else
-                    mode = alias:sub(1, 1)
-                end
-            else
-                mode = vim.fn.mode():byte()
-            end
-            return '  ' .. mode .. ' '
-        end,
+        provider = { vi_mode },
         highlight = { colors.bg, colors.bg, 'bold' },
     },
 }
 gls.left[2] = {
     FileIcon = {
-        provider = { function()
-            return '  '
-        end, 'FileIcon' },
+        provider = {
+            function()
+                return '  '
+            end,
+            'FileIcon',
+        },
         condition = buffer_not_empty,
         highlight = {
-            require('galaxyline.provider_fileinfo').get_file_icon,
+            fileinfo.get_file_icon,
             colors.section_bg,
         },
     },
 }
 gls.left[3] = {
     FilePath = {
-        provider = function()
-            local fp = vim.fn.fnamemodify(vim.fn.expand '%', ':~:.:h')
-            local tbl = split(fp, '/')
-            local len = #tbl
-
-            if len > 2 and not len == 3 and not tbl[0] == '~' then
-                return '…/' .. table.concat(tbl, '/', len - 1) .. '/' -- shorten filepath to last 2 folders
-                -- alternative: only 1 containing folder using vim builtin function
-                -- return '…/' .. vim.fn.fnamemodify(vim.fn.expand '%', ':p:h:t') .. '/'
-            else
-                return fp .. '/'
-            end
-        end,
+        provider = file_path,
         condition = function()
             return is_file() and checkwidth()
         end,
@@ -233,7 +258,7 @@ gls.left[3] = {
 }
 gls.left[4] = {
     FileName = {
-        provider = get_current_file_name,
+        provider = file_name,
         condition = buffer_not_empty,
         highlight = { colors.fg, colors.section_bg },
         separator = '',
@@ -256,13 +281,15 @@ gls.left[4] = {
 -- }
 gls.left[8] = {
     DiagnosticsCheck = {
-        provider = { LspCheckDiagnostics },
+        provider = { lsp_check_diagnostics },
         highlight = { colors.middlegrey, colors.bg },
     },
 }
 gls.left[9] = {
     DiagnosticError = {
-        provider = { 'DiagnosticError' },
+        provider = function()
+            return get_diagnostic_count(vim.diagnostic.severity.ERROR)
+        end,
         icon = '  ',
         highlight = { colors.red, colors.bg },
         -- separator = ' ',
@@ -277,7 +304,9 @@ gls.left[9] = {
 -- }
 gls.left[11] = {
     DiagnosticWarn = {
-        provider = { 'DiagnosticWarn' },
+        provider = function()
+            return get_diagnostic_count(vim.diagnostic.severity.WARN)
+        end,
         icon = '  ',
         highlight = { colors.orange, colors.bg },
         -- separator = ' ',
@@ -292,7 +321,9 @@ gls.left[11] = {
 -- }
 gls.left[13] = {
     DiagnosticInfo = {
-        provider = { 'DiagnosticInfo' },
+        provider = function()
+            return get_diagnostic_count(vim.diagnostic.severity.INFO)
+        end,
         icon = '  ',
         highlight = { colors.blue, colors.bg },
         -- separator = ' ',
@@ -301,7 +332,7 @@ gls.left[13] = {
 }
 gls.left[14] = {
     LspStatus = {
-        provider = { LspStatus },
+        provider = { lsp_status },
         -- separator = ' ',
         -- separator_highlight = {colors.bg, colors.bg},
         highlight = { colors.middlegrey, colors.bg },
@@ -379,7 +410,7 @@ gls.right[6] = {
 }
 gls.right[7] = {
     GitRoot = {
-        provider = { GetGitRoot },
+        provider = git_root,
         condition = function()
             return utils.has_width_gt(50) and condition.check_git_workspace
         end,
@@ -409,24 +440,25 @@ gls.right[8] = {
 -- Short status line
 gls.short_line_left[1] = {
     FileIcon = {
-        provider = { function()
-            return '  '
-        end, 'FileIcon' },
+        provider = {
+            function()
+                return '  '
+            end,
+            'FileIcon',
+        },
         condition = function()
-            return buffer_not_empty and has_value(
-                gl.short_line_list,
-                vim.bo.filetype
-            )
+            return buffer_not_empty
+                and has_value(gl.short_line_list, vim.bo.filetype)
         end,
         highlight = {
-            require('galaxyline.provider_fileinfo').get_file_icon,
+            fileinfo.get_file_icon,
             colors.section_bg,
         },
     },
 }
 gls.short_line_left[2] = {
     FileName = {
-        provider = get_current_file_name,
+        provider = file_name,
         condition = buffer_not_empty,
         highlight = { colors.fg, colors.section_bg },
         separator = '',
