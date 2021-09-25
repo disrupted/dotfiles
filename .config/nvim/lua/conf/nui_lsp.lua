@@ -92,6 +92,11 @@ local function nui_lsp_rename()
     local kw = vim.opt.iskeyword - '_' - '-'
     vim.bo.iskeyword = table.concat(kw:get(), ',')
 
+    -- go into normal mode
+    vim.schedule(function()
+        vim.api.nvim_command 'stopinsert'
+    end)
+
     -- close on <esc> in normal mode
     input:map('n', '<esc>', input.input_props.on_close, { noremap = true })
 
