@@ -72,26 +72,10 @@ packer.startup(function()
         config = require('conf.lsp').config,
         requires = {
             { 'nvim-lua/lsp-status.nvim', opt = true },
-            { 'nvim-lua/lsp_extensions.nvim', opt = true },
         },
     }
     use { 'jose-elias-alvarez/null-ls.nvim', opt = true, module = 'null-ls' }
     use 'folke/lua-dev.nvim'
-    use {
-        'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim',
-        opt = true,
-        event = { 'BufRead' },
-        after = 'nvim-lspconfig',
-        config = function()
-            require('toggle_lsp_diagnostics').init()
-            vim.api.nvim_set_keymap(
-                'n',
-                '<space>tv',
-                '<Plug>(toggle-lsp-diag-vtext)',
-                {}
-            )
-        end,
-    }
     use {
         'L3MON4D3/LuaSnip',
         opt = true,
@@ -103,12 +87,12 @@ packer.startup(function()
     }
     use {
         'hrsh7th/nvim-cmp',
-        module = 'cmp',
+        -- module = 'cmp',
         event = { 'InsertEnter' },
         config = require('conf.cmp').config,
         requires = {
             { 'saadparwaiz1/cmp_luasnip', after = 'nvim-cmp' },
-            { 'hrsh7th/cmp-nvim-lsp' },
+            { 'hrsh7th/cmp-nvim-lsp', opt = true },
             { 'hrsh7th/cmp-buffer', after = 'nvim-cmp' },
             { 'hrsh7th/cmp-path', after = 'nvim-cmp' },
             { 'f3fora/cmp-spell', after = 'nvim-cmp' },

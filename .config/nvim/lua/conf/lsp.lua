@@ -1,63 +1,41 @@
 local M = {}
 
 function M.setup()
-    vim.fn.sign_define('DiagnosticSignError', {
-        -- text = '◉',
+    local sign = vim.fn.sign_define
+
+    sign('DiagnosticSignError', {
+        text = '', -- ◉
         texthl = 'DiagnosticError',
         numhl = 'DiagnosticError',
     })
-    vim.fn.sign_define('DiagnosticSignWarning', {
-        -- text = '●',
-        texthl = 'DiagnosticWarning',
-        numhl = 'DiagnosticWarning',
+    sign('DiagnosticSignWarn', {
+        text = '', -- ●
+        texthl = 'DiagnosticWarn',
+        numhl = 'DiagnosticWarn',
     })
-    vim.fn.sign_define('DiagnosticSignInformation', {
-        -- text = '•',
-        texthl = 'DiagnosticInformation',
-        numhl = 'DiagnosticInformation',
+    sign('DiagnosticSignInfo', {
+        text = '', -- •
+        texthl = 'DiagnosticInfo',
+        numhl = 'DiagnosticInfo',
     })
-    vim.fn.sign_define('DiagnosticSignHint', {
-        text = '·',
+    sign('DiagnosticSignHint', {
+        text = '', -- ·
         texthl = 'DiagnosticHint',
         numhl = 'DiagnosticHint',
-    })
-    vim.fn.sign_define('LightBulbSign', {
-        text = '◎',
-        texthl = 'LightBulb',
-        linehl = '',
-        numhl = '',
     })
 
     vim.diagnostic.config {
         underline = true,
-        signs = false,
         -- signs = { severity = { min = vim.diagnostic.severity.WARN } },
-        -- signs = {severity_limit = 'Information'},
+        signs = true,
         virtual_text = false,
         -- virtual_text = {
         --     -- spacing = 4,
         --     -- prefix = '■', -- ■ 
-        --     severity = 'Warning',
         -- },
-        update_in_insert = false, -- delay update until InsertLeave
+        update_in_insert = true,
         severity_sort = true,
     }
-
-    -- vim.cmd [[packadd lsp_extensions.nvim]]
-    -- vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(
-    --     require('lsp_extensions.workspace.diagnostic').handler,
-    --     {
-    --         underline = true,
-    --         signs = false,
-    --         -- signs = {severity_limit = 'Information'},
-    --         virtual_text = {
-    --             spacing = 4,
-    --             prefix = '■', -- ■ 
-    --             severity_limit = 'Warning',
-    --         },
-    --         update_in_insert = false, -- delay update until InsertLeave
-    --     }
-    -- )
 
     -- Handle formatting in a smarter way
     -- If the buffer has been edited before formatting has completed, do not try to
@@ -96,6 +74,23 @@ function M.setup()
         vim.lsp.handlers.signature_help,
         { border = 'single', focusable = false }
     )
+
+    -- show diagnostics for current line as virtual text
+    -- from https://github.com/kristijanhusak/neovim-config/blob/5977ad2c5dd9bfbb7f24b169fef01828717ea9dc/nvim/lua/partials/lsp.lua#L169
+    local diagnostic_ns = vim.api.nvim_create_namespace 'diagnostics'
+    function _G.show_diagnostics()
+        vim.schedule(function()
+            local line = vim.api.nvim_win_get_cursor(0)[1] - 1
+            local bufnr = vim.api.nvim_get_current_buf()
+            local diagnostics = vim.diagnostic.get(bufnr, { lnum = line })
+            vim.diagnostic.show(
+                diagnostic_ns,
+                bufnr,
+                diagnostics,
+                { virtual_text = true }
+            )
+        end)
+    end
 end
 
 function M.config()
@@ -117,13 +112,10 @@ function M.config()
 
     local capabilities = lsp_status.capabilities
     -- local capabilities = vim.lsp.protocol.make_client_capabilities()
+    vim.cmd [[packadd cmp-nvim-lsp]]
     capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
-    -- capabilities.textDocument.completion.completionItem.snippetSupport = true
-    -- capabilities.textDocument.completion.completionItem.resolveSupport = {
-    --     properties = { 'documentation', 'detail', 'additionalTextEdits' },
-    -- }
 
-    local on_attach = function(client, bufnr)
+    local custom_attach = function(client, bufnr)
         lsp_status.on_attach(client)
 
         local function buf_set_keymap(...)
@@ -191,7 +183,7 @@ function M.config()
         buf_set_keymap(
             'n',
             '<space>r',
-            '<cmd>lua require(\'conf.nui_lsp\').lsp_rename()<CR>',
+            '<cmd>lua require("conf.nui_lsp").lsp_rename()<CR>',
             opts
         )
         buf_set_keymap('n', 'gr', '<cmd>Trouble lsp_references<CR>', opts)
@@ -199,7 +191,7 @@ function M.config()
         buf_set_keymap(
             'n',
             '<space>d',
-            '<cmd>lua vim.diagnostic.show_position_diagnostics { show_header = false, source = "always", border = "single", show_header = false, focusable = false }<CR>',
+            '<cmd>lua vim.diagnostic.show_position_diagnostics { show_header = false, source = "always", border = "single", focusable = false }<CR>',
             opts
         )
         buf_set_keymap(
@@ -278,13 +270,12 @@ function M.config()
         _G.show_lightbulb = function()
             require('nvim-lightbulb').update_lightbulb {
                 sign = { enabled = false, priority = 99 },
-                virtual_text = { enabled = true, text = '💡 ' },
+                virtual_text = { enabled = true, text = '💡' },
             }
         end
 
         if client.resolved_capabilities.code_action then
-            -- vim.cmd [[packadd nvim-lightbulb]]
-            -- vim.cmd [[autocmd CursorHold,CursorHoldI * if &ft != 'java' | lua show_lightbulb()]]
+            vim.cmd [[autocmd CursorHold,CursorHoldI * if &ft != 'java' | lua show_lightbulb()]]
             buf_set_keymap(
                 'n',
                 '<leader>a',
@@ -293,29 +284,18 @@ function M.config()
             )
         end
 
-        vim.cmd [[autocmd CursorHold * lua vim.diagnostic.show_position_diagnostics { show_header = false, source = "if_many", border = 'single', focusable = false }]]
+        -- vim.cmd [[autocmd CursorHold * lua vim.diagnostic.show_position_diagnostics { show_header = false, source = 'if_many', border = 'single', focusable = false }]]
+        vim.cmd [[autocmd CursorHold,CursorHoldI <buffer> lua show_diagnostics()]]
         vim.cmd [[autocmd CursorHoldI <buffer> silent! lua vim.lsp.buf.signature_help { border = 'single', focusable = false }]]
-        -- vim.cmd [[
-        --     augroup lsp_signature_help
-        --         autocmd! * <buffer>
-        --         autocmd CursorHoldI <buffer> silent! lua vim.lsp.buf.signature_help { border = 'single', focusable = false }
-        --     augroup END
-        -- ]]
 
         -- print('LSP attached.')
         vim.api.nvim_echo({ { 'LSP attached.' } }, false, {})
     end
 
-    -- lspconfig.pyright.setup {
-    --     on_attach = on_attach,
-    --     capabilities = capabilities,
-    --     flags = {debounce_text_changes = 150}
-    -- }
-
     vim.cmd [[packadd pylance.nvim]]
     require 'pylance'
     lspconfig.pylance.setup {
-        on_attach = on_attach,
+        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
         settings = {
@@ -334,7 +314,7 @@ function M.config()
     }
 
     lspconfig.dockerls.setup {
-        on_attach = on_attach,
+        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
         settings = {
@@ -351,7 +331,7 @@ function M.config()
     -- YAML
     -- https://github.com/redhat-developer/yaml-language-server
     lspconfig.yamlls.setup {
-        on_attach = on_attach,
+        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
         settings = {
@@ -375,7 +355,7 @@ function M.config()
     lspconfig.tsserver.setup {
         on_attach = function(client)
             client.resolved_capabilities.document_formatting = false
-            on_attach(client)
+            custom_attach(client)
         end,
         capabilities = capabilities,
         flags = { debounce_text_changes = 500 },
@@ -394,6 +374,7 @@ function M.config()
     }
 
     -- EFM Universal Language Server
+    -- TODO: replaced by null-ls, can be removed if everything works well
     -- https://github.com/mattn/efm-langserver
     -- local efm_config = home .. '/.config/efm-langserver/config.yaml'
     -- local efm_log = '/tmp/efm.log'
@@ -479,7 +460,7 @@ function M.config()
     -- NULL-LS
     require('conf.null-ls').config()
     lspconfig['null-ls'].setup {
-        on_attach = on_attach,
+        on_attach = custom_attach,
         -- Fallback to .bashrc as a project root to enable LSP on loose files
         root_dir = function(fname)
             return lspconfig.util.root_pattern(
@@ -501,7 +482,7 @@ function M.config()
         vim.cmd [[packadd rust-tools.nvim]]
         require('rust-tools').setup {
             server = {
-                on_attach = on_attach,
+                on_attach = custom_attach,
                 capabilities = capabilities,
                 flags = { debounce_text_changes = 150 },
                 settings = {
@@ -543,7 +524,7 @@ function M.config()
 
     -- GO
     lspconfig.gopls.setup {
-        on_attach = on_attach,
+        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
     }
@@ -564,7 +545,7 @@ function M.config()
         -- add any options here, or leave empty to use the default settings
         lspconfig = {
             cmd = { sumneko_binary, '-E', sumneko_root_path .. '/main.lua' },
-            on_attach = on_attach,
+            on_attach = custom_attach,
             capabilities = capabilities,
             flags = { debounce_text_changes = 150 },
             settings = {
@@ -592,14 +573,14 @@ function M.config()
 
     -- C / C++
     lspconfig.clangd.setup {
-        on_attach = on_attach,
+        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
     }
 
     -- LATEX
     lspconfig.texlab.setup {
-        on_attach = on_attach,
+        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
     }
@@ -640,7 +621,7 @@ function M.config()
                     ':p:h:t'
                 ),
             },
-            on_attach = on_attach,
+            on_attach = custom_attach,
             capabilities = capabilities,
             flags = { debounce_text_changes = 150 },
             -- on_init = function(client, _)
@@ -685,13 +666,15 @@ function M.config()
     }
 
     lspconfig.prosemd.setup {
-        on_attach = on_attach,
+        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
     }
 
-    -- vim.api.nvim_command 'noautocmd :edit'
-    vim.cmd 'bufdo e'
+    -- reload if buffer has file, to attach LSP
+    if #vim.api.nvim_buf_get_name(0) > 0 then
+        vim.cmd 'bufdo e'
+    end
 end
 
 return M
