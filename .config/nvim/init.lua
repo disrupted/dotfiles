@@ -280,9 +280,9 @@ packer.startup(function()
     use {
         'kwkarlwang/bufresize.nvim',
         opt = true,
-        event = { 'VimResized' },
-        config = function()
-            require('bufresize').setup()
+        module = 'bufresize',
+        setup = function()
+            vim.cmd [[autocmd VimResized * lua require('bufresize').resize()]]
         end,
     }
     use {
@@ -345,6 +345,9 @@ cmd [[
 
 -- highlight yanked text briefly
 cmd [[autocmd TextYankPost * silent! lua vim.highlight.on_yank {higroup="Search", timeout=250, on_visual=false}]]
+
+-- resize splits when Vim is resized
+-- cmd [[autocmd VimResized * wincmd =]]
 
 -- Trim trailing whitespace and trailing blank lines on save
 function _G.trim_trailing_whitespace()
