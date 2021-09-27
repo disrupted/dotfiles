@@ -57,7 +57,8 @@ local components = {
 }
 
 local function is_file(bufnr)
-    return api.nvim_buf_get_option(bufnr, 'buftype') ~= 'nofile'
+    local bt = api.nvim_buf_get_option(bufnr, 'buftype')
+    return bt ~= 'nofile' and bt ~= 'terminal'
 end
 
 local function file_readonly(bufnr)
@@ -99,8 +100,12 @@ end
 -----------------------------------------------------------------------------//
 -- Vi mode
 table.insert(components.active[1], {
-    provider = function()
-        return ' ' .. vi_mode_text[vi_mode.get_vim_mode()] .. ' '
+    provider = function(winid)
+        local name = vi_mode_text[vi_mode.get_vim_mode()]
+        if api.nvim_win_get_width(winid) <= 60 then
+            name = name:sub(1, 1) -- shorten mode name
+        end
+        return ' ' .. name .. ' '
     end,
     icon = '',
     hl = function()
@@ -147,31 +152,31 @@ local function file_icon(winid)
     icon.str = string.format(' %s ', icon_str or '')
 
     -- icon color
-    if icon_hlname then
-        local fg = api.nvim_get_hl_by_name(icon_hlname, true).foreground
-        if fg then
-            icon.hl = { fg = string.format('#%06x', fg) }
-        end
-    end
+    -- if icon_hlname then
+    --     local fg = api.nvim_get_hl_by_name(icon_hlname, true).foreground
+    --     if fg then
+    --         icon.hl = { fg = string.format('#%06x', fg) }
+    --     end
+    -- end
 
     return icon
 end
 
 table.insert(components.active[1], {
     provider = '',
-    icon = function(winid)
-        return file_icon(winid)
-    end,
+    icon = file_icon,
     hl = {
         bg = 'section_bg',
     },
 })
 
-local function file_path()
-    if not is_file(0) then
+local function file_path(winid)
+    local bufnr = api.nvim_win_get_buf(winid)
+    if not is_file(bufnr) then
         return ''
     end
-    local fp = fn.fnamemodify(fn.expand '%', ':~:.:h')
+    local filename = api.nvim_buf_get_name(bufnr)
+    local fp = fn.fnamemodify(filename, ':~:.:h')
     local tbl = split(fp, '/')
     local len = #tbl
 
@@ -186,6 +191,9 @@ end
 
 table.insert(components.active[1], {
     provider = file_path,
+    enabled = function(winid)
+        return api.nvim_win_get_width(winid) >= 80
+    end,
     hl = {
         fg = 'middlegrey',
         bg = 'section_bg',
@@ -193,14 +201,14 @@ table.insert(components.active[1], {
 })
 
 local function file_info(winid)
-    local filename = api.nvim_buf_get_name(api.nvim_win_get_buf(winid))
+    local bufnr = api.nvim_win_get_buf(winid)
+    local filename = api.nvim_buf_get_name(bufnr)
     filename = fn.fnamemodify(filename, ':t')
 
     -- if filename == '' then
-    --     filename = 'unnamed'
+    --     filename = '[unnamed]'
     -- end
 
-    local bufnr = api.nvim_win_get_buf(winid)
     local readonly_str = ''
     local modified_str = ''
     if api.nvim_buf_get_option(bufnr, 'readonly') then
@@ -216,9 +224,7 @@ end
 
 -- File info
 table.insert(components.active[1], {
-    provider = function(winid)
-        return file_info(winid)
-    end,
+    provider = file_info,
     hl = {
         fg = 'fg',
         bg = 'section_bg',
@@ -233,7 +239,7 @@ table.insert(components.active[1], {
     },
 })
 
-local function lsp_check_diagnostics()
+local function lsp_check_diagnostics(winid)
     if vim.tbl_isempty(vim.lsp.buf_get_clients(0)) then
         return ''
     end
@@ -241,8 +247,19 @@ local function lsp_check_diagnostics()
         0,
         { severity = { min = vim.diagnostic.severity.INFO } }
     )
-    if vim.tbl_isempty(diagnostics) and lspstatus.status() == ' ' then
+    if not vim.tbl_isempty(diagnostics) then
+        return ''
+    end
+    local status = lspstatus.status()
+    if status == ' ' then
         return ' '
+    end
+    if status then
+        if api.nvim_win_get_width(winid) >= 80 then
+            return status -- full lsp loading status
+        else
+            return status:sub(1, 4) -- only show lsp loading spinner
+        end
     end
     return ''
 end
@@ -287,21 +304,6 @@ table.insert(components.active[1], {
     icon = '  ',
     hl = {
         fg = 'blue',
-        bg = 'bg',
-    },
-})
-local lsp_status = function()
-    if #vim.lsp.get_active_clients() > 0 then
-        return lspstatus.status()
-    end
-    return ''
-end
-table.insert(components.active[1], {
-    provider = function()
-        return lsp_status()
-    end,
-    hl = {
-        fg = 'middlegrey',
         bg = 'bg',
     },
 })
