@@ -210,8 +210,8 @@ packer.startup(function()
     use {
         'famiu/feline.nvim',
         opt = true,
-        -- branch = 'develop',
-        tag = 'v0.2',
+        branch = 'develop',
+        -- tag = 'v0.2',
         event = { 'VimEnter' },
         config = function()
             vim.cmd [[packadd nvim-web-devicons]]
@@ -646,11 +646,11 @@ cmd [[command Term :botright vsplit term://$SHELL]]
 cmd [[
     autocmd TermOpen * setlocal listchars= nonumber norelativenumber nocursorline
     autocmd TermOpen * startinsert
-    autocmd BufEnter,BufWinEnter,WinEnter term://* startinsert
     autocmd BufLeave term://* stopinsert
-    autocmd TermClose term://* call nvim_input('<CR>')
-    autocmd TermClose * call feedkeys("i")
 ]]
+-- autocmd BufEnter,BufWinEnter,WinEnter term://* startinsert
+-- autocmd TermClose term://* call nvim_input('<CR>')
+-- autocmd TermClose * call feedkeys("i")
 
 -----------------------------------------------------------------------------//
 -- Mouse {{{1
@@ -702,16 +702,18 @@ vim.g.mapleader = ' '
 map('n', '<leader><leader>', ':b#<CR>')
 
 -- Sane movement defaults that works on long wrapped lines
-map('', 'j', '(v:count ? \'j\' : \'gj\')', { expr = true })
-map('', 'k', '(v:count ? \'k\' : \'gk\')', { expr = true })
-map('', '<Down>', '(v:count ? \'j\' : \'gj\')', { expr = true })
-map('', '<Up>', '(v:count ? \'k\' : \'gk\')', { expr = true })
+local expr = { expr = true, noremap = false, silent = false }
+map('', 'j', '(v:count ? \'j\' : \'gj\')', expr)
+map('', 'k', '(v:count ? \'k\' : \'gk\')', expr)
+map('', '<Down>', '(v:count ? \'j\' : \'gj\')', expr)
+map('', '<Up>', '(v:count ? \'k\' : \'gk\')', expr)
 
 -- Easier splits navigation
-map('n', '<C-j>', '<C-w>j', { noremap = false })
-map('n', '<C-k>', '<C-w>k', { noremap = false })
-map('n', '<C-h>', '<C-w>h', { noremap = false })
-map('n', '<C-l>', '<C-w>l', { noremap = false })
+local remap = { noremap = false, silent = false }
+map('n', '<C-j>', '<C-w>j', remap)
+map('n', '<C-k>', '<C-w>k', remap)
+map('n', '<C-h>', '<C-w>h', remap)
+map('n', '<C-l>', '<C-w>l', remap)
 
 -- Use alt + hjkl to resize windows
 map('n', '<M-j>', '<cmd>resize -2<CR>')
@@ -725,24 +727,17 @@ map('n', '˙', '<cmd>vertical resize -2<CR>')
 map('n', '¬', '<cmd>vertical resize +2<CR>')
 
 -- Terminal window navigation
-map('t', '<C-h>', '<C-\\><C-N><C-w>h', { noremap = false })
-map('t', '<C-j>', '<C-\\><C-N><C-w>j', { noremap = false })
-map('t', '<C-k>', '<C-\\><C-N><C-w>k', { noremap = false })
-map('t', '<C-l>', '<C-\\><C-N><C-w>l', { noremap = false })
+map('t', '<C-h>', '<C-\\><C-N><C-w>h', remap)
+map('t', '<C-j>', '<C-\\><C-N><C-w>j', remap)
+map('t', '<C-k>', '<C-\\><C-N><C-w>k', remap)
+map('t', '<C-l>', '<C-\\><C-N><C-w>l', remap)
 map('t', '<C-[><C-[>', '<C-\\><C-N>') -- double ESC to escape terminal
 
 -- more intuitive wildmenu navigation
-map('c', '<Up>', [[wildmenumode() ? "\<Left>" : "\<Up>"]], { expr = true })
-map('c', '<Down>', [[wildmenumode() ? "\<Right>" : "\<Down>"]], {
-    expr = true,
-})
-map('c', '<Left>', [[wildmenumode() ? "\<Up>" : "\<Left>"]], { expr = true })
-map(
-    'c',
-    '<Right>',
-    [[wildmenumode() ? " \<BS>\<C-Z>" : "\<Right>"]],
-    { expr = true }
-)
+map('c', '<Up>', [[wildmenumode() ? "\<Left>" : "\<Up>"]], expr)
+map('c', '<Down>', [[wildmenumode() ? "\<Right>" : "\<Down>"]], expr)
+map('c', '<Left>', [[wildmenumode() ? "\<Up>" : "\<Left>"]], expr)
+map('c', '<Right>', [[wildmenumode() ? " \<BS>\<C-Z>" : "\<Right>"]], expr)
 
 -- command mode
 map('c', '<C-a>', '<Home>')
