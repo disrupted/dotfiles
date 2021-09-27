@@ -173,7 +173,7 @@ packer.startup(function()
         config = function()
             require('conf.telescope').config()
         end,
-        requires = { { 'nvim-lua/popup.nvim' }, { 'nvim-lua/plenary.nvim' } },
+        requires = { 'nvim-lua/plenary.nvim' },
     }
     use {
         'nvim-telescope/telescope-fzf-native.nvim',
