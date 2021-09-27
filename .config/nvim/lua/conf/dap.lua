@@ -37,6 +37,7 @@ end
 function M.config()
     vim.g.dap_virtual_text = true
     local dap = require 'dap'
+    dap.defaults.fallback.terminal_win_cmd = '15split new'
 
     vim.fn.sign_define('DapBreakpoint', {
         text = '●', -- 
@@ -54,15 +55,15 @@ function M.config()
         include_configs = true,
         console = 'internalConsole',
     })
-    -- table.insert(dap.configurations.python, {
-    --     type = 'python',
-    --     request = 'launch',
-    --     name = 'Launch file',
-    --     program = '${file}',
-    --     pythonPath = function()
-    --         return 'python'
-    --     end,
-    -- })
+    table.insert(dap.configurations.python, {
+        type = 'python',
+        request = 'launch',
+        name = 'Launch file',
+        program = '${file}',
+        pythonPath = function()
+            return 'python'
+        end,
+    })
     table.insert(dap.configurations.python, {
         type = 'python',
         request = 'launch',
@@ -71,6 +72,19 @@ function M.config()
         pythonPath = function()
             return 'python'
         end,
+    })
+    table.insert(dap.configurations.python, {
+        type = 'python',
+        request = 'launch',
+        name = 'FastAPI module',
+        module = 'uvicorn',
+        args = {
+            'main:app',
+            -- '--reload',
+            '--use-colors',
+        },
+        pythonPath = 'python',
+        console = 'integratedTerminal',
     })
     py.test_runner = 'pytest'
 
