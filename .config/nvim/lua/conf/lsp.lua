@@ -62,7 +62,7 @@ function M.setup()
 
     vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
         vim.lsp.handlers.signature_help,
-        { border = 'single', focusable = false }
+        { border = 'single', focusable = false, silent = true }
     )
 
     -- show diagnostics for current line as virtual text
@@ -276,7 +276,8 @@ function M.config()
 
         -- vim.cmd [[autocmd CursorHold * lua vim.diagnostic.show_position_diagnostics { show_header = false, source = 'if_many', border = 'single', focusable = false }]]
         vim.cmd [[autocmd CursorHold,CursorHoldI <buffer> lua show_diagnostics()]]
-        vim.cmd [[autocmd CursorHoldI <buffer> silent! lua vim.lsp.buf.signature_help { border = 'single', focusable = false }]]
+        vim.cmd [[autocmd User DiagnosticsChanged lua show_diagnostics()]]
+        vim.cmd [[autocmd CursorHoldI <buffer> silent! lua vim.lsp.buf.signature_help()]]
 
         -- print('LSP attached.')
         vim.api.nvim_echo({ { 'LSP attached.' } }, false, {})
@@ -477,6 +478,16 @@ function M.config()
                 flags = { debounce_text_changes = 150 },
                 settings = {
                     ['rust-analyzer'] = {
+                        assist = {
+                            importGranularity = 'module',
+                            importPrefix = 'by_self',
+                        },
+                        cargo = {
+                            loadOutDirsFromCheck = true,
+                        },
+                        procMacro = {
+                            enable = true,
+                        },
                         checkOnSave = {
                             allFeatures = true,
                             overrideCommand = {
