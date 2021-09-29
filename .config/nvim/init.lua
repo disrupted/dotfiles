@@ -347,6 +347,9 @@ packer.startup(function()
     use {
         'folke/todo-comments.nvim',
         cmd = { 'TodoQuickFix', 'TodoTrouble', 'TodoTelescope' },
+        setup = function()
+            vim.cmd [[command Todo :TodoTrouble]]
+        end,
         config = function()
             require('todo-comments').setup {}
         end,
