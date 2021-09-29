@@ -368,6 +368,7 @@ packer.startup(function()
         setup = function()
             vim.cmd [[autocmd VimResized * lua require('bufresize').resize()]]
         end,
+        disable = true,
     }
     use {
         'pwntester/octo.nvim',
@@ -387,6 +388,7 @@ packer.startup(function()
         config = function()
             require('conf.harpoon').config()
         end,
+        requires = { 'nvim-lua/plenary.nvim', 'nvim-lua/popup.nvim' },
     }
     -- UI component library
     use {
@@ -442,7 +444,7 @@ cmd [[
 cmd [[autocmd TextYankPost * silent! lua vim.highlight.on_yank {higroup="Search", timeout=250, on_visual=false}]]
 
 -- resize splits when Vim is resized
--- cmd [[autocmd VimResized * wincmd =]]
+cmd [[autocmd VimResized * wincmd =]]
 
 -- Trim trailing whitespace and trailing blank lines on save
 function _G.trim_trailing_whitespace()
