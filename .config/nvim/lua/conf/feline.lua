@@ -33,22 +33,37 @@ local vi_mode_colors = {
     TERM = 'blue',
     NONE = 'yellow',
 }
-local vi_mode_text = {
-    NORMAL = 'NORMAL',
-    OP = 'OPERATOR',
-    INSERT = 'INSERT',
-    VISUAL = 'VISUAL',
-    LINES = 'V-LINE',
-    BLOCK = 'V-BLOCK',
-    REPLACE = 'REPLACE',
-    ['V-REPLACE'] = 'V-REPLACE',
-    ENTER = 'ENTER',
-    MORE = 'MORE',
-    SELECT = 'SELECT',
-    COMMAND = 'COMMAND',
-    SHELL = 'SHELL',
-    TERM = 'TERMINAL',
-    NONE = 'NONE',
+local mode_alias = {
+    ['n'] = 'NORMAL',
+    ['no'] = 'OP',
+    ['nov'] = 'OP',
+    ['noV'] = 'OP',
+    ['no'] = 'OP',
+    ['niI'] = 'NORMAL',
+    ['niR'] = 'NORMAL',
+    ['niV'] = 'NORMAL',
+    ['v'] = 'VISUAL',
+    ['V'] = 'V-LINE',
+    [''] = 'V-BLOCK',
+    ['s'] = 'SELECT',
+    ['S'] = 'SELECT',
+    [''] = 'V-BLOCK',
+    ['i'] = 'INSERT',
+    ['ic'] = 'INSERT',
+    ['ix'] = 'INSERT',
+    ['R'] = 'REPLACE',
+    ['Rc'] = 'REPLACE',
+    ['Rv'] = 'V-REPLACE',
+    ['Rx'] = 'REPLACE',
+    ['c'] = 'COMMAND',
+    ['cv'] = 'COMMAND',
+    ['ce'] = 'COMMAND',
+    ['r'] = 'ENTER',
+    ['rm'] = 'MORE',
+    ['r?'] = 'CONFIRM',
+    ['!'] = 'SHELL',
+    ['t'] = 'TERMINAL',
+    ['null'] = 'NONE',
 }
 
 local components = {
@@ -101,7 +116,7 @@ end
 -- Vi mode
 table.insert(components.active[1], {
     provider = function(winid)
-        local name = vi_mode_text[vi_mode.get_vim_mode()]
+        local name = mode_alias[api.nvim_get_mode().mode]
         if api.nvim_win_get_width(winid) <= 60 then
             name = name:sub(1, 1) -- shorten mode name
         end
