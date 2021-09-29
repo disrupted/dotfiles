@@ -416,6 +416,12 @@ packer.startup(function()
         end,
     }
     use { 'ellisonleao/glow.nvim', opt = true, cmd = 'Glow' }
+    use {
+        'nathom/filetype.nvim',
+        setup = function()
+            vim.g.did_load_filetypes = 1
+        end,
+    }
 end)
 
 local executable = function(e)
