@@ -94,6 +94,11 @@ function M.config()
         indicator_ok = '',
         diagnostics = false,
         current_function = false,
+        -- update_interval = 100,
+        -- show_filename = false,
+        format = function(_, contents)
+            return contents
+        end,
     }
     lsp_status.register_progress()
 
