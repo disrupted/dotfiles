@@ -1,3 +1,4 @@
+vim.g.did_load_filetypes = 1 -- use filetype.nvim instead
 local cmd = vim.cmd -- to execute Vim commands e.g. cmd('pwd')
 local fn = vim.fn -- to call Vim functions e.g. fn.bufnr()
 local opt = vim.opt
@@ -348,7 +349,7 @@ packer.startup(function()
         'folke/todo-comments.nvim',
         cmd = { 'TodoQuickFix', 'TodoTrouble', 'TodoTelescope' },
         setup = function()
-            vim.cmd [[command Todo :TodoTrouble]]
+            vim.cmd [[command! Todo :TodoTrouble]]
         end,
         config = function()
             require('todo-comments').setup {}
@@ -416,12 +417,7 @@ packer.startup(function()
         end,
     }
     use { 'ellisonleao/glow.nvim', opt = true, cmd = 'Glow' }
-    use {
-        'nathom/filetype.nvim',
-        setup = function()
-            vim.g.did_load_filetypes = 1
-        end,
-    }
+    use { 'nathom/filetype.nvim' }
 end)
 
 local executable = function(e)

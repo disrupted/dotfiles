@@ -15,8 +15,8 @@ function M.config()
         folder_arrows = 0,
     }
     vim.g.nvim_tree_icons = {
-        default = ' ',
-        symlink = ' ',
+        default = '',
+        symlink = '',
         git_icons = {
             unstaged = '✗',
             staged = '✓',
