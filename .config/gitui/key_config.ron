@@ -329,6 +329,12 @@
             bits: 0,
         ),
     ),
+    rebase_branch: (
+        code: Char('R'),
+        modifiers: (
+            bits: 1,
+        ),
+    ),
     compare_commits: (
         code: Char('C'),
         modifiers: (
@@ -363,6 +369,12 @@
         code: Char('F'),
         modifiers: (
             bits: 1,
+        ),
+    ),
+    file_find: (
+        code: Char('f'),
+        modifiers: (
+            bits: 0,
         ),
     ),
     force_push: (
