@@ -105,10 +105,14 @@ function M.config()
     -- client log level
     vim.lsp.set_log_level 'info'
 
-    local capabilities = lsp_status.capabilities
-    -- local capabilities = vim.lsp.protocol.make_client_capabilities()
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
     vim.cmd [[packadd cmp-nvim-lsp]]
     capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+    capabilities = vim.tbl_extend(
+        'keep',
+        capabilities or {},
+        lsp_status.capabilities
+    )
 
     local custom_attach = function(client, bufnr)
         lsp_status.on_attach(client)
