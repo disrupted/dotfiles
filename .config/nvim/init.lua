@@ -91,6 +91,7 @@ packer.startup(function()
         'L3MON4D3/LuaSnip',
         opt = true,
         event = { 'InsertEnter' },
+        module = 'luasnip',
         config = function()
             require 'conf.snippets'
         end,
@@ -104,13 +105,13 @@ packer.startup(function()
             require('conf.cmp').config()
         end,
         requires = {
+            { 'hrsh7th/cmp-nvim-lsp' },
             { 'saadparwaiz1/cmp_luasnip', after = 'nvim-cmp' },
-            { 'hrsh7th/cmp-nvim-lsp', opt = true },
             { 'hrsh7th/cmp-buffer', after = 'nvim-cmp' },
             { 'hrsh7th/cmp-path', after = 'nvim-cmp' },
             { 'f3fora/cmp-spell', after = 'nvim-cmp' },
         },
-        after = 'LuaSnip',
+        -- after = 'LuaSnip',
     }
     use {
         'abecodes/tabout.nvim',
@@ -417,7 +418,7 @@ packer.startup(function()
         end,
     }
     use { 'ellisonleao/glow.nvim', opt = true, cmd = 'Glow' }
-    use { 'nathom/filetype.nvim' }
+    use { 'nathom/filetype.nvim', branch = 'dev' }
 end)
 
 local executable = function(e)

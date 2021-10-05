@@ -55,6 +55,8 @@ function M.config()
             extra_args = { '-i', '4', '-ci' },
         },
         null_ls.builtins.diagnostics.shellcheck,
+        -- null_ls.builtins.formatting.trim_whitespace,
+        -- null_ls.builtins.formatting.trim_newlines,
     }
     null_ls.config {
         sources = sources,

@@ -47,11 +47,11 @@ function M.config()
 
     -- supertab-like mapping
     local mapping = {
-        ['<Tab>'] = cmp.mapping(function(fallback)
+        ['<Tab>'] = cmp.mapping(function(_)
             if vim.fn.pumvisible() == 1 then
                 vim.fn.feedkeys(t '<C-n>', 'n')
             elseif luasnip and luasnip.expand_or_jumpable() then
-                vim.fn.feedkeys(t '<Plug>luasnip-expand-or-jump', '')
+                luasnip.expand_or_jump()
             elseif check_back_space() then
                 vim.fn.feedkeys(t '<Tab>', 'n')
             else
@@ -61,11 +61,11 @@ function M.config()
             'i',
             's',
         }),
-        ['<S-Tab>'] = cmp.mapping(function(fallback)
+        ['<S-Tab>'] = cmp.mapping(function(_)
             if vim.fn.pumvisible() == 1 then
                 vim.fn.feedkeys(t '<C-p>', 'n')
             elseif luasnip and luasnip.jumpable(-1) then
-                vim.fn.feedkeys(t '<Plug>luasnip-jump-prev', '')
+                luasnip.jump(-1)
             else
                 vim.fn.feedkeys(t '<Plug>(TaboutBack)', '')
             end
@@ -82,14 +82,15 @@ function M.config()
     cmp.setup {
         snippet = {
             expand = function(args)
-                luasnip.lsp_expand(args.body)
+                require('luasnip').lsp_expand(args.body)
             end,
         },
         mapping = mapping,
         sources = {
-            { name = 'luasnip' },
             { name = 'nvim_lsp' },
             { name = 'nvim_lua' },
+            { name = 'luasnip' },
+            { name = 'spell' },
             { name = 'path' },
             { name = 'buffer' },
         },
