@@ -96,7 +96,7 @@ function M.config()
         current_function = false,
         -- update_interval = 100,
         -- show_filename = false,
-        format = function(_, contents)
+        status_format = function(_, contents)
             return contents
         end,
     }
@@ -269,7 +269,11 @@ function M.config()
         _G.show_lightbulb = function()
             require('nvim-lightbulb').update_lightbulb {
                 sign = { enabled = false, priority = 99 },
-                virtual_text = { enabled = true, text = '💡' },
+                virtual_text = {
+                    enabled = true,
+                    text = '💡',
+                    hl_mode = 'combine',
+                },
             }
         end
 
