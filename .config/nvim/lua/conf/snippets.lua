@@ -63,7 +63,7 @@ ls.snippets = {
         -- trigger is fn.
         s('fn', {
             -- Simple static text.
-            t '//Parameters: ',
+            t '// Parameters: ',
             -- function, first parameter is the function, second the Placeholders
             -- whose text it gets as input.
             f(copy, 2),
@@ -109,7 +109,51 @@ ls.snippets = {
         }),
     },
     python = {
+        -- method
         s('def', {
+            t 'def ',
+            -- Placeholder/Insert.
+            i(1, 'func'),
+            t '(self, ',
+            -- first method argument
+            i(2, 'arg'),
+            t ': ',
+            -- argument type
+            i(3, 'str'),
+            t ') -> ',
+            -- return type
+            i(4, 'None'),
+            -- Linebreak
+            t { ':', '\t' },
+            -- Last Placeholder, exit Point of the snippet. EVERY 'outer' SNIPPET NEEDS Placeholder 0.
+            i(0, 'pass'),
+        }),
+        -- class
+        s('class', {
+            t 'class ',
+            -- Placeholder/Insert.
+            i(1, 'Example'),
+            t { '():', '\t' },
+            t 'def __init__(self, ',
+            -- first field
+            i(2, 'arg'),
+            t ': ',
+            -- argument type
+            i(3, 'str'),
+            -- Linebreak
+            t { '):', '\t' },
+            t '    self.',
+            -- field name, copied from argument
+            f(copy, 2),
+            t ': ',
+            -- field type
+            f(copy, 3),
+            t ' = ',
+            f(copy, 2),
+        }),
+        -- staticmethod
+        s('static', {
+            t { '@staticmethod', '\t' },
             t 'def ',
             -- Placeholder/Insert.
             i(1, 'func'),
