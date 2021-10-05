@@ -87,9 +87,9 @@ function M.config()
         },
         mapping = mapping,
         sources = {
+            { name = 'luasnip' },
             { name = 'nvim_lsp' },
             { name = 'nvim_lua' },
-            { name = 'luasnip' },
             { name = 'spell' },
             { name = 'path' },
             { name = 'buffer' },
