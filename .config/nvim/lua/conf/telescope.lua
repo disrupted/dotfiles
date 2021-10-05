@@ -43,7 +43,7 @@ function M.setup()
         }
     end
     local map = require('utils').map
-    map('n', '<Space>b', '<cmd>lua __telescope_buffers()<CR>')
+    map('n', '<space><space>', '<cmd>lua __telescope_buffers()<CR>')
     map('n', '<C-f>', '<cmd>lua __telescope_files()<CR>')
     map(
         'n',
@@ -109,6 +109,7 @@ function M.config()
             set_env = { COLORTERM = 'truecolor' },
             color_devicons = true,
         },
+        pickers = { live_grep = { only_sort_text = true } },
         extensions = {
             fzf = {
                 override_generic_sorter = true,

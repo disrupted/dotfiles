@@ -706,7 +706,7 @@ local map = require('utils').map
 -- set leader to space
 vim.g.mapleader = ' '
 -- <space><space> switches between buffers
-map('n', '<leader><leader>', ':b#<CR>')
+-- map('n', '<leader><leader>', ':b#<CR>')
 
 -- Sane movement defaults that works on long wrapped lines
 local expr = { expr = true, noremap = false, silent = false }
@@ -779,8 +779,8 @@ map('x', 'p', '"_dP')
 -- map('x', 'P', '"_dP')
 
 -- edit & source init.lua
-map('n', ',v', ':e $MYVIMRC<CR>')
-map('n', ',s', ':luafile $MYVIMRC<CR>')
+map('n', '<leader>v', ':e $MYVIMRC<CR>')
+map('n', '<leader>s', ':luafile $MYVIMRC<CR>')
 
 -- Vimdiff as mergetool
 map('n', '<leader>1', ':diffget //1<CR>')

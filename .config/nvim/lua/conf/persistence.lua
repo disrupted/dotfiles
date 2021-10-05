@@ -2,7 +2,7 @@ local M = {}
 
 function M.setup()
     local map = require('utils').map
-    map('n', ',r', '<cmd>lua require("persistence").load()<cr>')
+    map('n', '<space>R', '<cmd>lua require("persistence").load()<cr>')
 end
 
 function M.config()
