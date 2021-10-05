@@ -4,31 +4,45 @@
 local ls = require 'luasnip'
 local types = require 'luasnip.util.types'
 
+vim.cmd [[highlight LuasnipChoiceNodePassive gui=italic]]
+vim.cmd [[highlight LuasnipChoiceNodeActive gui=bold]]
+
 ls.config.set_config {
     history = true,
     ext_opts = {
         [types.choiceNode] = {
             active = {
-                virt_text = { { '●', 'Operator' } },
+                virt_text = { { '', 'Operator' } },
+                hl_mode = 'combine',
             },
         },
         [types.insertNode] = {
             active = {
-                virt_text = { { '●', 'Type' } },
+                virt_text = { { '', 'Type' } },
+                hl_mode = 'combine',
             },
         },
     },
     enable_autosnippets = true,
 }
 
-vim.cmd [[highlight LuasnipChoiceNodePassive gui=italic]]
-
 -----------------------------------------------------------------------------//
 -- Mappings {{{1
 -----------------------------------------------------------------------------//
 local map = require('utils').map
-map('i', '<C-e>', '<Plug>luasnip-next-choice')
-map('s', '<C-e>', '<Plug>luasnip-next-choice')
+local expr = { expr = true, noremap = false, silent = false }
+map(
+    'i',
+    '<C-e>',
+    '(luasnip#choice_active() ? \'<Plug>luasnip-next-choice\' : \'<C-e>\')',
+    expr
+)
+map(
+    's',
+    '<C-e>',
+    '(luasnip#choice_active() ? \'<Plug>luasnip-next-choice\' : \'<C-e>\')',
+    expr
+)
 
 -----------------------------------------------------------------------------//
 -- Helpers {{{1
@@ -52,6 +66,90 @@ local conds = require 'luasnip.extras.conditions'
 
 local function copy(args)
     return args[1]
+end
+
+-- complicated function for dynamicNode.
+local function jdocsnip(args, _, old_state)
+    local nodes = {
+        t { '/**', ' * ' },
+        i(1, 'A short Description'),
+        t { '', '' },
+    }
+
+    -- These will be merged with the snippet; that way, should the snippet be updated,
+    -- some user input eg. text can be referred to in the new snippet.
+    local param_nodes = {}
+
+    if old_state then
+        nodes[2] = i(1, old_state.descr:get_text())
+    end
+    param_nodes.descr = nodes[2]
+
+    -- At least one param.
+    if string.find(args[2][1], ', ') then
+        vim.list_extend(nodes, { t { ' * ', '' } })
+    end
+
+    local insert = 2
+    for indx, arg in ipairs(vim.split(args[2][1], ', ', true)) do
+        -- Get actual name parameter.
+        arg = vim.split(arg, ' ', true)[2]
+        if arg then
+            local inode
+            -- if there was some text in this parameter, use it as static_text for this new snippet.
+            if old_state and old_state[arg] then
+                inode = i(insert, old_state['arg' .. arg]:get_text())
+            else
+                inode = i(insert)
+            end
+            vim.list_extend(
+                nodes,
+                { t { ' * @param ' .. arg .. ' ' }, inode, t { '', '' } }
+            )
+            param_nodes['arg' .. arg] = inode
+
+            insert = insert + 1
+        end
+    end
+
+    if args[1][1] ~= 'void' then
+        local inode
+        if old_state and old_state.ret then
+            inode = i(insert, old_state.ret:get_text())
+        else
+            inode = i(insert)
+        end
+
+        vim.list_extend(
+            nodes,
+            { t { ' * ', ' * @return ' }, inode, t { '', '' } }
+        )
+        param_nodes.ret = inode
+        insert = insert + 1
+    end
+
+    if vim.tbl_count(args[3]) ~= 1 then
+        local exc = string.gsub(args[3][2], ' throws ', '')
+        local ins
+        if old_state and old_state.ex then
+            ins = i(insert, old_state.ex:get_text())
+        else
+            ins = i(insert)
+        end
+        vim.list_extend(
+            nodes,
+            { t { ' * ', ' * @throws ' .. exc .. ' ' }, ins, t { '', '' } }
+        )
+        param_nodes.ex = ins
+        insert = insert + 1
+    end
+
+    vim.list_extend(nodes, { t { ' */' } })
+
+    local snip = sn(nil, nodes)
+    -- Error on attempting overwrite.
+    snip.old_state = param_nodes
+    return snip
 end
 
 -----------------------------------------------------------------------------//
@@ -111,15 +209,33 @@ ls.snippets = {
     python = {
         -- method
         s('def', {
+            -- f(function(args)
+            --     print(vim.inspect(args))
+            --     return ''
+            --     -- if args[2] == 'self, ' then
+            --     --     return ''
+            --     -- end
+            --     -- if args[2] == 'cls, ' then
+            --     --     return '@classmethod'
+            --     -- end
+            --     -- return '@staticmethod'
+            -- end, 3),
+            -- t '\t',
             t 'def ',
             -- Placeholder/Insert.
             i(1, 'func'),
-            t '(self, ',
+            t '(',
+            c(2, {
+                t 'self, ',
+                t 'cls, ',
+                t '',
+            }),
+            -- t '(self, ',
             -- first method argument
-            i(2, 'arg'),
+            i(3, 'arg'),
             t ': ',
             -- argument type
-            i(3, 'str'),
+            i(4, 'str'),
             t ') -> ',
             -- return type
             i(4, 'None'),
@@ -170,6 +286,41 @@ ls.snippets = {
             t { ':', '\t' },
             -- Last Placeholder, exit Point of the snippet. EVERY 'outer' SNIPPET NEEDS Placeholder 0.
             i(0, 'pass'),
+        }),
+    },
+    java = {
+        -- Very long example for a java class.
+        s('fn', {
+            d(6, jdocsnip, { 2, 4, 5 }),
+            t { '', '' },
+            c(1, {
+                t 'public ',
+                t 'private ',
+            }),
+            c(2, {
+                t 'void',
+                t 'String',
+                t 'char',
+                t 'int',
+                t 'double',
+                t 'boolean',
+                i(nil, ''),
+            }),
+            t ' ',
+            i(3, 'myFunc'),
+            t '(',
+            i(4),
+            t ')',
+            c(5, {
+                t '',
+                sn(nil, {
+                    t { '', ' throws ' },
+                    i(1),
+                }),
+            }),
+            t { ' {', '\t' },
+            i(0),
+            t { '', '}' },
         }),
     },
 }
