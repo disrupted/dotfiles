@@ -12,13 +12,13 @@ ls.config.set_config {
     ext_opts = {
         [types.choiceNode] = {
             active = {
-                virt_text = { { '', 'Operator' } },
+                virt_text = { { '', 'Operator' } }, -- 
                 hl_mode = 'combine',
             },
         },
         [types.insertNode] = {
             active = {
-                virt_text = { { '', 'Type' } },
+                virt_text = { { '', 'Type' } }, -- 
                 hl_mode = 'combine',
             },
         },
@@ -157,70 +157,26 @@ end
 -----------------------------------------------------------------------------//
 
 ls.snippets = {
-    all = {
-        -- trigger is fn.
-        s('fn', {
-            -- Simple static text.
-            t '// Parameters: ',
-            -- function, first parameter is the function, second the Placeholders
-            -- whose text it gets as input.
-            f(copy, 2),
-            t { '', 'function ' },
-            -- Placeholder/Insert.
-            i(1),
-            t '(',
-            -- Placeholder with initial text.
-            i(2, 'int foo'),
-            -- Linebreak
-            t { ') {', '\t' },
-            -- Last Placeholder, exit Point of the snippet. EVERY 'outer' SNIPPET NEEDS Placeholder 0.
-            i(0),
-            t { '', '}' },
-        }),
-        s('class', {
-            -- Choice: Switch between two different Nodes, first parameter is its position, second a list of nodes.
-            c(1, {
-                t 'public ',
-                t 'private ',
-            }),
-            t 'class ',
-            i(2),
-            t ' ',
-            c(3, {
-                t '{',
-                -- sn: Nested Snippet. Instead of a trigger, it has a position, just like insert-nodes. !!! These don't expect a 0-node!!!!
-                -- Inside Choices, Nodes don't need a position as the choice node is the one being jumped to.
-                sn(nil, {
-                    t 'extends ',
-                    i(1),
-                    t ' {',
-                }),
-                sn(nil, {
-                    t 'implements ',
-                    i(1),
-                    t ' {',
-                }),
-            }),
-            t { '', '\t' },
-            i(0),
-            t { '', '}' },
-        }),
-    },
+    all = {},
     python = {
         -- method
-        s('def', {
-            -- f(function(args)
-            --     print(vim.inspect(args))
-            --     return ''
-            --     -- if args[2] == 'self, ' then
-            --     --     return ''
-            --     -- end
-            --     -- if args[2] == 'cls, ' then
-            --     --     return '@classmethod'
-            --     -- end
-            --     -- return '@staticmethod'
-            -- end, 3),
-            -- t '\t',
+        s({
+            trig = 'def',
+            name = 'def method',
+            dscr = {
+                'python method',
+            },
+        }, {
+            -- decorator
+            f(function(args)
+                if args[1][1] == 'cls, ' then
+                    return { '@classmethod', '' }
+                end
+                if args[1][1] == '' then
+                    return { '@staticmethod', '' }
+                end
+                return ''
+            end, 2),
             t 'def ',
             -- Placeholder/Insert.
             i(1, 'func'),
@@ -249,43 +205,64 @@ ls.snippets = {
             t 'class ',
             -- Placeholder/Insert.
             i(1, 'Example'),
-            t { '():', '\t' },
+            c(2, {
+                t '',
+                -- base class
+                sn(nil, {
+                    t '(',
+                    i(1),
+                    t ')',
+                }),
+            }),
+            t { ':', '\t' },
             t 'def __init__(self, ',
             -- first field
-            i(2, 'arg'),
+            i(3, 'arg'),
             t ': ',
             -- argument type
-            i(3, 'str'),
+            i(4, 'str'),
             -- Linebreak
-            t { '):', '\t' },
-            t '    self.',
+            t { '):', '\t\t' },
+            t 'self.',
             -- field name, copied from argument
-            f(copy, 2),
+            f(copy, 3),
             t ': ',
             -- field type
-            f(copy, 3),
+            f(copy, 4),
             t ' = ',
-            f(copy, 2),
+            f(copy, 3),
+            t { '', '\t\t' },
+            i(0),
         }),
-        -- staticmethod
-        s('static', {
-            t { '@staticmethod', '\t' },
-            t 'def ',
-            -- Placeholder/Insert.
-            i(1, 'func'),
-            t '(',
-            -- first method argument
-            i(2, 'arg'),
-            t ': ',
-            -- argument type
-            i(3, 'str'),
-            t ') -> ',
-            -- return type
-            i(4, 'None'),
-            -- Linebreak
-            t { ':', '\t' },
-            -- Last Placeholder, exit Point of the snippet. EVERY 'outer' SNIPPET NEEDS Placeholder 0.
-            i(0, 'pass'),
+    },
+    lua = {
+        s({ -- from akinsho
+            trig = 'use',
+            name = 'packer use',
+            dscr = {
+                'packer use plugin block',
+                'e.g.',
+                'use {\'author/plugin\'}',
+            },
+        }, {
+            t 'use { \'',
+            -- Get the author and URL in the clipboard and auto populate the author and project
+            f(function(_)
+                local default = 'author/plugin'
+                local clip = vim.fn.getreg '*'
+                if not vim.startswith(clip, 'https://github.com/') then
+                    return default
+                end
+                local parts = vim.split(clip, '/')
+                if #parts < 2 then
+                    return default
+                end
+                local author, project = parts[#parts - 1], parts[#parts]
+                return author .. '/' .. project
+            end, {}),
+            t '\' ',
+            i(2, { ', config = function()', '', 'end' }),
+            t '}',
         }),
     },
     java = {
