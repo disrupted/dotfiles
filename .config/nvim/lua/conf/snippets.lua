@@ -234,6 +234,64 @@ ls.snippets = {
             t { '', '\t\t' },
             i(0),
         }),
+        s('main', {
+            t { 'if __name__ == "__main__":', '\t' },
+            i(0, 'main()'),
+        }),
+        s({
+            trig = 'env',
+            name = 'shebang',
+            dscr = {
+                'python shebang',
+            },
+        }, {
+            t { '#!/usr/bin/env python3' },
+        }),
+        s({
+            trig = 'from',
+            name = 'from ... import ...',
+            dscr = {
+                'import from module',
+            },
+        }, {
+            t { 'from ' },
+            i(1, ''),
+            t { ' import ' },
+            i(0, ''),
+        }),
+        s({
+            trig = 'if',
+            name = 'if ...:',
+            dscr = {
+                'if condition',
+            },
+        }, {
+            t { 'if ' },
+            i(1, ''),
+            t { ':', '\t' },
+            i(0, 'pass'),
+        }),
+        s({
+            trig = 'for',
+            name = 'for ...:',
+            dscr = {
+                'for loop',
+            },
+        }, {
+            t { 'for ' },
+            i(1, 'i'),
+            t { ' in ' },
+            c(2, {
+                i(nil, 'iterable'),
+                sn(nil, {
+                    t 'range(',
+                    i(1, '10'),
+                    t ')',
+                }),
+            }),
+            t { ':', '\t' },
+            i(0, 'pass'),
+        }),
     },
     lua = {
         s({ -- from akinsho
