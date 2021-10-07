@@ -41,10 +41,9 @@ function M.config()
     -- sources
     local sources = {
         null_ls.builtins.formatting.stylua.with {
-            extra_args = {
-                '--config-path',
-                vim.fn.expand '~/.config/stylua.toml',
-            },
+            condition = function(utils)
+                return utils.root_has_file 'stylua.toml'
+            end,
         },
         isortd,
         blackd,
