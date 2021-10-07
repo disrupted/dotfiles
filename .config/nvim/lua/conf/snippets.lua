@@ -9,6 +9,8 @@ vim.cmd [[highlight LuasnipChoiceNodeActive gui=bold]]
 
 ls.config.set_config {
     history = true,
+    region_check_events = 'CursorMoved,CursorHold,InsertEnter',
+    delete_check_events = 'InsertLeave',
     ext_opts = {
         [types.choiceNode] = {
             active = {
