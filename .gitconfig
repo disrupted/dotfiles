@@ -189,5 +189,7 @@
     # git pull
     set-upstream = !git branch --set-upstream-to=origin/`git symbolic-ref --short HEAD`
 
+    root = rev-parse --show-toplevel
+
 [includeIf "gitdir:~/bakdata/"]
     path = ~/bakdata/.gitconfig
