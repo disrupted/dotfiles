@@ -54,15 +54,15 @@ local i = ls.insert_node
 local f = ls.function_node
 local c = ls.choice_node
 local d = ls.dynamic_node
-local l = require('luasnip.extras').lambda
-local r = require('luasnip.extras').rep
-local p = require('luasnip.extras').partial
-local m = require('luasnip.extras').match
-local n = require('luasnip.extras').nonempty
-local dl = require('luasnip.extras').dynamic_lambda
-local fmt = require('luasnip.extras.fmt').fmt
-local fmta = require('luasnip.extras.fmt').fmta
-local conds = require 'luasnip.extras.conditions'
+-- local l = require('luasnip.extras').lambda
+-- local r = require('luasnip.extras').rep
+-- local p = require('luasnip.extras').partial
+-- local m = require('luasnip.extras').match
+-- local n = require('luasnip.extras').nonempty
+-- local dl = require('luasnip.extras').dynamic_lambda
+-- local fmt = require('luasnip.extras.fmt').fmt
+-- local fmta = require('luasnip.extras.fmt').fmta
+-- local conds = require 'luasnip.extras.conditions'
 
 local function copy(args)
     return args[1]
@@ -91,7 +91,7 @@ local function jdocsnip(args, _, old_state)
     end
 
     local insert = 2
-    for indx, arg in ipairs(vim.split(args[2][1], ', ', true)) do
+    for _, arg in ipairs(vim.split(args[2][1], ', ', true)) do
         -- Get actual name parameter.
         arg = vim.split(arg, ' ', true)[2]
         if arg then
@@ -164,7 +164,7 @@ ls.snippets = {
             trig = 'def',
             name = 'def method',
             dscr = {
-                'python method',
+                'def func(arg: str) -> None:',
             },
         }, {
             -- decorator
@@ -178,7 +178,7 @@ ls.snippets = {
                 return ''
             end, 2),
             t 'def ',
-            -- Placeholder/Insert.
+            -- method name
             i(1, 'func'),
             t '(',
             c(2, {
@@ -186,7 +186,6 @@ ls.snippets = {
                 t 'cls, ',
                 t '',
             }),
-            -- t '(self, ',
             -- first method argument
             i(3, 'arg'),
             t ': ',
@@ -197,7 +196,6 @@ ls.snippets = {
             i(4, 'None'),
             -- Linebreak
             t { ':', '\t' },
-            -- Last Placeholder, exit Point of the snippet. EVERY 'outer' SNIPPET NEEDS Placeholder 0.
             i(0, 'pass'),
         }),
         -- class
@@ -249,7 +247,7 @@ ls.snippets = {
         }),
         s({
             trig = 'from',
-            name = 'from ... import ...',
+            name = 'from … import …',
             dscr = {
                 'import from module',
             },
@@ -261,7 +259,7 @@ ls.snippets = {
         }),
         s({
             trig = 'if',
-            name = 'if ...:',
+            name = 'if …:',
             dscr = {
                 'if condition',
             },
@@ -273,7 +271,7 @@ ls.snippets = {
         }),
         s({
             trig = 'for',
-            name = 'for ...:',
+            name = 'for …:',
             dscr = {
                 'for loop',
             },
@@ -291,6 +289,55 @@ ls.snippets = {
             }),
             t { ':', '\t' },
             i(0, 'pass'),
+        }),
+        s({
+            trig = 'try',
+            name = 'try … except',
+            dscr = {
+                'try-except-block',
+            },
+        }, {
+            t { 'try:', '\t' },
+            i(1, 'pass'),
+            t { '', 'except ' },
+            i(2, 'Exception'),
+            t { ' as ' },
+            i(3, 'e'),
+            t { ':', '\t' },
+            c(4, {
+                sn(nil, {
+                    t 'raise ',
+                    i(1, 'e'),
+                }),
+                i(nil, 'pass'),
+            }),
+            i(0),
+        }),
+    },
+    rust = {
+        s({
+            trig = 'fn',
+            name = 'function',
+            dscr = {
+                'fn …(…) { … }',
+            },
+        }, {
+            t 'fn ',
+            -- function name
+            i(1, 'func'),
+            t '(',
+            -- first method argument
+            i(2, 'arg'),
+            t ': ',
+            -- argument type
+            i(3, '&str'),
+            t ') -> ',
+            -- return type
+            i(4, '&str'),
+            -- Linebreak
+            t { ' {', '\t' },
+            i(0, ''),
+            t { '', '}' },
         }),
     },
     lua = {
