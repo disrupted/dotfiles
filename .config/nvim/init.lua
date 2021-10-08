@@ -158,7 +158,7 @@ packer.startup(function()
     use {
         'kyazdani42/nvim-tree.lua',
         opt = true,
-        cmd = { 'NvimTreeOpen', 'NvimTreeToggle' },
+        module = 'nvim-tree',
         setup = function()
             require('conf.nvim_tree').setup()
         end,
