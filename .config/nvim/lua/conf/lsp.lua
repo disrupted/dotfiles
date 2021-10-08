@@ -184,7 +184,12 @@ function M.config()
             '<cmd>lua require("conf.nui_lsp").lsp_rename()<CR>',
             opts
         )
-        buf_set_keymap('n', 'gr', '<cmd>Trouble lsp_references<CR>', opts)
+        buf_set_keymap(
+            'n',
+            'gr',
+            '<cmd>lua require("trouble").open { mode = "lsp_references" }<CR>',
+            opts
+        )
         buf_set_keymap('n', 'gR', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
         buf_set_keymap(
             'n',
