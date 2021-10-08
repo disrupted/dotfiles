@@ -1,24 +1,9 @@
 vim.g.did_load_filetypes = 1 -- use filetype.nvim instead
-local cmd = vim.cmd -- to execute Vim commands e.g. cmd('pwd')
-local fn = vim.fn -- to call Vim functions e.g. fn.bufnr()
-local opt = vim.opt
-
-local execute = vim.api.nvim_command
-
-local install_path = fn.stdpath 'data' .. '/site/pack/packer/opt/packer.nvim'
-
-if fn.empty(fn.glob(install_path)) > 0 then
-    execute(
-        '!git clone https://github.com/wbthomason/packer.nvim'
-            .. ' '
-            .. install_path
-    )
-end
+local cmd, fn, opt = vim.cmd, vim.fn, vim.opt
 
 cmd [[packadd packer.nvim]]
 local packer = require 'packer'
 local use = packer.use
--- cmd [[autocmd BufWritePost init.lua PackerCompile]]
 
 packer.startup(function()
     use { 'wbthomason/packer.nvim', opt = true }
@@ -420,10 +405,6 @@ packer.startup(function()
     use { 'nathom/filetype.nvim' }
 end)
 
-local executable = function(e)
-    return fn.executable(e) > 0
-end
-
 -----------------------------------------------------------------------------//
 -- Utils {{{1
 -----------------------------------------------------------------------------//
@@ -432,6 +413,10 @@ opt.complete:prepend { 'kspell' }
 opt.completeopt = { 'menuone', 'noselect' } -- Completion options
 opt.clipboard = 'unnamedplus'
 opt.inccommand = 'nosplit'
+
+local executable = function(e)
+    return fn.executable(e) > 0
+end
 
 if fn.filereadable '~/.local/share/virtualenvs/debugpy/bin/python' then
     vim.g.python3_host_prog = '~/.local/share/virtualenvs/debugpy/bin/python'
