@@ -133,11 +133,8 @@ packer.startup(function()
                 opt = true,
                 after = 'nvim-treesitter',
             },
+            { 'rcarriga/nvim-dap-ui', opt = true },
             { 'David-Kunz/jester', opt = true },
-            {
-                'rcarriga/nvim-dap-ui',
-                opt = true,
-            },
         },
         setup = function()
             require('conf.dap').setup()
@@ -260,10 +257,20 @@ packer.startup(function()
     }
     use { 'hkupty/iron.nvim', opt = true } -- REPL
     use {
-        'phaazon/hop.nvim',
-        cmd = { 'HopWord', 'HopChar1', 'HopPattern' },
+        'ggandor/lightspeed.nvim',
+        opt = true,
+        keys = {
+            '<Plug>Lightspeed_s',
+            '<Plug>Lightspeed_S',
+            '<Plug>Lightspeed_x',
+            '<Plug>Lightspeed_X',
+            '<Plug>Lightspeed_f',
+            '<Plug>Lightspeed_F',
+            '<Plug>Lightspeed_t',
+            '<Plug>Lightspeed_T',
+        },
         setup = function()
-            require('conf.hop').setup()
+            require('conf.lightspeed').setup()
         end,
     }
     use {
@@ -431,9 +438,7 @@ if fn.filereadable '~/.local/share/virtualenvs/debugpy/bin/python' then
 end
 
 -- nonumber for commits
-cmd [[
-    autocmd BufReadPost * if &ft =~ "commit" | setlocal nonumber norelativenumber | endif
-]]
+cmd [[autocmd BufReadPost * if &ft =~ "commit" | setlocal nonumber norelativenumber | endif]]
 
 -- highlight yanked text briefly
 cmd [[autocmd TextYankPost * silent! lua vim.highlight.on_yank { higroup="Search", timeout=250, on_visual=true }]]
@@ -784,7 +789,7 @@ map('n', '<leader>3', ':diffget //3<CR>')
 map('n', ']q', ':cnext<CR>')
 map('n', '[q', ':cprevious<CR>')
 
---  ctrl + /: nohighlight
+--  ctrl + / nohighlight
 map('n', '<C-_>', ':noh<CR>')
 
 -----------------------------------------------------------------------------//
