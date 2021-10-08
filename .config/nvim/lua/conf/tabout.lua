@@ -5,7 +5,7 @@ function M.config()
         tabkey = '',
         backwards_tabkey = '',
         -- act_as_tab = false,
-        -- completion = true,
+        completion = false,
         tabouts = {
             { open = '\'', close = '\'' },
             { open = '"', close = '"' },

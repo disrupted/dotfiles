@@ -115,7 +115,8 @@ packer.startup(function()
     }
     use {
         'abecodes/tabout.nvim',
-        event = { 'InsertEnter' },
+        -- event = { 'InsertEnter' },
+        module = 'tabout',
         config = function()
             require('conf.tabout').config()
         end,
