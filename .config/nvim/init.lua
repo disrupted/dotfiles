@@ -36,10 +36,10 @@ packer.startup(function()
         end,
     }
     use {
-        'b3nj5m1n/kommentary',
+        'numToStr/Comment.nvim',
         event = { 'BufRead', 'BufNewFile' },
         config = function()
-            require('conf.kommentary').config()
+            require('Comment').setup()
         end,
     }
     use {
