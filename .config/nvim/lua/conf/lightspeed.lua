@@ -23,12 +23,15 @@ function M.setup()
         { 'o', 't', '<Plug>Lightspeed_t' },
         { 'o', 'T', '<Plug>Lightspeed_T' },
     }
-    for _, map in ipairs(default_keymaps) do
-        local mode = map[1]
-        local lhs = map[2]
-        local rhs = map[3]
-        vim.api.nvim_set_keymap(mode, lhs, rhs, { silent = true })
+    for _, m in ipairs(default_keymaps) do
+        vim.api.nvim_set_keymap(m[1], m[2], m[3], { silent = true })
     end
+end
+
+function M.config()
+    require('lightspeed').setup {
+        x_mode_prefix_key = '<c-x>', -- TODO
+    }
 end
 
 return M

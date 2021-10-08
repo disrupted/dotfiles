@@ -250,6 +250,9 @@ packer.startup(function()
         setup = function()
             require('conf.lightspeed').setup()
         end,
+        config = function()
+            require('conf.lightspeed').config()
+        end,
     }
     use {
         'lukas-reineke/indent-blankline.nvim',
