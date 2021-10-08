@@ -7,6 +7,8 @@ local use = packer.use
 
 packer.startup(function()
     use { 'wbthomason/packer.nvim', opt = true }
+    use 'nvim-lua/plenary.nvim'
+    use { 'kyazdani42/nvim-web-devicons', module = 'nvim-web-devicons' }
     use {
         'disrupted/one.nvim', -- personal tweaked colorscheme
         config = function()
@@ -58,7 +60,6 @@ packer.startup(function()
     }
     use {
         'neovim/nvim-lspconfig',
-        opt = true,
         event = { 'BufRead' },
         setup = function()
             require('conf.lsp').setup()
@@ -70,11 +71,10 @@ packer.startup(function()
             { 'nvim-lua/lsp-status.nvim', opt = true },
         },
     }
-    use { 'jose-elias-alvarez/null-ls.nvim', opt = true, module = 'null-ls' }
+    use { 'jose-elias-alvarez/null-ls.nvim', module = 'null-ls' }
     use 'folke/lua-dev.nvim'
     use {
         'L3MON4D3/LuaSnip',
-        opt = true,
         event = { 'InsertEnter' },
         module = 'luasnip',
         config = function()
@@ -109,7 +109,6 @@ packer.startup(function()
     use {
         -- Debug Adapter Protocol client
         'mfussenegger/nvim-dap',
-        opt = true,
         module = 'dap',
         requires = {
             { 'mfussenegger/nvim-dap-python', opt = true },
@@ -130,7 +129,6 @@ packer.startup(function()
     }
     use {
         'kyazdani42/nvim-tree.lua',
-        opt = true,
         module = 'nvim-tree',
         setup = function()
             require('conf.nvim_tree').setup()
@@ -138,7 +136,7 @@ packer.startup(function()
         config = function()
             require('conf.nvim_tree').config()
         end,
-        requires = { 'kyazdani42/nvim-web-devicons', opt = true },
+        wants = { 'nvim-web-devicons' },
     }
     use {
         'nvim-telescope/telescope.nvim',
@@ -149,7 +147,7 @@ packer.startup(function()
         config = function()
             require('conf.telescope').config()
         end,
-        requires = { 'nvim-lua/plenary.nvim' },
+        wants = { 'plenary.nvim' },
     }
     use {
         'nvim-telescope/telescope-fzf-native.nvim',
@@ -175,25 +173,22 @@ packer.startup(function()
     }
     use {
         'NTBBloodbath/galaxyline.nvim',
-        opt = true,
         event = { 'VimEnter' },
         config = function()
             require 'conf.statusline'
         end,
-        requires = { 'kyazdani42/nvim-web-devicons', opt = true },
+        wants = { 'nvim-web-devicons' },
         disable = true,
     }
     use {
         'famiu/feline.nvim',
-        opt = true,
         branch = 'develop',
         -- tag = 'v0.2',
         event = { 'VimEnter' },
         config = function()
-            vim.cmd [[packadd nvim-web-devicons]]
             require 'conf.feline'
         end,
-        requires = { 'kyazdani42/nvim-web-devicons', opt = true },
+        wants = { 'nvim-web-devicons' },
     }
     use {
         'lewis6991/gitsigns.nvim',
@@ -201,7 +196,7 @@ packer.startup(function()
         config = function()
             require('conf.gitsigns').config()
         end,
-        requires = { 'nvim-lua/plenary.nvim' },
+        wants = { 'plenary.nvim' },
     }
     use {
         'TimUntersberger/neogit',
@@ -215,14 +210,13 @@ packer.startup(function()
     }
     use {
         'windwp/nvim-autopairs',
-        opt = true,
         event = { 'InsertCharPre' },
         after = { 'nvim-cmp', 'nvim-treesitter' },
         config = function()
             require('conf.autopairs').config()
         end,
     }
-    use { 'kosayoda/nvim-lightbulb', opt = true, module = 'nvim-lightbulb' }
+    use { 'kosayoda/nvim-lightbulb', module = 'nvim-lightbulb' }
     use {
         'numToStr/Navigator.nvim',
         module = 'Navigator',
@@ -243,7 +237,6 @@ packer.startup(function()
     use { 'hkupty/iron.nvim', opt = true } -- REPL
     use {
         'ggandor/lightspeed.nvim',
-        opt = true,
         keys = {
             '<Plug>Lightspeed_s',
             '<Plug>Lightspeed_S',
@@ -282,7 +275,7 @@ packer.startup(function()
         config = function()
             require('conf.trouble').config()
         end,
-        requires = { 'kyazdani42/nvim-web-devicons', opt = true },
+        wants = { 'nvim-web-devicons' },
     }
     use {
         'simrat39/symbols-outline.nvim',
@@ -307,13 +300,12 @@ packer.startup(function()
     }
     use {
         'kevinhwang91/nvim-bqf',
-        opt = true,
         event = { 'BufWinEnter quickfix' },
         config = function()
             require('conf.quickfix').config()
         end,
     }
-    use { 'sindrets/diffview.nvim', opt = true, cmd = 'DiffviewOpen' }
+    use { 'sindrets/diffview.nvim', cmd = 'DiffviewOpen' }
     use {
         'michaelb/sniprun',
         run = 'bash ./install.sh',
@@ -321,15 +313,14 @@ packer.startup(function()
     }
     use {
         'NTBBloodbath/rest.nvim',
-        opt = true,
         ft = { 'http' },
         config = function()
             require('conf.rest').config()
         end,
-        wants = { 'nvim-lua/plenary.nvim' },
+        wants = { 'plenary.nvim' },
     }
     use { 'tversteeg/registers.nvim', opt = true }
-    use { 'soywod/himalaya', opt = true, cmd = 'Himalaya' }
+    use { 'soywod/himalaya', cmd = 'Himalaya' }
     use {
         'folke/todo-comments.nvim',
         cmd = { 'TodoQuickFix', 'TodoTrouble', 'TodoTelescope' },
@@ -349,7 +340,6 @@ packer.startup(function()
     }
     use {
         'kwkarlwang/bufresize.nvim',
-        opt = true,
         module = 'bufresize',
         setup = function()
             vim.cmd [[autocmd VimResized * lua require('bufresize').resize()]]
@@ -358,7 +348,6 @@ packer.startup(function()
     }
     use {
         'pwntester/octo.nvim',
-        opt = true,
         cmd = 'Octo',
         config = function()
             require('conf.octo').config()
@@ -366,7 +355,6 @@ packer.startup(function()
     }
     use {
         'ThePrimeagen/harpoon',
-        opt = true,
         module = 'harpoon',
         setup = function()
             require('conf.harpoon').setup()
@@ -381,7 +369,7 @@ packer.startup(function()
         'MunifTanjim/nui.nvim',
     }
     -- Syntax for Helm chart templates
-    use { 'towolf/vim-helm', opt = true, ft = 'helm' }
+    use { 'towolf/vim-helm', ft = 'helm' }
     use {
         'henriquehbr/nvim-startup.lua',
         config = function()
@@ -391,7 +379,6 @@ packer.startup(function()
     }
     use {
         'AckslD/nvim-neoclip.lua',
-        opt = true,
         module = 'neoclip',
         event = { 'TextYankPost' },
         setup = function()
@@ -401,7 +388,7 @@ packer.startup(function()
             require('conf.neoclip').config()
         end,
     }
-    use { 'ellisonleao/glow.nvim', opt = true, cmd = 'Glow' }
+    use { 'ellisonleao/glow.nvim', cmd = 'Glow' }
     use { 'nathom/filetype.nvim' }
 end)
 
