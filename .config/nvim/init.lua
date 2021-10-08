@@ -30,14 +30,14 @@ packer.startup(function()
     }
     use {
         'blackCauldron7/surround.nvim',
-        event = { 'BufRead', 'BufNewFile' },
+        event = { 'BufWinEnter', 'BufNewFile' },
         config = function()
             require('conf.surround').config()
         end,
     }
     use {
         'numToStr/Comment.nvim',
-        event = { 'BufRead', 'BufNewFile' },
+        event = { 'BufWinEnter', 'BufNewFile' },
         config = function()
             require('Comment').setup()
         end,
@@ -99,7 +99,6 @@ packer.startup(function()
     }
     use {
         'hrsh7th/nvim-cmp',
-        -- module = 'cmp',
         event = { 'InsertEnter' },
         config = function()
             require('conf.cmp').config()
@@ -115,7 +114,6 @@ packer.startup(function()
     }
     use {
         'abecodes/tabout.nvim',
-        -- event = { 'InsertEnter' },
         module = 'tabout',
         config = function()
             require('conf.tabout').config()
@@ -127,13 +125,6 @@ packer.startup(function()
         -- Debug Adapter Protocol client
         'mfussenegger/nvim-dap',
         opt = true,
-        -- ft = {
-        --     'python',
-        --     'javascript',
-        --     'typescript',
-        --     'javascriptreact',
-        --     'typescriptreact',
-        -- },
         module = 'dap',
         requires = {
             { 'mfussenegger/nvim-dap-python', opt = true },
@@ -224,7 +215,7 @@ packer.startup(function()
     }
     use {
         'lewis6991/gitsigns.nvim',
-        event = { 'BufRead', 'BufNewFile' },
+        event = { 'BufWinEnter', 'BufNewFile' },
         config = function()
             require('conf.gitsigns').config()
         end,
@@ -277,7 +268,7 @@ packer.startup(function()
     }
     use {
         'lukas-reineke/indent-blankline.nvim',
-        event = { 'BufRead' },
+        event = { 'BufWinEnter' },
         config = function()
             require('conf.indentline').config()
         end,
