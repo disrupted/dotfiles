@@ -419,7 +419,7 @@ packer.startup(function()
         end,
     }
     use { 'ellisonleao/glow.nvim', opt = true, cmd = 'Glow' }
-    use { 'nathom/filetype.nvim', branch = 'dev' }
+    use { 'nathom/filetype.nvim' }
 end)
 
 local executable = function(e)
@@ -445,7 +445,7 @@ cmd [[
 ]]
 
 -- highlight yanked text briefly
-cmd [[autocmd TextYankPost * silent! lua vim.highlight.on_yank {higroup="Search", timeout=250, on_visual=false}]]
+cmd [[autocmd TextYankPost * silent! lua vim.highlight.on_yank { higroup="Search", timeout=250, on_visual=true }]]
 
 -- resize splits when Vim is resized
 cmd [[autocmd VimResized * wincmd =]]
