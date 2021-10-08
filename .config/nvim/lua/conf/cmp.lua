@@ -108,6 +108,7 @@ function M.config()
                 return vim_item
             end,
         },
+        experimental = { ghost_text = true },
     }
 end
 

@@ -194,7 +194,7 @@ function M.config()
         buf_set_keymap(
             'n',
             '<space>d',
-            '<cmd>lua vim.diagnostic.show_position_diagnostics { show_header = false, source = "always", border = "single", focusable = false }<CR>',
+            '<cmd>lua vim.diagnostic.show_line_diagnostics { show_header = false, source = "always", border = "single", focusable = false, severity_sort = true }<CR>',
             opts
         )
         buf_set_keymap(
@@ -530,7 +530,7 @@ function M.config()
                 },
             },
         }
-        -- vim.api.nvim_command 'noautocmd :edit'
+        vim.api.nvim_command 'noautocmd :edit'
     end
 
     vim.cmd [[

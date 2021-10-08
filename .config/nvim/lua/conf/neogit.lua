@@ -9,7 +9,7 @@ function M.config()
     require('neogit').setup {
         signs = {
             section = { '', '' },
-            item = { '▸', '▾' },
+            item = { '', '' },
             hunk = { '', '' },
         },
         integrations = {

@@ -22,15 +22,15 @@ end
 
 function M.config()
     require('trouble').setup {
-        fold_open = '▾',
-        fold_closed = '▸',
+        fold_open = '', -- ▾
+        fold_closed = '', -- ▸
         indent_lines = false,
         signs = {
             error = '',
             warning = '',
             hint = '',
             information = '',
-            other = '',
+            other = '', -- 
         },
         action_keys = { jump = { '<cr>' }, toggle_fold = { '<tab>' } },
     }
