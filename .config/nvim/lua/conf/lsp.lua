@@ -116,17 +116,10 @@ function M.config()
     local custom_attach = function(client, bufnr)
         lsp_status.on_attach(client)
 
+        -- Mappings
         local function buf_set_keymap(...)
             vim.api.nvim_buf_set_keymap(bufnr, ...)
         end
-        local function buf_set_option(...)
-            vim.api.nvim_buf_set_option(bufnr, ...)
-        end
-
-        -- omni completion source
-        buf_set_option('omnifunc', 'vim.lsp.omnifunc')
-
-        -- Mappings
         local opts = { noremap = true, silent = true }
         buf_set_keymap(
             'n',
