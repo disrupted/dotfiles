@@ -42,6 +42,10 @@ packer.startup(function()
                 after = 'nvim-treesitter',
             },
             {
+                'nvim-treesitter/playground',
+                cmd = 'TSPlaygroundToggle',
+            },
+            {
                 'lewis6991/spellsitter.nvim',
                 after = 'nvim-treesitter',
                 config = function()
