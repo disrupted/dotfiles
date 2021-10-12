@@ -44,8 +44,8 @@ function M.config()
                 keymaps = {
                     goto_definition = 'gnd', -- mapping to go to definition of symbol under cursor
                     list_definitions = 'gnD', -- mapping to list all definitions in current file
-                    goto_next_usage = '<space>n',
-                    goto_previous_usage = '<space>N',
+                    goto_next_usage = '<leader>n',
+                    goto_previous_usage = '<leader>N',
                 },
             },
         },
@@ -84,8 +84,14 @@ function M.config()
             },
             swap = {
                 enable = true,
-                swap_next = { ['<Leader>>'] = '@parameter.inner' },
-                swap_previous = { ['<Leader><'] = '@parameter.inner' },
+                swap_next = {
+                    ['<leader>>'] = '@parameter.inner',
+                    ['<leader>f>'] = '@function.outer',
+                },
+                swap_previous = {
+                    ['<leader><'] = '@parameter.inner',
+                    ['<leader>f<'] = '@function.outer',
+                },
             },
         },
         autopairs = { enable = true },
