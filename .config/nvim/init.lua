@@ -682,6 +682,7 @@ local map = require('utils').map
 
 -- set leader to space
 vim.g.mapleader = ' '
+vim.g.maplocalleader = ','
 -- <space><space> switches between buffers
 -- map('n', '<leader><leader>', ':b#<CR>')
 
@@ -752,8 +753,8 @@ map('n', 'x', '"_x') -- delete char without yank
 map('x', 'x', '"_x') -- delete visual selection without yank
 
 -- paste in visual mode and keep available
-map('x', 'p', '"_dP')
--- map('x', 'P', '"_dP')
+map('x', 'p', [['pgv"'.v:register.'y`>']], { expr = true, noremap = true })
+map('x', 'P', [['Pgv"'.v:register.'y`>']], { expr = true, noremap = true })
 
 -- edit & source init.lua
 map('n', '<leader>v', ':e $MYVIMRC<CR>')
