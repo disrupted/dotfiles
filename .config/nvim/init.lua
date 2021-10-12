@@ -26,7 +26,7 @@ packer.startup(function()
         'numToStr/Comment.nvim',
         event = { 'BufWinEnter', 'BufNewFile' },
         config = function()
-            require('Comment').setup()
+            require('conf.comment').config()
         end,
     }
     use {
