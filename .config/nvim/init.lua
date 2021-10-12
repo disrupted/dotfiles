@@ -428,7 +428,7 @@ cmd [[autocmd VimResized * wincmd =]]
 -- Trim trailing whitespace and trailing blank lines on save
 function _G.trim_trailing_whitespace()
     local current_view = fn.winsaveview()
-    cmd [[keeppatterns %s/\s\+$//e]]
+    cmd [[silent keepjumps keeppatterns %s/\s\+$//e]]
     fn.winrestview(current_view)
 end
 cmd [[command! TrimWhitespace lua trim_trailing_whitespace()]]
