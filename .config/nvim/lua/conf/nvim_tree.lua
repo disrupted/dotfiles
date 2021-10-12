@@ -36,12 +36,6 @@ function M.config()
             symlink = '',
             symlink_open = '',
         },
-        lsp = {
-            hint = '',
-            info = '',
-            warning = '',
-            error = '',
-        },
     }
 
     local cb = require('nvim-tree.config').nvim_tree_callback
@@ -55,7 +49,15 @@ function M.config()
         open_on_tab = false,
         hijack_cursor = false,
         update_cwd = true,
-        lsp_diagnostics = true,
+        diagnostics = {
+            enable = true,
+            icons = {
+                hint = '',
+                info = '',
+                warning = '',
+                error = '',
+            },
+        },
         update_focused_file = {
             enable = true,
             update_cwd = false,
