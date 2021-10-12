@@ -397,6 +397,17 @@ packer.startup(function()
     }
     use { 'ellisonleao/glow.nvim', cmd = 'Glow' }
     use { 'nathom/filetype.nvim' }
+    use {
+        'ThePrimeagen/refactoring.nvim',
+        module = 'refactoring',
+        setup = function()
+            require('conf.refactoring').setup()
+        end,
+        config = function()
+            require('conf.refactoring').setup()
+        end,
+        wants = { 'plenary.nvim', 'nvim-treesitter' },
+    }
 end)
 
 -----------------------------------------------------------------------------//
