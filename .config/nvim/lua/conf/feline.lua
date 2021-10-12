@@ -191,11 +191,15 @@ local function file_path(winid)
         return ''
     end
     local filename = api.nvim_buf_get_name(bufnr)
-    local fp = fn.fnamemodify(filename, ':~:.:h')
+    local fp = fn.fnamemodify(filename, ':~:.')
+    if fn.fnamemodify(filename, ':t') ~= '' then
+        -- not unnamed file
+        fp = fn.fnamemodify(fp, ':h')
+    end
     local tbl = split(fp, '/')
     local len = #tbl
 
-    if len > 2 and not len == 3 and not tbl[0] == '~' then
+    if len > 2 and not tbl[0] == '~' or len > 3 then
         return '…/' .. table.concat(tbl, '/', len - 1) .. '/' -- shorten filepath to last 2 folders
         -- alternative: only 1 containing folder using vim builtin function
         -- return '…/' .. fn.fnamemodify(fn.expand '%', ':p:h:t') .. '/'
