@@ -290,7 +290,7 @@ function M.config()
         vim.cmd [[autocmd CursorHoldI <buffer> silent! lua vim.lsp.buf.signature_help()]]
 
         -- print('LSP attached.')
-        vim.api.nvim_echo({ { 'LSP attached.' } }, false, {})
+        -- vim.api.nvim_echo({ { 'LSP attached.' } }, false, {})
     end
 
     vim.cmd [[packadd pylance.nvim]]
@@ -309,6 +309,10 @@ function M.config()
                     indexing = true,
                     diagnosticMode = 'workspace',
                     completeFunctionParens = true,
+                    reportMissingTypeStubs = true,
+                    reportImportCycles = true,
+                    strictParameterNoneValue = true,
+                    strictListInference = true,
                 },
             },
         },
@@ -523,7 +527,7 @@ function M.config()
                 },
             },
         }
-        vim.api.nvim_command 'noautocmd :edit'
+        -- vim.api.nvim_command 'noautocmd :edit'
     end
 
     vim.cmd [[
