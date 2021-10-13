@@ -195,7 +195,7 @@ ls.snippets = {
             i(4, 'str'),
             t ') -> ',
             -- return type
-            i(4, 'None'),
+            i(5, 'None'),
             -- Linebreak
             t { ':', '\t' },
             i(0, 'pass'),
