@@ -521,6 +521,11 @@ export _ZO_FZF_OPTS=$FZF_DEFAULT_OPTS'
 --height=7'
 
 #####################
+# HOMEBREW          #
+#####################
+export HOMEBREW_CASK_OPTS=--no-quarantine
+
+#####################
 # MISC              #
 #####################
 # For compilers and pkgconfig to find zlib
