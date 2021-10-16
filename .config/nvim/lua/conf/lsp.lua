@@ -378,6 +378,15 @@ function M.config()
         },
     }
 
+    lspconfig.eslint.setup {
+        on_attach = function(client)
+            client.resolved_capabilities.document_formatting = true
+            custom_attach(client)
+        end,
+        capabilities = capabilities,
+        flags = { debounce_text_changes = 500 },
+    }
+
     -- EFM Universal Language Server
     -- TODO: replaced by null-ls, can be removed if everything works well
     -- https://github.com/mattn/efm-langserver
