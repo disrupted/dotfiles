@@ -764,8 +764,12 @@ map('n', 'x', '"_x') -- delete char without yank
 map('x', 'x', '"_x') -- delete visual selection without yank
 
 -- paste in visual mode and keep available
-map('x', 'p', [['pgv"'.v:register.'y`>']], { expr = true, noremap = true })
-map('x', 'P', [['Pgv"'.v:register.'y`>']], { expr = true, noremap = true })
+local noremapexpr = { expr = true, noremap = true }
+map('x', 'p', [['pgv"'.v:register.'y`>']], noremapexpr)
+map('x', 'P', [['Pgv"'.v:register.'y`>']], noremapexpr)
+
+-- select last inserted text
+map('n', 'gV', [['`[' . strpart(getregtype(), 0, 1) . '`]']], noremapexpr)
 
 -- edit & source init.lua
 map('n', '<leader>v', ':e $MYVIMRC<CR>')
