@@ -170,6 +170,8 @@
     # Create new branch off of default origin branch (origin/master or origin/main)
     newbranch = "!f() { [[ -n $@ ]] && git fetch origin && git checkout -b \"$@\" origin/$(git main) && git branch --unset-upstream; }; f"
     bclone = clone --bare
+    # Delete local branches that no longer exist on the remote
+    gone = !git fetch -p && git branch -vv | grep 'origin/.*: gone]' | awk '{print $1}' | xargs git branch -D
 
     # Open repository in the browser
     open = "!open $(git remote get-url origin)"
