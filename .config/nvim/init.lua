@@ -176,15 +176,6 @@ packer.startup(function()
         end,
     }
     use {
-        'NTBBloodbath/galaxyline.nvim',
-        event = { 'VimEnter' },
-        config = function()
-            require 'conf.statusline'
-        end,
-        wants = { 'nvim-web-devicons' },
-        disable = true,
-    }
-    use {
         'famiu/feline.nvim',
         branch = 'develop',
         -- tag = 'v0.2',
