@@ -93,6 +93,7 @@ function M.config()
 
     vim.cmd [[packadd nvim-dap-ui]]
     require('dapui').setup {
+        icons = { expanded = '', collapsed = '' },
         sidebar = {
             open_on_start = false,
             elements = {
