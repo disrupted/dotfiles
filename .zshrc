@@ -440,7 +440,7 @@ bindkey "^[[1;5B" down-line-or-history  # [CTRL] + Cursor down
 export EDITOR='nvim'
 export VISUAL=$EDITOR
 export PAGER='less'
-export LESS='-F -g -i -M -R -S -w -X -z-4 -~'
+export LESS='-F -g -i -M -R -S -w -X -z-4 -~ --mouse'
 export LESS_TERMCAP_mb=$'\E[6m'     # begin blinking
 export LESS_TERMCAP_md=$'\E[34m'    # begin bold
 export LESS_TERMCAP_us=$'\E[4;32m'  # begin underline
