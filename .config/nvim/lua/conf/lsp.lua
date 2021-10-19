@@ -289,8 +289,7 @@ function M.config()
         vim.cmd [[autocmd User DiagnosticsChanged lua show_diagnostics()]]
         vim.cmd [[autocmd CursorHoldI <buffer> silent! lua vim.lsp.buf.signature_help()]]
 
-        -- print('LSP attached.')
-        -- vim.api.nvim_echo({ { 'LSP attached.' } }, false, {})
+        vim.notify 'LSP attached.'
     end
 
     vim.cmd [[packadd pylance.nvim]]
@@ -380,7 +379,7 @@ function M.config()
 
     lspconfig.eslint.setup {
         on_attach = function(client)
-            client.resolved_capabilities.document_formatting = true
+            client.resolved_capabilities.document_formatting = false
             custom_attach(client)
         end,
         capabilities = capabilities,
