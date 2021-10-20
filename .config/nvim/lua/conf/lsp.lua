@@ -18,6 +18,7 @@ function M.setup()
         underline = true,
         -- signs = { severity = { min = vim.diagnostic.severity.WARN } },
         signs = true,
+        float = { show_header = false, source = 'always' },
         virtual_text = false,
         -- virtual_text = {
         --     -- spacing = 4,
@@ -187,7 +188,7 @@ function M.config()
         buf_set_keymap(
             'n',
             '<space>d',
-            '<cmd>lua vim.diagnostic.show_line_diagnostics { show_header = false, source = "always", border = "single", focusable = false, severity_sort = true }<CR>',
+            '<cmd>lua vim.diagnostic.open_float(0, {{ border = "single", focusable = false, severity_sort = true }, scope = "line"})<CR>',
             opts
         )
         buf_set_keymap(
@@ -284,7 +285,6 @@ function M.config()
             )
         end
 
-        -- vim.cmd [[autocmd CursorHold * lua vim.diagnostic.show_position_diagnostics { show_header = false, source = 'if_many', border = 'single', focusable = false }]]
         vim.cmd [[autocmd CursorHold,CursorHoldI <buffer> lua show_diagnostics()]]
         vim.cmd [[autocmd User DiagnosticsChanged lua show_diagnostics()]]
         vim.cmd [[autocmd CursorHoldI <buffer> silent! lua vim.lsp.buf.signature_help()]]
@@ -500,6 +500,7 @@ function M.config()
                 flags = { debounce_text_changes = 150 },
                 settings = {
                     ['rust-analyzer'] = {
+                        diagnostics = { enable = true },
                         assist = {
                             importGranularity = 'module',
                             importPrefix = 'by_self',
