@@ -2,7 +2,7 @@ function mkcd() { mkdir -p $1; cd $1;}
 alias cp='cp -riv'
 alias mv='mv -iv'
 alias mkdir='mkdir -pv'
-alias v='nvim --startuptime /tmp/nvim-startuptime'
+alias v='nvim'
 alias l='exa --sort=changed --icons -la --git --git-ignore --ignore-glob=".DS_Store|__MACOSX|__pycache__"'
 alias la='exa --group-directories-first --icons -la'
 alias ll='exa --group-directories-first --icons -la --color-scale --time-style=long-iso --git --git-ignore --ignore-glob=".git|.DS_Store|__MACOSX|__pycache__" -T -L2'
