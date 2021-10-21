@@ -763,8 +763,8 @@ map('x', 'P', [['Pgv"'.v:register.'y`>']], noremapexpr)
 map('n', 'gV', [['`[' . strpart(getregtype(), 0, 1) . '`]']], noremapexpr)
 
 -- edit & source init.lua
-map('n', '<leader>v', ':e $MYVIMRC<CR>')
-map('n', '<leader>s', ':luafile $MYVIMRC<CR>')
+-- map('n', '<leader>v', ':e $MYVIMRC<CR>')
+-- map('n', '<leader>s', ':luafile $MYVIMRC<CR>')
 
 -- Vimdiff as mergetool
 map('n', '<leader>1', ':diffget //1<CR>')

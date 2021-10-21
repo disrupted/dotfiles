@@ -63,6 +63,11 @@ function M.setup()
     -- ) -- grep for word under the cursor
     map(
         'n',
+        '<Space>s',
+        '<cmd>lua require "telescope.builtin".lsp_dynamic_workspace_symbols(options)<CR>'
+    )
+    map(
+        'n',
         ',h',
         '<cmd>lua require "telescope.builtin".help_tags(options)<CR>'
     )
