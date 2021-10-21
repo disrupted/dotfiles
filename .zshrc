@@ -454,7 +454,8 @@ export LANG='en_US.UTF-8'
 export LC_ALL='en_US.UTF-8'
 export WORDCHARS='~!#$%^&*(){}[]<>?.+;'  # sane moving between words on the prompt
 export GPG_TTY=$(tty)
-export PATH="/opt/homebrew/bin:$PATH"
+export PATH="/opt/homebrew/bin:$PATH"  # Homebrew
+export PATH="/opt/homebrew/opt/llvm/bin:$PATH"  # llvm (c, cpp)
 export PATH="$PATH:~/.local/bin"  # for pipx
 export GOPATH="$HOME/go"
 export PATH="$PATH:$GOPATH/bin"
@@ -528,9 +529,9 @@ export HOMEBREW_CASK_OPTS=--no-quarantine
 #####################
 # MISC              #
 #####################
-# For compilers and pkgconfig to find zlib
-export LDFLAGS="-L/opt/homebrew/opt/zlib/lib -L/opt/homebrew/opt/bzip2/lib"
-export CPPFLAGS="-I/opt/homebrew/opt/zlib/include -I/opt/homebrew/opt/bzip2/include"
+# For compilers and pkgconfig to find zlib, bzip2, llvm (c, cpp)
+export LDFLAGS="-L/opt/homebrew/opt/zlib/lib -L/opt/homebrew/opt/bzip2/lib -L/opt/homebrew/opt/llvm/lib -Wl,-rpath,/opt/homebrew/opt/llvm/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/zlib/include -I/opt/homebrew/opt/bzip2/include -I/opt/homebrew/opt/llvm/include"
 export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} /opt/homebrew/opt/zlib/lib/pkgconfig"
 
 source "/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
