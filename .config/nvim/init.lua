@@ -265,7 +265,7 @@ packer.startup(function()
     use { 'mfussenegger/nvim-jdtls', opt = true }
     -- use { 'zsugabubus/crazy8.nvim', event = { 'BufRead' } } -- detect indentation automatically
     use {
-        'HungryJoe/trouble.nvim',
+        'folke/trouble.nvim',
         module = 'trouble',
         setup = function()
             require('conf.trouble').setup()
