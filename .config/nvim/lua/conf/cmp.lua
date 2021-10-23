@@ -96,7 +96,7 @@ function M.config()
             { name = 'nvim_lua' },
             { name = 'spell' },
             { name = 'path' },
-            { name = 'buffer' },
+            { name = 'buffer', keyword_length = 5 },
         },
         formatting = {
             format = function(_, vim_item)
