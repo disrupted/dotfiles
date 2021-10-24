@@ -98,6 +98,7 @@ packer.startup(function()
             { 'hrsh7th/cmp-buffer', after = 'nvim-cmp' },
             { 'hrsh7th/cmp-path', after = 'nvim-cmp' },
             { 'f3fora/cmp-spell', after = 'nvim-cmp' },
+            { 'petertriho/cmp-git', after = 'nvim-cmp', wants = 'plenary.nvim' },
         },
         -- after = 'LuaSnip',
     }
