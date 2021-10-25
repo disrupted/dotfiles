@@ -93,6 +93,7 @@ function M.config()
         sources = {
             { name = 'luasnip' },
             { name = 'nvim_lsp' },
+            { name = 'cmp_git' },
             { name = 'nvim_lua' },
             { name = 'spell' },
             { name = 'path' },
