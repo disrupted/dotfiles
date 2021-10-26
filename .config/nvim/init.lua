@@ -28,6 +28,12 @@ packer.startup(function()
         config = function()
             require('conf.comment').config()
         end,
+        requires = {
+            {
+                'JoosepAlviste/nvim-ts-context-commentstring',
+                module = 'ts_context_commentstring',
+            },
+        },
     }
     use {
         'nvim-treesitter/nvim-treesitter',
