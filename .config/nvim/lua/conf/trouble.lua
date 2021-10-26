@@ -25,6 +25,7 @@ function M.config()
         fold_open = '', -- ▾
         fold_closed = '', -- ▸
         indent_lines = false,
+        padding = false,
         signs = {
             error = '',
             warning = '',
