@@ -30,6 +30,15 @@ function M.config()
             TypeParameter = '',
         },
     }
+    local menu = {
+        luasnip = '[snip]',
+        nvim_lsp = '[LSP]',
+        cmp_git = '[git]',
+        nvim_lua = '[api]',
+        spell = '[spell]',
+        path = '[path]',
+        buffer = '[buf]',
+    }
 
     local cmp = require 'cmp'
 
@@ -100,12 +109,17 @@ function M.config()
             { name = 'buffer', keyword_length = 5 },
         },
         formatting = {
-            format = function(_, vim_item)
+            format = function(entry, vim_item)
+                -- source name
+                vim_item.menu = menu[entry.source.name]
+                -- lsp kinds
                 vim_item.kind = string.format(
                     '%s [%s]',
                     lsp.kinds[vim_item.kind],
                     vim_item.kind
                 )
+                -- shorten long items
+                vim_item.abbr = string.sub(vim_item.abbr, 1, 30)
                 return vim_item
             end,
         },
