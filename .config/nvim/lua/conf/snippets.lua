@@ -413,9 +413,8 @@ ls.snippets = {
 -- External Snippets {{{1
 -----------------------------------------------------------------------------//
 vim.cmd [[autocmd User LuasnipSnippetsAdded lua print 'snippets loaded']]
--- vim.cmd [[packadd friendly-snippets]]
 -- TODO: fix lazy_load
--- require('luasnip.loaders.from_vscode').load()
+require('luasnip.loaders.from_vscode').load { paths = './snippets' }
 
 -----------------------------------------------------------------------------//
 -- }}}1
