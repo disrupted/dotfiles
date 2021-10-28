@@ -90,6 +90,8 @@ function M.config()
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-Space>'] = cmp.mapping.complete(),
         ['<C-e>'] = cmp.mapping.close(),
+        ['<Up>'] = cmp.config.disable,
+        ['<Down>'] = cmp.config.disable,
     }
 
     cmp.setup {
