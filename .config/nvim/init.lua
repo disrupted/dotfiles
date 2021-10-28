@@ -95,7 +95,6 @@ packer.startup(function()
     use {
         'hrsh7th/nvim-cmp',
         event = { 'InsertEnter' },
-        after = { 'nvim-autopairs' },
         config = function()
             require('conf.cmp').config()
         end,
@@ -114,7 +113,6 @@ packer.startup(function()
                 after = 'nvim-cmp',
             },
         },
-        -- after = 'LuaSnip',
     }
     use {
         'abecodes/tabout.nvim',
