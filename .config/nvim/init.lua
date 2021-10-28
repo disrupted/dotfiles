@@ -90,11 +90,12 @@ packer.startup(function()
         config = function()
             require 'conf.snippets'
         end,
-        requires = { 'rafamadriz/friendly-snippets', opt = true },
+        requires = { { 'rafamadriz/friendly-snippets', opt = true } },
     }
     use {
         'hrsh7th/nvim-cmp',
         event = { 'InsertEnter' },
+        after = { 'nvim-autopairs' },
         config = function()
             require('conf.cmp').config()
         end,
@@ -220,7 +221,7 @@ packer.startup(function()
     use {
         'windwp/nvim-autopairs',
         event = { 'InsertCharPre' },
-        after = { 'nvim-cmp', 'nvim-treesitter' },
+        after = { 'nvim-treesitter' },
         config = function()
             require('conf.autopairs').config()
         end,

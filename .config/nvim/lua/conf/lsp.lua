@@ -307,7 +307,7 @@ function M.config()
                     typeCheckingMode = 'basic', -- 'strict' or 'basic'
                     indexing = true,
                     diagnosticMode = 'workspace',
-                    completeFunctionParens = true,
+                    completeFunctionParens = false,
                     reportMissingTypeStubs = true,
                     reportImportCycles = true,
                     strictParameterNoneValue = true,

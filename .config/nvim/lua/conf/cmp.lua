@@ -127,6 +127,12 @@ function M.config()
         },
         experimental = { ghost_text = true },
     }
+
+    -- autopairs integration: insert () after selecting function or method item
+    cmp.event:on(
+        'confirm_done',
+        require('nvim-autopairs.completion.cmp').on_confirm_done()
+    )
 end
 
 return M
