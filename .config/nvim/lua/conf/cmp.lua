@@ -31,13 +31,13 @@ function M.config()
         },
     }
     local menu = {
-        luasnip = '[snip]',
+        luasnip = '[Snip]',
         nvim_lsp = '[LSP]',
-        cmp_git = '[git]',
-        nvim_lua = '[api]',
-        spell = '[spell]',
-        path = '[path]',
-        buffer = '[buf]',
+        cmp_git = '[Git]',
+        nvim_lua = '[API]',
+        spell = '[Spell]',
+        path = '[Path]',
+        buffer = '[Buf]',
     }
 
     local cmp = require 'cmp'
@@ -118,7 +118,7 @@ function M.config()
                 vim_item.kind = string.format(
                     '%s [%s]',
                     lsp.kinds[vim_item.kind],
-                    vim_item.kind
+                    string.lower(vim_item.kind)
                 )
                 -- shorten long items
                 vim_item.abbr = string.sub(vim_item.abbr, 1, 30)
