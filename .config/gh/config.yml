@@ -13,3 +13,5 @@ aliases:
   p: pr view --comments
   issues: issue list
   prs: pr list
+  assigned: pr list --search "is:open is:pr assignee:@me"
+  review: pr list --search "is:open is:pr review-requested:@me"
