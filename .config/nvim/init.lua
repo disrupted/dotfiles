@@ -503,8 +503,8 @@ opt.cursorline = true
 cmd [[
     augroup cursorline_focus
         autocmd!
-        autocmd WinEnter * if (&bt == '') | setlocal cursorline
-        autocmd WinLeave * if (&bt == '') | setlocal nocursorline
+        autocmd WinEnter <buffer> if (&bt == '') | setlocal cursorline
+        autocmd WinLeave <buffer> if (&bt == '') | setlocal nocursorline
     augroup END
     ]]
 opt.wrap = true
