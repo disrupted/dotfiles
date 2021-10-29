@@ -310,8 +310,15 @@ packer.startup(function()
         end,
     }
     use {
+        'https://gitlab.com/yorickpeterse/nvim-pqf',
+        event = 'VimEnter',
+        config = function()
+            require('pqf').setup()
+        end,
+    }
+    use {
         'kevinhwang91/nvim-bqf',
-        event = { 'BufWinEnter quickfix' },
+        ft = 'qf',
         config = function()
             require('conf.quickfix').config()
         end,
