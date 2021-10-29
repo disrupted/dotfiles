@@ -354,6 +354,84 @@ function M.config()
         },
     }
 
+    -- JSON
+    -- vscode-json-language-server
+    lspconfig.jsonls.setup {
+        on_attach = function(client)
+            client.resolved_capabilities.document_formatting = false
+            custom_attach(client)
+        end,
+        capabilities = capabilities,
+        flags = { debounce_text_changes = 150 },
+        filetypes = { 'json', 'jsonc' },
+        settings = {
+            json = {
+                schemas = {
+                    {
+                        fileMatch = { 'package.json' },
+                        url = 'https://json.schemastore.org/package.json',
+                    },
+                    {
+                        fileMatch = { 'tsconfig*.json' },
+                        url = 'https://json.schemastore.org/tsconfig.json',
+                    },
+                    {
+                        fileMatch = {
+                            '.prettierrc',
+                            '.prettierrc.json',
+                            'prettier.config.json',
+                        },
+                        url = 'https://json.schemastore.org/prettierrc.json',
+                    },
+                    {
+                        fileMatch = { '.eslintrc', '.eslintrc.json' },
+                        url = 'https://json.schemastore.org/eslintrc.json',
+                    },
+                    {
+                        fileMatch = {
+                            '.stylelintrc',
+                            '.stylelintrc.json',
+                            'stylelint.config.json',
+                        },
+                        url = 'http://json.schemastore.org/stylelintrc.json',
+                    },
+                },
+            },
+        },
+    }
+
+    -- HTML
+    -- vscode-html-language-server
+    lspconfig.html.setup {
+        on_attach = function(client)
+            client.resolved_capabilities.document_formatting = false
+            custom_attach(client)
+        end,
+        capabilities = capabilities,
+        flags = { debounce_text_changes = 150 },
+    }
+
+    -- CSS
+    -- vscode-css-language-server
+    lspconfig.cssls.setup {
+        on_attach = function(client)
+            client.resolved_capabilities.document_formatting = false
+            custom_attach(client)
+        end,
+        capabilities = capabilities,
+        flags = { debounce_text_changes = 150 },
+    }
+
+    -- vscode-eslint-language-server
+    lspconfig.eslint.setup {
+        on_attach = function(client)
+            client.resolved_capabilities.document_formatting = false
+            custom_attach(client)
+        end,
+        capabilities = capabilities,
+        flags = { debounce_text_changes = 500 },
+    }
+
     -- TYPESCRIPT
     -- https://github.com/theia-ide/typescript-language-server
     lspconfig.tsserver.setup {
