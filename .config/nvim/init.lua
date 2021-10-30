@@ -385,6 +385,7 @@ packer.startup(function()
     -- UI component library
     use {
         'MunifTanjim/nui.nvim',
+        opt = true,
     }
     -- Syntax for Helm chart templates
     use { 'towolf/vim-helm', ft = 'helm' }
