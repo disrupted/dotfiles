@@ -71,6 +71,7 @@ packer.startup(function()
     use {
         'neovim/nvim-lspconfig',
         event = { 'BufRead' },
+        after = 'nvim-treesitter',
         setup = function()
             require('conf.lsp').setup()
         end,

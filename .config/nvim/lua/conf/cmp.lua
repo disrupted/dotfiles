@@ -118,10 +118,10 @@ function M.config()
                 vim_item.kind = string.format(
                     '%s [%s]',
                     lsp.kinds[vim_item.kind],
-                    string.lower(vim_item.kind)
+                    vim_item.kind:lower()
                 )
                 -- shorten long items
-                vim_item.abbr = string.sub(vim_item.abbr, 1, 30)
+                vim_item.abbr = vim_item.abbr:sub(1, 30)
                 return vim_item
             end,
         },
