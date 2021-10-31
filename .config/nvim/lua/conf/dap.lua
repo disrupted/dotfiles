@@ -2,6 +2,8 @@ local M = {}
 
 function M.setup()
     function _G.__dap_continue()
+        vim.cmd [[packadd nvim-dap-virtual-text]]
+        require('nvim-dap-virtual-text').setup()
         require('dap').continue()
         -- require('dapui').open()
         vim.cmd 'highlight! EndOfBuffer guibg=bg guifg=bg'
@@ -35,7 +37,6 @@ function M.setup()
 end
 
 function M.config()
-    vim.g.dap_virtual_text = true
     local dap = require 'dap'
     dap.defaults.fallback.terminal_win_cmd = '15split new'
 

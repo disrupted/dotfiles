@@ -130,11 +130,7 @@ packer.startup(function()
         module = 'dap',
         requires = {
             { 'mfussenegger/nvim-dap-python', opt = true },
-            {
-                'theHamsta/nvim-dap-virtual-text',
-                opt = true,
-                after = 'nvim-treesitter',
-            },
+            { 'theHamsta/nvim-dap-virtual-text', opt = true },
             { 'rcarriga/nvim-dap-ui', opt = true },
             { 'David-Kunz/jester', opt = true },
         },
