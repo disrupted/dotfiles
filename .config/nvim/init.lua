@@ -767,6 +767,13 @@ map('x', 'J', ':move \'>+1<CR>gv-gv')
 -- ctrl + a: select all
 map('n', '<C-a>', '<esc>ggVG<CR>')
 
+-- navigate paragraphs without altering jumplist
+map('n', '}', ':<C-u>execute "keepjumps norm! " . v:count1 . "}"<CR>')
+map('n', '{', ':<C-u>execute "keepjumps norm! " . v:count1 . "{"<CR>')
+
+-- alternate file
+map('n', '<C-6>', '<C-^>')
+
 -- sensible defaults
 map('', 'Q', '') -- disable
 map('n', 'x', '"_x') -- delete char without yank
