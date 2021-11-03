@@ -345,6 +345,7 @@ packer.startup(function()
         config = function()
             require('todo-comments').setup {}
         end,
+        wants = { 'plenary.nvim' },
     }
     use {
         'famiu/bufdelete.nvim',
@@ -377,7 +378,7 @@ packer.startup(function()
         config = function()
             require('conf.harpoon').config()
         end,
-        requires = { 'nvim-lua/plenary.nvim', 'nvim-lua/popup.nvim' },
+        requires = { 'nvim-lua/plenary.nvim' },
     }
     -- UI component library
     use {
