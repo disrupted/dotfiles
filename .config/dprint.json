@@ -2,7 +2,10 @@
   "$schema": "https://dprint.dev/schemas/v0.json",
   "incremental": true,
   "typescript": {
-    "indentWidth": 2
+    "indentWidth": 2,
+    "lineWidth": 80,
+    "arguments.trailingCommas": "never",
+    "parameters.trailingCommas": "never"
   },
   "json": {},
   "markdown": {},
