@@ -70,7 +70,7 @@ function M.config()
                     key = { '<CR>', 'o', '<2-LeftMouse>', 'l' },
                     cb = cb 'edit',
                 },
-                { key = { '<2-RightMouse>', '<C-]>' }, cb = cb 'cd' },
+                { key = { '<2-RightMouse>' }, cb = cb 'cd' },
                 { key = '<C-v>', cb = cb 'vsplit' },
                 { key = '<C-x>', cb = cb 'split' },
                 { key = '<C-t>', cb = cb 'tabnew' },
