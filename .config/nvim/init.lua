@@ -320,7 +320,13 @@ packer.startup(function()
             require('conf.quickfix').config()
         end,
     }
-    use { 'sindrets/diffview.nvim', cmd = 'DiffviewOpen' }
+    use {
+        'sindrets/diffview.nvim',
+        cmd = { 'DiffviewOpen', 'DiffviewFileHistory' },
+        config = function()
+            require('conf.diffview').config()
+        end,
+    }
     use {
         'michaelb/sniprun',
         run = 'bash ./install.sh',
