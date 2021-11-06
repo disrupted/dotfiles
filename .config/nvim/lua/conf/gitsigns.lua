@@ -5,19 +5,19 @@ function M.config()
         signs = {
             add = {
                 hl = 'GitSignsAdd',
-                text = '+',
+                text = '▍',
                 numhl = 'GitSignsAddNr',
                 linehl = 'GitSignsAddLn',
             },
             change = {
                 hl = 'GitSignsChange',
-                text = '~',
+                text = '▍',
                 numhl = 'GitSignsChangeNr',
                 linehl = 'GitSignsChangeLn',
             },
             delete = {
                 hl = 'GitSignsDelete',
-                text = '_',
+                text = '▍',
                 show_count = true,
                 numhl = 'GitSignsDeleteNr',
                 linehl = 'GitSignsDeleteLn',
@@ -31,7 +31,7 @@ function M.config()
             },
             changedelete = {
                 hl = 'GitSignsChange',
-                text = '~',
+                text = '▍',
                 show_count = true,
                 numhl = 'GitSignsChangeNr',
                 linehl = 'GitSignsChangeLn',
@@ -82,7 +82,7 @@ function M.config()
             ['o ih'] = ':<C-U>lua require"gitsigns.actions".select_hunk()<CR>',
             ['x ih'] = ':<C-U>lua require"gitsigns.actions".select_hunk()<CR>',
         },
-        watch_gitdir = { interval = 1000 },
+        watch_gitdir = { interval = 1000, follow_files = true },
         attach_to_untracked = true,
         current_line_blame = false,
         current_line_blame_opts = {
@@ -105,7 +105,6 @@ function M.config()
             row = 0,
             col = 1,
         },
-        diff_opts = { internal = true },
         yadm = { enable = true },
     }
 
