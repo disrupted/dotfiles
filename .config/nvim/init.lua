@@ -371,6 +371,9 @@ packer.startup(function()
     use {
         'pwntester/octo.nvim',
         cmd = 'Octo',
+        setup = function()
+            require('conf.octo').setup()
+        end,
         config = function()
             require('conf.octo').config()
         end,
