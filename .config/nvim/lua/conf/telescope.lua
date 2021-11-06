@@ -112,6 +112,7 @@ function M.config()
             winblend = 7,
             set_env = { COLORTERM = 'truecolor' },
             color_devicons = true,
+            scroll_strategy = 'limit',
         },
         pickers = { live_grep = { only_sort_text = true } },
         extensions = {
