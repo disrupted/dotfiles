@@ -188,7 +188,7 @@ zinit ice wait lucid id-as'forgit' atload'alias gr=forgit::checkout::file'
 zinit load 'wfxr/forgit'
 # FORYADM
 zinit ice wait lucid id-as'foryadm'
-zinit load 'indianboy42/foryadm'
+zinit load 'disrupted/foryadm'
 # LAZYGIT
 zinit ice lucid wait'0' as'program' from'gh-r' mv'lazygit* -> lazygit' atload'alias lg=lazygit'
 zinit light 'jesseduffield/lazygit'
