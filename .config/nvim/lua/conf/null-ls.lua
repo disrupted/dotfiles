@@ -86,6 +86,12 @@ function M.config()
                 'graphql',
             },
         },
+        null_ls.builtins.formatting.uncrustify.with {
+            condition = function(utils)
+                return utils.root_has_file 'uncrustify.cfg'
+            end,
+            extra_args = { '-c', 'src/uncrustify.cfg' }, -- for neovim/neovim repo
+        },
         null_ls.builtins.formatting.shfmt.with {
             extra_args = { '-i', '4', '-ci' },
         },
