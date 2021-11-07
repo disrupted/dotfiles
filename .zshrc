@@ -12,7 +12,7 @@ fi
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
     print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
     command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
-    command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
+    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.zinit/bin" && \
         print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
         print -P "%F{160}▓▒░ The clone has failed.%f%b"
 fi
@@ -149,7 +149,7 @@ zinit ice wait'1' lucid
 zinit light Aloxaf/fzf-tab
 # SYNTAX HIGHLIGHTING
 zinit ice wait'0c' lucid atinit'zpcompinit;zpcdreplay'
-zinit light zdharma/fast-syntax-highlighting
+zinit light zdharma-continuum/fast-syntax-highlighting
 # EXA
 # zinit ice wait'2' lucid id-as'exa' from'gh-r' as'program' mv'bin/exa* -> exa' \
 #     cp'completions/exa.zsh -> _exa' \
@@ -310,7 +310,7 @@ zinit wait'1' lucid \
 zinit light-mode lucid wait has'kubectl' for \
   id-as'kubectl_completion' as'completion' \
   atclone'kubectl completion zsh > _kubectl' \
-  atpull'%atclone' run-atpull zdharma/null
+  atpull'%atclone' run-atpull zdharma-continuum/null
 # Hyperfine benchmarking tool
 # zinit ice lucid wait'0' as'program' id-as'hyperfine' from'gh-r' \
 #   mv'hyperfine*/hyperfine -> hyperfine'
