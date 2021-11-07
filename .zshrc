@@ -72,13 +72,16 @@ ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(expand-or-complete bracketed-paste accept-line p
 zinit ice wait'0b' lucid
 zinit light b4b4r07/enhancd
 export ENHANCD_FILTER=fzf:fzy:peco
+
 # HISTORY SUBSTRING SEARCHING
-zinit ice wait'0b' lucid atload'bindkey "$terminfo[kcuu1]" history-substring-search-up; bindkey "$terminfo[kcud1]" history-substring-search-down'
+zinit ice wait'0b' lucid atload'!export HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND="bg=green,fg=black,bold"'
 zinit light zsh-users/zsh-history-substring-search
+setopt HIST_IGNORE_ALL_DUPS
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
+
 # TAB COMPLETIONS
 zinit light-mode for \
     blockf \
