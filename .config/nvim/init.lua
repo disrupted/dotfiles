@@ -427,6 +427,13 @@ packer.startup(function()
         end,
         wants = { 'plenary.nvim', 'nvim-treesitter' },
     }
+    use {
+        'rcarriga/nvim-notify',
+        config = function()
+            require('conf.notify').config()
+        end,
+        event = 'VimEnter',
+    }
 end)
 
 -----------------------------------------------------------------------------//
