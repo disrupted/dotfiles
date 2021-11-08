@@ -684,8 +684,12 @@ function M.config()
     }
 
     -- reload if buffer has file, to attach LSP
-    local fname = vim.api.nvim_buf_get_name(0)
-    if fname and #fname > 0 then
+    if
+        #vim.api.nvim_buf_get_name(0) > 0
+        and vim.bo.filetype ~= nil
+        and vim.bo.modifiable == true
+        and vim.bo.modified == false
+    then
         vim.cmd 'bufdo e'
     end
 end
