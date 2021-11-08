@@ -357,9 +357,9 @@ function M.config()
     -- JSON
     -- vscode-json-language-server
     lspconfig.jsonls.setup {
-        on_attach = function(client)
+        on_attach = function(client, bufnr)
             client.resolved_capabilities.document_formatting = false
-            custom_attach(client)
+            custom_attach(client, bufnr)
         end,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
@@ -403,9 +403,9 @@ function M.config()
     -- HTML
     -- vscode-html-language-server
     lspconfig.html.setup {
-        on_attach = function(client)
+        on_attach = function(client, bufnr)
             client.resolved_capabilities.document_formatting = false
-            custom_attach(client)
+            custom_attach(client, bufnr)
         end,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
@@ -414,9 +414,9 @@ function M.config()
     -- CSS
     -- vscode-css-language-server
     lspconfig.cssls.setup {
-        on_attach = function(client)
+        on_attach = function(client, bufnr)
             client.resolved_capabilities.document_formatting = false
-            custom_attach(client)
+            custom_attach(client, bufnr)
         end,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
@@ -424,9 +424,9 @@ function M.config()
 
     -- vscode-eslint-language-server
     lspconfig.eslint.setup {
-        on_attach = function(client)
+        on_attach = function(client, bufnr)
             client.resolved_capabilities.document_formatting = false
-            custom_attach(client)
+            custom_attach(client, bufnr)
         end,
         capabilities = capabilities,
         flags = { debounce_text_changes = 500 },
@@ -435,9 +435,9 @@ function M.config()
     -- TYPESCRIPT
     -- https://github.com/theia-ide/typescript-language-server
     lspconfig.tsserver.setup {
-        on_attach = function(client)
+        on_attach = function(client, bufnr)
             client.resolved_capabilities.document_formatting = false
-            custom_attach(client)
+            custom_attach(client, bufnr)
         end,
         capabilities = capabilities,
         flags = { debounce_text_changes = 500 },
@@ -582,7 +582,10 @@ function M.config()
 
     -- C / C++
     lspconfig.clangd.setup {
-        on_attach = custom_attach,
+        on_attach = function(client, bufnr)
+            client.resolved_capabilities.document_formatting = false
+            custom_attach(client, bufnr)
+        end,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
     }
