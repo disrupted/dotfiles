@@ -42,4 +42,13 @@ function M.map(mode, lhs, rhs, opts)
     vim.api.nvim_set_keymap(mode, lhs, rhs, options)
 end
 
+-- from CosmicNvim
+function M.get_relative_path(file_path)
+    local plenary_path = require 'plenary.path'
+    local parsed_path, _ = file_path:gsub('file://', '')
+    local path = plenary_path:new(parsed_path)
+    local relative_path = path:make_relative(vim.fn.getcwd())
+    return './' .. relative_path
+end
+
 return M
