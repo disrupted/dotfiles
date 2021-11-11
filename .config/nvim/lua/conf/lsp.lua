@@ -117,6 +117,12 @@ function M.config()
     local custom_attach = function(client, bufnr)
         lsp_status.on_attach(client)
 
+        vim.api.nvim_buf_set_option(
+            bufnr,
+            'formatexpr',
+            'v:lua.vim.lsp.formatexpr'
+        )
+
         -- Mappings
         local function buf_set_keymap(...)
             vim.api.nvim_buf_set_keymap(bufnr, ...)
