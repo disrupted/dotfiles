@@ -17,6 +17,43 @@ function M.setup()
         vim.cmd 'highlight clear EndOfBuffer'
         vim.opt.signcolumn = 'yes:1'
     end
+    function _G.__dap_test()
+        local ft = vim.bo.filetype
+        if ft == 'python' then
+            require('dap-python').test_method()
+        elseif ft == 'typescriptreact' then
+            vim.cmd [[packadd jester]]
+            require('jester').run {
+                cmd = 'npx jest -t \'$result\' -- $file',
+                identifiers = { 'test', 'it' },
+                prepend = { 'describe' },
+                expressions = { 'call_expression' },
+                path_to_jest = './node_modules/.bin/jest',
+                terminal_cmd = ':vsplit | terminal',
+                dap = {
+                    type = 'node2',
+                    request = 'launch',
+                    cwd = vim.fn.getcwd(),
+                    runtimeArgs = {
+                        '--inspect-brk',
+                        'node_modules/.bin/jest',
+                        '--no-coverage',
+                        '-t',
+                        '$result',
+                        '--',
+                        '$file',
+                    },
+                    sourceMaps = true,
+                    protocol = 'inspector',
+                    skipFiles = { '<node_internals>/**/*.js' },
+                    console = 'integratedTerminal',
+                    port = 9229,
+                },
+            }
+        else
+            vim.notify('No test runner for filetype', ft)
+        end
+    end
 
     -- Key bindings
     local map = require('utils').map
@@ -28,7 +65,7 @@ function M.setup()
     map('n', '<Space>d<', '<cmd>lua require("dap").step_out()<CR>')
     map('n', '<Space>db', '<cmd>lua require("dap").toggle_breakpoint()<CR>')
     map('n', '<Space>dr', '<cmd>lua require("dap").repl.open()<CR>')
-    map('n', '<Space>t', '<cmd>lua require("dap-python").test_method()<CR>')
+    map('n', '<Space>t', '<cmd>lua __dap_test()<CR>')
     map(
         'v',
         '<Space>ds',
