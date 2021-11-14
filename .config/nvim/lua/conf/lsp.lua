@@ -32,7 +32,13 @@ function M.setup()
     -- If the buffer has been edited before formatting has completed, do not try to
     -- apply the changes, by Lukas Reineke
     vim.lsp.handlers['textDocument/formatting'] = function(err, result, ctx, _)
-        if err ~= nil or result == nil then
+        if err ~= nil then
+            vim.notify('error formatting', vim.lsp.log_levels.ERROR)
+            return
+        end
+
+        if result == nil then
+            -- vim.notify('no formatting changes', vim.lsp.log_levels.DEBUG)
             return
         end
 
@@ -45,6 +51,7 @@ function M.setup()
             vim.api.nvim_win_set_cursor(0, pos)
             if bufnr == vim.api.nvim_get_current_buf() then
                 vim.cmd 'noautocmd :update'
+                -- vim.notify('formatting success', vim.lsp.log_levels.DEBUG)
 
                 -- Trigger post-formatting autocommand which can be used to refresh gitsigns
                 vim.cmd 'silent doautocmd <nomodeline> User FormatterPost'
