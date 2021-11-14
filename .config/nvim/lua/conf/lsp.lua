@@ -454,6 +454,7 @@ function M.config()
         end,
         capabilities = capabilities,
         flags = { debounce_text_changes = 500 },
+        root_dir = lspconfig.util.root_pattern 'package.json',
         commands = {
             OrganizeImports = {
                 function()
@@ -611,23 +612,26 @@ function M.config()
     }
 
     -- DENO
-    -- lspconfig.denols.setup {
-    --     on_attach = on_attach,
-    --     filetypes = {
-    --         'javascript',
-    --         'javascriptreact',
-    --         'javascript.jsx',
-    --         'typescript',
-    --         'typescriptreact',
-    --         'typescript.tsx',
-    --         'yaml',
-    --         'json',
-    --         'markdown',
-    --         'html',
-    --         'css',
-    --     },
-    --     init_options = { enable = true, lint = true, unstable = true },
-    -- }
+    lspconfig.denols.setup {
+        on_attach = custom_attach,
+        capabilities = capabilities,
+        flags = { debounce_text_changes = 150 },
+        root_dir = lspconfig.util.root_pattern 'deno.json',
+        filetypes = {
+            'javascript',
+            'javascriptreact',
+            'javascript.jsx',
+            'typescript',
+            'typescriptreact',
+            'typescript.tsx',
+            'yaml',
+            'json',
+            'markdown',
+            'html',
+            'css',
+        },
+        init_options = { enable = true, lint = true, unstable = true },
+    }
 
     -- JAVA
     _G.init_jdtls = function()
