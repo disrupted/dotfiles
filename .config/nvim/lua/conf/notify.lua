@@ -8,8 +8,20 @@ end
 
 function M.config()
     local notify = require 'notify'
-    notify.setup { stages = 'static' }
+
+    notify.setup {
+        stages = 'static',
+        render = 'minimal',
+        minimum_width = 10,
+    }
+
     vim.notify = notify
+
+    vim.cmd [[
+        hi NotifyINFOBorder guifg=#80ff95
+        hi NotifyWARNBorder guifg=#fff454
+        hi NotifyERRORBorder guifg=#c44323
+    ]]
 end
 
 return M
