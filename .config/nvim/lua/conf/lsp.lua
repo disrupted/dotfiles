@@ -630,7 +630,12 @@ function M.config()
             'html',
             'css',
         },
-        init_options = { enable = true, lint = true, unstable = true },
+        init_options = {
+            enable = true,
+            lint = true,
+            unstable = true,
+            importMap = './import_map.json',
+        },
     }
 
     -- JAVA
