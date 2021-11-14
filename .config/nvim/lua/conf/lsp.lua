@@ -40,9 +40,9 @@ function M.setup()
         -- If the buffer hasn't been modified before the formatting has finished,
         -- update the buffer
         if not vim.api.nvim_buf_get_option(bufnr, 'modified') then
-            local view = vim.fn.winsaveview()
+            local pos = vim.api.nvim_win_get_cursor(0)
             vim.lsp.util.apply_text_edits(result, bufnr)
-            vim.fn.winrestview(view)
+            vim.api.nvim_win_set_cursor(0, pos)
             if bufnr == vim.api.nvim_get_current_buf() then
                 vim.cmd 'noautocmd :update'
 
