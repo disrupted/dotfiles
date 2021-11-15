@@ -613,7 +613,10 @@ function M.config()
 
     -- DENO
     lspconfig.denols.setup {
-        on_attach = custom_attach,
+        on_attach = function(client, bufnr)
+            client.resolved_capabilities.document_formatting = false -- using dprint instead
+            custom_attach(client, bufnr)
+        end,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
         root_dir = lspconfig.util.root_pattern 'deno.json',
