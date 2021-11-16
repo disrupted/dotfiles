@@ -53,10 +53,16 @@ function M.config()
         },
         generator = h.formatter_factory {
             command = 'dprint',
+            condition = function(utils)
+                return utils.root_has_file 'dprint.json'
+            end,
             args = {
                 'fmt',
                 '--config',
-                vim.fn.expand '~/.config/dprint.json',
+                require('lspconfig.util').path.join(
+                    vim.loop.cwd(),
+                    'dprint.json'
+                ),
                 '--stdin',
                 '$FILEEXT',
             },
@@ -75,16 +81,19 @@ function M.config()
         blackd,
         dprint,
         null_ls.builtins.formatting.prettierd.with {
-            filetypes = {
-                'vue',
-                'svelte',
-                'css',
-                'scss',
-                'less',
-                'html',
-                'yaml',
-                'graphql',
-            },
+            -- filetypes = {
+            --     'vue',
+            --     'svelte',
+            --     'css',
+            --     'scss',
+            --     'less',
+            --     'html',
+            --     'yaml',
+            --     'graphql',
+            -- },
+            condition = function(utils)
+                return not utils.root_has_file 'dprint.json'
+            end,
         },
         null_ls.builtins.formatting.uncrustify.with {
             condition = function(utils)
