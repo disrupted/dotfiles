@@ -19,8 +19,11 @@ function M.config()
 
     vim.cmd [[
         hi NotifyINFOBorder guifg=#80ff95
+        hi link NotifyINFOBody NotifyINFOBorder
         hi NotifyWARNBorder guifg=#fff454
+        hi link NotifyWARNBody NotifyWARNBorder
         hi NotifyERRORBorder guifg=#c44323
+        hi link NotifyERRORBody NotifyERRORBorder
     ]]
 end
 
