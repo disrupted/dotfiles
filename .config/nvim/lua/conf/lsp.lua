@@ -18,7 +18,7 @@ function M.setup()
         underline = true,
         -- signs = { severity = { min = vim.diagnostic.severity.WARN } },
         signs = true,
-        float = { show_header = false, source = 'always' },
+        float = { header = false, source = 'always' },
         virtual_text = false,
         -- virtual_text = {
         --     -- spacing = 4,
