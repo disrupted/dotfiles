@@ -646,6 +646,7 @@ function M.config()
         local settings = {
             ['java.format.settings.url'] = '~/bakdata/dependencies/format-bakdata-codestyle.xml',
             ['java.format.settings.profile'] = 'bakdata',
+            ['java.completion.importOrder'] = {},
         }
         vim.cmd [[packadd nvim-jdtls]]
         require('jdtls').start_or_attach {
@@ -667,6 +668,7 @@ function M.config()
             settings = settings,
         }
 
+        vim.cmd [[command OrganizeImports lua require'jdtls'.organize_imports()]]
         -- vim.cmd [[
         --     augroup organize_imports_on_save
         --         autocmd! * <buffer>
