@@ -737,10 +737,16 @@ vim.g.maplocalleader = ','
 -- <space><space> switches between buffers
 -- map('n', '<leader><leader>', ':b#<CR>')
 
+-- Disable hjkl (get used to sneak)
+map('n', 'j', '<Nop>')
+map('n', 'k', '<Nop>')
+map('n', 'h', '<Nop>')
+map('n', 'l', '<Nop>')
+
 -- Sane movement defaults that works on long wrapped lines
 local expr = { expr = true, noremap = false, silent = false }
-map('', 'j', '(v:count ? \'j\' : \'gj\')', expr)
-map('', 'k', '(v:count ? \'k\' : \'gk\')', expr)
+-- map('', 'j', '(v:count ? \'j\' : \'gj\')', expr)
+-- map('', 'k', '(v:count ? \'k\' : \'gk\')', expr)
 map('', '<Down>', '(v:count ? \'j\' : \'gj\')', expr)
 map('', '<Up>', '(v:count ? \'k\' : \'gk\')', expr)
 
