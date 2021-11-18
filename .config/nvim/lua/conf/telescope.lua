@@ -17,17 +17,22 @@ function M.setup()
         end
     end
     function _G.__telescope_buffers()
-        require('telescope.builtin').buffers {
-            sort_mru = true,
-            ignore_current_buffer = true,
-            sorter = require('telescope.sorters').get_substr_matcher(),
-            selection_strategy = 'closest',
-            path_display = { 'shorten' },
-            layout_strategy = 'horizontal',
-            layout_config = { preview_width = 0.65 },
-            show_all_buffers = true,
-            color_devicons = true,
-        }
+        require('telescope.builtin').buffers(
+            require('telescope.themes').get_dropdown {
+                previewer = false,
+                only_cwd = true,
+                show_all_buffers = false,
+                sort_mru = true,
+                ignore_current_buffer = true,
+                sorter = require('telescope.sorters').get_substr_matcher(),
+                selection_strategy = 'closest',
+                path_display = { 'shorten' },
+                layout_strategy = 'center',
+                winblend = 0,
+                layout_config = { width = 70 },
+                color_devicons = true,
+            }
+        )
     end
     function _G.__telescope_grep()
         require('telescope.builtin').live_grep {
@@ -80,11 +85,12 @@ function M.setup()
 end
 
 function M.config()
+    local telescope = require 'telescope'
     local actions = require 'telescope.actions'
     local sorters = require 'telescope.sorters'
     local previewers = require 'telescope.previewers'
 
-    require('telescope').setup {
+    telescope.setup {
         defaults = {
             prompt_prefix = ' ❯ ',
             mappings = {
@@ -92,6 +98,7 @@ function M.config()
                     ['<ESC>'] = actions.close,
                     ['<C-j>'] = actions.move_selection_next,
                     ['<C-k>'] = actions.move_selection_previous,
+                    -- ['<C-h>'] = actions.toggle_preview, -- TODO: enable when feature is merged
                 },
                 n = { ['<ESC>'] = actions.close },
             },
@@ -123,6 +130,8 @@ function M.config()
             },
         },
     }
+
+    telescope.extensions.notify.notify()
 end
 
 return M
