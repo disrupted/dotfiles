@@ -643,8 +643,6 @@ function M.config()
 
     -- JAVA
     _G.init_jdtls = function()
-        vim.opt.shiftwidth = 4
-        vim.opt.colorcolumn = '120'
         local settings = {
             ['java.format.settings.url'] = '~/bakdata/dependencies/format-bakdata-codestyle.xml',
             ['java.format.settings.profile'] = 'bakdata',
