@@ -678,12 +678,12 @@ function M.config()
         --     ]]
     end
 
-    -- vim.cmd [[
-    --     augroup jdtls
-    --         autocmd!
-    --         autocmd FileType java lua init_jdtls()
-    --     augroup END
-    --     ]]
+    vim.cmd [[
+        augroup jdtls
+            autocmd!
+            autocmd FileType java lua init_jdtls()
+        augroup END
+        ]]
 
     -- EXTEND LSPCONFIG
     local lspconfigs = require 'lspconfig/configs'
