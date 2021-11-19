@@ -443,6 +443,7 @@ bindkey "^[[1;5B" down-line-or-history  # [CTRL] + Cursor down
 # ENV VARIABLE      #
 #####################
 # export TERM=xterm-256color
+export PATH="/opt/homebrew/bin:$PATH"  # Homebrew
 export EDITOR='nvim'
 export VISUAL=$EDITOR
 export PAGER='less'
@@ -455,12 +456,11 @@ export LESS_TERMCAP_me=$'\E[0m'     # end mode
 export LESS_TERMCAP_ue=$'\E[0m'     # end underline
 export LESS_TERMCAP_se=$'\E[0m'     # end standout-mode
 export MANPAGER="nvim -c 'set ft=man' -"
-export SHELL='/opt/homebrew/bin/zsh'
+export SHELL='zsh'
 export LANG='en_US.UTF-8'
 export LC_ALL='en_US.UTF-8'
 export WORDCHARS='~!#$%^&*(){}[]<>?.+;'  # sane moving between words on the prompt
 export GPG_TTY=$(tty)
-export PATH="/opt/homebrew/bin:$PATH"  # Homebrew
 export PATH="/opt/homebrew/opt/llvm/bin:$PATH"  # llvm (c, cpp)
 export PATH="$PATH:$HOME/.local/bin"  # pipx
 export PATH="$PATH:$HOME/.deno/bin"  # deno
