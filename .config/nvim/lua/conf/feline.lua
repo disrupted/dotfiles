@@ -111,6 +111,10 @@ local function file_name(winid)
     return filename
 end
 
+local function harpoon()
+    return lazy_require('harpoon.mark').status()
+end
+
 -----------------------------------------------------------------------------//
 -- Components {{{1
 -----------------------------------------------------------------------------//
@@ -131,6 +135,29 @@ table.insert(components.active[1], {
             style = 'bold',
         }
     end,
+})
+
+table.insert(components.active[1], {
+    provider = harpoon,
+    hl = function()
+        return {
+            fg = 'bg',
+            bg = 'blue',
+            style = 'bold',
+        }
+    end,
+    left_sep = {
+        str = ' ',
+        hl = {
+            bg = 'blue',
+        },
+    },
+    right_sep = {
+        str = ' ',
+        hl = {
+            bg = 'blue',
+        },
+    },
 })
 
 local function split(str, sep)
@@ -366,6 +393,28 @@ table.insert(components.active[2], {
     left_sep = ' ',
 })
 
+table.insert(components.inactive[1], {
+    provider = harpoon,
+    hl = function()
+        return {
+            fg = 'fg',
+            bg = 'section_bg',
+            style = 'bold',
+        }
+    end,
+    left_sep = {
+        str = ' ',
+        hl = {
+            bg = 'section_bg',
+        },
+    },
+    right_sep = {
+        str = ' ',
+        hl = {
+            bg = 'section_bg',
+        },
+    },
+})
 table.insert(components.inactive[1], {
     provider = file_name,
     hl = {
