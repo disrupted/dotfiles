@@ -129,6 +129,7 @@ function M.config()
             'formatexpr',
             'v:lua.vim.lsp.formatexpr'
         )
+        vim.api.nvim_buf_set_option(bufnr, 'tagfunc', 'v:lua.vim.lsp.tagfunc')
 
         -- Mappings
         local function buf_set_keymap(...)
