@@ -66,6 +66,9 @@
     tool = nvimdiff
     conflictstyle = diff3
 
+[rerere]
+    enabled = true
+
 [mergetool]
     keepBackup = false
     prompt = true
@@ -126,10 +129,10 @@
     #insteadOf = git@github.com:
     insteadOf = gh:
 
-[url "git@github.com:"]
+# [url "git@github.com:"]
     # Use SSH for GitHub instead of https://
     # Enable this in networks where https:// has issues.
-    insteadOf = https://github.com/
+    # insteadOf = https://github.com/
 
 [url "git@gitorious.org:"]
     # Always use Gitorious SSH protocol to push.
@@ -145,7 +148,7 @@
 
 [credential]
     # Use macOS Keychain to store HTTP passwords.
-	helper = osxkeychain
+    helper = osxkeychain
 
 [hub]
     # Use HTTPS rather than SSH protocol in Hub
