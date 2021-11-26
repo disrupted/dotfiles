@@ -300,7 +300,7 @@ function M.config()
         end
 
         vim.cmd [[autocmd CursorHold,CursorHoldI <buffer> lua show_diagnostics()]]
-        vim.cmd [[autocmd User DiagnosticsChanged lua show_diagnostics()]]
+        vim.cmd [[autocmd DiagnosticChanged lua show_diagnostics()]]
         vim.cmd [[autocmd CursorHoldI <buffer> silent! lua vim.lsp.buf.signature_help()]]
 
         vim.notify 'LSP attached.'
