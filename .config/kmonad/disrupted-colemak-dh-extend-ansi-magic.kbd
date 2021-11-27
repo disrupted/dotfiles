@@ -1,0 +1,46 @@
+;; vim:ft=lisp:commentstring=;;%s
+(defcfg
+  ;; ** For external Magic Keyboard **
+  input  (iokit-name "Magic Keyboard")
+  output (kext)
+  fallthrough true
+)
+
+(defsrc
+  esc  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '    ret
+       lsft z    x    c    v    b    n    m    ,    .    /    rsft up
+  fn   lctl lalt lmet           spc            rmet ralt left down rght
+)
+
+(deflayer colemak-dh
+  esc  brdn brup f3   f4   f5   f6   previoussong   pp   nextsong   mute  vold  volu
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    f    p    b    j    l    u    y    ;    [    ]    \
+  @mv  a    r    s    t    g    m    n    e    i    o    '    ret
+       lsft x    c    d    v    z    k    h    ,    .    /    rsft up
+  fn   lctl lalt lmet           spc            bspc ralt left down rght
+)
+
+;; ---- Move ----- {{{
+(defalias mv (tap-hold 200 esc (layer-toggle move)))
+(deflayer move
+  _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    lft  down up   rght _    _
+       _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _              _              _    _    _    _    _
+)
+;; ---------------- }}}
+
+(deflayer empty
+  _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _
+       _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _              _              _    _    _    _    _
+)
