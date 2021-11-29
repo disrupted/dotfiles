@@ -1,4 +1,3 @@
-vim.g.did_load_filetypes = 1 -- use filetype.nvim instead
 local cmd, fn, opt = vim.cmd, vim.fn, vim.opt
 
 cmd [[packadd packer.nvim]]
@@ -8,6 +7,12 @@ local use = packer.use
 packer.startup(function()
     use { 'wbthomason/packer.nvim', opt = true }
     use 'nvim-lua/plenary.nvim'
+    use {
+        'nathom/filetype.nvim',
+        config = function()
+            require('conf.filetype').config()
+        end,
+    }
     use { 'kyazdani42/nvim-web-devicons', module = 'nvim-web-devicons' }
     use {
         'disrupted/one.nvim', -- personal tweaked colorscheme
@@ -37,7 +42,9 @@ packer.startup(function()
     }
     use {
         'nvim-treesitter/nvim-treesitter',
-        event = { 'BufRead', 'BufNewFile' },
+        event = { 'VimEnter' },
+        -- event = { 'BufRead', 'BufNewFile' }, -- FIXME
+        -- after = 'filetype.nvim',
         requires = {
             {
                 'nvim-treesitter/nvim-treesitter-refactor',
