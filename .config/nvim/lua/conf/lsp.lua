@@ -645,9 +645,17 @@ function M.config()
     -- JAVA
     _G.init_jdtls = function()
         local settings = {
-            ['java.format.settings.url'] = '~/bakdata/dependencies/format-bakdata-codestyle.xml',
-            ['java.format.settings.profile'] = 'bakdata',
-            ['java.completion.importOrder'] = {},
+            java = {
+                format = {
+                    settings = {
+                        url = '~/bakdata/dependencies/format-bakdata-codestyle.xml',
+                        profile = 'bakdata',
+                    },
+                },
+                completion = { importOrder = {} },
+                references = { includeDecompiledSources = false },
+                saveActions = { organizeImports = true },
+            },
         }
         vim.cmd [[packadd nvim-jdtls]]
         require('jdtls').start_or_attach {
@@ -658,8 +666,11 @@ function M.config()
                     ':p:h:t'
                 ),
             },
-            on_attach = custom_attach,
-            capabilities = capabilities,
+            on_attach = function(client, bufnr)
+                require('jdtls.setup').add_commands()
+                custom_attach(client, bufnr)
+            end,
+            -- capabilities = capabilities,
             flags = { debounce_text_changes = 150 },
             -- on_init = function(client, _)
             --     client.notify('workspace/didChangeConfiguration', {
@@ -669,7 +680,7 @@ function M.config()
             settings = settings,
         }
 
-        vim.cmd [[command OrganizeImports lua require'jdtls'.organize_imports()]]
+        vim.cmd [[command! OrganizeImports lua require'jdtls'.organize_imports()]]
         -- vim.cmd [[
         --     augroup organize_imports_on_save
         --         autocmd! * <buffer>
@@ -687,7 +698,7 @@ function M.config()
         ]]
 
     -- EXTEND LSPCONFIG
-    local lspconfigs = require 'lspconfig/configs'
+    local lspconfigs = require 'lspconfig.configs'
 
     -- Markdown language server
     -- https://github.com/kitten/prosemd-lsp
@@ -711,7 +722,7 @@ function M.config()
 
     -- reload if buffer has file, to attach LSP
     if
-        #vim.api.nvim_buf_get_name(0) > 0
+        vim.api.nvim_buf_get_name(0) ~= ''
         and vim.bo.filetype ~= nil
         and vim.bo.modifiable == true
         and vim.bo.modified == false
