@@ -20,7 +20,7 @@ function M.setup()
         require('telescope.builtin').buffers(
             require('telescope.themes').get_dropdown {
                 previewer = false,
-                only_cwd = true,
+                only_cwd = vim.fn.haslocaldir() == 1,
                 show_all_buffers = false,
                 sort_mru = true,
                 ignore_current_buffer = true,
@@ -76,7 +76,7 @@ function M.setup()
         ',h',
         '<cmd>lua require "telescope.builtin".help_tags(options)<CR>'
     )
-    map('n', '<Space>c', '<cmd>lua __telescope_commits()<CR>')
+    -- map('n', '<Space>c', '<cmd>lua __telescope_commits()<CR>')
     map(
         'n',
         ',pr',

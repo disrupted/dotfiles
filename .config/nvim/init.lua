@@ -856,6 +856,7 @@ map('n', '<C-[>', '<cmd>tabprevious<CR>')
 -----------------------------------------------------------------------------//
 
 cmd [[
+    command! TabDir tcd %:p:h
     :cabbrev C PackerCompile
     :cabbrev U PackerUpdate
 ]]
