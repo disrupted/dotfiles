@@ -7,12 +7,16 @@
     "arguments.trailingCommas": "never",
     "parameters.trailingCommas": "never"
   },
-  "json": {},
+  "json": {
+    "associations": [
+      "**/*.avsc"
+    ]
+  },
   "markdown": {},
   "toml": {},
   "dockerfile": {},
   "includes": [
-    "**/*.{ts,tsx,js,jsx,cjs,mjs,json,md,toml,dockerfile}",
+    "**/*.{ts,tsx,js,jsx,cjs,mjs,json,avsc,md,toml}",
     "dockerfile"
   ],
   "excludes": ["**/node_modules", "**/*-lock.json", "**/target"],
