@@ -6,6 +6,9 @@ function M.config()
             extensions = {
                 avsc = 'json',
             },
+            complex = {
+                ['templates/.*.yaml'] = 'helm',
+            },
         },
     }
 end
