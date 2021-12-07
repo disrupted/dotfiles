@@ -17,7 +17,6 @@ brew "readline"
 brew "xz"
 brew "python@3.9"
 brew "awscli"
-brew "azure-cli"
 brew "bat"
 brew "black", restart_service: true
 brew "pkg-config"
