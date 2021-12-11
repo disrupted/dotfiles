@@ -469,7 +469,7 @@ export PROMPT_EOL_MARK=''  # hide % at end of output
 # COMPLETIONS       #
 #####################
 if type brew &>/dev/null; then
-  # FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+  FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
 
   autoload -Uz compinit
   compinit
