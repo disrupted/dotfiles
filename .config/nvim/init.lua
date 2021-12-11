@@ -150,7 +150,8 @@ packer.startup(function()
     }
     use {
         'kyazdani42/nvim-tree.lua',
-        module = 'nvim-tree',
+        opt = true,
+        -- module = 'nvim-tree',
         setup = function()
             require('conf.nvim_tree').setup()
         end,
@@ -283,7 +284,8 @@ packer.startup(function()
     -- use { 'zsugabubus/crazy8.nvim', event = { 'BufRead' } } -- detect indentation automatically
     use {
         'folke/trouble.nvim',
-        module = 'trouble',
+        opt = true,
+        -- module = 'trouble',
         setup = function()
             require('conf.trouble').setup()
         end,
