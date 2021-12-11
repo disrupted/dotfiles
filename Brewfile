@@ -183,7 +183,6 @@ mas "Tamperish", id: 1516885392
 mas "Tampermonkey", id: 1482490089
 mas "TestFlight", id: 899247664
 mas "Textual IRC Client", id: 1262957439
-mas "Things", id: 904280696
 mas "Tweetbot", id: 1384080005
 mas "Vimari", id: 1480933944
 mas "Yoink", id: 457622435
