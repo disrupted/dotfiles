@@ -151,7 +151,7 @@ zinit light junegunn/fzf
 zinit ice wait'1' lucid
 zinit light Aloxaf/fzf-tab
 # SYNTAX HIGHLIGHTING
-zinit ice wait'0c' lucid atinit'zpcompinit;zpcdreplay'
+zinit ice wait'0c' lucid # atinit'zpcompinit;zpcdreplay'
 zinit light zdharma-continuum/fast-syntax-highlighting
 # EXA
 # zinit ice wait'2' lucid id-as'exa' from'gh-r' as'program' mv'bin/exa* -> exa' \
@@ -333,8 +333,7 @@ zinit light soywod/himalaya
 # zinit ice lucid wait'0' as'program' id-as'texlab' from'gh-r'
 # zinit light latex-lsp/texlab
 # carapace completion
-zinit ice lucid wait'0' as'program' id-as'carapace' from'gh-r' \
-  atload'source <(carapace _carapace)'
+zinit ice as'program' id-as'carapace' from'gh-r'
 zinit light rsteube/carapace-bin
 # glab GitLab cli
 # zinit ice lucid wait'0' as'program' id-as'glab' from'gh-r' pick'bin/glab'
@@ -469,12 +468,13 @@ export PROMPT_EOL_MARK=''  # hide % at end of output
 #####################
 # COMPLETIONS       #
 #####################
-# if type brew &>/dev/null; then
-#   FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
+if type brew &>/dev/null; then
+  # FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
 
-#   autoload -Uz compinit
-#   compinit
-# fi
+  autoload -Uz compinit
+  compinit
+  source <(carapace _carapace zsh)
+fi
 
 #####################
 # COLORING          #
