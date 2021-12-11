@@ -192,12 +192,6 @@ zinit load 'wfxr/forgit'
 # FORYADM
 zinit ice wait lucid id-as'foryadm'
 zinit load 'disrupted/foryadm'
-# LAZYGIT
-zinit ice lucid wait'0' as'program' from'gh-r' mv'lazygit* -> lazygit' atload'alias lg=lazygit'
-zinit light 'jesseduffield/lazygit'
-# LAZYDOCKER
-zinit ice lucid wait'0' as'program' from'gh-r' mv'lazydocker* -> lazydocker' atload'alias ld=lazydocker'
-zinit light 'jesseduffield/lazydocker'
 # RANGER
 zinit ice depth'1' as'program' pick'ranger.py' atload'alias ranger=ranger.py'
 zinit light ranger/ranger
