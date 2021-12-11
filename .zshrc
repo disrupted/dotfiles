@@ -229,18 +229,18 @@ zinit wait'2b' lucid \
   as'completion' \
   for https://cheat.sh/:zsh
 # cheat
-zinit wait'2a' lucid \
-  id-as'cheat' \
-  from'gh-r' \
-  mv'cheat* -> cheat' \
-  pick'cheat' \
-  as'program' \
-  for @cheat/cheat
-zinit wait'2b' lucid \
-  id-as'cheat-completion' \
-  mv'cheat* -> _cheat' \
-  as'completion' \
-  for https://github.com/cheat/cheat/blob/master/scripts/cheat.zsh
+# zinit wait'2a' lucid \
+#   id-as'cheat' \
+#   from'gh-r' \
+#   mv'cheat* -> cheat' \
+#   pick'cheat' \
+#   as'program' \
+#   for @cheat/cheat
+# zinit wait'2b' lucid \
+#   id-as'cheat-completion' \
+#   mv'cheat* -> _cheat' \
+#   as'completion' \
+#   for https://github.com/cheat/cheat/blob/master/scripts/cheat.zsh
 # procs (modern replacement for ps written in rust)
 # zinit wait'1' lucid \
 #   from'gh-r' as'program' \
@@ -255,17 +255,17 @@ zinit light denilsonsa/prettyping
 zinit ice lucid wait'0' as'program' from'gh-r' id-as'sad' mv'sad* -> sad'
 zinit light 'ms-jpq/sad'
 # bottom system monitor
-zinit ice from'gh-r' ver'nightly' as'program' id-as'bottom' \
-  atclone'echo "" > ._zinit/is_release' \
-  atpull'%atclone' \
-  run-atpull \
-  atload'alias top=btm' \
-  atload'alias htop=btm'
-zinit light ClementTsang/bottom
+# zinit ice from'gh-r' ver'nightly' as'program' id-as'bottom' \
+#   atclone'echo "" > ._zinit/is_release' \
+#   atpull'%atclone' \
+#   run-atpull \
+#   atload'alias top=btm' \
+#   atload'alias htop=btm'
+# zinit light ClementTsang/bottom
 # hexyl hex viewer
-zinit ice lucid wait'0' as'program' id-as'hexyl' from'gh-r' \
-  mv'hexyl* -> hexyl' pick'hexyl/hexyl'
-zinit light sharkdp/hexyl
+# zinit ice lucid wait'0' as'program' id-as'hexyl' from'gh-r' \
+#   mv'hexyl* -> hexyl' pick'hexyl/hexyl'
+# zinit light sharkdp/hexyl
 # mmv renamer
 zinit ice lucid wait'0' as'program' id-as'mmv' from'gh-r' \
   mv'mmv* -> mmv' pick'mmv/mmv'
@@ -292,9 +292,9 @@ zinit wait lucid id-as'nnn' from'github' as'program' for \
 export NNN_FIFO="/tmp/nnn.fifo"
 export NNN_PLUG='j:autojump;p:preview-tui;l:launch;r:renamer;w:wallpaper;o:organize;x:xdgdefault'
 # rip rm-improved, trash alternative written in Rust
-zinit wait'1' lucid \
- from'gh-r' as'program' id-as'rip' pick'rip*/rip' \
- light-mode for @nivekuil/rip
+# zinit wait'1' lucid \
+#  from'gh-r' as'program' id-as'rip' pick'rip*/rip' \
+#  light-mode for @nivekuil/rip
 # gitui rust
 # zinit ice lucid wait'0' as'program' id-as'gitui' from'gh-r' \
 #   atload"alias yadmui='gitui -d ~/.local/share/yadm/repo.git'"
@@ -346,11 +346,11 @@ zinit light rsteube/carapace-bin
 # zinit ice lucid wait'0' as'program' id-as'stylua' from'gh-r' pick'stylua'
 # zinit light JohnnyMorganz/StyLua
 # grex generate regexes
-zinit ice lucid wait'0' as'program' id-as'grex' from'gh-r'
-zinit light pemistahl/grex
+# zinit ice lucid wait'0' as'program' id-as'grex' from'gh-r'
+# zinit light pemistahl/grex
 # tokei count codebase
-zinit ice lucid wait'0' as'program' id-as'tokei' from'gh-r'
-zinit light XAMPPRocky/tokei
+# zinit ice lucid wait'0' as'program' id-as'tokei' from'gh-r'
+# zinit light XAMPPRocky/tokei
 # duf modern df replacement
 zinit ice lucid wait'0' as'program' id-as'duf' from'gh-r'
 zinit light muesli/duf
