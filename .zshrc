@@ -9,25 +9,25 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 ### Added by Zinit's installer
-if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
-    print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
-    command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
-    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.zinit/bin" && \
-        print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
-        print -P "%F{160}▓▒░ The clone has failed.%f%b"
+if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
+    print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
+    command mkdir -p "$HOME/.local/share/zinit" && command chmod g-rwX "$HOME/.local/share/zinit"
+    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.local/share/zinit/zinit.git" && \
+        print -P "%F{33} %F{34}Installation successful.%f%b" || \
+        print -P "%F{160} The clone has failed.%f%b"
 fi
 
-source "$HOME/.zinit/bin/zinit.zsh"
+source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
 # Load a few important annexes, without Turbo
 # (this is currently required for annexes)
 zinit light-mode for \
-    zinit-zsh/z-a-rust \
-    zinit-zsh/z-a-as-monitor \
-    zinit-zsh/z-a-patch-dl \
-    zinit-zsh/z-a-bin-gem-node
+    zdharma-continuum/zinit-annex-as-monitor \
+    zdharma-continuum/zinit-annex-bin-gem-node \
+    zdharma-continuum/zinit-annex-patch-dl \
+    zdharma-continuum/zinit-annex-rust
 
 ### End of Zinit's installer chunk
 
@@ -248,10 +248,10 @@ zinit wait'2b' lucid \
   as'completion' \
   for https://github.com/cheat/cheat/blob/master/scripts/cheat.zsh
 # procs (modern replacement for ps written in rust)
-zinit wait'1' lucid \
-  from'gh-r' as'program' \
-  atload'alias ps=procs' \
-  light-mode for @dalance/procs
+# zinit wait'1' lucid \
+#   from'gh-r' as'program' \
+#   atload'alias ps=procs' \
+#   light-mode for @dalance/procs
 
 # prettyping
 zinit ice wait lucid as'program' mv'prettyping* -> prettyping' \
@@ -295,6 +295,8 @@ zinit light 'itchyny/mmv'
 zinit wait lucid id-as'nnn' from'github' as'program' for \
   sbin'nnn' make='O_NERD=1' src'misc/quitcd/quitcd.bash_zsh' \
   jarun/nnn
+export NNN_FIFO="/tmp/nnn.fifo"
+export NNN_PLUG='j:autojump;p:preview-tui;l:launch;r:renamer;w:wallpaper;o:organize;x:xdgdefault'
 # rip rm-improved, trash alternative written in Rust
 zinit wait'1' lucid \
  from'gh-r' as'program' id-as'rip' pick'rip*/rip' \
@@ -334,11 +336,11 @@ zinit light soywod/himalaya
 #   ver'latest' mv'rust-analyzer* -> rust-analyzer'
 # zinit light rust-analyzer/rust-analyzer
 # texlab LaTeX LSP
-zinit ice lucid wait'0' as'program' id-as'texlab' from'gh-r'
-zinit light latex-lsp/texlab
+# zinit ice lucid wait'0' as'program' id-as'texlab' from'gh-r'
+# zinit light latex-lsp/texlab
 # carapace completion
 zinit ice lucid wait'0' as'program' id-as'carapace' from'gh-r' \
-  atload'source <(carapace _carapace zsh)'
+  atload'source <(carapace _carapace)'
 zinit light rsteube/carapace-bin
 # glab GitLab cli
 # zinit ice lucid wait'0' as'program' id-as'glab' from'gh-r' pick'bin/glab'
@@ -443,7 +445,9 @@ bindkey "^[[1;5B" down-line-or-history  # [CTRL] + Cursor down
 # ENV VARIABLE      #
 #####################
 # export TERM=xterm-256color
+export TERMINAL='kitty'
 export PATH="/opt/homebrew/bin:$PATH"  # Homebrew
+export PATH="/opt/homebrew/sbin:$PATH"
 export EDITOR='nvim'
 export VISUAL=$EDITOR
 export PAGER='less'
@@ -549,4 +553,5 @@ source "/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completi
 # Node version manager
 eval "$(snm env zsh)"
 
+# Direnv
 eval "$(direnv hook zsh)"
