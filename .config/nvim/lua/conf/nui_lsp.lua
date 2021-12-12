@@ -3,6 +3,7 @@ vim.cmd [[packadd nui.nvim]]
 local Input = require 'nui.input'
 local event = require('nui.utils.autocmd').event
 local utils = require 'utils'
+local notify = require 'notify'
 
 local function handler(err, result, ctx, _)
     if err or not result then
@@ -24,7 +25,6 @@ local function handler(err, result, ctx, _)
     if result.changes then
         local msg = {}
         local new_name = ''
-        print(vim.inspect(result.changes))
         for f, c in pairs(result.changes) do
             new_name = c[1].newText
             table.insert(
@@ -32,23 +32,24 @@ local function handler(err, result, ctx, _)
                 ('%d changes: %s'):format(#c, utils.get_relative_path(f))
             )
         end
-        vim.notify(
-            msg,
-            vim.log.levels.INFO,
-            { title = { ('Rename: %s -> %s'):format(curr_name, new_name), '' } }
+        notify(msg, vim.log.levels.INFO, {
+            title = {
+                ('Rename: %s -> %s'):format(curr_name, new_name),
+                '',
+            },
+        })
+
+        -- after the edits are applied, the files are not saved automatically.
+        -- let's remind ourselves to save those...
+        local total_files = vim.tbl_count(result.changes)
+        print(
+            string.format(
+                'Changed %s file%s. To save them run \':wa\'',
+                total_files,
+                total_files > 1 and 's' or ''
+            )
         )
     end
-
-    -- after the edits are applied, the files are not saved automatically.
-    -- let's remind ourselves to save those...
-    local total_files = vim.tbl_count(result.changes)
-    print(
-        string.format(
-            'Changed %s file%s. To save them run \':wa\'',
-            total_files,
-            total_files > 1 and 's' or ''
-        )
-    )
 end
 
 local function nui_lsp_rename()
