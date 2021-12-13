@@ -116,7 +116,7 @@ function M.config()
         null_ls.builtins.code_actions.refactoring,
         null_ls.builtins.code_actions.gitrebase,
     }
-    null_ls.config {
+    null_ls.setup {
         sources = sources,
         debug = true,
     }
