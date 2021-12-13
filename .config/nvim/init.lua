@@ -28,6 +28,13 @@ packer.startup(function()
         end,
     }
     use {
+        'monkoose/matchparen.nvim',
+        event = { 'BufWinEnter', 'BufNewFile' },
+        config = function()
+            require('matchparen').setup()
+        end,
+    }
+    use {
         'numToStr/Comment.nvim',
         event = { 'BufWinEnter', 'BufNewFile' },
         config = function()
@@ -722,6 +729,7 @@ end, {
     '2html_plugin',
     'gzip',
     'matchit',
+    'matchparen',
     'netrw',
     'netrwPlugin',
     'python_provider',
