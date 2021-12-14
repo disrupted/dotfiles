@@ -554,21 +554,8 @@ function M.config()
     }
 
     -- LUA
-    local system_name
-    if vim.fn.has 'mac' == 1 then
-        system_name = 'macOS'
-    elseif vim.fn.has 'unix' == 1 then
-        system_name = 'Linux'
-    end
-    local sumneko_root_path = home .. '/dev/lua-language-server'
-    local sumneko_binary = sumneko_root_path
-        .. '/bin/'
-        .. system_name
-        .. '/lua-language-server'
     local luadev = require('lua-dev').setup {
-        -- add any options here, or leave empty to use the default settings
         lspconfig = {
-            cmd = { sumneko_binary, '-E', sumneko_root_path .. '/main.lua' },
             on_attach = custom_attach,
             capabilities = capabilities,
             flags = { debounce_text_changes = 150 },
