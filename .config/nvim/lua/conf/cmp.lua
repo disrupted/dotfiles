@@ -44,7 +44,6 @@ function M.config()
 
     local prequire = require('utils').prequire
     local luasnip = prequire 'luasnip'
-    local tabout = prequire 'tabout'
 
     -- supertab-like mapping
     local mapping = {
@@ -53,8 +52,6 @@ function M.config()
                 cmp.select_next_item()
             elseif luasnip and luasnip.expand_or_jumpable() then
                 luasnip.expand_or_jump()
-            elseif tabout then
-                tabout.tabout()
             else
                 fallback()
             end
@@ -67,8 +64,6 @@ function M.config()
                 cmp.select_prev_item()
             elseif luasnip and luasnip.jumpable(-1) then
                 luasnip.jump(-1)
-            elseif tabout then
-                tabout.taboutBack()
             else
                 fallback()
             end
