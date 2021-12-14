@@ -430,7 +430,6 @@ packer.startup(function()
         end,
     }
     use { 'ellisonleao/glow.nvim', cmd = 'Glow' }
-    use { 'nathom/filetype.nvim' }
     use {
         'ThePrimeagen/refactoring.nvim',
         module = 'refactoring',
