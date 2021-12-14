@@ -2,7 +2,6 @@ local M = {}
 
 function M.config()
     require('tabout').setup {
-        -- act_as_tab = false,
         completion = false,
         tabouts = {
             { open = '\'', close = '\'' },
@@ -11,9 +10,9 @@ function M.config()
             { open = '(', close = ')' },
             { open = '[', close = ']' },
             { open = '{', close = '}' },
+            { open = '#', close = ']' },
         },
-        -- ignore_beginning = true,
-        -- exclude = {},
+        ignore_beginning = true,
     }
 end
 

@@ -131,7 +131,6 @@ packer.startup(function()
     }
     use {
         'abecodes/tabout.nvim',
-        module = 'tabout',
         config = function()
             require('conf.tabout').config()
         end,
