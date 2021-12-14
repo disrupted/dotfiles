@@ -6,12 +6,12 @@ function M.setup()
     map(
         'n',
         '<space>xw',
-        '<cmd>lua require("trouble").toggle { mode = "lsp_workspace_diagnostics" }<CR>'
+        '<cmd>lua require("trouble").toggle { mode = "workspace_diagnostics" }<CR>'
     )
     map(
         'n',
         '<space>xb',
-        '<cmd>lua require("trouble").toggle { mode = "lsp_document_diagnostics" }<CR>'
+        '<cmd>lua require("trouble").toggle { mode = "document_diagnostics" }<CR>'
     )
     map(
         'n',
