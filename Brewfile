@@ -35,6 +35,7 @@ brew "direnv"
 brew "dive"
 brew "docker", link: false
 brew "dprint"
+brew "esptool"
 brew "exa"
 brew "fd"
 brew "libtool"
