@@ -85,7 +85,6 @@ brew "mpv"
 brew "navi"
 brew "neovim", args: ["HEAD"]
 brew "ninja"
-brew "nvm"
 brew "openblas"
 brew "openjdk@11"
 brew "pinentry-mac"
