@@ -644,6 +644,45 @@ function M.config()
                 saveActions = { organizeImports = true },
             },
         }
+
+        -- add java-debug & vscode-java-test bundles
+        local bundles = {
+            home
+                .. '/bakdata/dependencies/com.microsoft.java.debug.plugin-0.34.0.jar',
+            home
+                .. '/bakdata/dependencies/vscode-java-test/com.microsoft.java.test.plugin-0.33.1.jar',
+            home
+                .. '/bakdata/dependencies/vscode-java-test/org.junit.jupiter.params_5.6.0.v20200203-2009.jar',
+            home
+                .. '/bakdata/dependencies/vscode-java-test/com.microsoft.java.test.runner-jar-with-dependencies.jar',
+            home
+                .. '/bakdata/dependencies/vscode-java-test/org.junit.platform.commons_1.6.0.v20200203-2009.jar',
+            home
+                .. '/bakdata/dependencies/vscode-java-test/org.apiguardian_1.1.0.v20190826-0900.jar',
+            home
+                .. '/bakdata/dependencies/vscode-java-test/org.junit.platform.engine_1.6.0.v20200203-2009.jar',
+            home
+                .. '/bakdata/dependencies/vscode-java-test/org.eclipse.jdt.junit4.runtime_1.1.1200.v20200214-0716.jar',
+            home
+                .. '/bakdata/dependencies/vscode-java-test/org.junit.platform.launcher_1.6.0.v20200203-2009.jar',
+            home
+                .. '/bakdata/dependencies/vscode-java-test/org.eclipse.jdt.junit5.runtime_1.0.900.v20200513-0617.jar',
+            home
+                .. '/bakdata/dependencies/vscode-java-test/org.junit.platform.runner_1.6.0.v20200203-2009.jar',
+            home
+                .. '/bakdata/dependencies/vscode-java-test/org.junit.jupiter.api_5.6.0.v20200203-2009.jar',
+            home
+                .. '/bakdata/dependencies/vscode-java-test/org.junit.platform.suite.api_1.6.0.v20200203-2009.jar',
+            home
+                .. '/bakdata/dependencies/vscode-java-test/org.junit.jupiter.engine_5.6.0.v20200203-2009.jar',
+            home
+                .. '/bakdata/dependencies/vscode-java-test/org.junit.vintage.engine_5.6.0.v20200203-2009.jar',
+            home
+                .. '/bakdata/dependencies/vscode-java-test/org.junit.jupiter.migrationsupport_5.6.0.v20200203-2009.jar',
+            home
+                .. '/bakdata/dependencies/vscode-java-test/org.opentest4j_1.2.0.v20190826-0900.jar',
+        }
+
         vim.cmd [[packadd nvim-jdtls]]
         require('jdtls').start_or_attach {
             cmd = {
@@ -655,6 +694,7 @@ function M.config()
             },
             on_attach = function(client, bufnr)
                 require('jdtls.setup').add_commands()
+                require('jdtls').setup_dap { hotcodereplace = 'auto' }
                 custom_attach(client, bufnr)
             end,
             -- capabilities = capabilities,
@@ -665,6 +705,9 @@ function M.config()
             --     })
             -- end,
             settings = settings,
+            init_options = {
+                bundles = bundles,
+            },
         }
 
         vim.cmd [[command! OrganizeImports lua require'jdtls'.organize_imports()]]
