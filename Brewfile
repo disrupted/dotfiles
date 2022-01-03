@@ -80,6 +80,7 @@ brew "lua"
 brew "lua-language-server"
 brew "luarocks"
 brew "mas"
+brew "media-info"
 brew "mosh", args: ["HEAD"]
 brew "mpv"
 brew "navi"
@@ -98,6 +99,7 @@ brew "rustup-init"
 brew "sd"
 brew "shellcheck"
 brew "shfmt"
+brew "speedtest-cli"
 brew "stylua"
 brew "tealdeer"
 brew "texlab"
@@ -108,6 +110,7 @@ brew "wget"
 brew "xh"
 brew "xplr"
 brew "yadm"
+brew "yaml-language-server"
 brew "yamllint"
 brew "yq"
 brew "zlib"
@@ -161,12 +164,14 @@ mas "1Password for Safari", id: 1569813296
 mas "AdGuard for Safari", id: 1440147259
 mas "Amphetamine", id: 937984704
 mas "Boop", id: 1518425043
+mas "CloudMounter", id: 1130254674
 mas "Color Picker", id: 1545870783
 mas "Color UI", id: 1092899208
 mas "Craft", id: 1487937127
 mas "Dark Reader for Safari", id: 1438243180
 mas "Darkroom", id: 953286746
 mas "Deliveries", id: 290986013
+mas "Expressions", id: 913158085
 mas "Flighty", id: 1358823008
 mas "Git Streaks", id: 1525795950
 mas "Grocery", id: 1195676848
@@ -190,4 +195,5 @@ mas "TestFlight", id: 899247664
 mas "Textual IRC Client", id: 1262957439
 mas "Tweetbot", id: 1384080005
 mas "Vimari", id: 1480933944
+mas "WireGuard", id: 1451685025
 mas "Yoink", id: 457622435
