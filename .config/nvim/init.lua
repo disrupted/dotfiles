@@ -96,7 +96,11 @@ packer.startup(function()
             { 'nvim-lua/lsp-status.nvim', opt = true },
         },
     }
-    use { 'jose-elias-alvarez/null-ls.nvim', module = 'null-ls' }
+    use {
+        'jose-elias-alvarez/null-ls.nvim',
+        branch = 'temp-buffer-formatting',
+        module = 'null-ls',
+    }
     use 'folke/lua-dev.nvim'
     use {
         'L3MON4D3/LuaSnip',
