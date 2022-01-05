@@ -860,8 +860,8 @@ map('n', '[q', ':cprevious<CR>')
 map('n', '<C-_>', ':noh<CR>')
 
 -- cycle tabs
-map('n', '<C-]>', '<cmd>tabnext<CR>')
-map('n', '<C-[>', '<cmd>tabprevious<CR>')
+map('n', ']]', '<cmd>tabnext<CR>')
+map('n', '[[', '<cmd>tabprevious<CR>')
 
 -----------------------------------------------------------------------------//
 -- Commands {{{1
