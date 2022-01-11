@@ -755,10 +755,10 @@ vim.g.maplocalleader = ','
 -- map('n', '<leader><leader>', ':b#<CR>')
 
 -- Disable hjkl (get used to sneak)
-map('n', 'j', '<Nop>')
-map('n', 'k', '<Nop>')
-map('n', 'h', '<Nop>')
-map('n', 'l', '<Nop>')
+-- map('n', 'j', '<Nop>')
+-- map('n', 'k', '<Nop>')
+-- map('n', 'h', '<Nop>')
+-- map('n', 'l', '<Nop>')
 
 -- Sane movement defaults that works on long wrapped lines
 local expr = { expr = true, noremap = false, silent = false }
