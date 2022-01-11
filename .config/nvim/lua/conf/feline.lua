@@ -97,8 +97,8 @@ local function file_modified(bufnr)
     return false
 end
 
-local function file_name(winid)
-    local bufnr = api.nvim_win_get_buf(winid)
+local function file_name()
+    local bufnr = api.nvim_win_get_buf(0)
     local filename = api.nvim_buf_get_name(bufnr)
     filename = fn.fnamemodify(filename, ':t')
 
@@ -120,9 +120,9 @@ end
 -----------------------------------------------------------------------------//
 -- Vi mode
 table.insert(components.active[1], {
-    provider = function(winid)
+    provider = function()
         local name = mode_alias[api.nvim_get_mode().mode]
-        if api.nvim_win_get_width(winid) <= 60 then
+        if api.nvim_win_get_width(0) <= 60 then
             name = name:sub(1, 1) -- shorten mode name
         end
         return ' ' .. name .. ' '
@@ -172,13 +172,13 @@ local function split(str, sep)
     return res
 end
 
-local function file_icon(winid)
+local function file_icon()
     local icon = {
         str = ' ',
         always_visible = true,
     }
 
-    local filename = api.nvim_buf_get_name(api.nvim_win_get_buf(winid))
+    local filename = api.nvim_buf_get_name(api.nvim_win_get_buf(0))
     filename = fn.fnamemodify(filename, ':t')
     local extension = fn.fnamemodify(filename, ':e')
 
@@ -213,8 +213,8 @@ table.insert(components.active[1], {
     },
 })
 
-local function file_path(winid)
-    local bufnr = api.nvim_win_get_buf(winid)
+local function file_path()
+    local bufnr = api.nvim_win_get_buf(0)
     if not is_file(bufnr) then
         return ''
     end
@@ -238,8 +238,8 @@ end
 
 table.insert(components.active[1], {
     provider = file_path,
-    enabled = function(winid)
-        return api.nvim_win_get_width(winid) >= 80
+    enabled = function()
+        return api.nvim_win_get_width(0) >= 80
     end,
     hl = {
         fg = 'middlegrey',
@@ -247,8 +247,8 @@ table.insert(components.active[1], {
     },
 })
 
-local function file_info(winid)
-    local bufnr = api.nvim_win_get_buf(winid)
+local function file_info()
+    local bufnr = api.nvim_win_get_buf(0)
     local filename = api.nvim_buf_get_name(bufnr)
     filename = fn.fnamemodify(filename, ':t')
 
@@ -286,7 +286,7 @@ table.insert(components.active[1], {
     },
 })
 
-local function lsp_check_diagnostics(winid)
+local function lsp_check_diagnostics()
     if vim.tbl_isempty(vim.lsp.buf_get_clients(0)) then
         return ''
     end
@@ -302,7 +302,7 @@ local function lsp_check_diagnostics(winid)
         return ' '
     end
     if status then
-        if api.nvim_win_get_width(winid) >= 80 then
+        if api.nvim_win_get_width(0) >= 80 then
             return status -- full lsp loading status
         else
             return status:sub(1, 4) -- only show lsp loading spinner
