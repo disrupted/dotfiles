@@ -204,9 +204,7 @@ packer.startup(function()
         end,
     }
     use {
-        'famiu/feline.nvim',
-        branch = 'develop',
-        -- tag = 'v0.2',
+        'feline-nvim/feline.nvim',
         event = { 'VimEnter' },
         config = function()
             require 'conf.feline'
