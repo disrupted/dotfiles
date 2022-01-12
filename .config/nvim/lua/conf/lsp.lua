@@ -753,6 +753,7 @@ function M.config()
     -- reload if buffer has file, to attach LSP
     if
         vim.api.nvim_buf_get_name(0) ~= ''
+        and vim.api.nvim_buf_is_loaded(0)
         and vim.bo.filetype ~= nil
         and vim.bo.modifiable == true
         and vim.bo.modified == false
