@@ -471,8 +471,11 @@ function M.config()
     }
 
     -- NULL-LS
-    require('conf.null-ls').config()
-    lspconfig['null-ls'].setup {
+    local sources = require('conf.null-ls').config()
+
+    require('null-ls').setup {
+        sources = sources,
+        debug = true,
         on_attach = custom_attach,
         -- Fallback to .bashrc as a project root to enable LSP on loose files
         root_dir = function(fname)

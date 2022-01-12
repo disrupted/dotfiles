@@ -38,6 +38,18 @@ function M.config()
         },
     }
 
+    local function dprint_config()
+        local lsputil = require 'lspconfig.util'
+        local path = lsputil.path.join(vim.loop.cwd(), 'dprint.json')
+        print(path)
+        if lsputil.path.exists(path) then
+            print 'path exists'
+            return path
+        end
+        print 'path doesnt exist'
+        return vim.fn.expand '~/.config/dprint.json'
+    end
+
     local dprint = {
         name = 'dprint',
         method = null_ls.methods.FORMATTING,
@@ -53,16 +65,18 @@ function M.config()
         },
         generator = h.formatter_factory {
             command = 'dprint',
-            condition = function(utils)
-                return utils.root_has_file 'dprint.json'
-            end,
+            -- condition = function(utils)
+            --     return utils.root_has_file 'dprint.json'
+            -- end,
             args = {
                 'fmt',
                 '--config',
-                require('lspconfig.util').path.join(
-                    vim.loop.cwd(),
-                    'dprint.json'
-                ),
+                -- dprint_config(),
+                -- require('lspconfig.util').path.join(
+                --     vim.loop.cwd(),
+                --     'dprint.json'
+                -- ),
+                vim.fn.expand '~/.config/dprint.json',
                 '--stdin',
                 '$FILEEXT',
             },
@@ -81,19 +95,19 @@ function M.config()
         blackd,
         dprint,
         null_ls.builtins.formatting.prettierd.with {
-            -- filetypes = {
-            --     'vue',
-            --     'svelte',
-            --     'css',
-            --     'scss',
-            --     'less',
-            --     'html',
-            --     'yaml',
-            --     'graphql',
-            -- },
-            condition = function(utils)
-                return not utils.root_has_file 'dprint.json'
-            end,
+            filetypes = {
+                'vue',
+                'svelte',
+                'css',
+                'scss',
+                'less',
+                'html',
+                'yaml',
+                'graphql',
+            },
+            -- condition = function(utils)
+            --     return not utils.root_has_file 'dprint.json'
+            -- end,
         },
         null_ls.builtins.formatting.uncrustify.with {
             condition = function(utils)
@@ -116,10 +130,7 @@ function M.config()
         null_ls.builtins.code_actions.refactoring,
         null_ls.builtins.code_actions.gitrebase,
     }
-    null_ls.setup {
-        sources = sources,
-        debug = true,
-    }
+    return sources
 end
 
 return M
