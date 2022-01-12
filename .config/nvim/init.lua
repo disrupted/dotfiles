@@ -98,7 +98,6 @@ packer.startup(function()
     }
     use {
         'jose-elias-alvarez/null-ls.nvim',
-        branch = 'temp-buffer-formatting',
         module = 'null-ls',
     }
     use 'folke/lua-dev.nvim'
