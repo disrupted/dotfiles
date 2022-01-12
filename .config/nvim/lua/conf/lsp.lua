@@ -636,6 +636,7 @@ function M.config()
     _G.init_jdtls = function()
         local settings = {
             java = {
+                import = { gradle = { wrapper = { enabled = true } } },
                 format = {
                     settings = {
                         url = '~/bakdata/dependencies/format-bakdata-codestyle.xml',
