@@ -336,6 +336,7 @@ packer.startup(function()
             require('conf.quickfix').config()
         end,
     }
+    use { 'weilbith/vim-qfloc-edit', ft = 'qf' }
     use {
         'sindrets/diffview.nvim',
         cmd = { 'DiffviewOpen', 'DiffviewFileHistory' },
