@@ -31,7 +31,7 @@ function M.setup()
     -- Handle formatting in a smarter way
     -- If the buffer has been edited before formatting has completed, do not try to
     -- apply the changes, by Lukas Reineke
-    vim.lsp.handlers['textDocument/formatting'] = function(err, result, ctx, _)
+    vim.lsp.handlers['textDocument/formatting'] = function(err, result, ctx)
         if err ~= nil then
             vim.notify('error formatting', vim.lsp.log_levels.ERROR)
             return
@@ -47,7 +47,8 @@ function M.setup()
         -- update the buffer
         if not vim.api.nvim_buf_get_option(bufnr, 'modified') then
             local pos = vim.api.nvim_win_get_cursor(0)
-            vim.lsp.util.apply_text_edits(result, bufnr)
+            local client = vim.lsp.get_client_by_id(ctx.client_id)
+            vim.lsp.util.apply_text_edits(result, bufnr, client.offset_encoding)
             vim.api.nvim_win_set_cursor(0, pos)
             if bufnr == vim.api.nvim_get_current_buf() then
                 vim.cmd 'noautocmd :update'
