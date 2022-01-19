@@ -22,11 +22,12 @@ GRADLE_HOME=$HOME/.gradle java \
     -Declipse.product=org.eclipse.jdt.ls.core.product \
     -Dlog.protocol=true \
     -Dlog.level=ALL \
-    -Xms1g \
-    -Xmx2G \
+    -XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx1G -Xms100m \
     -jar $(echo "$JAR") \
     -configuration "$HOME/.config/jdtls/config_mac" \
     -data "${1:-$HOME/bakdata/workspace}" \
     --add-modules=ALL-SYSTEM \
     --add-opens java.base/java.util=ALL-UNNAMED \
     --add-opens java.base/java.lang=ALL-UNNAMED
+
+# memory optimization from https://github.com/redhat-developer/vscode-java/pull/1262
