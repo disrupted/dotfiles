@@ -48,8 +48,12 @@ function M.setup()
         if not vim.api.nvim_buf_get_option(bufnr, 'modified') then
             local pos = vim.api.nvim_win_get_cursor(0)
             local client = vim.lsp.get_client_by_id(ctx.client_id)
-            vim.lsp.util.apply_text_edits(result, bufnr, client.offset_encoding)
-            vim.api.nvim_win_set_cursor(0, pos)
+            vim.lsp.util.apply_text_edits(
+                result,
+                bufnr,
+                client.offset_encoding or 'utf-16'
+            )
+            pcall(vim.api.nvim_win_set_cursor, 0, pos)
             if bufnr == vim.api.nvim_get_current_buf() then
                 vim.cmd 'noautocmd :update'
                 -- vim.notify('formatting success', vim.lsp.log_levels.DEBUG)
