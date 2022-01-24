@@ -98,7 +98,7 @@ function M.config()
                     ['<ESC>'] = actions.close,
                     ['<C-j>'] = actions.move_selection_next,
                     ['<C-k>'] = actions.move_selection_previous,
-                    -- ['<C-h>'] = actions.toggle_preview, -- TODO: enable when feature is merged
+                    ['<C-p>'] = require('telescope.actions.layout').toggle_preview,
                 },
                 n = { ['<ESC>'] = actions.close },
             },
