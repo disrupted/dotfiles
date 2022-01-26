@@ -51,7 +51,7 @@ function M.setup()
             vim.lsp.util.apply_text_edits(
                 result,
                 bufnr,
-                client.offset_encoding or 'utf-16'
+                client and client.offset_encoding or 'utf-16'
             )
             pcall(vim.api.nvim_win_set_cursor, 0, pos)
             if bufnr == vim.api.nvim_get_current_buf() then

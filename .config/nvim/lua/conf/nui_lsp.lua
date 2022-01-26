@@ -18,7 +18,11 @@ local function handler(err, result, ctx, _)
 
     -- the `result` contains all the places we need to update the
     -- name of the identifier. so we apply those edits.
-    vim.lsp.util.apply_workspace_edit(result)
+    local client = vim.lsp.get_client_by_id(ctx.client_id)
+    vim.lsp.util.apply_workspace_edit(
+        result,
+        client and client.offset_encoding or 'utf-16'
+    )
 
     -- display notification with the changed files
     -- https://github.com/mattleong/CosmicNvim/blob/85fea07d98a340813898c35ea8266efdd826fe88/lua/cosmic/core/theme/ui.lua
