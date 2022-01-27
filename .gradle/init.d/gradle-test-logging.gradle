@@ -1,0 +1,48 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
+allprojects {
+    tasks.withType(Test) {
+        // disable report
+        reports {
+            junitXml.enabled = false
+            html.enabled = false
+        }
+
+        testLogging {
+            events TestLogEvent.FAILED
+                   // TestLogEvent.STANDARD_ERROR,
+                   // TestLogEvent.STANDARD_OUT
+            showCauses true
+            showExceptions true
+            showStackTraces true
+            exceptionFormat TestExceptionFormat.FULL // SHORT or FULL
+
+            // set options for log level DEBUG and INFO
+            debug {
+                events TestLogEvent.STARTED,
+                       TestLogEvent.FAILED,
+                       TestLogEvent.PASSED,
+                       TestLogEvent.SKIPPED,
+                       TestLogEvent.STANDARD_ERROR,
+                       TestLogEvent.STANDARD_OUT
+                exceptionFormat TestExceptionFormat.FULL
+            }
+            info.events = debug.events
+            info.exceptionFormat = debug.exceptionFormat
+
+            afterSuite { desc, result ->
+                if (!desc.parent) { // will match the outermost suite
+                    def output = "${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
+                    def startItem = '│  ', endItem = '  │'
+                    def repeatLength = startItem.length() + output.length() + endItem.length()
+                    println('\n' + '╭' + ('─' * (repeatLength - 2)) + '╮' + '\n' + startItem + output + endItem + '\n' + '╰' + ('─' * (repeatLength - 2)) + '╯')
+                }
+            }
+
+            beforeSuite {}
+            beforeTest {}
+            afterTest {}
+        }
+    }
+}
