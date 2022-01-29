@@ -29,3 +29,56 @@ alias extract='ouch'
 alias yadmui='gitui -d ~/.local/share/yadm/repo.git'
 alias tower='gittower $(git rev-parse --show-toplevel)'
 alias ps='procs'
+alias cpu='procs --sortd cpu'
+alias mem='procs --sortd mem'
+
+function _calcram() {
+  local sum
+  sum=0
+  for i in `\ps aux | grep -i "$1" | grep -v "grep" | awk '{print $6}'`; do
+    sum=$(($i + $sum))
+  done
+  sum=$(echo "scale=0; $sum / 1024.0" | bc)
+  echo $sum
+}
+
+# Show how much RAM application uses.
+# original from https://github.com/paulmillr/dotfiles/blob/master/home/.zshrc.sh
+# $ ram safari
+# => safari uses 154 MB of RAM
+function ram() {
+  local sum
+  local app="$1"
+  if [ -z "$app" ]; then
+    echo "First argument - pattern to grep from processes"
+    return 0
+  fi
+
+  sum=$(_calcram $app)
+  if [[ $sum != "0" ]]; then
+    echo "${fg[blue]}${app}${reset_color} uses ${fg[green]}${sum}${reset_color} MB of RAM"
+  else
+    echo "No active processes matching pattern '${fg[blue]}${app}${reset_color}'"
+  fi
+}
+
+# Same, but tracks RAM usage in realtime. Will refresh every second until stopped.
+# $ rams safari
+function rams() {
+  local sum
+  local app="$1"
+  if [ -z "$app" ]; then
+    echo "First argument - pattern to grep from processes"
+    return 0
+  fi
+
+  while true; do
+    sum=$(_calcram $app)
+    if [[ $sum != "0" ]]; then
+      echo -en "${fg[blue]}${app}${reset_color} uses ${fg[green]}${sum}${reset_color} MB of RAM\r"
+    else
+      echo -en "No active processes matching pattern '${fg[blue]}${app}${reset_color}'\r"
+    fi
+    sleep 1
+  done
+}
