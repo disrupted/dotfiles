@@ -76,6 +76,10 @@ packer.startup(function()
                 end,
                 disable = true, -- not working for now
             },
+            {
+                'TornaxO7/tree-setter',
+                after = 'nvim-treesitter',
+            },
         },
         run = ':TSUpdate',
         config = function()

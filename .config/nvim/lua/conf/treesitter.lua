@@ -96,6 +96,9 @@ function M.config()
             enable = true,
             enable_autocmd = false,
         },
+        tree_setter = {
+            enable = true,
+        },
     }
 end
 
