@@ -10,7 +10,8 @@ function M.config()
             { open = '(', close = ')' },
             { open = '[', close = ']' },
             { open = '{', close = '}' },
-            { open = '#', close = ']' },
+            { open = '#', close = ']' }, -- Rust macros
+            { open = '<', close = '>' }, -- Java type annotation
         },
         ignore_beginning = true,
     }
