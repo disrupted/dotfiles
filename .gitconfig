@@ -64,7 +64,7 @@
 
 [merge]
     tool = nvimdiff
-    conflictstyle = diff3
+    conflictstyle = zdiff3
 
 [rerere]
     enabled = true
