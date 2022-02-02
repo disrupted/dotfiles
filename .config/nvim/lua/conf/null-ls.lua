@@ -62,6 +62,7 @@ function M.config()
             'typescriptreact',
             'toml',
             'dockerfile',
+            'css',
         },
         generator = h.formatter_factory {
             command = 'dprint',
@@ -98,8 +99,8 @@ function M.config()
             filetypes = {
                 'vue',
                 'svelte',
-                'css',
-                'scss',
+                -- 'css',
+                -- 'scss',
                 'less',
                 'html',
                 'yaml',
