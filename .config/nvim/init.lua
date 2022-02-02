@@ -13,6 +13,7 @@ packer.startup(function()
             require('conf.filetype').config()
         end,
     }
+    use 'antoinemadec/FixCursorHold.nvim'
     use { 'kyazdani42/nvim-web-devicons', module = 'nvim-web-devicons' }
     use {
         'disrupted/one.nvim', -- personal tweaked colorscheme
@@ -671,7 +672,7 @@ opt.pumheight = 20 -- Limit the amount of autocomplete items shown
 -----------------------------------------------------------------------------//
 -- Timings {{{1
 -----------------------------------------------------------------------------//
-opt.updatetime = 300
+vim.g.cursorhold_updatetime = 300
 opt.timeout = true
 opt.timeoutlen = 1000
 opt.ttimeoutlen = 10
