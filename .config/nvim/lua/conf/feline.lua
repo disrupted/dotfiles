@@ -119,13 +119,16 @@ end
 -- Components {{{1
 -----------------------------------------------------------------------------//
 -- Vi mode
+local function mode()
+    return mode_alias[api.nvim_get_mode().mode]
+end
+
 table.insert(components.active[1], {
     provider = function()
-        local name = mode_alias[api.nvim_get_mode().mode]
-        if api.nvim_win_get_width(0) <= 60 then
-            name = name:sub(1, 1) -- shorten mode name
-        end
-        return ' ' .. name .. ' '
+        return string.format(' %s ', mode())
+    end,
+    short_provider = function()
+        return string.format(' %s ', mode():sub(1, 1))
     end,
     icon = '',
     hl = function()
