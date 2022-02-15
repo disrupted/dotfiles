@@ -129,10 +129,10 @@
     #insteadOf = git@github.com:
     insteadOf = gh:
 
-# [url "git@github.com:"]
+[url "git@github.com:"]
     # Use SSH for GitHub instead of https://
     # Enable this in networks where https:// has issues.
-    # insteadOf = https://github.com/
+    insteadOf = https://github.com/
 
 [url "git@gitorious.org:"]
     # Always use Gitorious SSH protocol to push.
