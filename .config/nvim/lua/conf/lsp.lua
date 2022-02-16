@@ -283,6 +283,10 @@ function M.config()
               ]]
         end
 
+        if client.resolved_capabilities.semantic_tokens_full then
+            vim.cmd [[autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.buf.semantic_tokens_full()]]
+        end
+
         _G.show_lightbulb = function()
             require('nvim-lightbulb').update_lightbulb {
                 sign = { enabled = false, priority = 99 },

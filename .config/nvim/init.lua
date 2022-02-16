@@ -455,6 +455,7 @@ packer.startup(function()
         end,
         event = 'VimEnter',
     }
+    use { 'theHamsta/nvim-semantic-tokens' }
 end)
 
 -----------------------------------------------------------------------------//
