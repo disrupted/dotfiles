@@ -4,3 +4,7 @@
 
 [commit]
     gpgsign = false
+
+# keep some url rewrites private
+[include]
+    path = ~/bakdata/.gitconfig_rewrites
