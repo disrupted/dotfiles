@@ -341,7 +341,10 @@ function M.config()
     }
 
     lspconfig.dockerls.setup {
-        on_attach = custom_attach,
+        on_attach = function(client, bufnr)
+            client.resolved_capabilities.document_formatting = false
+            custom_attach(client, bufnr)
+        end,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
         settings = {
@@ -568,7 +571,10 @@ function M.config()
     -- LUA
     local luadev = require('lua-dev').setup {
         lspconfig = {
-            on_attach = custom_attach,
+            on_attach = function(client, bufnr)
+                client.resolved_capabilities.document_formatting = false
+                custom_attach(client, bufnr)
+            end,
             capabilities = capabilities,
             flags = { debounce_text_changes = 150 },
             settings = {
