@@ -386,7 +386,11 @@ packer.startup(function()
         'kwkarlwang/bufresize.nvim',
         module = 'bufresize',
         setup = function()
-            vim.cmd [[autocmd VimResized * lua require('bufresize').resize()]]
+            vim.api.nvim_create_autocmd('VimResized', {
+                callback = function()
+                    require('bufresize').resize()
+                end,
+            })
         end,
         disable = true,
     }
@@ -490,13 +494,36 @@ if fn.filereadable '~/.local/share/virtualenvs/debugpy/bin/python' then
 end
 
 -- nonumber for commits
-cmd [[autocmd BufReadPost * if &ft =~ "commit" | setlocal nonumber norelativenumber | endif]]
+-- cmd [[autocmd BufReadPost * if &ft =~ "commit" | setlocal nonumber norelativenumber | endif]]
+
+-- restore cursor position
+vim.api.nvim_create_autocmd('BufReadPost', {
+    callback = function()
+        local previous_pos = vim.api.nvim_buf_get_mark(0, '"')[1]
+        local last_line = vim.api.nvim_buf_line_count(0)
+        if
+            previous_pos >= 1
+            and previous_pos <= last_line
+            and vim.bo.filetype ~= 'commit'
+        then
+            vim.cmd 'normal! g`"'
+        end
+    end,
+})
 
 -- highlight yanked text briefly
-cmd [[autocmd TextYankPost * silent! lua vim.highlight.on_yank { higroup="Search", timeout=250, on_visual=true }]]
+vim.api.nvim_create_autocmd('TextYankPost', {
+    callback = function()
+        vim.highlight.on_yank {
+            higroup = 'Search',
+            timeout = 250,
+            on_visual = true,
+        }
+    end,
+})
 
 -- resize splits when Vim is resized
-cmd [[autocmd VimResized * wincmd =]]
+vim.api.nvim_create_autocmd('VimResized', { command = 'wincmd =' })
 
 -- Trim trailing whitespace and trailing blank lines on save
 function _G.trim_trailing_whitespace()
@@ -551,13 +578,19 @@ opt.relativenumber = true -- Relative line numbers
 opt.numberwidth = 2
 opt.signcolumn = 'yes:1' -- 'auto:1-2'
 opt.cursorline = true
-cmd [[
-    augroup cursorline_focus
-        autocmd!
-        autocmd WinEnter <buffer> if (&bt == '') | setlocal cursorline
-        autocmd WinLeave <buffer> if (&bt == '') | setlocal nocursorline
-    augroup END
-    ]]
+vim.api.nvim_create_augroup('cursorline_focus', {})
+vim.api.nvim_create_autocmd({ 'InsertLeave', 'WinEnter' }, {
+    group = 'cursorline_focus',
+    callback = function()
+        vim.wo.cursorline = true
+    end,
+})
+vim.api.nvim_create_autocmd({ 'InsertEnter', 'WinLeave' }, {
+    group = 'cursorline_focus',
+    callback = function()
+        vim.wo.cursorline = false
+    end,
+})
 opt.wrap = true
 opt.linebreak = true -- wrap, but on words, not randomly
 -- opt.textwidth = 80
