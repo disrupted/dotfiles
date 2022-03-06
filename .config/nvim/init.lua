@@ -1,3 +1,4 @@
+-- vim: foldmethod=marker
 local cmd, fn, opt = vim.cmd, vim.fn, vim.opt
 
 cmd [[packadd packer.nvim]]
@@ -625,8 +626,7 @@ opt.titlelen = 70
 opt.foldtext = 'folds#render()'
 opt.foldopen:append { 'search' }
 opt.foldlevelstart = 10
--- opt.foldmethod = 'syntax'
-opt.foldmethod = 'expr'
+opt.foldmethod = 'marker' -- or 'syntax'
 opt.foldexpr = 'nvim_treesitter#foldexpr()'
 
 -----------------------------------------------------------------------------//
