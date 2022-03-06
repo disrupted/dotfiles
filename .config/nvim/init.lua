@@ -18,7 +18,7 @@ packer.startup(function()
     use {
         'disrupted/one.nvim', -- personal tweaked colorscheme
         config = function()
-            vim.cmd 'colorscheme one'
+            require('one').colorscheme()
         end,
     }
     use {
