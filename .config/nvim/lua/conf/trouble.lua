@@ -1,26 +1,22 @@
 local M = {}
 
 function M.setup()
-    local map = require('utils').map
-    map('n', '<space>xx', '<cmd>lua require("trouble").toggle()<CR>')
-    map(
-        'n',
-        '<space>xw',
-        '<cmd>lua require("trouble").toggle { mode = "workspace_diagnostics" }<CR>'
-    )
-    map(
-        'n',
-        '<space>xb',
-        '<cmd>lua require("trouble").toggle { mode = "document_diagnostics" }<CR>'
-    )
-    map(
-        'n',
-        '<space>xq',
-        '<cmd>lua require("trouble").toggle { mode = "quickfix" }<CR>'
-    )
+    vim.keymap.set('n', '<space>xx', function()
+        require('trouble').toggle()
+    end)
+    vim.keymap.set('n', '<space>xw', function()
+        require('trouble').toggle { mode = 'workspace_diagnostics' }
+    end)
+    vim.keymap.set('n', '<space>xb', function()
+        require('trouble').toggle { mode = 'document_diagnostics' }
+    end)
+    vim.keymap.set('n', '<space>xq', function()
+        require('trouble').toggle { mode = 'quickfix' }
+    end)
 end
 
 function M.config()
+    print 'trouble config'
     require('trouble').setup {
         fold_open = '', -- ▾
         fold_closed = '', -- ▸

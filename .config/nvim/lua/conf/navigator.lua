@@ -2,11 +2,18 @@ local M = {}
 
 function M.setup()
     if os.getenv 'TMUX' then
-        local map = require('utils').map
-        map('n', '<C-w>j', '<cmd>lua require("Navigator").down()<CR>')
-        map('n', '<C-w>k', '<cmd>lua require("Navigator").up()<CR>')
-        map('n', '<C-w>h', '<cmd>lua require("Navigator").left()<CR>')
-        map('n', '<C-w>l', '<cmd>lua require("Navigator").right()<CR>')
+        vim.keymap.set('n', '<C-w>j', function()
+            require('Navigator').down()
+        end)
+        vim.keymap.set('n', '<C-w>k', function()
+            require('Navigator').up()
+        end)
+        vim.keymap.set('n', '<C-w>h', function()
+            require('Navigator').left()
+        end)
+        vim.keymap.set('n', '<C-w>l', function()
+            require('Navigator').right()
+        end)
     end
 end
 

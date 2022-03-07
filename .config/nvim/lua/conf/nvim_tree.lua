@@ -1,8 +1,9 @@
 local M = {}
 
 function M.setup()
-    local map = require('utils').map
-    map('n', '<C-e>', '<cmd>lua require("nvim-tree").toggle()<CR>')
+    vim.keymap.set('n', '<C-e>', function()
+        require('nvim-tree').toggle()
+    end)
 end
 
 function M.config()

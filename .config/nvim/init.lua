@@ -166,7 +166,8 @@ packer.startup(function()
     use {
         'kyazdani42/nvim-tree.lua',
         opt = true,
-        -- module = 'nvim-tree',
+        module = 'nvim-tree',
+        cmd = 'NvimTreeToggle',
         setup = function()
             require('conf.nvim_tree').setup()
         end,
@@ -305,7 +306,7 @@ packer.startup(function()
     use {
         'folke/trouble.nvim',
         opt = true,
-        -- module = 'trouble',
+        module = 'trouble',
         setup = function()
             require('conf.trouble').setup()
         end,
@@ -793,120 +794,129 @@ end, {
 -----------------------------------------------------------------------------//
 -- Mappings {{{1
 -----------------------------------------------------------------------------//
-local map = require('utils').map
-
 -- set leader to space
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ','
 -- <space><space> switches between buffers
--- map('n', '<leader><leader>', ':b#<CR>')
+-- vim.keymap.set('n', '<leader><leader>', ':b#<CR>')
 
 -- Disable hjkl (get used to sneak)
--- map('n', 'j', '<Nop>')
--- map('n', 'k', '<Nop>')
--- map('n', 'h', '<Nop>')
--- map('n', 'l', '<Nop>')
+-- vim.keymap.set('n', 'j', '<Nop>')
+-- vim.keymap.set('n', 'k', '<Nop>')
+-- vim.keymap.set('n', 'h', '<Nop>')
+-- vim.keymap.set('n', 'l', '<Nop>')
 
 -- Sane movement defaults that works on long wrapped lines
 local expr = { expr = true, noremap = false, silent = false }
--- map('', 'j', '(v:count ? \'j\' : \'gj\')', expr)
--- map('', 'k', '(v:count ? \'k\' : \'gk\')', expr)
-map('', '<Down>', '(v:count ? \'j\' : \'gj\')', expr)
-map('', '<Up>', '(v:count ? \'k\' : \'gk\')', expr)
+vim.keymap.set('n', 'j', '(v:count ? \'j\' : \'gj\')', expr)
+vim.keymap.set('n', 'k', '(v:count ? \'k\' : \'gk\')', expr)
+vim.keymap.set('', '<Down>', '(v:count ? \'j\' : \'gj\')', expr)
+vim.keymap.set('', '<Up>', '(v:count ? \'k\' : \'gk\')', expr)
 
 -- Easier splits navigation
-local remap = { noremap = false, silent = false }
-map('n', '<C-j>', '<C-w>j', remap)
-map('n', '<C-k>', '<C-w>k', remap)
-map('n', '<C-h>', '<C-w>h', remap)
-map('n', '<C-l>', '<C-w>l', remap)
+local remap = { remap = true, silent = false }
+vim.keymap.set('n', '<C-j>', '<C-w>j', remap)
+vim.keymap.set('n', '<C-k>', '<C-w>k', remap)
+vim.keymap.set('n', '<C-h>', '<C-w>h', remap)
+vim.keymap.set('n', '<C-l>', '<C-w>l', remap)
 
 -- Use alt + hjkl to resize windows
-map('n', '<M-j>', '<cmd>resize -2<CR>')
-map('n', '<M-k>', '<cmd>resize +2<CR>')
-map('n', '<M-h>', '<cmd>vertical resize -2<CR>')
-map('n', '<M-l>', '<cmd>vertical resize +2<CR>')
+vim.keymap.set('n', '<M-j>', '<cmd>resize -2<CR>')
+vim.keymap.set('n', '<M-k>', '<cmd>resize +2<CR>')
+vim.keymap.set('n', '<M-h>', '<cmd>vertical resize -2<CR>')
+vim.keymap.set('n', '<M-l>', '<cmd>vertical resize +2<CR>')
 -- it works differently on Mac
-map('n', '∆', '<cmd>resize -2<CR>')
-map('n', '˚', '<cmd>resize +2<CR>')
-map('n', '˙', '<cmd>vertical resize -2<CR>')
-map('n', '¬', '<cmd>vertical resize +2<CR>')
+vim.keymap.set('n', '∆', '<cmd>resize -2<CR>')
+vim.keymap.set('n', '˚', '<cmd>resize +2<CR>')
+vim.keymap.set('n', '˙', '<cmd>vertical resize -2<CR>')
+vim.keymap.set('n', '¬', '<cmd>vertical resize +2<CR>')
 
 -- Terminal window navigation
-map('t', '<C-h>', '<C-\\><C-N><C-w>h', remap)
-map('t', '<C-j>', '<C-\\><C-N><C-w>j', remap)
-map('t', '<C-k>', '<C-\\><C-N><C-w>k', remap)
-map('t', '<C-l>', '<C-\\><C-N><C-w>l', remap)
-map('t', '<C-[><C-[>', '<C-\\><C-N>') -- double ESC to escape terminal
+vim.keymap.set('t', '<C-h>', '<C-\\><C-N><C-w>h', remap)
+vim.keymap.set('t', '<C-j>', '<C-\\><C-N><C-w>j', remap)
+vim.keymap.set('t', '<C-k>', '<C-\\><C-N><C-w>k', remap)
+vim.keymap.set('t', '<C-l>', '<C-\\><C-N><C-w>l', remap)
+vim.keymap.set('t', '<C-[><C-[>', '<C-\\><C-N>') -- double ESC to escape terminal
 
 -- more intuitive wildmenu navigation
-map('c', '<Up>', [[wildmenumode() ? "\<Left>" : "\<Up>"]], expr)
-map('c', '<Down>', [[wildmenumode() ? "\<Right>" : "\<Down>"]], expr)
-map('c', '<Left>', [[wildmenumode() ? "\<Up>" : "\<Left>"]], expr)
-map('c', '<Right>', [[wildmenumode() ? " \<BS>\<C-Z>" : "\<Right>"]], expr)
+vim.keymap.set('c', '<Up>', [[wildmenumode() ? "\<Left>" : "\<Up>"]], expr)
+vim.keymap.set('c', '<Down>', [[wildmenumode() ? "\<Right>" : "\<Down>"]], expr)
+vim.keymap.set('c', '<Left>', [[wildmenumode() ? "\<Up>" : "\<Left>"]], expr)
+vim.keymap.set(
+    'c',
+    '<Right>',
+    [[wildmenumode() ? " \<BS>\<C-Z>" : "\<Right>"]],
+    expr
+)
 
 -- command mode
-map('c', '<C-a>', '<Home>')
-map('c', '<C-e>', '<End>')
+vim.keymap.set('c', '<C-a>', '<Home>')
+vim.keymap.set('c', '<C-e>', '<End>')
 
 -- insert mode
-map('i', '<C-j>', '<Down>')
-map('i', '<C-k>', '<Up>')
-map('i', '<C-h>', '<Left>')
-map('i', '<C-l>', '<Right>')
+vim.keymap.set('i', '<C-j>', '<Down>')
+vim.keymap.set('i', '<C-k>', '<Up>')
+vim.keymap.set('i', '<C-h>', '<Left>')
+vim.keymap.set('i', '<C-l>', '<Right>')
 
 -- Better indenting
-map('v', '<', '<gv')
-map('v', '>', '>gv')
+vim.keymap.set('v', '<', '<gv')
+vim.keymap.set('v', '>', '>gv')
 
 -- Move selected line / block of text in visual mode
 -- shift + k to move up
 -- shift + j to move down
-map('x', 'K', ':move \'<-2<CR>gv-gv')
-map('x', 'J', ':move \'>+1<CR>gv-gv')
+vim.keymap.set('x', 'K', ':move \'<-2<CR>gv-gv')
+vim.keymap.set('x', 'J', ':move \'>+1<CR>gv-gv')
 
 -- ctrl + a: select all
-map('n', '<C-a>', '<esc>ggVG<CR>')
+vim.keymap.set('n', '<C-a>', '<esc>ggVG<CR>')
 
 -- navigate paragraphs without altering jumplist
-map('n', '}', ':<C-u>execute "keepjumps norm! " . v:count1 . "}"<CR>')
-map('n', '{', ':<C-u>execute "keepjumps norm! " . v:count1 . "{"<CR>')
+vim.keymap.set(
+    'n',
+    '}',
+    ':<C-u>execute "keepjumps norm! " . v:count1 . "}"<CR>'
+)
+vim.keymap.set(
+    'n',
+    '{',
+    ':<C-u>execute "keepjumps norm! " . v:count1 . "{"<CR>'
+)
 
 -- alternate file
-map('n', '<C-6>', '<C-^>')
+vim.keymap.set('n', '<C-6>', '<C-^>')
 
 -- sensible defaults
-map('', 'Q', '') -- disable
-map('n', 'x', '"_x') -- delete char without yank
-map('x', 'x', '"_x') -- delete visual selection without yank
+vim.keymap.set('', 'Q', '') -- disable
+vim.keymap.set('n', 'x', '"_x') -- delete char without yank
+vim.keymap.set('x', 'x', '"_x') -- delete visual selection without yank
 
 -- paste in visual mode and keep available
-local noremapexpr = { expr = true, noremap = true }
-map('x', 'p', [['pgv"'.v:register.'y`>']], noremapexpr)
-map('x', 'P', [['Pgv"'.v:register.'y`>']], noremapexpr)
-
+vim.keymap.set('x', 'p', [['pgv"'.v:register.'y`>']], expr)
+vim.keymap.set('x', 'P', [['Pgv"'.v:register.'y`>']], expr)
 -- select last inserted text
-map('n', 'gV', [['`[' . strpart(getregtype(), 0, 1) . '`]']], noremapexpr)
+vim.keymap.set('n', 'gV', [['`[' . strpart(getregtype(), 0, 1) . '`]']], expr)
 
 -- edit & source init.lua
--- map('n', '<leader>v', ':e $MYVIMRC<CR>')
--- map('n', '<leader>s', ':luafile $MYVIMRC<CR>')
+-- vim.keymap.set('n', '<leader>v', ':e $MYVIMRC<CR>')
+-- vim.keymap.set('n', '<leader>s', ':luafile $MYVIMRC<CR>')
 
 -- Vimdiff as mergetool
-map('n', '<leader>1', ':diffget //1<CR>')
-map('n', '<leader>2', ':diffget //2<CR>')
-map('n', '<leader>3', ':diffget //3<CR>')
+vim.keymap.set('n', '<leader>1', ':diffget //1<CR>')
+vim.keymap.set('n', '<leader>2', ':diffget //2<CR>')
+vim.keymap.set('n', '<leader>3', ':diffget //3<CR>')
 
 -- quickfix navigation
-map('n', ']q', ':cnext<CR>')
-map('n', '[q', ':cprevious<CR>')
+vim.keymap.set('n', ']q', ':cnext<CR>')
+vim.keymap.set('n', '[q', ':cprevious<CR>')
 
 --  ctrl + / nohighlight
-map('n', '<C-_>', ':noh<CR>')
+vim.keymap.set('n', '<C-_>', ':noh<CR>')
 
 -- cycle tabs
-map('n', ']]', '<cmd>tabnext<CR>')
-map('n', '[[', '<cmd>tabprevious<CR>')
+vim.keymap.set('n', ']]', '<cmd>tabnext<CR>')
+vim.keymap.set('n', '[[', '<cmd>tabprevious<CR>')
 
 -----------------------------------------------------------------------------//
 -- Commands {{{1

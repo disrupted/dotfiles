@@ -1,8 +1,7 @@
 local M = {}
 
 function M.setup()
-    local map = require('utils').map
-    map('n', '|', '<cmd>SymbolsOutline<CR>')
+    vim.keymap.set('n', '|', '<cmd>SymbolsOutline<CR>')
 end
 
 function M.config()

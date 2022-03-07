@@ -1,9 +1,12 @@
 local M = {}
 
 function M.setup()
-    local map = require('utils').map
-    map('n', '<space>g', '<cmd>lua require("neogit").open()<CR>')
-    map('n', '<space>c', '<cmd>lua require("neogit").open { "commit" }<CR>')
+    vim.keymap.set('n', '<space>g', function()
+        require('neogit').open()
+    end)
+    vim.keymap.set('n', '<space>c', function()
+        require('neogit').open { 'commit' }
+    end)
 end
 
 function M.config()

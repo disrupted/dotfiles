@@ -1,9 +1,10 @@
 local M = {}
 
 function M.setup()
-    local map = require('utils').map
-    map('n', '<leader>op', '<cmd>lua __octo_open_pr()<CR>')
-    map('n', '<leader>oi', '<cmd>Octo issue list<CR>')
+    vim.keymap.set('n', '<leader>op', function()
+        __octo_open_pr()
+    end)
+    vim.keymap.set('n', '<leader>oi', '<cmd>Octo issue listend<cr>')
 
     function _G.__octo_open_pr()
         local url = vim.fn.system 'gh pr view --json url --jq .url 2>/dev/null'

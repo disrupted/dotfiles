@@ -56,21 +56,37 @@ function M.setup()
     end
 
     -- Key bindings
-    local map = require('utils').map
-    map('n', '<Space>dc', '<cmd>lua __dap_continue()<CR>')
-    map('n', '<Space>dq', '<cmd>lua __dap_close()<CR>')
-    map('n', '<Space>du', '<cmd>lua require("dapui").toggle()<CR>')
-    map('n', '<Space>do', '<cmd>lua require("dap").step_over()<CR>')
-    map('n', '<Space>d>', '<cmd>lua require("dap").step_into()<CR>')
-    map('n', '<Space>d<', '<cmd>lua require("dap").step_out()<CR>')
-    map('n', '<Space>db', '<cmd>lua require("dap").toggle_breakpoint()<CR>')
-    map('n', '<Space>dr', '<cmd>lua require("dap").repl.open()<CR>')
-    map('n', '<Space>t', '<cmd>lua __dap_test()<CR>')
-    map(
-        'v',
-        '<Space>ds',
-        '<ESC>:lua require("dap-python").debug_selection()<CR>'
-    )
+    vim.keymap.set('n', '<Space>dc', function()
+        __dap_continue()
+    end)
+    vim.keymap.set('n', '<Space>dq', function()
+        __dap_close()
+    end)
+    vim.keymap.set('n', '<Space>du', function()
+        require('dapui').toggle()
+    end)
+    vim.keymap.set('n', '<Space>do', function()
+        require('dap').step_over()
+    end)
+    vim.keymap.set('n', '<Space>d>', function()
+        require('dap').step_into()
+    end)
+    vim.keymap.set('n', '<Space>d<', function()
+        require('dap').step_out()
+    end)
+    vim.keymap.set('n', '<Space>db', function()
+        require('dap').toggle_breakpoint()
+    end)
+    vim.keymap.set('n', '<Space>dr', function()
+        require('dap').repl.open()
+    end)
+    vim.keymap.set('n', '<Space>t', function()
+        __dap_test()
+    end)
+    -- FIXME: <ESC> first
+    -- vim.keymap.set('v', '<Space>ds', function()
+    --     require('dap-python').debug_selection()
+    -- end)
 end
 
 function M.config()

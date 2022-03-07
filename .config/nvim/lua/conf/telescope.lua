@@ -48,40 +48,40 @@ function M.setup()
         }
     end
     local map = require('utils').map
-    map('n', '<space><space>', '<cmd>lua __telescope_buffers()<CR>')
-    map('n', '<C-f>', '<cmd>lua __telescope_files()<CR>')
-    map(
-        'n',
-        '<C-g>',
-        '<cmd>lua require "telescope.builtin".git_status(options)<CR>'
-    )
-    -- map(
-    --     'n',
-    --     '<Space>s',
-    --     '<cmd>lua require(\'telescope\').extensions.frecency.frecency({layout_strategy = \'vertical\'})<CR>'
-    -- )
-    map('n', '<Space>/', '<cmd>lua __telescope_grep()<CR>')
-    -- map(
-    --     'n',
-    --     '<Space>/',
-    --     '<cmd>lua require("telescope.builtin").grep_string { search = vim.fn.expand("<cword>") }<CR>'
-    -- ) -- grep for word under the cursor
-    map(
-        'n',
-        '<Space>s',
-        '<cmd>lua require "telescope.builtin".lsp_dynamic_workspace_symbols(options)<CR>'
-    )
-    map(
-        'n',
-        ',h',
-        '<cmd>lua require "telescope.builtin".help_tags(options)<CR>'
-    )
-    -- map('n', '<Space>c', '<cmd>lua __telescope_commits()<CR>')
-    map(
-        'n',
-        ',pr',
-        '<cmd>lua require "telescope.builtin".extensions.pull_request()<CR>'
-    )
+    vim.keymap.set('n', '<space><space>', function()
+        __telescope_buffers()
+    end)
+    vim.keymap.set('n', '<C-f>', function()
+        __telescope_files()
+    end)
+    vim.keymap.set('n', '<C-g>', function()
+        require('telescope.builtin').git_status(options)
+    end)
+    -- vim.keymap.set('n', '<Space>s', function()
+    --     require('telescope').extensions.frecency.frecency {
+    --         layout_strategy = 'vertical',
+    --     }
+    -- end)
+    vim.keymap.set('n', '<Space>/', function()
+        __telescope_grep()
+    end)
+    -- vim.keymap.set('n', '<Space>/', function()
+    --     require('telescope.builtin').grep_string {
+    --         search = vim.fn.expand '<cword>',
+    --     }
+    -- end) -- grep for word under the cursor
+    vim.keymap.set('n', '<Space>s', function()
+        require('telescope.builtin').lsp_dynamic_workspace_symbols(options)
+    end)
+    vim.keymap.set('n', ',h', function()
+        require('telescope.builtin').help_tags(options)
+    end)
+    -- vim.keymap.set('n', '<Space>c', function()
+    --     __telescope_commits()
+    -- end)
+    vim.keymap.set('n', ',pr', function()
+        require('telescope.builtin').extensions.pull_request()
+    end)
 end
 
 function M.config()
