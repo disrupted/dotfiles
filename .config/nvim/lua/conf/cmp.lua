@@ -90,6 +90,9 @@ function M.config()
     }
 
     cmp.setup {
+        view = {
+            entries = 'native',
+        },
         snippet = {
             expand = function(args)
                 require('luasnip').lsp_expand(args.body)
@@ -103,7 +106,7 @@ function M.config()
             { name = 'nvim_lua' },
             { name = 'spell' },
             { name = 'path' },
-            { name = 'buffer', keyword_length = 5 },
+            { name = 'buffer', keyword_length = 4 },
         },
         formatting = {
             format = function(entry, vim_item)
