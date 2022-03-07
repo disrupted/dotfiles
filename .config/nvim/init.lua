@@ -209,6 +209,13 @@ packer.startup(function()
         end,
     }
     use {
+        'aloussase/telescope-gradle.nvim',
+        after = { 'telescope.nvim' },
+        config = function()
+            require('telescope').load_extension 'gradle'
+        end,
+    }
+    use {
         'feline-nvim/feline.nvim',
         event = { 'VimEnter' },
         config = function()
