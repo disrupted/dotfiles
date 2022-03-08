@@ -37,7 +37,7 @@ brew "curl"
 brew "deno"
 brew "direnv"
 brew "dive"
-brew "docker", link: false
+brew "docker"
 brew "dprint"
 brew "duf"
 brew "esptool"
@@ -118,7 +118,7 @@ brew "tealdeer"
 brew "texlab"
 brew "tmux", args: ["HEAD"]
 brew "translate-shell"
-brew "virtualenv", link: false
+brew "virtualenv"
 brew "wget"
 brew "xh"
 brew "xplr"
@@ -187,7 +187,6 @@ mas "Dark Reader for Safari", id: 1438243180
 mas "Darkroom", id: 953286746
 mas "Deliveries", id: 290986013
 mas "Expressions", id: 913158085
-mas "Flighty", id: 1358823008
 mas "Git Streaks", id: 1525795950
 mas "Grocery", id: 1195676848
 mas "KeyKey", id: 1035137927
