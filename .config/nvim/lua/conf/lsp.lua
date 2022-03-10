@@ -524,7 +524,9 @@ function M.config()
         root_dir = function(fname)
             return lspconfig.util.root_pattern(
                 'tsconfig.json',
-                'pyproject.toml'
+                'pyproject.toml',
+                'stylua.toml',
+                'dprint.json'
             )(fname) or lspconfig.util.root_pattern(
                 '.eslintrc.js',
                 '.git'
