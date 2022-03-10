@@ -269,10 +269,7 @@ function M.config()
             vim.api.nvim_create_augroup(augroup, {})
             vim.api.nvim_create_autocmd('BufWritePost', {
                 group = augroup,
-                buffer = bufnr,
-                callback = function()
-                    vim.lsp.buf.formatting()
-                end,
+                callback = vim.lsp.buf.formatting,
             })
         end
 
@@ -290,17 +287,11 @@ function M.config()
             vim.api.nvim_create_augroup(augroup, {})
             vim.api.nvim_create_autocmd('CursorHold', {
                 group = augroup,
-                buffer = bufnr,
-                callback = function()
-                    vim.lsp.buf.document_highlight()
-                end,
+                callback = vim.lsp.buf.document_highlight,
             })
             vim.api.nvim_create_autocmd('CursorMoved', {
                 group = augroup,
-                buffer = bufnr,
-                callback = function()
-                    vim.lsp.buf.clear_references()
-                end,
+                callback = vim.lsp.buf.clear_references,
             })
         end
 
@@ -308,10 +299,7 @@ function M.config()
             vim.api.nvim_create_autocmd(
                 { 'BufEnter', 'CursorHold', 'InsertLeave' },
                 {
-                    buffer = bufnr,
-                    callback = function()
-                        vim.lsp.buf.semantic_tokens_full()
-                    end,
+                    callback = vim.lsp.buf.semantic_tokens_full,
                 }
             )
         end
@@ -329,7 +317,6 @@ function M.config()
 
         if client.resolved_capabilities.code_action then
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-                buffer = bufnr,
                 callback = function()
                     if vim.bo.filetype ~= 'java' then
                         show_lightbulb()
@@ -345,22 +332,16 @@ function M.config()
         end
 
         vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-            buffer = bufnr,
-            callback = function()
-                show_diagnostics()
-            end,
+            callback = show_diagnostics,
         })
         vim.api.nvim_create_autocmd('DiagnosticChanged', {
-            callback = function()
-                show_diagnostics()
-            end,
+            callback = show_diagnostics,
         })
-        vim.api.nvim_create_autocmd('CursorHoldI', {
-            buffer = bufnr,
-            callback = function()
-                vim.lsp.buf.signature_help()
-            end,
-        })
+        -- vim.api.nvim_create_autocmd('CursorHoldI', {
+        --     pattern = '<buffer>',
+        --     callback = vim.lsp.buf.signature_help,
+        -- })
+        vim.cmd [[autocmd CursorHoldI <buffer> silent! lua vim.lsp.buf.signature_help()]]
 
         vim.notify 'LSP attached.'
     end
