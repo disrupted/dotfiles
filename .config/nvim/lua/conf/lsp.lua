@@ -129,6 +129,12 @@ function M.config()
         lsp_status.capabilities
     )
 
+    if pcall(require, 'vim.lsp.nvim-semantic-tokens') then
+        require('nvim-semantic-tokens').setup {
+            preset = 'default',
+        }
+    end
+
     local custom_attach = function(client, bufnr)
         lsp_status.on_attach(client)
 
