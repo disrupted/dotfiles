@@ -171,7 +171,7 @@
     # Repeat last commit message
     recommit = commit --reuse-message=HEAD
     # Create new branch off of default origin branch (origin/master or origin/main)
-    newbranch = "!f() { [[ -n $@ ]] && git fetch origin && git checkout -b \"$@\" origin/$(git main) && git branch --unset-upstream; }; f"
+    newbranch = "!f() { [[ -n $@ ]] && git fetch origin && git switch -c \"$@\" origin/$(git main) && git branch --unset-upstream; }; f"
     bclone = clone --bare
     # Delete local branches that no longer exist on the remote
     gone = !git fetch -p && git branch -vv | grep 'origin/.*: gone]' | awk '{print $1}' | xargs git branch -D
