@@ -7,8 +7,6 @@ function M.setup()
 end
 
 function M.config()
-    vim.g.nvim_tree_ignore = { '.git', 'node_modules', '.cache' }
-
     vim.g.nvim_tree_show_icons = {
         git = 1,
         folders = 1,
@@ -106,7 +104,6 @@ function M.config()
                 { key = '?', cb = cb 'toggle_help' },
             },
         },
-
         view = {
             width = 30,
             side = 'left',
@@ -115,6 +112,9 @@ function M.config()
                 custom_only = false,
                 list = {},
             },
+        },
+        filters = {
+            custom = { '.git', 'node_modules', '.cache' },
         },
     }
 
