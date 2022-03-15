@@ -326,14 +326,14 @@ packer.startup(function()
         end,
     }
     use {
-        'folke/persistence.nvim',
+        'olimorris/persisted.nvim',
         event = 'VimLeavePre',
-        module = 'persistence',
+        module = 'persisted',
         setup = function()
-            require('conf.persistence').setup()
+            require('conf.persisted').setup()
         end,
         config = function()
-            require('conf.persistence').config()
+            require('conf.persisted').config()
         end,
     }
     use {
