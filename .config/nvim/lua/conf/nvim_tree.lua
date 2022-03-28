@@ -44,7 +44,6 @@ function M.config()
         hijack_netrw = true,
         open_on_setup = false,
         ignore_ft_on_setup = {},
-        auto_close = true,
         open_on_tab = false,
         hijack_cursor = false,
         update_cwd = true,
@@ -122,6 +121,8 @@ function M.config()
       hi link NvimTreeIndentMarker Whitespace
       hi link NvimTreeFolderIcon NonText
     ]]
+
+    vim.cmd [[autocmd BufEnter * ++nested if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif]]
 end
 
 return M
