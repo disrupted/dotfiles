@@ -46,7 +46,7 @@ function M.setup()
 
     local function filter_diagnostics(diagnostic)
         -- only apply filter to Pyright & Pylance
-        if diagnostic.source ~= 'Py' then
+        if not diagnostic.source:find('Py', 1, true) then
             return true
         end
 
