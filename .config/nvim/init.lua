@@ -1,5 +1,6 @@
 -- vim: foldmethod=marker
 local cmd, fn, opt = vim.cmd, vim.fn, vim.opt
+local command = vim.api.nvim_add_user_command
 
 cmd [[packadd packer.nvim]]
 local packer = require 'packer'
@@ -540,7 +541,7 @@ function _G.trim_trailing_whitespace()
     cmd [[silent keepjumps keeppatterns %s/\s\+$//e]]
     vim.api.nvim_win_set_cursor(0, pos)
 end
-cmd [[command! TrimWhitespace lua trim_trailing_whitespace()]]
+command('TrimWhitespace', trim_trailing_whitespace, {})
 
 function _G.trim_trailing_lines()
     local last_line = vim.api.nvim_buf_line_count(0)
@@ -549,7 +550,7 @@ function _G.trim_trailing_lines()
         vim.api.nvim_buf_set_lines(0, last_nonblank_line, -1, true, {})
     end
 end
-cmd [[command! TrimTrailingLines lua trim_trailing_lines()]]
+command('TrimTrailingLines', trim_trailing_lines, {})
 
 function _G.trim()
     if not vim.o.binary and vim.o.filetype ~= 'diff' then
@@ -737,7 +738,8 @@ opt.diffopt:prepend {
 -- Terminal {{{1
 -----------------------------------------------------------------------------//
 -- Open a terminal pane on the right using :Term
-cmd [[command Term :botright vsplit term://$SHELL]]
+-- cmd [[command Term :botright vsplit term://$SHELL]]
+command('Term', 'botright vsplit term://$SHELL', {})
 
 -- Terminal visual tweaks
 -- Enter insert mode when switching to terminal
@@ -873,15 +875,18 @@ vim.keymap.set('x', 'J', ':move \'>+1<CR>gv-gv')
 vim.keymap.set('n', '<C-a>', '<esc>ggVG<CR>')
 
 -- navigate paragraphs without altering jumplist
+local silent = { silent = true }
 vim.keymap.set(
     'n',
     '}',
-    ':<C-u>execute "keepjumps norm! " . v:count1 . "}"<CR>'
+    ':<C-u>execute "keepjumps norm! " . v:count1 . "}"<CR>',
+    silent
 )
 vim.keymap.set(
     'n',
     '{',
-    ':<C-u>execute "keepjumps norm! " . v:count1 . "{"<CR>'
+    ':<C-u>execute "keepjumps norm! " . v:count1 . "{"<CR>',
+    silent
 )
 
 -- alternate file
@@ -922,8 +927,8 @@ vim.keymap.set('n', '[[', '<cmd>tabprevious<CR>')
 -- Commands {{{1
 -----------------------------------------------------------------------------//
 
+command('TabDir', 'tcd %:p:h', {})
 cmd [[
-    command! TabDir tcd %:p:h
     :cabbrev C PackerCompile
     :cabbrev U PackerUpdate
 ]]
