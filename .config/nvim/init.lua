@@ -1,6 +1,6 @@
 -- vim: foldmethod=marker
 local cmd, fn, opt = vim.cmd, vim.fn, vim.opt
-local command = vim.api.nvim_add_user_command
+local command = vim.api.nvim_create_user_command
 
 cmd [[packadd packer.nvim]]
 local packer = require 'packer'
