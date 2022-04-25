@@ -177,11 +177,6 @@ zinit wait lucid id-as'nnn' from'github' as'program' for \
   jarun/nnn
 export NNN_FIFO="/tmp/nnn.fifo"
 export NNN_PLUG='j:autojump;p:preview-tui;l:launch;r:renamer;w:wallpaper;o:organize;x:xdgdefault'
-# load kubectl completion
-zinit light-mode lucid wait has'kubectl' for \
-  id-as'kubectl_completion' as'completion' \
-  atclone'kubectl completion zsh > _kubectl' \
-  atpull'%atclone' run-atpull zdharma-continuum/null
 # python automatic virtualenv
 zinit light MichaelAquilina/zsh-autoswitch-virtualenv
 # carapace completion
