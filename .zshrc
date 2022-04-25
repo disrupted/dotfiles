@@ -95,9 +95,7 @@ zinit light-mode for \
 zinit wait'1' lucid for \
     OMZ::lib/clipboard.zsh \
     OMZ::lib/git.zsh \
-    OMZ::plugins/systemd/systemd.plugin.zsh \
-    OMZ::plugins/kubectl/kubectl.plugin.zsh \
-    OMZ::plugins/aws/aws.plugin.zsh
+    OMZ::plugins/systemd/systemd.plugin.zsh
 
 if whence dircolors >/dev/null; then
   eval "$(dircolors -b)"
