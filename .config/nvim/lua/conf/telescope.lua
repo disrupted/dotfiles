@@ -128,6 +128,12 @@ function M.config()
                 override_file_sorter = true,
                 case_mode = 'smart_case',
             },
+            ['ui-select'] = {
+                require('telescope.themes').get_cursor { -- or get_dropdown
+                    winblend = 0,
+                    initial_mode = 'normal',
+                },
+            },
         },
     }
 

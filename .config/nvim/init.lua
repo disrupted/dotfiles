@@ -189,6 +189,13 @@ packer.startup(function()
         wants = { 'plenary.nvim' },
     }
     use {
+        'nvim-telescope/telescope-ui-select.nvim',
+        after = { 'telescope.nvim' },
+        config = function()
+            require('telescope').load_extension 'ui-select'
+        end,
+    }
+    use {
         'natecraddock/telescope-zf-native.nvim',
         run = 'make',
         after = { 'telescope.nvim' },

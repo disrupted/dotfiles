@@ -371,9 +371,21 @@ function M.config()
             buf_set_keymap(
                 'n',
                 '<leader>a',
-                '<cmd>lua require("telescope.builtin").lsp_code_actions(require("telescope.themes").get_cursor { winblend = 0, initial_mode = "normal" })<CR>',
+                '<cmd>lua vim.lsp.buf.code_action()<CR>',
                 opts
             )
+            -- buf_set_keymap(
+            --     'x',
+            --     '<leader>a',
+            --     [[:'<,'>lua require("telescope.builtin").lsp_range_code_actions({timeout = 10000, start_line = TODO, end_line = TODO})<CR>]],
+            --     opts
+            -- )
+            -- buf_set_keymap(
+            --     'v',
+            --     '<leader>a',
+            --     [[:Telescope lsp_range_code_actions<CR>]],
+            --     opts
+            -- )
         end
 
         vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
