@@ -24,7 +24,7 @@ packer.startup(function()
         end,
     }
     use {
-        'blackCauldron7/surround.nvim',
+        'ur4ltz/surround.nvim',
         event = { 'BufWinEnter', 'BufNewFile' },
         config = function()
             require('conf.surround').config()
