@@ -19,6 +19,9 @@ function M.setup()
     vim.keymap.set('n', ';f', function()
         require('harpoon.ui').nav_file(4)
     end)
+    vim.keymap.set('n', ';g', function()
+        require('harpoon.ui').nav_file(5)
+    end)
 
     -- Use common mappings to close popup
     vim.cmd [[ 
