@@ -307,7 +307,7 @@ function M.config()
         vim.opt.shortmess:append 'c'
 
         -- Set autocommands conditional on server_capabilities
-        if client.resolved_capabilities.document_formatting then
+        if client.server_capabilities.document_formatting then
             local augroup = 'format_on_save'
             vim.api.nvim_create_augroup(augroup, {})
             vim.api.nvim_create_autocmd('BufWritePost', {
@@ -316,7 +316,7 @@ function M.config()
             })
         end
 
-        if client.resolved_capabilities.document_range_formatting then
+        if client.server_capabilities.document_range_formatting then
             buf_set_keymap(
                 'n',
                 '<leader>f',
@@ -325,7 +325,7 @@ function M.config()
             )
         end
 
-        if client.resolved_capabilities.document_highlight then
+        if client.server_capabilities.document_highlight then
             local augroup = 'lsp_document_highlight'
             vim.api.nvim_create_augroup(augroup, {})
             vim.api.nvim_create_autocmd('CursorHold', {
@@ -340,7 +340,7 @@ function M.config()
             })
         end
 
-        if client.resolved_capabilities.semantic_tokens_full then
+        if client.server_capabilities.semantic_tokens_full then
             vim.api.nvim_create_autocmd(
                 { 'BufEnter', 'CursorHold', 'InsertLeave' },
                 {
@@ -360,7 +360,7 @@ function M.config()
             }
         end
 
-        if client.resolved_capabilities.code_action then
+        if client.server_capabilities.code_action then
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
                 callback = function()
                     if vim.bo.filetype ~= 'java' then
@@ -430,7 +430,7 @@ function M.config()
 
     lspconfig.dockerls.setup {
         on_attach = function(client, bufnr)
-            client.resolved_capabilities.document_formatting = false
+            client.server_capabilities.document_formatting = false
             custom_attach(client, bufnr)
         end,
         capabilities = capabilities,
@@ -472,7 +472,7 @@ function M.config()
     -- vscode-json-language-server
     lspconfig.jsonls.setup {
         on_attach = function(client, bufnr)
-            client.resolved_capabilities.document_formatting = false
+            client.server_capabilities.document_formatting = false
             custom_attach(client, bufnr)
         end,
         capabilities = capabilities,
@@ -518,7 +518,7 @@ function M.config()
     -- vscode-html-language-server
     lspconfig.html.setup {
         on_attach = function(client, bufnr)
-            client.resolved_capabilities.document_formatting = false
+            client.server_capabilities.document_formatting = false
             custom_attach(client, bufnr)
         end,
         capabilities = capabilities,
@@ -529,7 +529,7 @@ function M.config()
     -- vscode-css-language-server
     lspconfig.cssls.setup {
         on_attach = function(client, bufnr)
-            client.resolved_capabilities.document_formatting = false
+            client.server_capabilities.document_formatting = false
             custom_attach(client, bufnr)
         end,
         capabilities = capabilities,
@@ -539,7 +539,7 @@ function M.config()
     -- vscode-eslint-language-server
     lspconfig.eslint.setup {
         on_attach = function(client, bufnr)
-            client.resolved_capabilities.document_formatting = false
+            client.server_capabilities.document_formatting = false
             custom_attach(client, bufnr)
         end,
         capabilities = capabilities,
@@ -550,7 +550,7 @@ function M.config()
     -- https://github.com/theia-ide/typescript-language-server
     lspconfig.tsserver.setup {
         on_attach = function(client, bufnr)
-            client.resolved_capabilities.document_formatting = false
+            client.server_capabilities.document_formatting = false
             custom_attach(client, bufnr)
         end,
         capabilities = capabilities,
@@ -662,7 +662,7 @@ function M.config()
     local luadev = require('lua-dev').setup {
         lspconfig = {
             on_attach = function(client, bufnr)
-                client.resolved_capabilities.document_formatting = false
+                client.server_capabilities.document_formatting = false
                 custom_attach(client, bufnr)
             end,
             capabilities = capabilities,
@@ -693,7 +693,7 @@ function M.config()
     -- C / C++
     lspconfig.clangd.setup {
         on_attach = function(client, bufnr)
-            client.resolved_capabilities.document_formatting = false
+            client.server_capabilities.document_formatting = false
             custom_attach(client, bufnr)
         end,
         capabilities = capabilities,
@@ -710,7 +710,7 @@ function M.config()
     -- DENO
     lspconfig.denols.setup {
         on_attach = function(client, bufnr)
-            client.resolved_capabilities.document_formatting = false -- using dprint instead
+            client.server_capabilities.document_formatting = false -- using dprint instead
             custom_attach(client, bufnr)
         end,
         capabilities = capabilities,
