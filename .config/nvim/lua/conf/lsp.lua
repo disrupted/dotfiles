@@ -102,7 +102,7 @@ function M.setup()
                 -- vim.notify('formatting success', vim.lsp.log_levels.DEBUG)
 
                 -- Trigger post-formatting autocommand which can be used to refresh gitsigns
-                vim.api.nvim_do_autocmd(
+                vim.api.nvim_exec_autocmds(
                     'User FormatterPost',
                     { modeline = false }
                 )
