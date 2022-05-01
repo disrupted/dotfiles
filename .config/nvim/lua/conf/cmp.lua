@@ -33,7 +33,7 @@ function M.config()
     local menu = {
         luasnip = '[Snip]',
         nvim_lsp = '[LSP]',
-        cmp_git = '[Git]',
+        git = '[Git]',
         nvim_lua = '[API]',
         spell = '[Spell]',
         path = '[Path]',
@@ -102,7 +102,7 @@ function M.config()
         sources = {
             { name = 'luasnip' },
             { name = 'nvim_lsp' },
-            { name = 'cmp_git' },
+            { name = 'git' },
             { name = 'nvim_lua' },
             { name = 'spell' },
             { name = 'path' },
