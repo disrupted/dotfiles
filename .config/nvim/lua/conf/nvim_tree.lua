@@ -106,7 +106,6 @@ function M.config()
         view = {
             width = 30,
             side = 'left',
-            auto_resize = false,
             mappings = {
                 custom_only = false,
                 list = {},
@@ -115,6 +114,9 @@ function M.config()
         filters = {
             custom = { '.git', 'node_modules', '.cache' },
         },
+        actions={
+            open_file= {
+                resize_window = true }}
     }
 
     vim.cmd [[
