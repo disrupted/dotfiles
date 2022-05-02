@@ -71,6 +71,10 @@ function M.setup()
         {}
     )
 
+    vim.api.nvim_create_user_command('Format', function()
+        vim.lsp.buf.format { async = true }
+    end, {})
+
     -- Handle formatting in a smarter way
     -- If the buffer has been edited before formatting has completed, do not try to
     -- apply the changes, by Lukas Reineke
