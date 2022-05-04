@@ -311,14 +311,23 @@ function M.config()
         vim.opt.shortmess:append 'c'
 
         -- Set autocommands conditional on server_capabilities
-        if client.server_capabilities.document_formatting then
-            local augroup = 'format_on_save'
-            vim.api.nvim_create_augroup(augroup, {})
-            vim.api.nvim_create_autocmd('BufWritePost', {
-                group = augroup,
-                callback = vim.lsp.buf.formatting,
-            })
-        end
+        -- if client.server_capabilities.document_formatting then
+        local augroup_format = 'format_on_save'
+        vim.api.nvim_create_augroup(augroup_format, {})
+        vim.api.nvim_create_autocmd('BufWritePost', {
+            group = augroup_format,
+            callback = function()
+                vim.lsp.buf.format {
+                    async = true,
+                    filter = function(servers)
+                        return vim.tbl_filter(function(server)
+                            return server.name ~= 'sumneko_lua'
+                        end, servers)
+                    end,
+                }
+            end,
+        })
+        -- end
 
         if client.server_capabilities.document_range_formatting then
             buf_set_keymap(
