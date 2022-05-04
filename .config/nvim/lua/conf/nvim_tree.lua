@@ -114,9 +114,11 @@ function M.config()
         filters = {
             custom = { '.git', 'node_modules', '.cache' },
         },
-        actions={
-            open_file= {
-                resize_window = true }}
+        actions = {
+            open_file = {
+                resize_window = true,
+            },
+        },
     }
 
     vim.cmd [[
