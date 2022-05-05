@@ -193,152 +193,85 @@ function M.config()
         vim.api.nvim_buf_set_option(bufnr, 'tagfunc', 'v:lua.vim.lsp.tagfunc')
 
         -- Mappings
-        local function buf_set_keymap(...)
-            vim.api.nvim_buf_set_keymap(bufnr, ...)
+        local function map(mode, lhs, rhs)
+            vim.keymap.set(mode, lhs, rhs, { buffer = bufnr })
         end
-        local opts = { noremap = true, silent = true }
-        buf_set_keymap(
-            'n',
-            'gD',
-            '<Cmd>lua vim.lsp.buf.declaration()<CR>',
-            opts
-        )
-        buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-        buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
-        buf_set_keymap(
-            'n',
-            'gi',
-            '<cmd>lua vim.lsp.buf.implementation()<CR>',
-            opts
-        )
-        buf_set_keymap(
-            'n',
-            '<C-s>',
-            '<cmd>lua vim.lsp.buf.signature_help()<CR>',
-            opts
-        )
-        buf_set_keymap(
-            'i',
-            '<C-s>',
-            '<cmd>lua vim.lsp.buf.signature_help()<CR>',
-            opts
-        )
-        buf_set_keymap(
-            'n',
-            '<space>wa',
-            '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>',
-            opts
-        )
-        buf_set_keymap(
-            'n',
-            '<space>wr',
-            '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>',
-            opts
-        )
-        buf_set_keymap(
-            'n',
-            '<space>wl',
-            '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>',
-            opts
-        )
-        buf_set_keymap(
-            'n',
-            '<space>D',
-            '<cmd>lua vim.lsp.buf.type_definition()<CR>',
-            opts
-        )
-        buf_set_keymap(
-            'n',
-            '<space>r',
-            '<cmd>lua require("conf.nui_lsp").lsp_rename()<CR>',
-            opts
-        )
-        buf_set_keymap(
-            'n',
-            'gr',
-            '<cmd>lua require("trouble").open { mode = "lsp_references" }<CR>',
-            opts
-        )
-        buf_set_keymap('n', 'gR', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-        buf_set_keymap(
-            'n',
-            '<space>d',
-            '<cmd>lua vim.diagnostic.open_float(0, {{ border = "single", focusable = false, severity_sort = true }, scope = "line"})<CR>',
-            opts
-        )
-        buf_set_keymap(
-            'n',
-            '[d',
-            '<cmd>lua vim.diagnostic.goto_prev { enable_popup = false }<CR>',
-            opts
-        )
-        buf_set_keymap(
-            'n',
-            ']d',
-            '<cmd>lua vim.diagnostic.goto_next { enable_popup = false }<CR>',
-            opts
-        )
-        buf_set_keymap(
-            'n',
-            '[e',
-            '<cmd>lua vim.diagnostic.goto_prev { enable_popup = false, severity = { min = vim.diagnostic.severity.WARN } }<CR>',
-            opts
-        )
-        buf_set_keymap(
-            'n',
-            ']e',
-            '<cmd>lua vim.diagnostic.goto_next { enable_popup = false, severity = { min = vim.diagnostic.severity.WARN } }<CR>',
-            opts
-        )
-        buf_set_keymap(
-            'n',
-            '<space>q',
-            '<cmd>lua vim.diagnostic.setloclist()<CR>',
-            opts
-        )
-        buf_set_keymap(
-            'n',
-            '<leader>ls',
-            '<cmd>lua vim.lsp.buf.document_symbol()<CR>',
-            opts
-        )
-        buf_set_keymap(
-            'n',
-            '<leader>lS',
-            '<cmd>lua vim.lsp.buf.workspace_symbol()<CR>',
-            opts
-        )
+        map('n', 'gD', vim.lsp.buf.declaration)
+        map('n', 'gd', vim.lsp.buf.definition)
+        map('n', 'K', vim.lsp.buf.hover)
+        map('n', 'gi', vim.lsp.buf.implementation)
+        map('n', '<C-s>', vim.lsp.buf.signature_help)
+        map('i', '<C-s>', vim.lsp.buf.signature_help)
+        map('n', '<space>wa', vim.lsp.buf.add_workspace_folder)
+        map('n', '<space>wr', vim.lsp.buf.remove_workspace_folder)
+        map('n', '<space>wl', function()
+            print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+        end)
+        map('n', '<space>D', vim.lsp.buf.type_definition)
+        map('n', '<space>r', function()
+            require('conf.nui_lsp').lsp_rename()
+        end)
+        map('n', 'gr', function()
+            require('trouble').open { mode = 'lsp_references' }
+        end)
+        map('n', 'gR', vim.lsp.buf.references)
+        map('n', '<space>d', function()
+            vim.diagnostic.open_float(0, {
+                {
+                    border = 'single',
+                    focusable = false,
+                    severity_sort = true,
+                },
+                scope = 'line',
+            })
+        end)
+        map('n', '[d', function()
+            vim.diagnostic.goto_prev { enable_popup = false }
+        end)
+        map('n', ']d', function()
+            vim.diagnostic.goto_next { enable_popup = false }
+        end)
+        map('n', '[e', function()
+            vim.diagnostic.goto_prev {
+                enable_popup = false,
+                severity = { min = vim.diagnostic.severity.WARN },
+            }
+        end)
+        map('n', ']e', function()
+            vim.diagnostic.goto_next {
+                enable_popup = false,
+                severity = { min = vim.diagnostic.severity.WARN },
+            }
+        end)
+        map('n', '<space>q', vim.diagnostic.setloclist)
+        map('n', '<leader>ls', vim.lsp.buf.document_symbol)
+        map('n', '<leader>lS', vim.lsp.buf.workspace_symbol)
         vim.opt.shortmess:append 'c'
 
         -- Set autocommands conditional on server_capabilities
-        -- if client.server_capabilities.document_formatting then
-        local augroup_format = 'format_on_save'
-        vim.api.nvim_create_augroup(augroup_format, {})
-        vim.api.nvim_create_autocmd('BufWritePost', {
-            group = augroup_format,
-            callback = function()
-                vim.lsp.buf.format {
-                    async = true,
-                    filter = function(servers)
-                        return vim.tbl_filter(function(server)
-                            return server.name ~= 'sumneko_lua'
-                        end, servers)
-                    end,
-                }
-            end,
-        })
-        -- end
-
-        if client.server_capabilities.document_range_formatting then
-            buf_set_keymap(
-                'n',
-                '<leader>f',
-                '<cmd>lua vim.lsp.buf.range_formatting()<CR>',
-                opts
-            )
+        if client.server_capabilities.documentFormattingProvider then
+            local augroup_format = 'format_on_save'
+            vim.api.nvim_create_augroup(augroup_format, {})
+            vim.api.nvim_create_autocmd('BufWritePost', {
+                group = augroup_format,
+                callback = function()
+                    vim.lsp.buf.format {
+                        async = true,
+                        filter = function(servers)
+                            return vim.tbl_filter(function(server)
+                                return server.name ~= 'sumneko_lua'
+                            end, servers)
+                        end,
+                    }
+                end,
+            })
         end
 
-        if client.server_capabilities.document_highlight then
+        if client.server_capabilities.documentRangeFormattingProvider then
+            map('n', '<leader>f', vim.lsp.buf.range_formatting)
+        end
+
+        if client.server_capabilities.documentHighlightProvider then
             local augroup = 'lsp_document_highlight'
             vim.api.nvim_create_augroup(augroup, {})
             vim.api.nvim_create_autocmd('CursorHold', {
@@ -373,7 +306,7 @@ function M.config()
             }
         end
 
-        if client.server_capabilities.code_action then
+        if client.server_capabilities.codeActionProvider then
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
                 callback = function()
                     if vim.bo.filetype ~= 'java' then
@@ -381,11 +314,11 @@ function M.config()
                     end
                 end,
             })
-            buf_set_keymap(
+            vim.keymap.set(
                 'n',
                 '<leader>a',
-                '<cmd>lua vim.lsp.buf.code_action()<CR>',
-                opts
+                vim.lsp.buf.code_action,
+                { buffer = bufnr }
             )
             -- buf_set_keymap(
             --     'x',
