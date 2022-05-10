@@ -250,10 +250,11 @@ function M.config()
 
         -- Set autocommands conditional on server_capabilities
         if client.server_capabilities.documentFormattingProvider then
-            local augroup_format = 'format_on_save'
-            vim.api.nvim_create_augroup(augroup_format, {})
+            local augroup_lsp_format = 'lsp_format'
+            vim.api.nvim_create_augroup(augroup_lsp_format, { clear = false })
             vim.api.nvim_create_autocmd('BufWritePost', {
-                group = augroup_format,
+                group = augroup_lsp_format,
+                buffer = bufnr,
                 callback = function()
                     vim.lsp.buf.format {
                         async = true,
@@ -272,15 +273,18 @@ function M.config()
         end
 
         if client.server_capabilities.documentHighlightProvider then
-            local augroup = 'lsp_document_highlight'
-            vim.api.nvim_create_augroup(augroup, {})
+            local augroup_lsp_highlight = 'lsp_highlight'
+            vim.api.nvim_create_augroup(
+                augroup_lsp_highlight,
+                { clear = false }
+            )
             vim.api.nvim_create_autocmd('CursorHold', {
-                group = augroup,
+                group = augroup_lsp_highlight,
                 buffer = bufnr,
                 callback = vim.lsp.buf.document_highlight,
             })
             vim.api.nvim_create_autocmd('CursorMoved', {
-                group = augroup,
+                group = augroup_lsp_highlight,
                 buffer = bufnr,
                 callback = vim.lsp.buf.clear_references,
             })
@@ -290,6 +294,7 @@ function M.config()
             vim.api.nvim_create_autocmd(
                 { 'BufEnter', 'CursorHold', 'InsertLeave' },
                 {
+                    buffer = bufnr,
                     callback = vim.lsp.buf.semantic_tokens_full,
                 }
             )
@@ -308,6 +313,7 @@ function M.config()
 
         if client.server_capabilities.codeActionProvider then
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+                buffer = bufnr,
                 callback = function()
                     if vim.bo.filetype ~= 'java' then
                         show_lightbulb()
@@ -335,9 +341,11 @@ function M.config()
         end
 
         vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+            buffer = bufnr,
             callback = show_diagnostics,
         })
         vim.api.nvim_create_autocmd('DiagnosticChanged', {
+            buffer = bufnr,
             callback = show_diagnostics,
         })
         -- vim.api.nvim_create_autocmd('CursorHoldI', {
