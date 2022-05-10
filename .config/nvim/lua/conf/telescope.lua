@@ -6,7 +6,7 @@ function M.setup()
         layout_strategy = 'horizontal',
         layout_config = { preview_width = 0.65 },
     }
-    function _G.__telescope_files()
+    local function telescope_files()
         -- Launch file search using Telescope
         if vim.fn.isdirectory '.git' ~= 0 then
             -- if in a git project, use :Telescope git_files
@@ -16,7 +16,7 @@ function M.setup()
             require('telescope.builtin').find_files(options)
         end
     end
-    function _G.__telescope_buffers()
+    local function telescope_buffers()
         require('telescope.builtin').buffers(
             require('telescope.themes').get_dropdown {
                 previewer = false,
@@ -34,25 +34,24 @@ function M.setup()
             }
         )
     end
-    function _G.__telescope_grep()
+    local function telescope_grep()
         require('telescope.builtin').live_grep {
             path_display = {},
             layout_strategy = 'horizontal',
             layout_config = { preview_width = 0.4 },
         }
     end
-    function _G.__telescope_commits()
-        require('telescope.builtin').git_commits {
-            layout_strategy = 'horizontal',
-            layout_config = { preview_width = 0.55 },
-        }
-    end
-    local map = require('utils').map
+    -- local function telescope_commits()
+    --     require('telescope.builtin').git_commits {
+    --         layout_strategy = 'horizontal',
+    --         layout_config = { preview_width = 0.55 },
+    --     }
+    -- end
     vim.keymap.set('n', '<space><space>', function()
-        __telescope_buffers()
+        telescope_buffers()
     end)
     vim.keymap.set('n', '<C-f>', function()
-        __telescope_files()
+        telescope_files()
     end)
     vim.keymap.set('n', '<C-g>', function()
         require('telescope.builtin').git_status(options)
@@ -63,7 +62,7 @@ function M.setup()
     --     }
     -- end)
     vim.keymap.set('n', '<Space>/', function()
-        __telescope_grep()
+        telescope_grep()
     end)
     -- vim.keymap.set('n', '<Space>/', function()
     --     require('telescope.builtin').grep_string {
