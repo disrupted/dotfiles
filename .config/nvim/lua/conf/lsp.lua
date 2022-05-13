@@ -355,9 +355,8 @@ function M.config()
             buffer = bufnr,
             callback = show_diagnostics,
         })
-        -- vim.cmd [[autocmd CursorHoldI <buffer> silent! lua vim.lsp.buf.signature_help()]]
-
-        vim.notify 'LSP attached.'
+        -- vim.notify 'LSP attached'
+        -- vim.api.nvim_command ':echo "LSP attached"'
     end
 
     vim.cmd [[packadd pylance.nvim]]
