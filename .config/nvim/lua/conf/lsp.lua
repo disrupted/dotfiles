@@ -340,6 +340,13 @@ function M.config()
             -- )
         end
 
+        if client.server_capabilities.signatureHelpProvider then
+            vim.api.nvim_create_autocmd('CursorHoldI', {
+                buffer = bufnr,
+                callback = vim.lsp.buf.signature_help,
+            })
+        end
+
         vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
             buffer = bufnr,
             callback = show_diagnostics,
@@ -348,11 +355,7 @@ function M.config()
             buffer = bufnr,
             callback = show_diagnostics,
         })
-        -- vim.api.nvim_create_autocmd('CursorHoldI', {
-        --     pattern = '<buffer>',
-        --     callback = vim.lsp.buf.signature_help,
-        -- })
-        vim.cmd [[autocmd CursorHoldI <buffer> silent! lua vim.lsp.buf.signature_help()]]
+        -- vim.cmd [[autocmd CursorHoldI <buffer> silent! lua vim.lsp.buf.signature_help()]]
 
         vim.notify 'LSP attached.'
     end
