@@ -144,6 +144,9 @@ zinit light Aloxaf/fzf-tab
 # SYNTAX HIGHLIGHTING
 zinit ice wait'0c' lucid # atinit'zpcompinit;zpcdreplay'
 zinit light zdharma-continuum/fast-syntax-highlighting
+# ZSH AUTOPAIRS
+zinit ice wait'0c' lucid atinit'zpcompinit;zpcdreplay'
+zinit light hlissner/zsh-autopair
 # FORGIT
 zinit ice wait lucid id-as'forgit' atload'alias gr=forgit::checkout::file'
 zinit load 'wfxr/forgit'
