@@ -31,7 +31,7 @@ function M.config()
         },
         action_keys = { jump = { '<cr>' }, toggle_fold = { '<tab>' } },
     }
-    vim.cmd [[highlight link TroubleText CursorLineNr]]
+    vim.api.nvim_set_hl(0, 'TroubleText', { link = 'CursorLineNr' })
 end
 
 return M

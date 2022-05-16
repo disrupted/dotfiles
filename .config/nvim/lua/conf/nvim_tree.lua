@@ -123,10 +123,8 @@ function M.config()
         },
     }
 
-    vim.cmd [[
-      hi link NvimTreeIndentMarker Whitespace
-      hi link NvimTreeFolderIcon NonText
-    ]]
+    vim.api.nvim_set_hl(0, 'NvimTreeIndentMarker', { link = 'Whitespace' })
+    vim.api.nvim_set_hl(0, 'NvimTreeFolderIcon', { link = 'NonText' })
 
     vim.api.nvim_create_autocmd('BufEnter', {
         nested = true,
