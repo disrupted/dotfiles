@@ -108,7 +108,9 @@ function M.config()
             side = 'left',
             mappings = {
                 custom_only = false,
-                list = {},
+                list = {
+                    { key = '<C-e>', action = '' },
+                },
             },
         },
         filters = {
