@@ -245,10 +245,8 @@ function M.config()
                 callback = function()
                     vim.lsp.buf.format {
                         async = true,
-                        filter = function(servers)
-                            return vim.tbl_filter(function(server)
-                                return server.name ~= 'sumneko_lua'
-                            end, servers)
+                        filter = function(server)
+                            return server.name ~= 'sumneko_lua'
                         end,
                     }
                 end,
