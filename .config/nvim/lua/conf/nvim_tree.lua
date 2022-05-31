@@ -7,36 +7,6 @@ function M.setup()
 end
 
 function M.config()
-    vim.g.nvim_tree_show_icons = {
-        git = 1,
-        folders = 1,
-        files = 1,
-        folder_arrows = 0,
-    }
-    vim.g.nvim_tree_icons = {
-        default = '',
-        symlink = '',
-        git_icons = {
-            unstaged = '✗',
-            staged = '✓',
-            unmerged = '',
-            renamed = '➜',
-            untracked = '★',
-            deleted = '',
-            ignored = '◌',
-        },
-        folder_icons = {
-            arrow_closed = '',
-            arrow_open = '',
-            default = '',
-            open = '',
-            empty = '',
-            empty_open = '',
-            symlink = '',
-            symlink_open = '',
-        },
-    }
-
     local cb = require('nvim-tree.config').nvim_tree_callback
 
     require('nvim-tree').setup {
@@ -110,6 +80,39 @@ function M.config()
                 custom_only = false,
                 list = {
                     { key = '<C-e>', action = '' },
+                },
+            },
+        },
+        renderer = {
+            icons = {
+                show = {
+                    git = true,
+                    folder = true,
+                    file = true,
+                    folder_arrow = false,
+                },
+                glyphs = {
+                    default = '',
+                    symlink = '',
+                    git = {
+                        unstaged = '✗',
+                        staged = '✓',
+                        unmerged = '',
+                        renamed = '➜',
+                        untracked = '★',
+                        deleted = '',
+                        ignored = '◌',
+                    },
+                    folder  = {
+                        arrow_closed = '',
+                        arrow_open = '',
+                        default = '',
+                        open = '',
+                        empty = '',
+                        empty_open = '',
+                        symlink = '',
+                        symlink_open = '',
+                    },
                 },
             },
         },
