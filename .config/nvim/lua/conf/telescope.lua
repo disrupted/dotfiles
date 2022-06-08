@@ -136,7 +136,7 @@ function M.config()
         },
     }
 
-    telescope.extensions.notify.notify()
+    telescope.load_extension 'notify'
 end
 
 return M
