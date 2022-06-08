@@ -477,6 +477,21 @@ packer.startup(function()
         event = 'VimEnter',
     }
     use { 'theHamsta/nvim-semantic-tokens' }
+    use {
+        'rcarriga/neotest',
+        opt = true,
+        module = 'neotest',
+        requires = {
+            { 'rcarriga/neotest-python', module = 'neotest-python' },
+        },
+        setup = function()
+            require('conf.neotest').setup()
+        end,
+        config = function()
+            require('conf.neotest').config()
+        end,
+        wants = { 'plenary.nvim', 'nvim-treesitter' },
+    }
 end)
 
 -----------------------------------------------------------------------------//
