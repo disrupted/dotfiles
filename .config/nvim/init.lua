@@ -2,6 +2,10 @@
 local cmd, fn, opt = vim.cmd, vim.fn, vim.opt
 local command = vim.api.nvim_create_user_command
 
+-- disable filetype.vim, load filetype.lua instead
+vim.g.did_load_filetypes = 0
+vim.g.do_filetype_lua = 1
+
 cmd [[packadd packer.nvim]]
 local packer = require 'packer'
 local use = packer.use
@@ -9,12 +13,6 @@ local use = packer.use
 packer.startup(function()
     use { 'wbthomason/packer.nvim', opt = true }
     use 'nvim-lua/plenary.nvim'
-    use {
-        'nathom/filetype.nvim',
-        config = function()
-            require('conf.filetype').config()
-        end,
-    }
     use 'antoinemadec/FixCursorHold.nvim'
     use { 'kyazdani42/nvim-web-devicons', module = 'nvim-web-devicons' }
     use {

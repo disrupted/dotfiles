@@ -1,14 +1,12 @@
 local M = {}
 
 function M.config()
-    require('filetype').setup {
-        overrides = {
-            extensions = {
-                avsc = 'json',
-            },
-            complex = {
-                ['templates/.*.yaml'] = 'helm',
-            },
+    vim.filetype.add {
+        extension = {
+            avsc = 'json',
+        },
+        pattern = {
+            ['templates/.*%.yaml'] = 'helm',
         },
     }
 end
