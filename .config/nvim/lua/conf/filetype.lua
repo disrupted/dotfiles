@@ -5,6 +5,9 @@ function M.config()
         extension = {
             avsc = 'json',
         },
+        filename = {
+            ['poetry.lock'] = 'toml',
+        },
         pattern = {
             ['templates/.*%.yaml'] = 'helm',
         },
