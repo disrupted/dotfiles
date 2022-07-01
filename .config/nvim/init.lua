@@ -764,12 +764,26 @@ command('Term', 'botright vsplit term://$SHELL', {})
 -- Terminal visual tweaks
 -- Enter insert mode when switching to terminal
 -- Close terminal buffer on process exit
-cmd [[
-    autocmd TermOpen * setlocal listchars= nonumber norelativenumber nocursorline
-    autocmd TermOpen * startinsert
-    autocmd BufLeave term://* stopinsert
-]]
--- autocmd BufEnter,BufWinEnter,WinEnter term://* startinsert
+vim.api.nvim_create_autocmd('TermOpen', {
+    callback = function()
+        vim.opt_local.number = false
+        vim.opt_local.relativenumber = false
+        vim.opt_local.cursorline = false
+    end,
+})
+vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter', 'WinEnter' }, {
+    pattern = 'term://*',
+    callback = function()
+        vim.api.nvim_command 'startinsert'
+    end,
+})
+vim.api.nvim_create_autocmd('BufLeave', {
+    pattern = 'term://*',
+    callback = function()
+        vim.api.nvim_command 'stopinsert'
+    end,
+})
+
 -- autocmd TermClose term://* call nvim_input('<CR>')
 -- autocmd TermClose * call feedkeys("i")
 
