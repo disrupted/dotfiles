@@ -15,6 +15,7 @@ packer.startup(function()
     use 'nvim-lua/plenary.nvim'
     use 'antoinemadec/FixCursorHold.nvim'
     use { 'kyazdani42/nvim-web-devicons', module = 'nvim-web-devicons' }
+    use { 'tpope/vim-repeat' }
     use {
         'disrupted/one.nvim', -- personal tweaked colorscheme
         config = function()
