@@ -477,6 +477,13 @@ packer.startup(function()
     }
     use { 'theHamsta/nvim-semantic-tokens' }
     use {
+        'akinsho/git-conflict.nvim',
+        config = function()
+            require('git-conflict').setup()
+        end,
+        cmd = 'Conflict',
+    }
+    use {
         'rcarriga/neotest',
         opt = true,
         module = 'neotest',
