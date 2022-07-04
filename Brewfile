@@ -22,15 +22,16 @@ brew "automake"
 brew "aws-iam-authenticator"
 brew "readline"
 brew "xz"
-brew "python@3.9"
 brew "awscli"
 brew "bandwhich"
 brew "bat"
 brew "black", restart_service: true
+brew "bpython"
 brew "pkg-config"
 brew "broot"
 brew "bzip2"
 brew "gettext"
+brew "python@3.9"
 brew "cairo"
 brew "chart-testing"
 brew "cheat"
@@ -54,6 +55,7 @@ brew "harfbuzz"
 brew "x264"
 brew "ffmpeg"
 brew "fzf"
+brew "gallery-dl"
 brew "gcc"
 brew "gh"
 brew "ghc"
@@ -126,6 +128,7 @@ brew "texlab"
 brew "tmux", args: ["HEAD"]
 brew "translate-shell"
 brew "virtualenv"
+brew "websocat"
 brew "wget"
 brew "xh"
 brew "xplr"
@@ -142,8 +145,8 @@ brew "heroku/brew/heroku"
 brew "kdash-rs/kdash/kdash"
 brew "railwayapp/railway/railway"
 brew "sourcegraph/src-cli/src-cli"
-cask "1password-beta"
-cask "1password-cli-beta"
+cask "1password"
+cask "1password-cli"
 cask "affinity-photo"
 cask "altserver"
 cask "appcleaner"
@@ -206,6 +209,7 @@ mas "Grocery", id: 1195676848
 mas "KeyKey", id: 1035137927
 mas "Keynote", id: 409183694
 mas "Mactracker", id: 430255202
+mas "Mastonaut", id: 1450757574
 mas "Numbers", id: 409203825
 mas "Outbank", id: 1094255754
 mas "Pages", id: 409201541
