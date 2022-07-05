@@ -1,9 +1,8 @@
 local M = {}
 
 function M.config()
-    local bqf = require 'bqf'
-    bqf.setup {
-        auto_enable = false,
+    require('bqf').setup {
+        auto_enable = true,
         preview = {
             auto_preview = true,
             win_height = 12,
@@ -30,7 +29,6 @@ function M.config()
             end,
         },
     }
-    bqf.enable()
 end
 
 return M
