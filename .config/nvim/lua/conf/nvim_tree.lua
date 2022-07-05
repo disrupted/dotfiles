@@ -1,9 +1,7 @@
 local M = {}
 
 function M.setup()
-    vim.keymap.set('n', '<C-e>', function()
-        require('nvim-tree').toggle()
-    end)
+    vim.keymap.set('n', '<C-e>', require('nvim-tree').toggle)
 end
 
 function M.config()
@@ -103,7 +101,7 @@ function M.config()
                         deleted = '',
                         ignored = '◌',
                     },
-                    folder  = {
+                    folder = {
                         arrow_closed = '',
                         arrow_open = '',
                         default = '',
