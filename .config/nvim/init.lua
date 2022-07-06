@@ -403,9 +403,7 @@ packer.startup(function()
         module = 'bufresize',
         setup = function()
             vim.api.nvim_create_autocmd('VimResized', {
-                callback = function()
-                    require('bufresize').resize()
-                end,
+                callback = require('bufresize').resize,
             })
         end,
         disable = true,
@@ -484,11 +482,11 @@ packer.startup(function()
         cmd = 'Conflict',
     }
     use {
-        'rcarriga/neotest',
+        'nvim-neotest/neotest',
         opt = true,
         module = 'neotest',
         requires = {
-            { 'rcarriga/neotest-python', module = 'neotest-python' },
+            { 'nvim-neotest/neotest-python', module = 'neotest-python' },
         },
         setup = function()
             require('conf.neotest').setup()
@@ -499,6 +497,8 @@ packer.startup(function()
         wants = { 'plenary.nvim', 'nvim-treesitter' },
     }
 end)
+
+require('conf.filetype').config()
 
 -----------------------------------------------------------------------------//
 -- Utils {{{1
