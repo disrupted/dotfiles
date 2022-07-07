@@ -2,9 +2,7 @@
 local cmd, fn, opt = vim.cmd, vim.fn, vim.opt
 local command = vim.api.nvim_create_user_command
 
--- disable filetype.vim, load filetype.lua instead
-vim.g.did_load_filetypes = 0
-vim.g.do_filetype_lua = 1
+require('conf.filetype').config()
 
 cmd [[packadd packer.nvim]]
 local packer = require 'packer'
@@ -53,7 +51,6 @@ packer.startup(function()
         'nvim-treesitter/nvim-treesitter',
         event = { 'VimEnter' },
         -- event = { 'BufRead', 'BufNewFile' }, -- FIXME
-        -- after = 'filetype.nvim',
         requires = {
             {
                 'nvim-treesitter/nvim-treesitter-refactor',
@@ -497,8 +494,6 @@ packer.startup(function()
         wants = { 'plenary.nvim', 'nvim-treesitter' },
     }
 end)
-
-require('conf.filetype').config()
 
 -----------------------------------------------------------------------------//
 -- Utils {{{1
