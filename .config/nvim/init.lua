@@ -493,6 +493,10 @@ packer.startup(function()
         end,
         wants = { 'plenary.nvim', 'nvim-treesitter' },
     }
+    use {
+        'jghauser/mkdir.nvim',
+        event = 'BufWritePre',
+    }
 end)
 
 -----------------------------------------------------------------------------//
