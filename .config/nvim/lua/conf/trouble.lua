@@ -16,7 +16,6 @@ function M.setup()
 end
 
 function M.config()
-    print 'trouble config'
     require('trouble').setup {
         fold_open = '', -- ▾
         fold_closed = '', -- ▸

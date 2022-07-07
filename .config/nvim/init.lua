@@ -309,7 +309,6 @@ packer.startup(function()
     -- use { 'zsugabubus/crazy8.nvim', event = { 'BufRead' } } -- detect indentation automatically
     use {
         'folke/trouble.nvim',
-        opt = true,
         module = 'trouble',
         setup = function()
             require('conf.trouble').setup()

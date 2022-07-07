@@ -106,6 +106,7 @@ function M.config()
             col = 1,
         },
         yadm = { enable = true },
+        trouble = false,
     }
 
     -- vim.cmd [[autocmd User FormatterPost lua require'gitsigns'.refresh()]]
