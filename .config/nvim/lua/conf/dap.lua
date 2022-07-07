@@ -129,18 +129,25 @@ function M.config()
     vim.cmd [[packadd nvim-dap-ui]]
     require('dapui').setup {
         icons = { expanded = '', collapsed = '' },
-        sidebar = {
-            open_on_start = false,
-            elements = {
-                {
-                    id = 'scopes',
-                    size = 0.25,
+        layouts = {
+            {
+                elements = {
+                    'scopes',
+                    'breakpoints',
+                    'stacks',
+                    'watches',
                 },
-                { id = 'stacks', size = 0.25 },
-                { id = 'watches', size = 0.25 },
+                size = 40,
+                position = 'left',
             },
-            size = 40,
-            position = 'left',
+            {
+                elements = {
+                    'repl',
+                    'console',
+                },
+                size = 10,
+                position = 'bottom',
+            },
         },
     }
 
