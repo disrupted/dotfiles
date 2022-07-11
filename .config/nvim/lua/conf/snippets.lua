@@ -411,7 +411,8 @@ ls.snippets = {
 -----------------------------------------------------------------------------//
 -- External Snippets {{{1
 -----------------------------------------------------------------------------//
-vim.api.nvim_create_autocmd('LuasnipSnippetsAdded', {
+vim.api.nvim_create_autocmd('User', {
+    pattern = 'LuasnipSnippetsAdded',
     callback = function()
         print 'snippets loaded'
     end,
