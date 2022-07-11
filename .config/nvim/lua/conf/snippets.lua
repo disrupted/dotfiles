@@ -4,8 +4,8 @@
 local ls = require 'luasnip'
 local types = require 'luasnip.util.types'
 
-vim.cmd [[highlight LuasnipChoiceNodePassive gui=italic]]
-vim.cmd [[highlight LuasnipChoiceNodeActive gui=bold]]
+vim.api.nvim_set_hl(0, 'LuasnipChoiceNodePassive', { italic = true })
+vim.api.nvim_set_hl(0, 'LuasnipChoiceNodeActive', { bold = true })
 
 ls.config.set_config {
     history = true,
@@ -411,7 +411,11 @@ ls.snippets = {
 -----------------------------------------------------------------------------//
 -- External Snippets {{{1
 -----------------------------------------------------------------------------//
-vim.cmd [[autocmd User LuasnipSnippetsAdded lua print 'snippets loaded']]
+vim.api.nvim_create_autocmd('LuasnipSnippetsAdded', {
+    callback = function()
+        print 'snippets loaded'
+    end,
+})
 -- TODO: fix lazy_load
 require('luasnip.loaders.from_vscode').load { paths = './snippets' }
 

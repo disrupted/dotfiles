@@ -38,7 +38,7 @@ function M.config()
             TypeParameter = { icon = '', hl = 'TSParameter' },
         },
     }
-    vim.cmd [[highlight link FocusedSymbol CursorLine]]
+    vim.api.nvim_set_hl(0, 'FocusedSymbol', { link = 'CursorLine' })
 end
 
 return M

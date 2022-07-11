@@ -32,7 +32,7 @@ function M.config()
         -- },
     }
 
-    -- vim.cmd 'highlight! link IndentBlanklineContextChar Comment'
+    -- vim.api.nvim_set_hl(0, 'IndentBlanklineContextChar', { link = 'Comment' })
 end
 
 return M

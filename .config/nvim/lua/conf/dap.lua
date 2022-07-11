@@ -14,7 +14,7 @@ function M.setup()
         require('dap').disconnect()
         require('dap').close()
         require('dapui').close()
-        vim.cmd 'highlight clear EndOfBuffer'
+        vim.api.nvim_set_hl(0, 'EndOfBuffer', {})
         vim.opt.signcolumn = 'yes:1'
     end
     -- NOTICE: disabled in favor of neotest

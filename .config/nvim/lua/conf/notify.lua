@@ -15,16 +15,14 @@ function M.config()
         minimum_width = 10,
     }
 
-    vim.notify = notify
+    -- vim.notify = notify
 
-    vim.cmd [[
-        hi NotifyINFOBorder guifg=#80ff95
-        hi link NotifyINFOBody NotifyINFOBorder
-        hi NotifyWARNBorder guifg=#fff454
-        hi link NotifyWARNBody NotifyWARNBorder
-        hi NotifyERRORBorder guifg=#c44323
-        hi link NotifyERRORBody NotifyERRORBorder
-    ]]
+    vim.api.nvim_set_hl(0, 'NotifyINFOBorder', { fg = '#80ff95' })
+    vim.api.nvim_set_hl(0, 'NotifyINFOBody', { link = 'NotifyINFOBorder' })
+    vim.api.nvim_set_hl(0, 'NotifyWARNBorder', { fg = '#fff454' })
+    vim.api.nvim_set_hl(0, 'NotifyWARNBody', { link = 'NotifyWARNBorder' })
+    vim.api.nvim_set_hl(0, 'NotifyERRORBorder', { fg = '#c44323' })
+    vim.api.nvim_set_hl(0, 'NotifyERRORBody', { link = 'NotifyERRORBorder' })
 end
 
 return M
