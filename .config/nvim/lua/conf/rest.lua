@@ -1,7 +1,7 @@
 local M = {}
 
 function M.config()
-    vim.cmd [[:command Rest lua require'rest-nvim'.run()]]
+    vim.api.nvim_create_user_command('Rest', require('rest-nvim').run, {})
 end
 
 return M
