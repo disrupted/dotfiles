@@ -128,7 +128,12 @@ packer.startup(function()
             {
                 'petertriho/cmp-git',
                 config = function()
-                    require('cmp_git').setup()
+                    require('cmp_git').setup {
+                        filetypes = {
+                            'gitcommit',
+                            'markdown', -- for gh cli
+                        },
+                    }
                 end,
                 wants = 'plenary.nvim',
                 after = 'nvim-cmp',
