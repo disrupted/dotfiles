@@ -131,13 +131,12 @@ function M.config()
         null_ls.builtins.diagnostics.actionlint.with {
             -- based on https://github.com/jose-elias-alvarez/null-ls.nvim/pull/804
             runtime_condition = function()
-                local path = vim.api.nvim_buf_get_name(
-                    vim.api.nvim_get_current_buf()
-                )
+                local path =
+                    vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf())
                 return path:match 'github/workflows/' ~= nil
             end,
         },
-        null_ls.builtins.code_actions.refactoring,
+        -- null_ls.builtins.code_actions.refactoring,
         null_ls.builtins.code_actions.gitrebase,
     }
     return sources
