@@ -124,7 +124,21 @@ function M.config()
     py.test_runner = 'pytest'
 
     -- DAP UI
-    vim.cmd [[autocmd FileType dap-repl,dapui_scopes,dapui_breakpoints,dapui_stacks,dapui_watches setlocal signcolumn=no]]
+    vim.api.nvim_create_autocmd('FileType', {
+        pattern = {
+            'dap-repl',
+            'dapui_scopes',
+            'dapui_breakpoints',
+            'dapui_stacks',
+            'dapui_watches',
+        },
+        callback = function(opts)
+            vim.opt_local.signcolumn = 'no'
+            -- local bufnr = opts.buf
+            -- vim.api.nvim_set_hl(0, 'EndOfBuffer', { fg = 'bg', bg = 'bg' })
+            -- vim.cmd 'redraw!'
+        end,
+    })
 
     vim.cmd [[packadd nvim-dap-ui]]
     require('dapui').setup {

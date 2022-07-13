@@ -24,10 +24,13 @@ function M.setup()
     end)
 
     -- Use common mappings to close popup
-    vim.cmd [[ 
-        autocmd FileType harpoon nnoremap <buffer> q :q<cr> 
-        autocmd FileType harpoon nnoremap <buffer> <esc> :q<cr> 
-    ]]
+    vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'harpoon',
+        callback = function()
+            vim.keymap.set('n', 'q', ':q<cr>', { buffer = true })
+            vim.keymap.set('n', '<esc>', ':q<cr>', { buffer = true })
+        end,
+    })
 end
 
 function M.config()

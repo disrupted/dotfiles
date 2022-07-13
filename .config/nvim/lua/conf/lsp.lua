@@ -760,7 +760,11 @@ function M.config()
             },
         }
 
-        vim.cmd [[command! OrganizeImports lua require'jdtls'.organize_imports()]]
+        vim.api.nvim_create_user_command(
+            'OrganizeImports',
+            require('jdtls').organize_imports,
+            {}
+        )
         -- vim.cmd [[
         --     augroup organize_imports_on_save
         --         autocmd! * <buffer>
