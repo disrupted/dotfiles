@@ -142,7 +142,7 @@ zinit light junegunn/fzf
 zinit ice wait'1' lucid
 zinit light Aloxaf/fzf-tab
 # SYNTAX HIGHLIGHTING
-zinit ice wait'0c' lucid # atinit'zpcompinit;zpcdreplay'
+zinit ice wait'0c' lucid atinit'zpcompinit;zpcdreplay'
 zinit light zdharma-continuum/fast-syntax-highlighting
 # ZSH AUTOPAIRS
 zinit ice wait'0c' lucid atinit'zpcompinit;zpcdreplay'
@@ -181,7 +181,10 @@ export NNN_PLUG='j:autojump;p:preview-tui;l:launch;r:renamer;w:wallpaper;o:organ
 # python automatic virtualenv
 zinit light MichaelAquilina/zsh-autoswitch-virtualenv
 # carapace completion
-zinit ice as'program' id-as'carapace' from'gh-r'
+zinit ice as'program' id-as'carapace' from'gh-r' atload' \
+  autoload -Uz compinit; \
+  compinit; \
+  source <(carapace _carapace);'
 zinit light rsteube/carapace-bin
 
 #####################
@@ -300,10 +303,6 @@ export PROMPT_EOL_MARK=''  # hide % at end of output
 #####################
 if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
-
-  autoload -Uz compinit
-  compinit
-  source <(carapace _carapace zsh)
 fi
 
 #####################
