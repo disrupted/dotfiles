@@ -49,10 +49,8 @@ function M.setup()
 
     vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(
         function(_, params, ctx, config)
-            params.diagnostics = vim.tbl_filter(
-                filter_diagnostics,
-                params.diagnostics
-            )
+            params.diagnostics =
+                vim.tbl_filter(filter_diagnostics, params.diagnostics)
             vim.lsp.diagnostic.on_publish_diagnostics(_, params, ctx, config)
         end,
         {}
@@ -602,10 +600,7 @@ function M.config()
     -- LUA
     local luadev = require('lua-dev').setup {
         lspconfig = {
-            on_attach = function(client, bufnr)
-                client.server_capabilities.document_formatting = false
-                custom_attach(client, bufnr)
-            end,
+            on_attach = custom_attach,
             capabilities = capabilities,
             flags = { debounce_text_changes = 150 },
             settings = {
@@ -616,13 +611,6 @@ function M.config()
                         path = vim.split(package.path, ';'),
                     },
                     diagnostics = { globals = { 'vim' } },
-                    workspace = {
-                        -- Make the server aware of Neovim runtime files
-                        library = {
-                            [vim.fn.expand '$VIMRUNTIME/lua'] = true,
-                            [vim.fn.expand '$VIMRUNTIME/lua/vim/lsp'] = true,
-                        },
-                    },
                     telemetry = { enable = false },
                 },
             },
