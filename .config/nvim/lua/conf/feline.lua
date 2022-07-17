@@ -290,7 +290,7 @@ table.insert(components.active[1], {
 })
 
 local function lsp_check_diagnostics()
-    if vim.tbl_isempty(vim.lsp.buf_get_clients(0)) then
+    if vim.tbl_isempty(vim.lsp.get_active_clients { bufnr = 0 }) then
         return ''
     end
     local diagnostics = vim.diagnostic.get(
