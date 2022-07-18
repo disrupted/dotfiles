@@ -1,7 +1,7 @@
 [user]
     name = disrupted
     email = hi@salomonpopp.me
-    signingkey = A299EE8F816BBFA4
+    signingkey = 4814DB82B48EB84B38EA5FA9A299EE8F816BBFA4
 
 [github]
     # GitHub username for cli
@@ -48,6 +48,9 @@
     # Default to rebasing on pulls
     rebase = true
     ff = only
+
+[gpg]
+    program = /opt/homebrew/bin/gpg
 
 [commit]
     gpgsign = true
