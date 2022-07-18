@@ -21,7 +21,7 @@ packer.startup(function()
         end,
     }
     use {
-        'ur4ltz/surround.nvim',
+        'kylechui/nvim-surround',
         event = { 'BufWinEnter', 'BufNewFile' },
         config = function()
             require('conf.surround').config()

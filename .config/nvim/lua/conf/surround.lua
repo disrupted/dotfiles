@@ -1,17 +1,9 @@
 local M = {}
 
 function M.config()
-    require('surround').setup {
-        mappings_style = 'surround',
-        brackets = { '(', '{', '[', '<' },
-        pairs = {
-            nestable = {
-                { '(', ')' },
-                { '[', ']' },
-                { '{', '}' },
-                { '<', '>' },
-            },
-            linear = { { '\'', '\'' }, { '"', '"' }, { '`', '`' } },
+    require('nvim-surround').setup {
+        keymaps = {
+            visual = 's',
         },
     }
 end
