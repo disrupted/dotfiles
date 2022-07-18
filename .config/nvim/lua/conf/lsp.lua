@@ -155,11 +155,9 @@ function M.config()
 
     local capabilities = vim.lsp.protocol.make_client_capabilities()
     capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
-    capabilities = vim.tbl_extend(
-        'keep',
-        capabilities or {},
-        lsp_status.capabilities
-    )
+    ---@diagnostic disable-next-line: cast-local-type
+    capabilities =
+        vim.tbl_extend('keep', capabilities or {}, lsp_status.capabilities)
 
     if pcall(require, 'vim.lsp.nvim-semantic-tokens') then
         require('nvim-semantic-tokens').setup {
@@ -181,6 +179,7 @@ function M.config()
         local function map(mode, lhs, rhs)
             vim.keymap.set(mode, lhs, rhs, { buffer = bufnr })
         end
+
         map('n', 'gD', vim.lsp.buf.declaration)
         map('n', 'gd', vim.lsp.buf.definition)
         map('n', 'K', vim.lsp.buf.hover)
@@ -244,7 +243,13 @@ function M.config()
                     vim.lsp.buf.format {
                         async = true,
                         filter = function(server)
-                            return server.name ~= 'sumneko_lua'
+                            -- return server.name == 'null-ls'
+                            local disabled_servers =
+                                { 'sumneko_lua', 'eslint', 'tsserver' }
+                            return not vim.tbl_contains(
+                                disabled_servers,
+                                server.name
+                            )
                         end,
                     }
                 end,
@@ -368,10 +373,7 @@ function M.config()
     }
 
     lspconfig.dockerls.setup {
-        on_attach = function(client, bufnr)
-            client.server_capabilities.document_formatting = false
-            custom_attach(client, bufnr)
-        end,
+        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
         settings = {
@@ -410,10 +412,7 @@ function M.config()
     -- JSON
     -- vscode-json-language-server
     lspconfig.jsonls.setup {
-        on_attach = function(client, bufnr)
-            client.server_capabilities.document_formatting = false
-            custom_attach(client, bufnr)
-        end,
+        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
         filetypes = { 'json', 'jsonc' },
@@ -456,31 +455,35 @@ function M.config()
     -- HTML
     -- vscode-html-language-server
     lspconfig.html.setup {
-        on_attach = function(client, bufnr)
-            client.server_capabilities.document_formatting = false
-            custom_attach(client, bufnr)
-        end,
+        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
+        settings = {
+            html = {
+                format = {
+                    templating = true,
+                    wrapLineLength = 120,
+                    wrapAttributes = 'auto',
+                },
+                hover = {
+                    documentation = true,
+                    references = true,
+                },
+            },
+        },
     }
 
     -- CSS
     -- vscode-css-language-server
     lspconfig.cssls.setup {
-        on_attach = function(client, bufnr)
-            client.server_capabilities.document_formatting = false
-            custom_attach(client, bufnr)
-        end,
+        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
     }
 
     -- vscode-eslint-language-server
     lspconfig.eslint.setup {
-        on_attach = function(client, bufnr)
-            client.server_capabilities.document_formatting = false
-            custom_attach(client, bufnr)
-        end,
+        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 500 },
     }
@@ -488,10 +491,7 @@ function M.config()
     -- TYPESCRIPT
     -- https://github.com/theia-ide/typescript-language-server
     lspconfig.tsserver.setup {
-        on_attach = function(client, bufnr)
-            client.server_capabilities.document_formatting = false
-            custom_attach(client, bufnr)
-        end,
+        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 500 },
         root_dir = lspconfig.util.root_pattern 'package.json',
@@ -621,10 +621,7 @@ function M.config()
 
     -- C / C++
     lspconfig.clangd.setup {
-        on_attach = function(client, bufnr)
-            client.server_capabilities.document_formatting = false
-            custom_attach(client, bufnr)
-        end,
+        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
     }
@@ -638,13 +635,10 @@ function M.config()
 
     -- DENO
     lspconfig.denols.setup {
-        on_attach = function(client, bufnr)
-            client.server_capabilities.document_formatting = false -- using dprint instead
-            custom_attach(client, bufnr)
-        end,
+        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
-        root_dir = lspconfig.util.root_pattern 'deno.json',
+        root_dir = lspconfig.util.root_pattern('deno.json', 'deno.jsonc'),
         filetypes = {
             'javascript',
             'javascriptreact',
@@ -664,6 +658,7 @@ function M.config()
             unstable = true,
             importMap = './import_map.json',
         },
+        single_file_support = false,
     }
 
     -- JAVA
