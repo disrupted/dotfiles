@@ -104,6 +104,18 @@ function M.config()
                     ['id'] = '@comment.inner',
                 },
             },
+            move = {
+                enable = true,
+                set_jumps = false,
+                goto_next_start = {
+                    [']f'] = '@function.outer',
+                    -- [']]'] = '@class.outer',
+                },
+                goto_previous_start = {
+                    ['[f'] = '@function.outer',
+                    -- ['[['] = '@class.outer',
+                },
+            },
             swap = {
                 enable = true,
                 swap_next = {
