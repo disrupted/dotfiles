@@ -11,7 +11,6 @@ local use = packer.use
 packer.startup(function()
     use { 'wbthomason/packer.nvim', opt = true }
     use 'nvim-lua/plenary.nvim'
-    use 'antoinemadec/FixCursorHold.nvim'
     use { 'kyazdani42/nvim-web-devicons', module = 'nvim-web-devicons' }
     use { 'tpope/vim-repeat' }
     use {
