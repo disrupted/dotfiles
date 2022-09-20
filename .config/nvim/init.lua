@@ -30,7 +30,7 @@ packer.startup(function()
         'monkoose/matchparen.nvim',
         event = { 'BufWinEnter', 'BufNewFile' },
         config = function()
-            require('matchparen').setup()
+            require('matchparen').setup {}
         end,
     }
     use {
@@ -566,14 +566,14 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 vim.api.nvim_create_autocmd('VimResized', { command = 'wincmd =' })
 
 -- Trim trailing whitespace and trailing blank lines on save
-function _G.trim_trailing_whitespace()
+local function trim_trailing_whitespace()
     local pos = vim.api.nvim_win_get_cursor(0)
     cmd [[silent keepjumps keeppatterns %s/\s\+$//e]]
     vim.api.nvim_win_set_cursor(0, pos)
 end
 command('TrimWhitespace', trim_trailing_whitespace, {})
 
-function _G.trim_trailing_lines()
+local function trim_trailing_lines()
     local last_line = vim.api.nvim_buf_line_count(0)
     local last_nonblank_line = fn.prevnonblank(last_line)
     if last_line > 0 and last_nonblank_line ~= last_line then
@@ -582,18 +582,16 @@ function _G.trim_trailing_lines()
 end
 command('TrimTrailingLines', trim_trailing_lines, {})
 
-function _G.trim()
+local function trim()
     if not vim.o.binary and vim.o.filetype ~= 'diff' then
         trim_trailing_lines()
         trim_trailing_whitespace()
     end
 end
-cmd [[
-    augroup trim_on_save
-        autocmd! * <buffer>
-        autocmd BufWritePre <buffer> lua trim()
-    augroup END
-]]
+vim.api.nvim_create_autocmd('BufWritePre', {
+    group = vim.api.nvim_create_augroup('trim_on_save', { clear = true }),
+    callback = trim,
+})
 
 function _G.inspect(args)
     print(vim.inspect(args))
@@ -801,6 +799,7 @@ vim.api.nvim_create_autocmd('BufLeave', {
 -- Mouse {{{1
 -----------------------------------------------------------------------------//
 opt.mouse = 'a'
+opt.mousemodel = 'extend'
 
 -----------------------------------------------------------------------------//
 -- Netrw {{{1
