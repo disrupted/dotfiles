@@ -415,6 +415,7 @@ packer.startup(function()
     use {
         'MunifTanjim/nui.nvim',
         opt = true,
+        module = 'nui',
     }
     -- Syntax for Helm chart templates
     use { 'towolf/vim-helm', ft = 'helm' }
@@ -450,6 +451,7 @@ packer.startup(function()
     }
     use {
         'rcarriga/nvim-notify',
+        module = 'notify',
         config = function()
             require('conf.notify').config()
         end,
@@ -481,6 +483,13 @@ packer.startup(function()
     use {
         'jghauser/mkdir.nvim',
         event = 'BufWritePre',
+    }
+    use {
+        'folke/noice.nvim',
+        event = 'VimEnter',
+        config = function()
+            require('conf.noice').config()
+        end,
     }
 end)
 
