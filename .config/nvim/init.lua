@@ -64,17 +64,6 @@ packer.startup(function()
                 cmd = 'TSPlaygroundToggle',
             },
             {
-                'lewis6991/spellsitter.nvim',
-                after = 'nvim-treesitter',
-                config = function()
-                    require('spellsitter').setup {
-                        hl = 'SpellBad',
-                        captures = {},
-                    }
-                end,
-                disable = true, -- not working for now
-            },
-            {
                 'TornaxO7/tree-setter',
                 after = 'nvim-treesitter',
             },
@@ -215,13 +204,6 @@ packer.startup(function()
         after = { 'telescope.nvim' },
         config = function()
             require('telescope').load_extension 'gh'
-        end,
-    }
-    use {
-        'aloussase/telescope-gradle.nvim',
-        after = { 'telescope.nvim' },
-        config = function()
-            require('telescope').load_extension 'gradle'
         end,
     }
     use {
