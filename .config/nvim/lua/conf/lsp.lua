@@ -29,19 +29,27 @@ function M.setup()
     }
 
     local function filter_diagnostics(diagnostic)
-        -- only apply filter to Pyright & Pylance
-        if not diagnostic.source:find('Py', 1, true) then
+        if diagnostic.source:find('Py', 1, true) then -- Pyright & Pylance
+            -- Allow kwargs to be unused
+            if diagnostic.message == '"kwargs" is not accessed' then
+                return false
+            end
+
+            -- prefix unused variables with an underscore to ignore
+            if string.match(diagnostic.message, '"_.+" is not accessed') then
+                return false
+            end
+
             return true
         end
 
-        -- Allow kwargs to be unused
-        if diagnostic.message == '"kwargs" is not accessed' then
-            return false
-        end
+        if diagnostic.source == 'Lua Diagnostics.' then -- sumneko_lua
+            -- prefix unused variables with an underscore to ignore
+            if string.match(diagnostic.message, 'Unused local `_.+`.') then
+                return false
+            end
 
-        -- prefix variables with an underscore to ignore
-        if string.match(diagnostic.message, '"_.+" is not accessed') then
-            return false
+            return true
         end
 
         return true
