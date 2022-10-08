@@ -226,14 +226,14 @@ function M.setup()
             end)
             map('n', 'gR', vim.lsp.buf.references)
             map('n', '<space>d', function()
-                vim.diagnostic.open_float(0, {
+                vim.diagnostic.open_float {
                     {
                         border = 'single',
                         focusable = false,
                         severity_sort = true,
                     },
                     scope = 'line',
-                })
+                }
             end)
             map('n', '[d', function()
                 vim.diagnostic.goto_prev { enable_popup = false }
