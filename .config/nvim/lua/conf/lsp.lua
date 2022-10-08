@@ -1,4 +1,5 @@
 local M = {}
+local lsp = {}
 
 function M.setup()
     local function sign(severity, icon)
@@ -28,7 +29,18 @@ function M.setup()
         severity_sort = true,
     }
 
-    local function filter_diagnostics(diagnostic)
+    function lsp.show_lightbulb()
+        require('nvim-lightbulb').update_lightbulb {
+            sign = { enabled = false, priority = 99 },
+            virtual_text = {
+                enabled = true,
+                text = '💡',
+                hl_mode = 'combine',
+            },
+        }
+    end
+
+    function lsp.filter_diagnostics(diagnostic)
         if diagnostic.source:find('Py', 1, true) then -- Pyright & Pylance
             -- Allow kwargs to be unused
             if diagnostic.message == '"kwargs" is not accessed' then
@@ -58,7 +70,7 @@ function M.setup()
     vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(
         function(_, params, ctx, config)
             params.diagnostics =
-                vim.tbl_filter(filter_diagnostics, params.diagnostics)
+                vim.tbl_filter(lsp.filter_diagnostics, params.diagnostics)
             vim.lsp.diagnostic.on_publish_diagnostics(_, params, ctx, config)
         end,
         {}
@@ -141,7 +153,7 @@ function M.setup()
     -- show diagnostics for current line as virtual text
     -- from https://github.com/kristijanhusak/neovim-config/blob/5977ad2c5dd9bfbb7f24b169fef01828717ea9dc/nvim/lua/partials/lsp.lua#L169
     local diagnostic_ns = vim.api.nvim_create_namespace 'diagnostics'
-    local function show_diagnostics()
+    function lsp.show_diagnostics()
         vim.schedule(function()
             local line = vim.api.nvim_win_get_cursor(0)[1] - 1
             local bufnr = vim.api.nvim_get_current_buf()
@@ -153,6 +165,13 @@ function M.setup()
                 { virtual_text = true }
             )
         end)
+    end
+    function lsp.refresh_diagnostics()
+        vim.diagnostic.setloclist { open = false }
+        lsp.show_diagnostics()
+        if vim.tbl_isempty(vim.fn.getloclist(0)) then
+            vim.cmd [[lclose]]
+        end
     end
 
     local au = vim.api.nvim_create_augroup('LspAttach', { clear = true })
@@ -315,23 +334,12 @@ function M.setup()
         callback = function(args)
             local bufnr = args.buf
             local client = vim.lsp.get_client_by_id(args.data.client_id)
-            local function show_lightbulb()
-                require('nvim-lightbulb').update_lightbulb {
-                    sign = { enabled = false, priority = 99 },
-                    virtual_text = {
-                        enabled = true,
-                        text = '💡',
-                        hl_mode = 'combine',
-                    },
-                }
-            end
-
             if client.server_capabilities.codeActionProvider then
                 vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
                     buffer = bufnr,
                     callback = function()
                         if vim.bo.filetype ~= 'java' then
-                            show_lightbulb()
+                            lsp.show_lightbulb()
                         end
                     end,
                 })
@@ -364,11 +372,11 @@ function M.setup()
             local bufnr = args.buf
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
                 buffer = bufnr,
-                callback = show_diagnostics,
+                callback = lsp.show_diagnostics,
             })
             vim.api.nvim_create_autocmd('DiagnosticChanged', {
                 buffer = bufnr,
-                callback = show_diagnostics,
+                callback = lsp.refresh_diagnostics,
             })
         end,
     })
@@ -382,7 +390,9 @@ function M.setup()
             if client.server_capabilities.signatureHelpProvider then
                 vim.api.nvim_create_autocmd('CursorHoldI', {
                     buffer = bufnr,
-                    callback = vim.lsp.buf.signature_help,
+                    callback = function()
+                        vim.defer_fn(vim.lsp.buf.signature_help, 1000)
+                    end,
                 })
             end
         end,
@@ -613,7 +623,7 @@ function M.config()
 
     require('null-ls').setup {
         sources = sources,
-        debug = true,
+        debug = false,
         -- Fallback to .bashrc as a project root to enable LSP on loose files
         root_dir = function(fname)
             return lspconfig.util.root_pattern(
@@ -895,15 +905,15 @@ function M.config()
     }
 
     -- reload if buffer has file, to attach LSP
-    if
-        vim.api.nvim_buf_get_name(0) ~= ''
-        and vim.api.nvim_buf_is_loaded(0)
-        and vim.bo.filetype ~= nil
-        and vim.bo.modifiable
-        and not vim.bo.modified
-    then
-        vim.cmd 'bufdo e'
-    end
+    -- if
+    --     vim.api.nvim_buf_get_name(0) ~= ''
+    --     and vim.api.nvim_buf_is_loaded(0)
+    --     and vim.bo.filetype ~= nil
+    --     and vim.bo.modifiable
+    --     and not vim.bo.modified
+    -- then
+    --     vim.cmd 'bufdo e'
+    -- end
 end
 
 return M
