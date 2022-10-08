@@ -96,7 +96,7 @@ function M.setup()
             pcall(vim.api.nvim_win_set_cursor, 0, pos)
             if bufnr == vim.api.nvim_get_current_buf() then
                 vim.cmd 'noautocmd :update'
-                -- vim.notify('formatting success', vim.lsp.log_levels.DEBUG)
+                vim.notify('formatting success', vim.lsp.log_levels.DEBUG)
 
                 -- Trigger post-formatting autocommand which can be used to refresh gitsigns
                 vim.api.nvim_exec_autocmds(
@@ -121,10 +121,27 @@ function M.setup()
         { border = 'single', focusable = false, silent = true }
     )
 
+    vim.lsp.handlers['window/showMessage'] = function(_, result, ctx)
+        local client = vim.lsp.get_client_by_id(ctx.client_id)
+        local lvl = ({
+            'ERROR',
+            'WARN',
+            'INFO',
+            'DEBUG',
+        })[result.type]
+        vim.notify(result.message, lvl, {
+            title = 'LSP | ' .. client.name,
+            timeout = 10000,
+            keep = function()
+                return lvl == 'ERROR' or lvl == 'WARN'
+            end,
+        })
+    end
+
     -- show diagnostics for current line as virtual text
     -- from https://github.com/kristijanhusak/neovim-config/blob/5977ad2c5dd9bfbb7f24b169fef01828717ea9dc/nvim/lua/partials/lsp.lua#L169
     local diagnostic_ns = vim.api.nvim_create_namespace 'diagnostics'
-    function _G.show_diagnostics()
+    local function show_diagnostics()
         vim.schedule(function()
             local line = vim.api.nvim_win_get_cursor(0)[1] - 1
             local bufnr = vim.api.nvim_get_current_buf()
@@ -137,6 +154,265 @@ function M.setup()
             )
         end)
     end
+
+    local au = vim.api.nvim_create_augroup('LspAttach', { clear = true })
+
+    vim.api.nvim_create_autocmd('LspAttach', {
+        group = au,
+        desc = 'LSP options',
+        callback = function(args)
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            require('lsp-status').on_attach(client)
+
+            local bufnr = args.buf
+            vim.api.nvim_buf_set_option(
+                bufnr,
+                'formatexpr',
+                'v:lua.vim.lsp.formatexpr'
+            )
+            vim.api.nvim_buf_set_option(
+                bufnr,
+                'tagfunc',
+                'v:lua.vim.lsp.tagfunc'
+            )
+        end,
+    })
+
+    vim.api.nvim_create_autocmd('LspAttach', {
+        group = au,
+        desc = 'LSP keymaps',
+        callback = function(args)
+            local bufnr = args.buf
+            local function map(mode, lhs, rhs)
+                vim.keymap.set(mode, lhs, rhs, { buffer = bufnr })
+            end
+
+            map('n', 'gD', vim.lsp.buf.declaration)
+            map('n', 'gd', vim.lsp.buf.definition)
+            map('n', 'K', vim.lsp.buf.hover)
+            map('n', 'gi', vim.lsp.buf.implementation)
+            map('n', '<C-s>', vim.lsp.buf.signature_help)
+            map('i', '<C-s>', vim.lsp.buf.signature_help)
+            map('n', '<space>wa', vim.lsp.buf.add_workspace_folder)
+            map('n', '<space>wr', vim.lsp.buf.remove_workspace_folder)
+            map('n', '<space>wl', function()
+                print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+            end)
+            map('n', '<space>D', vim.lsp.buf.type_definition)
+            map('n', '<space>r', function()
+                require('conf.nui_lsp').lsp_rename()
+            end)
+            map('n', 'gr', function()
+                require('trouble').open { mode = 'lsp_references' }
+            end)
+            map('n', 'gR', vim.lsp.buf.references)
+            map('n', '<space>d', function()
+                vim.diagnostic.open_float(0, {
+                    {
+                        border = 'single',
+                        focusable = false,
+                        severity_sort = true,
+                    },
+                    scope = 'line',
+                })
+            end)
+            map('n', '[d', function()
+                vim.diagnostic.goto_prev { enable_popup = false }
+            end)
+            map('n', ']d', function()
+                vim.diagnostic.goto_next { enable_popup = false }
+            end)
+            map('n', '[e', function()
+                vim.diagnostic.goto_prev {
+                    enable_popup = false,
+                    severity = { min = vim.diagnostic.severity.WARN },
+                }
+            end)
+            map('n', ']e', function()
+                vim.diagnostic.goto_next {
+                    enable_popup = false,
+                    severity = { min = vim.diagnostic.severity.WARN },
+                }
+            end)
+            map('n', '<space>q', vim.diagnostic.setloclist)
+            map('n', '<leader>ls', vim.lsp.buf.document_symbol)
+            map('n', '<leader>lS', vim.lsp.buf.workspace_symbol)
+            vim.opt.shortmess:append 'c'
+        end,
+    })
+
+    vim.api.nvim_create_autocmd('LspAttach', {
+        group = au,
+        desc = 'LSP highlight',
+        callback = function(args)
+            local bufnr = args.buf
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            if client.server_capabilities.documentHighlightProvider then
+                local augroup_lsp_highlight = 'lsp_highlight'
+                vim.api.nvim_create_augroup(
+                    augroup_lsp_highlight,
+                    { clear = false }
+                )
+                vim.api.nvim_create_autocmd('CursorHold', {
+                    group = augroup_lsp_highlight,
+                    buffer = bufnr,
+                    callback = vim.lsp.buf.document_highlight,
+                })
+                vim.api.nvim_create_autocmd('CursorMoved', {
+                    group = augroup_lsp_highlight,
+                    buffer = bufnr,
+                    callback = vim.lsp.buf.clear_references,
+                })
+            end
+        end,
+    })
+
+    vim.api.nvim_create_autocmd('LspAttach', {
+        group = au,
+        desc = 'LSP format',
+        callback = function(args)
+            local bufnr = args.buf
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            if client.server_capabilities.documentFormattingProvider then
+                local augroup_lsp_format = 'lsp_format'
+                vim.api.nvim_create_augroup(
+                    augroup_lsp_format,
+                    { clear = false }
+                )
+                vim.api.nvim_create_autocmd('BufWritePost', {
+                    group = augroup_lsp_format,
+                    buffer = bufnr,
+                    callback = function()
+                        vim.lsp.buf.format {
+                            async = true,
+                            filter = function(server)
+                                -- return server.name == 'null-ls'
+                                local disabled_servers = {
+                                    'sumneko_lua',
+                                    'eslint',
+                                    'tsserver',
+                                }
+                                return not vim.tbl_contains(
+                                    disabled_servers,
+                                    server.name
+                                )
+                            end,
+                        }
+                    end,
+                })
+            end
+
+            -- FIXME
+            -- if client.server_capabilities.documentRangeFormattingProvider then
+            --     map('n', '<leader>f', vim.lsp.buf.range_formatting)
+            -- end
+        end,
+    })
+
+    vim.api.nvim_create_autocmd('LspAttach', {
+        group = au,
+        desc = 'LSP code actions',
+        callback = function(args)
+            local bufnr = args.buf
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            local function show_lightbulb()
+                require('nvim-lightbulb').update_lightbulb {
+                    sign = { enabled = false, priority = 99 },
+                    virtual_text = {
+                        enabled = true,
+                        text = '💡',
+                        hl_mode = 'combine',
+                    },
+                }
+            end
+
+            if client.server_capabilities.codeActionProvider then
+                vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+                    buffer = bufnr,
+                    callback = function()
+                        if vim.bo.filetype ~= 'java' then
+                            show_lightbulb()
+                        end
+                    end,
+                })
+                vim.keymap.set(
+                    'n',
+                    '<leader>a',
+                    vim.lsp.buf.code_action,
+                    { buffer = bufnr }
+                )
+                -- buf_set_keymap(
+                --     'x',
+                --     '<leader>a',
+                --     [[:'<,'>lua require("telescope.builtin").lsp_range_code_actions({timeout = 10000, start_line = TODO, end_line = TODO})<CR>]],
+                --     opts
+                -- )
+                -- buf_set_keymap(
+                --     'v',
+                --     '<leader>a',
+                --     [[:Telescope lsp_range_code_actions<CR>]],
+                --     opts
+                -- )
+            end
+        end,
+    })
+
+    vim.api.nvim_create_autocmd('LspAttach', {
+        group = au,
+        desc = 'LSP diagnostics',
+        callback = function(args)
+            local bufnr = args.buf
+            vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+                buffer = bufnr,
+                callback = show_diagnostics,
+            })
+            vim.api.nvim_create_autocmd('DiagnosticChanged', {
+                buffer = bufnr,
+                callback = show_diagnostics,
+            })
+        end,
+    })
+
+    vim.api.nvim_create_autocmd('LspAttach', {
+        group = au,
+        desc = 'LSP signature help',
+        callback = function(args)
+            local bufnr = args.buf
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            if client.server_capabilities.signatureHelpProvider then
+                vim.api.nvim_create_autocmd('CursorHoldI', {
+                    buffer = bufnr,
+                    callback = vim.lsp.buf.signature_help,
+                })
+            end
+        end,
+    })
+
+    vim.api.nvim_create_autocmd('LspAttach', {
+        group = au,
+        desc = 'LSP semantic tokens',
+        callback = function(args)
+            local bufnr = args.buf
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            if client.server_capabilities.semantic_tokens_full then
+                vim.api.nvim_create_autocmd(
+                    { 'BufEnter', 'CursorHold', 'InsertLeave' },
+                    {
+                        buffer = bufnr,
+                        callback = vim.lsp.buf.semantic_tokens_full,
+                    }
+                )
+            end
+        end,
+    })
+
+    vim.api.nvim_create_autocmd('LspAttach', {
+        group = au,
+        desc = 'LSP notify',
+        callback = function()
+            vim.notify 'LSP attached'
+        end,
+    })
 end
 
 function M.config()
@@ -173,194 +449,12 @@ function M.config()
         }
     end
 
-    local custom_attach = function(client, bufnr)
-        lsp_status.on_attach(client)
-
-        vim.api.nvim_buf_set_option(
-            bufnr,
-            'formatexpr',
-            'v:lua.vim.lsp.formatexpr'
-        )
-        vim.api.nvim_buf_set_option(bufnr, 'tagfunc', 'v:lua.vim.lsp.tagfunc')
-
-        -- Mappings
-        local function map(mode, lhs, rhs)
-            vim.keymap.set(mode, lhs, rhs, { buffer = bufnr })
-        end
-
-        map('n', 'gD', vim.lsp.buf.declaration)
-        map('n', 'gd', vim.lsp.buf.definition)
-        map('n', 'K', vim.lsp.buf.hover)
-        map('n', 'gi', vim.lsp.buf.implementation)
-        map('n', '<C-s>', vim.lsp.buf.signature_help)
-        map('i', '<C-s>', vim.lsp.buf.signature_help)
-        map('n', '<space>wa', vim.lsp.buf.add_workspace_folder)
-        map('n', '<space>wr', vim.lsp.buf.remove_workspace_folder)
-        map('n', '<space>wl', function()
-            print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-        end)
-        map('n', '<space>D', vim.lsp.buf.type_definition)
-        map('n', '<space>r', function()
-            require('conf.nui_lsp').lsp_rename()
-        end)
-        map('n', 'gr', function()
-            require('trouble').open { mode = 'lsp_references' }
-        end)
-        map('n', 'gR', vim.lsp.buf.references)
-        map('n', '<space>d', function()
-            vim.diagnostic.open_float(0, {
-                {
-                    border = 'single',
-                    focusable = false,
-                    severity_sort = true,
-                },
-                scope = 'line',
-            })
-        end)
-        map('n', '[d', function()
-            vim.diagnostic.goto_prev { enable_popup = false }
-        end)
-        map('n', ']d', function()
-            vim.diagnostic.goto_next { enable_popup = false }
-        end)
-        map('n', '[e', function()
-            vim.diagnostic.goto_prev {
-                enable_popup = false,
-                severity = { min = vim.diagnostic.severity.WARN },
-            }
-        end)
-        map('n', ']e', function()
-            vim.diagnostic.goto_next {
-                enable_popup = false,
-                severity = { min = vim.diagnostic.severity.WARN },
-            }
-        end)
-        map('n', '<space>q', vim.diagnostic.setloclist)
-        map('n', '<leader>ls', vim.lsp.buf.document_symbol)
-        map('n', '<leader>lS', vim.lsp.buf.workspace_symbol)
-        vim.opt.shortmess:append 'c'
-
-        -- Set autocommands conditional on server_capabilities
-        if client.server_capabilities.documentFormattingProvider then
-            local augroup_lsp_format = 'lsp_format'
-            vim.api.nvim_create_augroup(augroup_lsp_format, { clear = false })
-            vim.api.nvim_create_autocmd('BufWritePost', {
-                group = augroup_lsp_format,
-                buffer = bufnr,
-                callback = function()
-                    vim.lsp.buf.format {
-                        async = true,
-                        filter = function(server)
-                            -- return server.name == 'null-ls'
-                            local disabled_servers =
-                                { 'sumneko_lua', 'eslint', 'tsserver' }
-                            return not vim.tbl_contains(
-                                disabled_servers,
-                                server.name
-                            )
-                        end,
-                    }
-                end,
-            })
-        end
-
-        if client.server_capabilities.documentRangeFormattingProvider then
-            map('n', '<leader>f', vim.lsp.buf.range_formatting)
-        end
-
-        if client.server_capabilities.documentHighlightProvider then
-            local augroup_lsp_highlight = 'lsp_highlight'
-            vim.api.nvim_create_augroup(
-                augroup_lsp_highlight,
-                { clear = false }
-            )
-            vim.api.nvim_create_autocmd('CursorHold', {
-                group = augroup_lsp_highlight,
-                buffer = bufnr,
-                callback = vim.lsp.buf.document_highlight,
-            })
-            vim.api.nvim_create_autocmd('CursorMoved', {
-                group = augroup_lsp_highlight,
-                buffer = bufnr,
-                callback = vim.lsp.buf.clear_references,
-            })
-        end
-
-        if client.server_capabilities.semantic_tokens_full then
-            vim.api.nvim_create_autocmd(
-                { 'BufEnter', 'CursorHold', 'InsertLeave' },
-                {
-                    buffer = bufnr,
-                    callback = vim.lsp.buf.semantic_tokens_full,
-                }
-            )
-        end
-
-        _G.show_lightbulb = function()
-            require('nvim-lightbulb').update_lightbulb {
-                sign = { enabled = false, priority = 99 },
-                virtual_text = {
-                    enabled = true,
-                    text = '💡',
-                    hl_mode = 'combine',
-                },
-            }
-        end
-
-        if client.server_capabilities.codeActionProvider then
-            vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-                buffer = bufnr,
-                callback = function()
-                    if vim.bo.filetype ~= 'java' then
-                        show_lightbulb()
-                    end
-                end,
-            })
-            vim.keymap.set(
-                'n',
-                '<leader>a',
-                vim.lsp.buf.code_action,
-                { buffer = bufnr }
-            )
-            -- buf_set_keymap(
-            --     'x',
-            --     '<leader>a',
-            --     [[:'<,'>lua require("telescope.builtin").lsp_range_code_actions({timeout = 10000, start_line = TODO, end_line = TODO})<CR>]],
-            --     opts
-            -- )
-            -- buf_set_keymap(
-            --     'v',
-            --     '<leader>a',
-            --     [[:Telescope lsp_range_code_actions<CR>]],
-            --     opts
-            -- )
-        end
-
-        if client.server_capabilities.signatureHelpProvider then
-            vim.api.nvim_create_autocmd('CursorHoldI', {
-                buffer = bufnr,
-                callback = vim.lsp.buf.signature_help,
-            })
-        end
-
-        vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-            buffer = bufnr,
-            callback = show_diagnostics,
-        })
-        vim.api.nvim_create_autocmd('DiagnosticChanged', {
-            buffer = bufnr,
-            callback = show_diagnostics,
-        })
-        -- vim.notify 'LSP attached'
-        -- vim.api.nvim_command ':echo "LSP attached"'
-    end
-
     vim.cmd [[packadd pylance.nvim]]
     require 'pylance'
     lspconfig.pylance.setup {
-        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
+        -- handlers = lsp_status.extensions.pylance.setup(),
         settings = {
             python = {
                 analysis = {
@@ -381,7 +475,6 @@ function M.config()
     }
 
     lspconfig.dockerls.setup {
-        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
         settings = {
@@ -398,7 +491,6 @@ function M.config()
     -- YAML
     -- https://github.com/redhat-developer/yaml-language-server
     lspconfig.yamlls.setup {
-        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
         settings = {
@@ -412,7 +504,11 @@ function M.config()
                     '!lambda',
                     '!input',
                 },
-                -- schemas = {kubernetes = {"*.yaml"}}
+                schemas = {
+                    ['https://json.schemastore.org/github-workflow.json'] = '/.github/workflows/*',
+                    -- kubernetes = { '*.yaml' },
+                    -- ['https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master/v1.18.0-standalone-strict/all.json'] = '/*.k8s.yaml',
+                },
             },
         },
     }
@@ -420,7 +516,6 @@ function M.config()
     -- JSON
     -- vscode-json-language-server
     lspconfig.jsonls.setup {
-        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
         filetypes = { 'json', 'jsonc' },
@@ -463,7 +558,6 @@ function M.config()
     -- HTML
     -- vscode-html-language-server
     lspconfig.html.setup {
-        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
         settings = {
@@ -484,14 +578,12 @@ function M.config()
     -- CSS
     -- vscode-css-language-server
     lspconfig.cssls.setup {
-        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
     }
 
     -- vscode-eslint-language-server
     lspconfig.eslint.setup {
-        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 500 },
     }
@@ -499,7 +591,6 @@ function M.config()
     -- TYPESCRIPT
     -- https://github.com/theia-ide/typescript-language-server
     lspconfig.tsserver.setup {
-        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 500 },
         root_dir = lspconfig.util.root_pattern 'package.json',
@@ -523,7 +614,6 @@ function M.config()
     require('null-ls').setup {
         sources = sources,
         debug = true,
-        on_attach = custom_attach,
         -- Fallback to .bashrc as a project root to enable LSP on loose files
         root_dir = function(fname)
             return lspconfig.util.root_pattern(
@@ -547,7 +637,6 @@ function M.config()
         vim.cmd [[packadd rust-tools.nvim]]
         require('rust-tools').setup {
             server = {
-                on_attach = custom_attach,
                 capabilities = capabilities,
                 flags = { debounce_text_changes = 150 },
                 settings = {
@@ -579,7 +668,6 @@ function M.config()
             },
             tools = {
                 autoSetHints = true,
-                hover_with_actions = true,
                 runnables = { use_telescope = true },
                 inlay_hints = {
                     show_parameter_hints = true,
@@ -600,7 +688,6 @@ function M.config()
 
     -- GO
     lspconfig.gopls.setup {
-        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
     }
@@ -608,7 +695,6 @@ function M.config()
     -- LUA
     local luadev = require('lua-dev').setup {
         lspconfig = {
-            on_attach = custom_attach,
             capabilities = capabilities,
             flags = { debounce_text_changes = 150 },
             settings = {
@@ -629,21 +715,50 @@ function M.config()
 
     -- C / C++
     lspconfig.clangd.setup {
-        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
     }
 
     -- LATEX
     lspconfig.texlab.setup {
-        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
+        settings = {
+            texlab = {
+                auxDirectory = '.',
+                bibtexFormatter = 'texlab',
+                build = {
+                    args = {
+                        '-pdflua',
+                        '-shell-escape',
+                        '-interaction=nonstopmode',
+                        '-synctex=1',
+                        '-pv',
+                        '%f',
+                    },
+                    executable = 'latexmk',
+                    forwardSearchAfter = false,
+                    onSave = false,
+                },
+                chktex = {
+                    onEdit = false,
+                    onOpenAndSave = false,
+                },
+                diagnosticsDelay = 300,
+                formatterLineLength = 80,
+                forwardSearch = {
+                    args = {},
+                },
+                latexFormatter = 'latexindent',
+                latexindent = {
+                    modifyLineBreaks = false,
+                },
+            },
+        },
     }
 
     -- DENO
     lspconfig.denols.setup {
-        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
         root_dir = lspconfig.util.root_pattern('deno.json', 'deno.jsonc'),
@@ -728,15 +843,13 @@ function M.config()
         require('jdtls').start_or_attach {
             cmd = {
                 'jdtls',
-                home .. '/bakdata/workspace/' .. vim.fn.fnamemodify(
-                    vim.fn.getcwd(),
-                    ':p:h:t'
-                ),
+                home
+                    .. '/bakdata/workspace/'
+                    .. vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t'),
             },
-            on_attach = function(client, bufnr)
+            on_attach = function()
                 require('jdtls.setup').add_commands()
                 require('jdtls').setup_dap { hotcodereplace = 'auto' }
-                custom_attach(client, bufnr)
             end,
             -- capabilities = capabilities,
             flags = { debounce_text_changes = 150 },
@@ -774,7 +887,6 @@ function M.config()
 
     -- Markdown language server
     lspconfig.prosemd_lsp.setup {
-        on_attach = custom_attach,
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
         root_dir = function(fname)
@@ -787,8 +899,8 @@ function M.config()
         vim.api.nvim_buf_get_name(0) ~= ''
         and vim.api.nvim_buf_is_loaded(0)
         and vim.bo.filetype ~= nil
-        and vim.bo.modifiable == true
-        and vim.bo.modified == false
+        and vim.bo.modifiable
+        and not vim.bo.modified
     then
         vim.cmd 'bufdo e'
     end
