@@ -735,7 +735,7 @@ opt.pumheight = 20 -- Limit the amount of autocomplete items shown
 -----------------------------------------------------------------------------//
 -- Timings {{{1
 -----------------------------------------------------------------------------//
-vim.g.cursorhold_updatetime = 300
+opt.updatetime = 100
 opt.timeout = true
 opt.timeoutlen = 1000
 opt.ttimeoutlen = 10
