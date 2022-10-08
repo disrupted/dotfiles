@@ -426,7 +426,6 @@ function M.setup()
 end
 
 function M.config()
-    local home = os.getenv 'HOME'
     vim.cmd [[packadd nvim-lspconfig]]
     vim.cmd [[packadd lsp-status.nvim]]
     local lspconfig = require 'lspconfig'
@@ -793,107 +792,6 @@ function M.config()
         },
         single_file_support = false,
     }
-
-    -- JAVA
-    _G.init_jdtls = function()
-        local settings = {
-            java = {
-                import = { gradle = { wrapper = { enabled = true } } },
-                format = {
-                    settings = {
-                        url = '~/bakdata/dependencies/format-bakdata-codestyle.xml',
-                        profile = 'bakdata',
-                    },
-                },
-                completion = { importOrder = {} },
-                references = { includeDecompiledSources = false },
-                saveActions = { organizeImports = true },
-            },
-        }
-
-        -- add java-debug & vscode-java-test bundles
-        local bundles = {
-            home
-                .. '/bakdata/dependencies/com.microsoft.java.debug.plugin-0.34.0.jar',
-            home
-                .. '/bakdata/dependencies/vscode-java-test/com.microsoft.java.test.plugin-0.33.1.jar',
-            home
-                .. '/bakdata/dependencies/vscode-java-test/org.junit.jupiter.params_5.6.0.v20200203-2009.jar',
-            home
-                .. '/bakdata/dependencies/vscode-java-test/com.microsoft.java.test.runner-jar-with-dependencies.jar',
-            home
-                .. '/bakdata/dependencies/vscode-java-test/org.junit.platform.commons_1.6.0.v20200203-2009.jar',
-            home
-                .. '/bakdata/dependencies/vscode-java-test/org.apiguardian_1.1.0.v20190826-0900.jar',
-            home
-                .. '/bakdata/dependencies/vscode-java-test/org.junit.platform.engine_1.6.0.v20200203-2009.jar',
-            home
-                .. '/bakdata/dependencies/vscode-java-test/org.eclipse.jdt.junit4.runtime_1.1.1200.v20200214-0716.jar',
-            home
-                .. '/bakdata/dependencies/vscode-java-test/org.junit.platform.launcher_1.6.0.v20200203-2009.jar',
-            home
-                .. '/bakdata/dependencies/vscode-java-test/org.eclipse.jdt.junit5.runtime_1.0.900.v20200513-0617.jar',
-            home
-                .. '/bakdata/dependencies/vscode-java-test/org.junit.platform.runner_1.6.0.v20200203-2009.jar',
-            home
-                .. '/bakdata/dependencies/vscode-java-test/org.junit.jupiter.api_5.6.0.v20200203-2009.jar',
-            home
-                .. '/bakdata/dependencies/vscode-java-test/org.junit.platform.suite.api_1.6.0.v20200203-2009.jar',
-            home
-                .. '/bakdata/dependencies/vscode-java-test/org.junit.jupiter.engine_5.6.0.v20200203-2009.jar',
-            home
-                .. '/bakdata/dependencies/vscode-java-test/org.junit.vintage.engine_5.6.0.v20200203-2009.jar',
-            home
-                .. '/bakdata/dependencies/vscode-java-test/org.junit.jupiter.migrationsupport_5.6.0.v20200203-2009.jar',
-            home
-                .. '/bakdata/dependencies/vscode-java-test/org.opentest4j_1.2.0.v20190826-0900.jar',
-        }
-
-        vim.cmd [[packadd nvim-jdtls]]
-        require('jdtls').start_or_attach {
-            cmd = {
-                'jdtls',
-                home
-                    .. '/bakdata/workspace/'
-                    .. vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t'),
-            },
-            on_attach = function()
-                require('jdtls.setup').add_commands()
-                require('jdtls').setup_dap { hotcodereplace = 'auto' }
-            end,
-            -- capabilities = capabilities,
-            flags = { debounce_text_changes = 150 },
-            -- on_init = function(client, _)
-            --     client.notify('workspace/didChangeConfiguration', {
-            --         settings = settings,
-            --     })
-            -- end,
-            settings = settings,
-            init_options = {
-                bundles = bundles,
-            },
-        }
-
-        vim.api.nvim_create_user_command(
-            'OrganizeImports',
-            require('jdtls').organize_imports,
-            {}
-        )
-        -- vim.cmd [[
-        --     augroup organize_imports_on_save
-        --         autocmd! * <buffer>
-        --         autocmd FileType java
-        --         autocmd BufWritePre <buffer> lua require'jdtls'.organize_imports()
-        --     augroup END
-        --     ]]
-    end
-
-    vim.cmd [[
-        augroup jdtls
-            autocmd!
-            autocmd FileType java lua init_jdtls()
-        augroup END
-        ]]
 
     -- Markdown language server
     lspconfig.prosemd_lsp.setup {

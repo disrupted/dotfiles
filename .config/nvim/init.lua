@@ -291,7 +291,6 @@ packer.startup(function()
         opt = true,
     }
     use { 'simrat39/rust-tools.nvim', opt = true }
-    use { 'mfussenegger/nvim-jdtls', opt = true }
     -- use { 'zsugabubus/crazy8.nvim', event = { 'BufRead' } } -- detect indentation automatically
     use {
         'folke/trouble.nvim',
