@@ -26,6 +26,10 @@
     changed = green
     untracked = red
 
+# workaround for git add --patch being broken
+[add "interactive"]
+    useBuiltin = false
+
 [log]
     decorate = auto
     abbrevCommit = true
