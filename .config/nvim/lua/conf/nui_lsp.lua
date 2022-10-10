@@ -1,5 +1,4 @@
 -- https://gist.github.com/MunifTanjim/8d9498c096719bdf4234321230fe3dc7
-vim.cmd [[packadd nui.nvim]]
 local Input = require 'nui.input'
 local event = require('nui.utils.autocmd').event
 local utils = require 'utils'
