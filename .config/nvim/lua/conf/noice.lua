@@ -2,10 +2,15 @@ local M = {}
 
 function M.config()
     require('noice').setup {
-        -- classic cmdline
-        -- cmdline = {
-        --     view = 'cmdline',
-        -- },
+        cmdline = {
+            icons = {
+                [':'] = {
+                    icon = '',
+                    hl_group = 'DiagnosticInfo',
+                    firstc = true,
+                },
+            },
+        },
         routes = {
             {
                 filter = {
