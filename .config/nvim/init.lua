@@ -13,6 +13,7 @@ packer.startup(function()
     use 'nvim-lua/plenary.nvim'
     use { 'kyazdani42/nvim-web-devicons', module = 'nvim-web-devicons' }
     use { 'tpope/vim-repeat' }
+    use { 'tpope/vim-abolish' } -- substitute & change case
     use {
         'disrupted/one.nvim', -- personal tweaked colorscheme
         config = function()
