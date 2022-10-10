@@ -184,7 +184,7 @@ ls.add_snippets('python', {
         trig = 'def',
         name = 'def method',
         dscr = {
-            'def func(arg: str) -> none:',
+            'def func(arg: str) -> None:',
         },
     }, {
         -- decorator
@@ -213,7 +213,7 @@ ls.add_snippets('python', {
         i(4, 'str'),
         t ') -> ',
         -- return type
-        i(5, 'none'),
+        i(5, 'None'),
         -- linebreak
         t { ':', '\t' },
         i(0, 'pass'),
@@ -222,7 +222,7 @@ ls.add_snippets('python', {
     s('class', {
         t 'class ',
         -- placeholder/insert.
-        i(1, 'example'),
+        i(1, 'Example'),
         c(2, {
             t '',
             -- base class
@@ -240,7 +240,7 @@ ls.add_snippets('python', {
         -- argument type
         i(4, 'str'),
         -- linebreak
-        t { '):', '\t\t' },
+        t { ') -> None:', '\t\t' },
         t 'self.',
         -- field name, copied from argument
         f(copy, 3),
