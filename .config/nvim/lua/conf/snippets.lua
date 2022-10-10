@@ -157,257 +157,277 @@ end
 -- Native Snippets {{{1
 -----------------------------------------------------------------------------//
 
-ls.snippets = {
-    all = {},
-    python = {
-        -- method
-        s({
-            trig = 'def',
-            name = 'def method',
-            dscr = {
-                'def func(arg: str) -> None:',
-            },
-        }, {
-            -- decorator
-            f(function(args)
-                if args[1][1] == 'cls, ' then
-                    return { '@classmethod', '' }
-                end
-                if args[1][1] == '' then
-                    return { '@staticmethod', '' }
-                end
-                return ''
-            end, 2),
-            t 'def ',
-            -- method name
-            i(1, 'func'),
-            t '(',
-            c(2, {
-                t 'self, ',
-                t 'cls, ',
-                t '',
-            }),
-            -- first method argument
-            i(3, 'arg'),
-            t ': ',
-            -- argument type
-            i(4, 'str'),
-            t ') -> ',
-            -- return type
-            i(5, 'None'),
-            -- Linebreak
-            t { ':', '\t' },
-            i(0, 'pass'),
-        }),
-        -- class
-        s('class', {
-            t 'class ',
-            -- Placeholder/Insert.
-            i(1, 'Example'),
-            c(2, {
-                t '',
-                -- base class
-                sn(nil, {
-                    t '(',
-                    i(1),
-                    t ')',
-                }),
-            }),
-            t { ':', '\t' },
-            t 'def __init__(self, ',
-            -- first field
-            i(3, 'arg'),
-            t ': ',
-            -- argument type
-            i(4, 'str'),
-            -- Linebreak
-            t { '):', '\t\t' },
-            t 'self.',
-            -- field name, copied from argument
-            f(copy, 3),
-            t ': ',
-            -- field type
-            f(copy, 4),
-            t ' = ',
-            f(copy, 3),
-            t { '', '\t\t' },
-            i(0),
-        }),
-        s('main', {
-            t { 'if __name__ == "__main__":', '\t' },
-            i(0, 'main()'),
-        }),
-        s({
-            trig = 'env',
-            name = 'shebang',
-            dscr = {
-                'python shebang',
-            },
-        }, {
-            t { '#!/usr/bin/env python3' },
-        }),
-        s({
-            trig = 'from',
-            name = 'from … import …',
-            dscr = {
-                'import from module',
-            },
-        }, {
-            t { 'from ' },
-            i(1, ''),
-            t { ' import ' },
-            i(0, ''),
-        }),
-        s({
-            trig = 'if',
-            name = 'if …:',
-            dscr = {
-                'if condition',
-            },
-        }, {
-            t { 'if ' },
-            i(1, ''),
-            t { ':', '\t' },
-            i(0, 'pass'),
-        }),
-        s({
-            trig = 'for',
-            name = 'for …:',
-            dscr = {
-                'for loop',
-            },
-        }, {
-            t { 'for ' },
-            i(1, 'i'),
-            t { ' in ' },
-            c(2, {
-                i(nil, 'iterable'),
-                sn(nil, {
-                    t 'range(',
-                    i(1, '10'),
-                    t ')',
-                }),
-            }),
-            t { ':', '\t' },
-            i(0, 'pass'),
-        }),
-        s({
-            trig = 'try',
-            name = 'try … except',
-            dscr = {
-                'try-except-block',
-            },
-        }, {
-            t { 'try:', '\t' },
-            i(1, 'pass'),
-            t { '', 'except ' },
-            i(2, 'Exception'),
-            t { ' as ' },
-            i(3, 'e'),
-            t { ':', '\t' },
-            c(4, {
-                sn(nil, {
-                    t 'raise ',
-                    i(1, 'e'),
-                }),
-                i(nil, 'pass'),
-            }),
-            i(0),
-        }),
-    },
-    rust = {
-        s({
-            trig = 'fn',
-            name = 'function',
-            dscr = {
-                'fn …(…) { … }',
-            },
-        }, {
-            t 'fn ',
-            -- function name
-            i(1, 'func'),
-            t '(',
-            -- first method argument
-            i(2, 'arg'),
-            t ': ',
-            -- argument type
-            i(3, '&str'),
-            t ') -> ',
-            -- return type
-            i(4, '&str'),
-            -- Linebreak
-            t { ' {', '\t' },
-            i(0, ''),
-            t { '', '}' },
-        }),
-    },
-    lua = {
-        s({ -- from akinsho
-            trig = 'use',
-            name = 'packer use',
-            dscr = {
-                'packer use plugin block',
-                'e.g.',
-                'use {\'author/plugin\'}',
-            },
-        }, {
-            t 'use { \'',
-            -- Get the author and URL in the clipboard and auto populate the author and project
-            f(function(_)
-                local default = 'author/plugin'
-                local clip = vim.fn.getreg '*'
-                if not vim.startswith(clip, 'https://github.com/') then
-                    return default
-                end
-                local parts = vim.split(clip, '/')
-                if #parts < 2 then
-                    return default
-                end
-                local author, project = parts[#parts - 1], parts[#parts]
-                return author .. '/' .. project
-            end, {}),
-            t '\' ',
-            i(2, { ', config = function()', '', 'end' }),
-            t '}',
-        }),
-    },
-    java = {
-        -- Very long example for a java class.
-        s('fn', {
-            d(6, jdocsnip, { 2, 4, 5 }),
-            t { '', '' },
-            c(1, {
-                t 'public ',
-                t 'private ',
-            }),
-            c(2, {
-                t 'void',
-                t 'String',
-                t 'char',
-                t 'int',
-                t 'double',
-                t 'boolean',
-                i(nil, ''),
-            }),
-            t ' ',
-            i(3, 'myFunc'),
-            t '(',
-            i(4),
-            t ')',
-            c(5, {
-                t '',
-                sn(nil, {
-                    t { '', ' throws ' },
-                    i(1),
-                }),
-            }),
-            t { ' {', '\t' },
-            i(0),
-            t { '', '}' },
-        }),
-    },
-}
+ls.add_snippets('all', {
+    s('fn', {
+        -- Simple static text.
+        t '//Parameters: ',
+        -- function, first parameter is the function, second the Placeholders
+        -- whose text it gets as input.
+        f(copy, 2),
+        t { '', 'function ' },
+        -- Placeholder/Insert.
+        i(1),
+        t '(',
+        -- Placeholder with initial text.
+        i(2, 'int foo'),
+        -- Linebreak
+        t { ') {', '\t' },
+        -- Last Placeholder, exit Point of the snippet.
+        i(0),
+        t { '', '}' },
+    }),
+})
 
+ls.add_snippets('python', {
+    -- method
+    s({
+        trig = 'def',
+        name = 'def method',
+        dscr = {
+            'def func(arg: str) -> none:',
+        },
+    }, {
+        -- decorator
+        f(function(args)
+            if args[1][1] == 'cls, ' then
+                return { '@classmethod', '' }
+            end
+            if args[1][1] == '' then
+                return { '@staticmethod', '' }
+            end
+            return ''
+        end, 2),
+        t 'def ',
+        -- method name
+        i(1, 'func'),
+        t '(',
+        c(2, {
+            t 'self, ',
+            t 'cls, ',
+            t '',
+        }),
+        -- first method argument
+        i(3, 'arg'),
+        t ': ',
+        -- argument type
+        i(4, 'str'),
+        t ') -> ',
+        -- return type
+        i(5, 'none'),
+        -- linebreak
+        t { ':', '\t' },
+        i(0, 'pass'),
+    }),
+    -- class
+    s('class', {
+        t 'class ',
+        -- placeholder/insert.
+        i(1, 'example'),
+        c(2, {
+            t '',
+            -- base class
+            sn(nil, {
+                t '(',
+                i(1),
+                t ')',
+            }),
+        }),
+        t { ':', '\t' },
+        t 'def __init__(self, ',
+        -- first field
+        i(3, 'arg'),
+        t ': ',
+        -- argument type
+        i(4, 'str'),
+        -- linebreak
+        t { '):', '\t\t' },
+        t 'self.',
+        -- field name, copied from argument
+        f(copy, 3),
+        t ': ',
+        -- field type
+        f(copy, 4),
+        t ' = ',
+        f(copy, 3),
+        t { '', '\t\t' },
+        i(0),
+    }),
+    s('main', {
+        t { 'if __name__ == "__main__":', '\t' },
+        i(0, 'main()'),
+    }),
+    s({
+        trig = 'env',
+        name = 'shebang',
+        dscr = {
+            'python shebang',
+        },
+    }, {
+        t { '#!/usr/bin/env python3' },
+    }),
+    s({
+        trig = 'from',
+        name = 'from … import …',
+        dscr = {
+            'import from module',
+        },
+    }, {
+        t { 'from ' },
+        i(1, ''),
+        t { ' import ' },
+        i(0, ''),
+    }),
+    s({
+        trig = 'if',
+        name = 'if …:',
+        dscr = {
+            'if condition',
+        },
+    }, {
+        t { 'if ' },
+        i(1, ''),
+        t { ':', '\t' },
+        i(0, 'pass'),
+    }),
+    s({
+        trig = 'for',
+        name = 'for …:',
+        dscr = {
+            'for loop',
+        },
+    }, {
+        t { 'for ' },
+        i(1, 'i'),
+        t { ' in ' },
+        c(2, {
+            i(nil, 'iterable'),
+            sn(nil, {
+                t 'range(',
+                i(1, '10'),
+                t ')',
+            }),
+        }),
+        t { ':', '\t' },
+        i(0, 'pass'),
+    }),
+    s({
+        trig = 'try',
+        name = 'try … except',
+        dscr = {
+            'try-except-block',
+        },
+    }, {
+        t { 'try:', '\t' },
+        i(1, 'pass'),
+        t { '', 'except ' },
+        i(2, 'exception'),
+        t { ' as ' },
+        i(3, 'e'),
+        t { ':', '\t' },
+        c(4, {
+            sn(nil, {
+                t 'raise ',
+                i(1, 'e'),
+            }),
+            i(nil, 'pass'),
+        }),
+        i(0),
+    }),
+})
+
+ls.add_snippets('rust', {
+    s({
+        trig = 'fn',
+        name = 'function',
+        dscr = {
+            'fn …(…) { … }',
+        },
+    }, {
+        t 'fn ',
+        -- function name
+        i(1, 'func'),
+        t '(',
+        -- first method argument
+        i(2, 'arg'),
+        t ': ',
+        -- argument type
+        i(3, '&str'),
+        t ') -> ',
+        -- return type
+        i(4, '&str'),
+        -- Linebreak
+        t { ' {', '\t' },
+        i(0, ''),
+        t { '', '}' },
+    }),
+})
+
+ls.add_snippets('lua', {
+    s({ -- from akinsho
+        trig = 'use',
+        name = 'packer use',
+        dscr = {
+            'packer use plugin block',
+            'e.g.',
+            'use {\'author/plugin\'}',
+        },
+    }, {
+        t 'use { \'',
+        -- Get the author and URL in the clipboard and auto populate the author and project
+        f(function(_)
+            local default = 'author/plugin'
+            local clip = vim.fn.getreg '*'
+            if not vim.startswith(clip, 'https://github.com/') then
+                return default
+            end
+            local parts = vim.split(clip, '/')
+            if #parts < 2 then
+                return default
+            end
+            local author, project = parts[#parts - 1], parts[#parts]
+            return author .. '/' .. project
+        end, {}),
+        t '\' ',
+        i(2, { ', config = function()', '', 'end' }),
+        t '}',
+    }),
+})
+
+ls.add_snippets('java', {
+    -- Very long example for a java class.
+    s('fn', {
+        d(6, jdocsnip, { 2, 4, 5 }),
+        t { '', '' },
+        c(1, {
+            t 'public ',
+            t 'private ',
+        }),
+        c(2, {
+            t 'void',
+            t 'String',
+            t 'char',
+            t 'int',
+            t 'double',
+            t 'boolean',
+            i(nil, ''),
+        }),
+        t ' ',
+        i(3, 'myFunc'),
+        t '(',
+        i(4),
+        t ')',
+        c(5, {
+            t '',
+            sn(nil, {
+                t { '', ' throws ' },
+                i(1),
+            }),
+        }),
+        t { ' {', '\t' },
+        i(0),
+        t { '', '}' },
+    }),
+})
 -----------------------------------------------------------------------------//
 -- External Snippets {{{1
 -----------------------------------------------------------------------------//
@@ -417,8 +437,7 @@ vim.api.nvim_create_autocmd('User', {
         print 'snippets loaded'
     end,
 })
--- TODO: fix lazy_load
-require('luasnip.loaders.from_vscode').load { paths = './snippets' }
+require('luasnip.loaders.from_vscode').lazy_load { paths = './snippets' }
 
 -----------------------------------------------------------------------------//
 -- }}}1

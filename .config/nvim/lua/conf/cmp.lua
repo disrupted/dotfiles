@@ -42,8 +42,8 @@ function M.config()
 
     local cmp = require 'cmp'
 
-    local prequire = require('utils').prequire
-    local luasnip = prequire 'luasnip'
+    local lazy_require = require('utils').lazy_require
+    local luasnip = lazy_require 'luasnip'
 
     -- supertab-like mapping
     local mapping = {
@@ -84,30 +84,29 @@ function M.config()
         ['<C-d>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-Space>'] = cmp.mapping.complete(),
+        ['<C-c>'] = cmp.mapping.complete(),
         ['<C-e>'] = cmp.mapping.close(),
         ['<Up>'] = cmp.config.disable,
         ['<Down>'] = cmp.config.disable,
     }
 
     cmp.setup {
-        view = {
-            entries = 'native',
-        },
         snippet = {
             expand = function(args)
                 require('luasnip').lsp_expand(args.body)
             end,
         },
         mapping = mapping,
-        sources = {
+        sources = cmp.config.sources({
             { name = 'luasnip' },
             { name = 'nvim_lsp' },
             { name = 'git' },
-            { name = 'nvim_lua' },
-            { name = 'spell' },
-            { name = 'path' },
+            -- { name = 'nvim_lua' },
+        }, {
+            -- { name = 'spell' },
             { name = 'buffer', keyword_length = 4 },
-        },
+            { name = 'path' },
+        }),
         formatting = {
             format = function(entry, vim_item)
                 -- source name
@@ -127,7 +126,6 @@ function M.config()
     }
 
     -- autopairs integration: insert () after selecting function or method item
-    local lazy_require = require('utils').lazy_require
     cmp.event:on(
         'confirm_done',
         lazy_require('nvim-autopairs.completion.cmp').on_confirm_done()
