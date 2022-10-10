@@ -41,6 +41,10 @@ function M.setup()
     end
 
     function lsp.filter_diagnostics(diagnostic)
+        if diagnostic.source == nil then
+            return true
+        end
+
         if diagnostic.source:find('Py', 1, true) then -- Pyright & Pylance
             -- Allow kwargs to be unused
             if diagnostic.message == '"kwargs" is not accessed' then
