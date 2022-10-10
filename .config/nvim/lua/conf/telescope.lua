@@ -10,6 +10,7 @@ function M.setup()
         -- Launch file search using Telescope
         if vim.fn.isdirectory '.git' ~= 0 then
             -- if in a git project, use :Telescope git_files
+            options['show_untracked'] = true
             require('telescope.builtin').git_files(options)
         else
             -- otherwise, use :Telescope find_files
