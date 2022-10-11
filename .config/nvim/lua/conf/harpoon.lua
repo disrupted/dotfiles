@@ -22,15 +22,6 @@ function M.setup()
     vim.keymap.set('n', ';g', function()
         require('harpoon.ui').nav_file(5)
     end)
-
-    -- Use common mappings to close popup
-    vim.api.nvim_create_autocmd('FileType', {
-        pattern = 'harpoon',
-        callback = function()
-            vim.keymap.set('n', 'q', ':q<cr>', { buffer = true })
-            vim.keymap.set('n', '<esc>', ':q<cr>', { buffer = true })
-        end,
-    })
 end
 
 function M.config()
