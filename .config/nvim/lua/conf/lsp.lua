@@ -216,27 +216,30 @@ function M.setup()
             map('n', 'gi', vim.lsp.buf.implementation)
             map('n', '<C-s>', vim.lsp.buf.signature_help)
             map('i', '<C-s>', vim.lsp.buf.signature_help)
-            map('n', '<space>wa', vim.lsp.buf.add_workspace_folder)
-            map('n', '<space>wr', vim.lsp.buf.remove_workspace_folder)
-            map('n', '<space>wl', function()
+            map('n', '<leader>wa', vim.lsp.buf.add_workspace_folder)
+            map('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder)
+            map('n', '<leader>wl', function()
                 print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
             end)
-            map('n', '<space>D', vim.lsp.buf.type_definition)
-            map('n', '<space>r', function()
+            map('n', '<leader>D', vim.lsp.buf.type_definition)
+            map('n', '<leader>r', function()
                 require('conf.nui_lsp').lsp_rename()
             end)
             map('n', 'gr', function()
                 require('trouble').open { mode = 'lsp_references' }
             end)
             map('n', 'gR', vim.lsp.buf.references)
-            map('n', '<space>d', function()
+            map('n', '<leader>li', vim.lsp.buf.incoming_calls)
+            map('n', '<leader>lo', vim.lsp.buf.outgoing_calls)
+            map('n', '<leader>lt', vim.lsp.buf.document_symbol)
+            map('n', '<leader>d', function()
                 vim.diagnostic.open_float {
                     {
+                        scope = 'line',
                         border = 'single',
                         focusable = false,
                         severity_sort = true,
                     },
-                    scope = 'line',
                 }
             end)
             map('n', '[d', function()
@@ -257,7 +260,7 @@ function M.setup()
                     severity = { min = vim.diagnostic.severity.WARN },
                 }
             end)
-            map('n', '<space>q', vim.diagnostic.setloclist)
+            map('n', '<leader>q', vim.diagnostic.setloclist)
             map('n', '<leader>ls', vim.lsp.buf.document_symbol)
             map('n', '<leader>lS', vim.lsp.buf.workspace_symbol)
             vim.opt.shortmess:append 'c'
@@ -452,9 +455,6 @@ function M.config()
 
     local capabilities = vim.lsp.protocol.make_client_capabilities()
     capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
-    ---@diagnostic disable-next-line: cast-local-type
-    capabilities =
-        vim.tbl_extend('keep', capabilities or {}, lsp_status.capabilities)
 
     if pcall(require, 'vim.lsp.nvim-semantic-tokens') then
         require('nvim-semantic-tokens').setup {
@@ -717,6 +717,9 @@ function M.config()
                         -- Setup your lua path
                         path = vim.split(package.path, ';'),
                     },
+                    -- workspace = {
+                    --     library = vim.api.nvim_get_runtime_file('', true),
+                    -- },
                     diagnostics = { globals = { 'vim' } },
                     telemetry = { enable = false },
                 },
@@ -805,6 +808,25 @@ function M.config()
             return lspconfig.util.find_git_ancestor(fname) or vim.fn.getcwd()
         end,
     }
+
+    -- EXTEND LSPCONFIG
+    -- local lspconfigs = require 'lspconfig.configs'
+
+    -- -- https://github.com/Tencent/LuaHelper
+    -- lspconfigs.luahelper = {
+    --     default_config = {
+    --         cmd = { 'lualsp', '-mode', '1' },
+    --         filetypes = { 'lua' },
+    --         root_dir = function(fname)
+    --             return lspconfig.util.find_git_ancestor(fname)
+    --                 or vim.fn.getcwd()
+    --         end,
+    --         single_file_support = true,
+    --         settings = {},
+    --     },
+    -- }
+
+    -- lspconfig.luahelper.setup {}
 
     -- reload if buffer has file, to attach LSP
     -- if

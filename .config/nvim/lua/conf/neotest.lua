@@ -1,11 +1,11 @@
 local M = {}
 
 function M.setup()
-    vim.keymap.set('n', '<Space>tf', require('neotest').run.run) -- test nearest function
-    vim.keymap.set('n', '<Space>tb', function()
+    vim.keymap.set('n', '<leader>tf', require('neotest').run.run) -- test nearest function
+    vim.keymap.set('n', '<leader>tb', function()
         require('neotest').run.run(vim.fn.expand '%') -- test entire file/buffer
     end)
-    vim.keymap.set('n', '<Space>td', function()
+    vim.keymap.set('n', '<leader>td', function()
         require('neotest').run.run { strategy = 'dap' } -- debug nearest function
     end)
 end
