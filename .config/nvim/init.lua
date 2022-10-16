@@ -627,7 +627,6 @@ opt.synmaxcol = 1024 -- don't syntax highlight long lines
 vim.g.vimsyn_embed = 'lPr' -- allow embedded syntax highlighting for lua, python, ruby
 vim.g.no_plugin_maps = 1
 opt.showmode = false
-opt.lazyredraw = true
 opt.emoji = false -- turn off as they are treated as double width characters
 opt.virtualedit = 'onemore' -- allow cursor to move past end of line in visual block mode, needed for my custom paste mapping
 opt.list = true -- show invisible characters
