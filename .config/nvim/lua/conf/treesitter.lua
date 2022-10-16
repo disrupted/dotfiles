@@ -155,6 +155,11 @@ function M.config()
             enable = false,
         },
     }
+
+    local ft_to_parser =
+        require('nvim-treesitter.parsers').filetype_to_parsername
+    -- use treesitter highlighting for markdown in Octo
+    ft_to_parser.octo = 'markdown'
 end
 
 return M
