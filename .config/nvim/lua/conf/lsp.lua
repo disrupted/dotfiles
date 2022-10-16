@@ -243,10 +243,10 @@ function M.setup()
                 }
             end)
             map('n', '[d', function()
-                vim.diagnostic.goto_prev { enable_popup = false }
+                vim.diagnostic.goto_prev { float = false }
             end)
             map('n', ']d', function()
-                vim.diagnostic.goto_next { enable_popup = false }
+                vim.diagnostic.goto_next { float = false }
             end)
             map('n', '[e', function()
                 vim.diagnostic.goto_prev {
