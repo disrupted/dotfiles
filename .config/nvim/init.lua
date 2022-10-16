@@ -92,7 +92,7 @@ packer.startup(function()
         'jose-elias-alvarez/null-ls.nvim',
         module = 'null-ls',
     }
-    use 'folke/lua-dev.nvim'
+    use 'folke/neodev.nvim'
     use {
         'L3MON4D3/LuaSnip',
         event = { 'InsertEnter' },

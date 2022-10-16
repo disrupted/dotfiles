@@ -435,6 +435,7 @@ end
 function M.config()
     vim.cmd [[packadd nvim-lspconfig]]
     vim.cmd [[packadd lsp-status.nvim]]
+    require('neodev').setup {}
     local lspconfig = require 'lspconfig'
     local lsp_status = require 'lsp-status'
     lsp_status.config {
@@ -705,29 +706,15 @@ function M.config()
         flags = { debounce_text_changes = 150 },
     }
 
-    -- LUA
-    local luadev = require('lua-dev').setup {
-        lspconfig = {
-            capabilities = capabilities,
-            flags = { debounce_text_changes = 150 },
-            settings = {
-                Lua = {
-                    runtime = {
-                        version = 'LuaJIT',
-                        -- Setup your lua path
-                        path = vim.split(package.path, ';'),
-                    },
-                    -- workspace = {
-                    --     library = vim.api.nvim_get_runtime_file('', true),
-                    -- },
-                    diagnostics = { globals = { 'vim' } },
-                    telemetry = { enable = false },
+    lspconfig.sumneko_lua.setup {
+        settings = {
+            Lua = {
+                completion = {
+                    callSnippet = 'Replace',
                 },
             },
         },
     }
-
-    lspconfig.sumneko_lua.setup(luadev)
 
     -- C / C++
     lspconfig.clangd.setup {
