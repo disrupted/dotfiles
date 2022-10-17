@@ -36,7 +36,8 @@ packer.startup(function()
     }
     use {
         'numToStr/Comment.nvim',
-        event = { 'BufWinEnter', 'BufNewFile' },
+        -- event = { 'BufWinEnter', 'BufNewFile' },
+        after = 'nvim-treesitter',
         config = function()
             require('conf.comment').config()
         end,
@@ -281,7 +282,8 @@ packer.startup(function()
     }
     use {
         'lukas-reineke/indent-blankline.nvim',
-        event = { 'BufWinEnter' },
+        -- event = { 'BufWinEnter' },
+        after = 'nvim-treesitter',
         config = function()
             require('conf.indentline').config()
         end,
