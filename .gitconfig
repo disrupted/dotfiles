@@ -1,3 +1,4 @@
+# vim: commentstring=#%s
 [user]
     name = disrupted
     email = hi@salomonpopp.me
@@ -51,7 +52,7 @@
 [pull]
     # Default to rebasing on pulls
     rebase = true
-    ff = only
+    # ff = only
 
 [gpg]
     program = /opt/homebrew/bin/gpg

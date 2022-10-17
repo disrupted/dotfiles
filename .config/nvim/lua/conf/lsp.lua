@@ -711,6 +711,7 @@ function M.config()
                 completion = {
                     callSnippet = 'Replace',
                 },
+                telemetry = { enable = false },
             },
         },
     }
@@ -760,31 +761,31 @@ function M.config()
     }
 
     -- DENO
-    lspconfig.denols.setup {
-        capabilities = capabilities,
-        flags = { debounce_text_changes = 150 },
-        root_dir = lspconfig.util.root_pattern('deno.json', 'deno.jsonc'),
-        filetypes = {
-            'javascript',
-            'javascriptreact',
-            'javascript.jsx',
-            'typescript',
-            'typescriptreact',
-            'typescript.tsx',
-            'yaml',
-            'json',
-            'markdown',
-            'html',
-            'css',
-        },
-        init_options = {
-            enable = true,
-            lint = true,
-            unstable = true,
-            importMap = './import_map.json',
-        },
-        single_file_support = false,
-    }
+    -- lspconfig.denols.setup {
+    --     capabilities = capabilities,
+    --     flags = { debounce_text_changes = 150 },
+    --     root_dir = lspconfig.util.root_pattern('deno.json', 'deno.jsonc'),
+    --     filetypes = {
+    --         'javascript',
+    --         'javascriptreact',
+    --         'javascript.jsx',
+    --         'typescript',
+    --         'typescriptreact',
+    --         'typescript.tsx',
+    --         'yaml',
+    --         'json',
+    --         'markdown',
+    --         'html',
+    --         'css',
+    --     },
+    --     init_options = {
+    --         enable = true,
+    --         lint = true,
+    --         unstable = true,
+    --         importMap = './import_map.json',
+    --     },
+    --     single_file_support = false,
+    -- }
 
     -- Markdown language server
     lspconfig.prosemd_lsp.setup {

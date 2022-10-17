@@ -1,3 +1,4 @@
+# vim: commentstring=#%s
 [user]
     name = Salomon Popp
     email = salomon.popp@bakdata.com
