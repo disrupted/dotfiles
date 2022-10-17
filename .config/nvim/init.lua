@@ -491,6 +491,16 @@ packer.startup(function()
             require('conf.noice').config()
         end,
     }
+    use {
+        'monaqa/dial.nvim',
+        module = 'dial',
+        setup = function()
+            require('conf.dial').setup()
+        end,
+        config = function()
+            require('conf.dial').config()
+        end,
+    }
 end)
 
 -----------------------------------------------------------------------------//
