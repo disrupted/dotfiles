@@ -86,10 +86,11 @@ function M.setup()
 
     -- Handle formatting in a smarter way
     -- If the buffer has been edited before formatting has completed, do not try to
-    -- apply the changes, by Lukas Reineke
+    -- apply the changes, original by Lukas Reineke
     vim.lsp.handlers['textDocument/formatting'] = function(err, result, ctx)
-        if err ~= nil then
-            vim.notify('error formatting', vim.lsp.log_levels.ERROR)
+        if err then
+            local err_msg = type(err) == 'string' and err or err.message
+            vim.notify('error formatting: ' .. err_msg, vim.log.levels.ERROR)
             return
         end
 
@@ -99,28 +100,32 @@ function M.setup()
         end
 
         local bufnr = ctx.bufnr
-        -- If the buffer hasn't been modified before the formatting has finished,
-        -- update the buffer
-        if not vim.api.nvim_buf_get_option(bufnr, 'modified') then
-            local pos = vim.api.nvim_win_get_cursor(0)
-            local client = vim.lsp.get_client_by_id(ctx.client_id)
-            vim.lsp.util.apply_text_edits(
-                result,
-                bufnr,
-                client and client.offset_encoding or 'utf-16'
-            )
-            pcall(vim.api.nvim_win_set_cursor, 0, pos)
-            if bufnr == vim.api.nvim_get_current_buf() then
-                vim.cmd 'noautocmd :update'
-                vim.notify('formatting success', vim.lsp.log_levels.DEBUG)
-
-                -- Trigger post-formatting autocommand which can be used to refresh gitsigns
-                vim.api.nvim_exec_autocmds(
-                    'User FormatterPost',
-                    { modeline = false }
-                )
-            end
+        -- abort if the buffer has been modified before the formatting has finished
+        if
+            not vim.api.nvim_buf_is_loaded(bufnr)
+            or vim.api.nvim_buf_get_option(bufnr, 'modified')
+        then
+            return
         end
+
+        -- local pos = vim.api.nvim_win_get_cursor(0)
+        local client = vim.lsp.get_client_by_id(ctx.client_id)
+        vim.lsp.util.apply_text_edits(
+            result,
+            bufnr,
+            client and client.offset_encoding or 'utf-16'
+        )
+        -- pcall(vim.api.nvim_win_set_cursor, 0, pos)
+        vim.api.nvim_buf_call(bufnr, function()
+            vim.cmd 'silent noautocmd update'
+        end)
+        vim.notify('formatting success', vim.lsp.log_levels.DEBUG)
+
+        -- Trigger post-formatting autocommand which can be used to refresh gitsigns
+        -- vim.api.nvim_exec_autocmds(
+        --     'User FormatterPost',
+        --     { modeline = false }
+        -- )
     end
 
     local overridden_hover = vim.lsp.with(vim.lsp.handlers.hover, {
@@ -293,24 +298,25 @@ function M.setup()
         end,
     })
 
+    local augroup_lsp_format = vim.api.nvim_create_augroup('lsp_format', {})
     vim.api.nvim_create_autocmd('LspAttach', {
         group = au,
         desc = 'LSP format',
         callback = function(args)
             local bufnr = args.buf
             local client = vim.lsp.get_client_by_id(args.data.client_id)
-            if client.server_capabilities.documentFormattingProvider then
-                local augroup_lsp_format = 'lsp_format'
-                vim.api.nvim_create_augroup(
-                    augroup_lsp_format,
-                    { clear = false }
-                )
+            if client.supports_method 'textDocument/formatting' then
+                vim.api.nvim_clear_autocmds {
+                    group = augroup_lsp_format,
+                    buffer = bufnr,
+                }
                 vim.api.nvim_create_autocmd('BufWritePost', {
                     group = augroup_lsp_format,
                     buffer = bufnr,
                     callback = function()
                         vim.lsp.buf.format {
                             async = true,
+                            bufnr = bufnr,
                             filter = function(server)
                                 -- return server.name == 'null-ls'
                                 local disabled_servers = {
