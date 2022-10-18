@@ -218,6 +218,45 @@ ls.add_snippets('python', {
         t { ':', '\t' },
         i(0, 'pass'),
     }),
+    -- property
+    s({
+        trig = '@property',
+        name = 'property',
+        dscr = {
+            'New property: get and set via decorator',
+        },
+    }, {
+        -- decorator
+        t { '@property', '' },
+        t 'def ',
+        -- method name
+        i(1, 'foo'),
+        t '(self) -> ',
+        -- return type
+        i(2, 'str'),
+        -- linebreak
+        t { ':', '\t' },
+        t 'return self._',
+        -- field name, copied from argument
+        f(copy, 1),
+        -- empty lines
+        t { '', '', '' },
+        -- setter
+        t { '@' },
+        f(copy, 1),
+        t { '.setter', '' },
+        t 'def ',
+        f(copy, 1),
+        t '(self, ',
+        f(copy, 1),
+        t ': ',
+        f(copy, 2),
+        t { ') -> None:', '\t' },
+        t 'self._',
+        f(copy, 1),
+        t ' = ',
+        f(copy, 1),
+    }),
     -- class
     s('class', {
         t 'class ',
