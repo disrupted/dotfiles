@@ -180,7 +180,7 @@ function M.config()
         },
     }
 
-    vim.api.nvim_set_hl(0, 'DapUIScope', { link = 'bold' })
+    vim.api.nvim_set_hl(0, 'DapUIScope', { link = 'bold' }) -- FIXME: bold hl group doesn't exist
     vim.api.nvim_set_hl(0, 'DapUIDecoration', { link = 'CursorLineNr' })
     vim.api.nvim_set_hl(0, 'DapUIThread', { link = 'GitSignsAdd' })
     vim.api.nvim_set_hl(0, 'DapUIStoppedThread', { link = 'Special' })

@@ -377,25 +377,29 @@ function M.setup()
         callback = function(args)
             local bufnr = args.buf
             local client = vim.lsp.get_client_by_id(args.data.client_id)
-            if client.server_capabilities.semantic_tokens_full then
-                vim.api.nvim_create_autocmd(
-                    { 'BufEnter', 'CursorHold', 'InsertLeave' },
-                    {
-                        buffer = bufnr,
-                        callback = vim.lsp.buf.semantic_tokens_full,
-                    }
-                )
+            if client.supports_method 'textDocument/semanticTokens/full' then
+                vim.notify 'register semantic tokens'
+                local augroup =
+                    vim.api.nvim_create_augroup('lsp_semantic_tokens', {})
+                vim.api.nvim_create_autocmd({ 'BufEnter', 'TextChanged' }, {
+                    group = augroup,
+                    buffer = bufnr,
+                    callback = function()
+                        vim.notify 'refresh semantic tokens'
+                        vim.lsp.buf.semantic_tokens_full()
+                    end,
+                })
             end
         end,
     })
 
-    vim.api.nvim_create_autocmd('LspAttach', {
-        group = au,
-        desc = 'LSP notify',
-        callback = function()
-            vim.notify 'LSP attached'
-        end,
-    })
+    -- vim.api.nvim_create_autocmd('LspAttach', {
+    --     group = au,
+    --     desc = 'LSP notify',
+    --     callback = function()
+    --         vim.notify 'LSP attached'
+    --     end,
+    -- })
 end
 
 function M.config()
@@ -418,7 +422,7 @@ function M.config()
     lsp_status.register_progress()
 
     -- client log level
-    vim.lsp.set_log_level 'info'
+    vim.lsp.set_log_level(vim.lsp.log_levels.INFO)
 
     local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
@@ -426,30 +430,14 @@ function M.config()
         preset = 'default',
         highlighters = { require 'nvim-semantic-tokens.table-highlighter' },
     }
+    vim.api.nvim_set_hl(0, 'LspDeprecated', { link = '@text.strike' })
+    -- vim.api.nvim_set_hl(0, 'LspParameter', { link = 'Comment' }) -- TODO: dim unused function parameters
 
     vim.cmd [[packadd pylance.nvim]]
     require 'pylance'
     lspconfig.pylance.setup {
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
-        -- handlers = lsp_status.extensions.pylance.setup(),
-        settings = {
-            python = {
-                analysis = {
-                    autoSearchPaths = true,
-                    useLibraryCodeForTypes = true,
-                    autoImportCompletions = true,
-                    typeCheckingMode = 'basic', -- 'strict' or 'basic'
-                    indexing = true,
-                    diagnosticMode = 'workspace',
-                    completeFunctionParens = false,
-                    reportMissingTypeStubs = true,
-                    reportImportCycles = true,
-                    strictParameterNoneValue = true,
-                    strictListInference = true,
-                },
-            },
-        },
     }
 
     lspconfig.dockerls.setup {
@@ -782,37 +770,24 @@ function M.config()
         root_dir = function(fname)
             return lspconfig.util.find_git_ancestor(fname) or vim.fn.getcwd()
         end,
+        single_file_support = true,
     }
 
-    -- EXTEND LSPCONFIG
-    -- local lspconfigs = require 'lspconfig.configs'
-
-    -- -- https://github.com/Tencent/LuaHelper
-    -- lspconfigs.luahelper = {
-    --     default_config = {
-    --         cmd = { 'lualsp', '-mode', '1' },
-    --         filetypes = { 'lua' },
-    --         root_dir = function(fname)
-    --             return lspconfig.util.find_git_ancestor(fname)
-    --                 or vim.fn.getcwd()
-    --         end,
-    --         single_file_support = true,
-    --         settings = {},
-    --     },
-    -- }
-
-    -- lspconfig.luahelper.setup {}
-
     -- reload if buffer has file, to attach LSP
-    -- if
-    --     vim.api.nvim_buf_get_name(0) ~= ''
-    --     and vim.api.nvim_buf_is_loaded(0)
-    --     and vim.bo.filetype ~= nil
-    --     and vim.bo.modifiable
-    --     and not vim.bo.modified
-    -- then
-    --     vim.cmd 'bufdo e'
-    -- end
+    if
+        vim.api.nvim_buf_get_name(0) ~= ''
+        and vim.api.nvim_buf_is_loaded(0)
+        and vim.bo.filetype ~= nil
+        and vim.bo.modifiable
+        and not vim.bo.modified
+    then
+        vim.cmd 'bufdo e'
+
+        -- HACK: reload for semantic tokens
+        vim.defer_fn(function()
+            vim.cmd 'bufdo e'
+        end, 1000)
+    end
 end
 
 return M

@@ -15,7 +15,7 @@ function M.config()
         minimum_width = 10,
     }
 
-    -- vim.notify = notify
+    vim.notify = notify
 
     vim.api.nvim_set_hl(0, 'NotifyINFOBorder', { fg = '#80ff95' })
     vim.api.nvim_set_hl(0, 'NotifyINFOBody', { link = 'NotifyINFOBorder' })
