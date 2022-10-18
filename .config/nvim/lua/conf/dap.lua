@@ -3,18 +3,18 @@ local M = {}
 function M.setup()
     local function dap_continue()
         vim.cmd [[packadd nvim-dap-virtual-text]]
-        require('nvim-dap-virtual-text').setup()
+        require('nvim-dap-virtual-text').setup {}
         require('dap').continue()
         -- require('dapui').open()
-        vim.cmd 'highlight! EndOfBuffer guibg=bg guifg=bg'
+        -- vim.cmd 'highlight! EndOfBuffer guibg=bg guifg=bg'
         vim.opt.signcolumn = 'yes:2'
     end
     local function dap_close()
         require('dap.breakpoints').clear()
         require('dap').disconnect()
         require('dap').close()
-        require('dapui').close()
-        vim.api.nvim_set_hl(0, 'EndOfBuffer', {})
+        require('dapui').close {}
+        -- vim.api.nvim_set_hl(0, 'EndOfBuffer', {})
         vim.opt.signcolumn = 'yes:1'
     end
     -- NOTICE: disabled in favor of neotest
@@ -57,17 +57,32 @@ function M.setup()
     -- end
 
     -- Key bindings
-    vim.keymap.set('n', '<Space>dc', dap_continue)
-    vim.keymap.set('n', '<Space>dq', dap_close)
-    vim.keymap.set('n', '<Space>du', require('dapui').toggle)
-    vim.keymap.set('n', '<Space>do', require('dap').step_over)
-    vim.keymap.set('n', '<Space>d>', require('dap').step_into)
-    vim.keymap.set('n', '<Space>d<', require('dap').step_out)
-    vim.keymap.set('n', '<Space>db', require('dap').toggle_breakpoint)
-    vim.keymap.set('n', '<Space>dr', require('dap').repl.open)
-    -- vim.keymap.set('n', '<Space>t', dap_test)
+    vim.keymap.set('n', '<leader>dc', dap_continue)
+    vim.keymap.set('n', '<leader>dq', dap_close)
+    vim.keymap.set('n', '<leader>du', function()
+        require('dapui').toggle {}
+    end)
+    vim.keymap.set('n', '<leader>do', function()
+        require('dap').step_over()
+    end)
+    vim.keymap.set('n', '<leader>d>', function()
+        require('dap').step_into()
+    end)
+    vim.keymap.set('n', '<leader>d<', function()
+        require('dap').step_out()
+    end)
+    vim.keymap.set('n', '<leader>db', function()
+        require('dap').toggle_breakpoint()
+    end)
+    vim.keymap.set('n', '<leader>dl', function()
+        require('dap').list_breakpoints()
+    end)
+    vim.keymap.set('n', '<leader>dr', function()
+        require('dap').repl.open()
+    end)
+    -- vim.keymap.set('n', '<leader>t', dap_test)
     -- FIXME: <ESC> first
-    -- vim.keymap.set('v', '<Space>ds', require('dap-python').debug_selection)
+    -- vim.keymap.set('v', '<leader>ds', require('dap-python').debug_selection)
 end
 
 function M.config()
@@ -132,7 +147,7 @@ function M.config()
             'dapui_stacks',
             'dapui_watches',
         },
-        callback = function(opts)
+        callback = function()
             vim.opt_local.signcolumn = 'no'
             -- local bufnr = opts.buf
             -- vim.api.nvim_set_hl(0, 'EndOfBuffer', { fg = 'bg', bg = 'bg' })
