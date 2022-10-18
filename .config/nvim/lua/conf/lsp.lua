@@ -40,46 +40,6 @@ function M.setup()
         }
     end
 
-    function lsp.filter_diagnostics(diagnostic)
-        if diagnostic.source == nil then
-            return true
-        end
-
-        if diagnostic.source:find('Py', 1, true) then -- Pyright & Pylance
-            -- Allow kwargs to be unused
-            if diagnostic.message == '"kwargs" is not accessed' then
-                return false
-            end
-
-            -- prefix unused variables with an underscore to ignore
-            if string.match(diagnostic.message, '"_.+" is not accessed') then
-                return false
-            end
-
-            return true
-        end
-
-        if diagnostic.source == 'Lua Diagnostics.' then -- sumneko_lua
-            -- prefix unused variables with an underscore to ignore
-            if string.match(diagnostic.message, 'Unused local `_.+`.') then
-                return false
-            end
-
-            return true
-        end
-
-        return true
-    end
-
-    vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(
-        function(_, params, ctx, config)
-            params.diagnostics =
-                vim.tbl_filter(lsp.filter_diagnostics, params.diagnostics)
-            vim.lsp.diagnostic.on_publish_diagnostics(_, params, ctx, config)
-        end,
-        {}
-    )
-
     vim.api.nvim_create_user_command('Format', function()
         vim.lsp.buf.format { async = true }
     end, {})
@@ -404,7 +364,7 @@ function M.setup()
                 vim.api.nvim_create_autocmd('CursorHoldI', {
                     buffer = bufnr,
                     callback = function()
-                        vim.defer_fn(vim.lsp.buf.signature_help, 1000)
+                        vim.defer_fn(vim.lsp.buf.signature_help, 200)
                     end,
                 })
             end
@@ -462,11 +422,10 @@ function M.config()
 
     local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-    if pcall(require, 'vim.lsp.nvim-semantic-tokens') then
-        require('nvim-semantic-tokens').setup {
-            preset = 'default',
-        }
-    end
+    require('nvim-semantic-tokens').setup {
+        preset = 'default',
+        highlighters = { require 'nvim-semantic-tokens.table-highlighter' },
+    }
 
     vim.cmd [[packadd pylance.nvim]]
     require 'pylance'
@@ -712,6 +671,8 @@ function M.config()
     }
 
     lspconfig.sumneko_lua.setup {
+        capabilities = capabilities,
+        flags = { debounce_text_changes = 150 },
         settings = {
             Lua = {
                 completion = {
@@ -719,6 +680,27 @@ function M.config()
                 },
                 telemetry = { enable = false },
             },
+        },
+        handlers = {
+            ['textDocument/publishDiagnostics'] = function(err, result, ctx, config)
+                result.diagnostics = vim.tbl_filter(function(diagnostic)
+                    -- prefix unused variables with an underscore to ignore
+                    if
+                        string.match(diagnostic.message, 'Unused local `_.+`.')
+                    then
+                        return false
+                    end
+
+                    return true
+                end, result.diagnostics)
+
+                vim.lsp.handlers['textDocument/publishDiagnostics'](
+                    err,
+                    result,
+                    ctx,
+                    config
+                )
+            end,
         },
     }
 
