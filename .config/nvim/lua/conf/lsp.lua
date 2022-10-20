@@ -378,17 +378,21 @@ function M.setup()
             local bufnr = args.buf
             local client = vim.lsp.get_client_by_id(args.data.client_id)
             if client.supports_method 'textDocument/semanticTokens/full' then
-                vim.notify 'register semantic tokens'
+                vim.notify('register semantic tokens', vim.lsp.log_levels.INFO)
                 local augroup =
                     vim.api.nvim_create_augroup('lsp_semantic_tokens', {})
                 vim.api.nvim_create_autocmd({ 'BufEnter', 'TextChanged' }, {
                     group = augroup,
                     buffer = bufnr,
                     callback = function()
-                        vim.notify 'refresh semantic tokens'
+                        vim.notify(
+                            'refresh semantic tokens',
+                            vim.lsp.log_levels.DEBUG
+                        )
                         vim.lsp.buf.semantic_tokens_full()
                     end,
                 })
+                vim.lsp.buf.semantic_tokens_full()
             end
         end,
     })
@@ -431,6 +435,7 @@ function M.config()
         highlighters = { require 'nvim-semantic-tokens.table-highlighter' },
     }
     vim.api.nvim_set_hl(0, 'LspDeprecated', { link = '@text.strike' })
+    vim.api.nvim_set_hl(0, 'LspEnumMember', { link = '@constant' })
     -- vim.api.nvim_set_hl(0, 'LspParameter', { link = 'Comment' }) -- TODO: dim unused function parameters
 
     vim.cmd [[packadd pylance.nvim]]
@@ -782,11 +787,6 @@ function M.config()
         and not vim.bo.modified
     then
         vim.cmd 'bufdo e'
-
-        -- HACK: reload for semantic tokens
-        vim.defer_fn(function()
-            vim.cmd 'bufdo e'
-        end, 1000)
     end
 end
 
