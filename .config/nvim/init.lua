@@ -13,7 +13,13 @@ packer.startup(function()
     use 'nvim-lua/plenary.nvim'
     use { 'kyazdani42/nvim-web-devicons', module = 'nvim-web-devicons' }
     use { 'tpope/vim-repeat' }
-    use { 'tpope/vim-abolish' } -- substitute & change case
+    use {
+        'johmsalas/text-case.nvim',
+        module = 'textcase',
+        setup = function()
+            require('conf.textcase').setup()
+        end,
+    }
     use {
         'disrupted/one.nvim', -- personal tweaked colorscheme
         config = function()
