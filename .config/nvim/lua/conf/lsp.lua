@@ -371,6 +371,8 @@ function M.setup()
         end,
     })
 
+    local au_lsp_semantic_tokens =
+        vim.api.nvim_create_augroup('lsp_semantic_tokens', {})
     vim.api.nvim_create_autocmd('LspAttach', {
         group = au,
         desc = 'LSP semantic tokens',
@@ -379,10 +381,8 @@ function M.setup()
             local client = vim.lsp.get_client_by_id(args.data.client_id)
             if client.supports_method 'textDocument/semanticTokens/full' then
                 vim.notify('register semantic tokens', vim.lsp.log_levels.INFO)
-                local augroup =
-                    vim.api.nvim_create_augroup('lsp_semantic_tokens', {})
                 vim.api.nvim_create_autocmd({ 'BufEnter', 'TextChanged' }, {
-                    group = augroup,
+                    group = au_lsp_semantic_tokens,
                     buffer = bufnr,
                     callback = function()
                         vim.notify(
@@ -393,6 +393,24 @@ function M.setup()
                     end,
                 })
                 vim.lsp.buf.semantic_tokens_full()
+            end
+        end,
+    })
+
+    vim.api.nvim_create_autocmd('LspAttach', {
+        group = au,
+        desc = 'LSP inlay hints',
+        callback = function(args)
+            local bufnr = args.buf
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            if client.supports_method 'textDocument/inlayHint' then
+                vim.notify('register inlay hints', vim.lsp.log_levels.INFO)
+                local lsp_inlayhints = require 'lsp-inlayhints'
+                lsp_inlayhints.setup {
+                    enabled_at_startup = true,
+                    debug_mode = true,
+                }
+                lsp_inlayhints.on_attach(client, bufnr, false)
             end
         end,
     })

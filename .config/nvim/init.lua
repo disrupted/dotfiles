@@ -56,8 +56,7 @@ packer.startup(function()
     }
     use {
         'nvim-treesitter/nvim-treesitter',
-        event = { 'VimEnter' },
-        -- event = { 'BufRead', 'BufNewFile' }, -- FIXME
+        event = { 'BufRead', 'BufNewFile' },
         requires = {
             {
                 'nvim-treesitter/nvim-treesitter-refactor',
@@ -163,9 +162,7 @@ packer.startup(function()
     }
     use {
         'kyazdani42/nvim-tree.lua',
-        opt = true,
         module = 'nvim-tree',
-        cmd = 'NvimTreeToggle',
         setup = function()
             require('conf.nvim_tree').setup()
         end,
@@ -265,6 +262,7 @@ packer.startup(function()
         config = function()
             require('conf.neoterm').config()
         end,
+        disable = true,
     }
     use { 'hkupty/iron.nvim', opt = true } -- REPL
     use {
@@ -463,15 +461,22 @@ packer.startup(function()
         config = function()
             require('conf.notify').config()
         end,
-        event = 'VimEnter',
     }
-    use { 'theHamsta/nvim-semantic-tokens' }
+    use {
+        'jamestthompson3/nvim-remote-containers',
+        cmd = { 'AttachToContainer', 'BuildImage', 'StartImage' },
+    }
+    use { 'theHamsta/nvim-semantic-tokens', module = 'nvim-semantic-tokens' }
+    use {
+        'lvimuser/lsp-inlayhints.nvim',
+        module = 'lsp-inlayhints',
+    }
     use {
         'akinsho/git-conflict.nvim',
+        event = 'BufRead', -- TODO: lazy-loading on demand
         config = function()
             require('git-conflict').setup()
         end,
-        cmd = 'Conflict',
     }
     use {
         'nvim-neotest/neotest',
@@ -530,7 +535,7 @@ opt.sessionoptions = {
 opt.complete:prepend { 'kspell' }
 -- opt.spell = true
 -- vim.opt.spelllang = { 'en_us' }
-opt.completeopt = { 'menuone', 'noselect' } -- Completion options
+opt.completeopt = { 'menu', 'menuone', 'noselect' } -- Completion options
 opt.clipboard = 'unnamedplus'
 opt.inccommand = 'nosplit'
 
@@ -620,8 +625,8 @@ opt.joinspaces = false -- No double spaces with join after a dot
 -----------------------------------------------------------------------------//
 -- Display {{{1
 -----------------------------------------------------------------------------//
-opt.number = true -- Print line number
-opt.relativenumber = true -- Relative line numbers
+opt.number = true -- line numbers
+opt.relativenumber = false -- relative line numbers
 opt.numberwidth = 2
 opt.signcolumn = 'yes:1' -- 'auto:1-2'
 opt.cursorline = true

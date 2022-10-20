@@ -1,7 +1,9 @@
 local M = {}
 
 function M.setup()
-    vim.keymap.set('n', '<C-e>', require('nvim-tree').toggle)
+    vim.keymap.set('n', '<C-e>', function()
+        require('nvim-tree').toggle()
+    end)
 end
 
 function M.config()
@@ -115,7 +117,8 @@ function M.config()
             },
         },
         filters = {
-            custom = { '.git', 'node_modules', '.cache' },
+            dotfiles = false,
+            -- custom = { '.git', 'node_modules', '.cache' },
         },
         actions = {
             open_file = {
