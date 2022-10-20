@@ -126,7 +126,10 @@ function M.setup()
         vim.schedule(function()
             local line = vim.api.nvim_win_get_cursor(0)[1] - 1
             local bufnr = vim.api.nvim_get_current_buf()
-            local diagnostics = vim.diagnostic.get(bufnr, { lnum = line })
+            local diagnostics = vim.diagnostic.get(bufnr, {
+                lnum = line,
+                severity = { min = vim.diagnostic.severity.INFO },
+            })
             vim.diagnostic.show(
                 diagnostic_ns,
                 bufnr,
