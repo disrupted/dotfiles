@@ -1,6 +1,5 @@
 local lazy_require = require('feline.utils').lazy_require
 local vi_mode = lazy_require 'feline.providers.vi_mode'
-local lspstatus = lazy_require 'lsp-status'
 local api, fn = vim.api, vim.fn
 
 local colors = {
@@ -300,18 +299,7 @@ local function lsp_check_diagnostics()
     if not vim.tbl_isempty(diagnostics) then
         return ''
     end
-    local status = lspstatus.status()
-    if status == ' ' then
-        return ' '
-    end
-    if status then
-        if api.nvim_win_get_width(0) >= 80 then
-            return status -- full lsp loading status
-        else
-            return status:sub(1, 4) -- only show lsp loading spinner
-        end
-    end
-    return ''
+    return ' '
 end
 
 table.insert(components.active[1], {

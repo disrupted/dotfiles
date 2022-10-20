@@ -90,9 +90,6 @@ packer.startup(function()
         config = function()
             require('conf.lsp').config()
         end,
-        requires = {
-            { 'nvim-lua/lsp-status.nvim', opt = true },
-        },
     }
     use {
         'jose-elias-alvarez/null-ls.nvim',

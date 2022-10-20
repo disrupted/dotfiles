@@ -152,9 +152,6 @@ function M.setup()
         group = au,
         desc = 'LSP options',
         callback = function(args)
-            local client = vim.lsp.get_client_by_id(args.data.client_id)
-            require('lsp-status').on_attach(client)
-
             local bufnr = args.buf
             vim.api.nvim_buf_set_option(
                 bufnr,
@@ -429,22 +426,8 @@ end
 
 function M.config()
     vim.cmd [[packadd nvim-lspconfig]]
-    vim.cmd [[packadd lsp-status.nvim]]
     require('neodev').setup {}
     local lspconfig = require 'lspconfig'
-    local lsp_status = require 'lsp-status'
-    lsp_status.config {
-        status_symbol = '',
-        indicator_ok = '',
-        diagnostics = false,
-        current_function = false,
-        -- update_interval = 100,
-        -- show_filename = false,
-        status_format = function(_, contents)
-            return contents
-        end,
-    }
-    lsp_status.register_progress()
 
     -- client log level
     vim.lsp.set_log_level(vim.lsp.log_levels.INFO)
