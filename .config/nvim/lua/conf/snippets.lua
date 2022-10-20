@@ -31,19 +31,14 @@ ls.config.set_config {
 -----------------------------------------------------------------------------//
 -- Mappings {{{1
 -----------------------------------------------------------------------------//
-local expr = { expr = true, remap = true, silent = false }
-vim.keymap.set(
-    'i',
-    '<C-e>',
-    '(luasnip#choice_active() ? \'<Plug>luasnip-next-choice\' : \'<C-e>\')',
-    expr
-)
-vim.keymap.set(
-    's',
-    '<C-e>',
-    '(luasnip#choice_active() ? \'<Plug>luasnip-next-choice\' : \'<C-e>\')',
-    expr
-)
+local function next_choice()
+    if ls.choice_active() then
+        ls.change_choice(1)
+    end
+end
+local opts = { silent = true }
+vim.keymap.set('i', '<C-e>', next_choice, opts)
+vim.keymap.set('s', '<C-e>', next_choice, opts)
 
 -----------------------------------------------------------------------------//
 -- External Snippets {{{1
