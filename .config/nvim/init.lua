@@ -148,7 +148,6 @@ packer.startup(function()
             { 'mfussenegger/nvim-dap-python', opt = true },
             { 'theHamsta/nvim-dap-virtual-text', opt = true },
             { 'rcarriga/nvim-dap-ui', opt = true },
-            { 'David-Kunz/jester', opt = true },
         },
         setup = function()
             require('conf.dap').setup()

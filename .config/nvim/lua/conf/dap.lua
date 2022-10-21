@@ -17,44 +17,6 @@ function M.setup()
         -- vim.api.nvim_set_hl(0, 'EndOfBuffer', {})
         vim.opt.signcolumn = 'yes:1'
     end
-    -- NOTICE: disabled in favor of neotest
-    -- local function dap_test()
-    --     local ft = vim.bo.filetype
-    --     if ft == 'python' then
-    --         require('dap-python').test_method()
-    --     elseif ft == 'typescriptreact' then
-    --         vim.cmd [[packadd jester]]
-    --         require('jester').run {
-    --             cmd = 'npx jest -t \'$result\' -- $file',
-    --             identifiers = { 'test', 'it' },
-    --             prepend = { 'describe' },
-    --             expressions = { 'call_expression' },
-    --             path_to_jest = './node_modules/.bin/jest',
-    --             terminal_cmd = ':vsplit | terminal',
-    --             dap = {
-    --                 type = 'node2',
-    --                 request = 'launch',
-    --                 cwd = vim.fn.getcwd(),
-    --                 runtimeArgs = {
-    --                     '--inspect-brk',
-    --                     'node_modules/.bin/jest',
-    --                     '--no-coverage',
-    --                     '-t',
-    --                     '$result',
-    --                     '--',
-    --                     '$file',
-    --                 },
-    --                 sourceMaps = true,
-    --                 protocol = 'inspector',
-    --                 skipFiles = { '<node_internals>/**/*.js' },
-    --                 console = 'integratedTerminal',
-    --                 port = 9229,
-    --             },
-    --         }
-    --     else
-    --         vim.notify('No test runner for filetype', ft)
-    --     end
-    -- end
 
     -- Key bindings
     vim.keymap.set('n', '<leader>dc', dap_continue)
