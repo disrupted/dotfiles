@@ -415,6 +415,26 @@ function M.setup()
         end,
     })
 
+    vim.api.nvim_create_autocmd('LspAttach', {
+        group = au,
+        desc = 'LSP dim unused',
+        callback = function()
+            require('neodim').setup {
+                alpha = 0.70,
+                blend_color = '#000000',
+                update_in_insert = {
+                    enable = false,
+                    delay = 100,
+                },
+                hide = {
+                    virtual_text = false,
+                    signs = false,
+                    underline = true,
+                },
+            }
+        end,
+    })
+
     -- vim.api.nvim_create_autocmd('LspAttach', {
     --     group = au,
     --     desc = 'LSP notify',

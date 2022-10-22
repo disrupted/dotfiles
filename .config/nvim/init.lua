@@ -468,6 +468,12 @@ packer.startup(function()
         module = 'lsp-inlayhints',
     }
     use {
+        -- 'zbirenbaum/neodim',
+        'Avimitin/neodim', -- TODO: switch back to original after fix is merged
+        branch = 'treesitter-fix',
+        module = 'neodim',
+    }
+    use {
         'akinsho/git-conflict.nvim',
         event = 'BufRead', -- TODO: lazy-loading on demand
         config = function()
