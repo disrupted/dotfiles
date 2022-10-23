@@ -551,49 +551,33 @@ end
 -- nonumber for commits
 -- cmd [[autocmd BufReadPost * if &ft =~ "commit" | setlocal nonumber norelativenumber | endif]]
 
--- HACK workaround
-vim.cmd [[
-augroup restore_cursor
-  autocmd!
-  autocmd BufRead * autocmd FileType <buffer> ++once if &ft !~# 'commit\|rebase' && line("'\"") > 1 && line("'\"") <= line("$") | exe 'normal! g`"' | endif
-augroup END
-]]
-
 -- Restore cursor on opening buffer
 -- Automatically opens fold (if needed) and centers the view
--- from https://github.com/fmadriessen/.dotfiles/blob/07d679e31e1cb9bc02545135411ffb127f506c59/xdg_config/nvim/lua/config/autocmds.lua
--- FIXME: trigger after FileType detection
--- vim.api.nvim_create_autocmd('BufReadPost', {
---     desc = 'Restore cursor to last known position',
---     group = vim.api.nvim_create_augroup('restore_cursor', { clear = true }),
---     callback = function()
---         print 'start restore'
---         local ignore_filetype = { 'gitcommit', 'gitrebase' }
---         local ignore_buftype = { 'quickfix', 'nofile', 'help' }
---
---         print(vim.bo.filetype) -- FIXME: shouldn't be nil
---         for _, ft in pairs(ignore_filetype) do -- TODO: use vim.tbl_filter instead
---             if vim.bo.filetype == ft then
---                 return
---             end
---         end
---
---         for _, bt in pairs(ignore_buftype) do
---             if vim.bo.buftype == bt then
---                 return
---             end
---         end
---
---         local row, col = unpack(vim.api.nvim_buf_get_mark(0, '"'))
---         if row > 0 and row <= vim.api.nvim_buf_line_count(0) then
---             vim.api.nvim_win_set_cursor(0, { row, col })
---
---             if vim.api.nvim_eval 'foldclosed(\'.\')' ~= -1 then
---                 vim.api.nvim_input 'zv'
---             end
---         end
---     end,
--- })
+-- original from https://github.com/fmadriessen/.dotfiles/blob/07d679e31e1cb9bc02545135411ffb127f506c59/xdg_config/nvim/lua/config/autocmds.lua
+local ignore_filetype = { 'gitcommit', 'gitrebase' }
+local ignore_buftype = { 'quickfix', 'nofile', 'help' }
+vim.api.nvim_create_autocmd('BufReadPost', {
+    desc = 'Restore cursor to last known position',
+    group = vim.api.nvim_create_augroup('restore_cursor', { clear = true }),
+    callback = function()
+        if vim.tbl_contains(ignore_filetype, vim.bo.filetype) then
+            return
+        end
+
+        if vim.tbl_contains(ignore_buftype, vim.bo.buftype) then
+            return
+        end
+
+        local row, col = unpack(vim.api.nvim_buf_get_mark(0, '"'))
+        if row > 0 and row <= vim.api.nvim_buf_line_count(0) then
+            vim.api.nvim_win_set_cursor(0, { row, col })
+
+            if vim.api.nvim_eval 'foldclosed(\'.\')' ~= -1 then
+                vim.api.nvim_input 'zv'
+            end
+        end
+    end,
+})
 
 -- highlight yanked text briefly
 vim.api.nvim_create_autocmd('TextYankPost', {
