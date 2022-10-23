@@ -1,16 +1,16 @@
 local M = {}
 
 function M.setup()
-    vim.keymap.set('n', '<space>xx', function()
+    vim.keymap.set('n', '<leader>xx', function()
         require('trouble').toggle()
     end)
-    vim.keymap.set('n', '<space>xw', function()
+    vim.keymap.set('n', '<leader>xw', function()
         require('trouble').toggle { mode = 'workspace_diagnostics' }
     end)
-    vim.keymap.set('n', '<space>xb', function()
+    vim.keymap.set('n', '<leader>xb', function()
         require('trouble').toggle { mode = 'document_diagnostics' }
     end)
-    vim.keymap.set('n', '<space>xq', function()
+    vim.keymap.set('n', '<leader>xq', function()
         require('trouble').toggle { mode = 'quickfix' }
     end)
 end
