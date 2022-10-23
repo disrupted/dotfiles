@@ -30,7 +30,7 @@ function M.setup()
     end)
     vim.keymap.set('n', '<C-f>', function()
         -- Launch file search using Telescope
-        if vim.fn.isdirectory '.git' ~= 0 then
+        if vim.loop.fs_stat '.git' then
             -- if in a git project, use :Telescope git_files
             require('telescope.builtin').git_files()
         else
