@@ -482,7 +482,6 @@ packer.startup(function()
     }
     use {
         'nvim-neotest/neotest',
-        opt = true,
         module = 'neotest',
         requires = {
             { 'nvim-neotest/neotest-python', module = 'neotest-python' },

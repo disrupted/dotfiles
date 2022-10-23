@@ -61,7 +61,7 @@ function M.config()
     })
 
     -- Python
-    vim.cmd [[packadd nvim-dap-python]]
+    vim.cmd.packadd 'nvim-dap-python'
     local py = require 'dap-python'
     py.setup('~/.local/share/virtualenvs/debugpy/bin/python', {
         include_configs = true,
@@ -117,7 +117,7 @@ function M.config()
         end,
     })
 
-    vim.cmd [[packadd nvim-dap-ui]]
+    vim.cmd.packadd 'nvim-dap-ui'
     require('dapui').setup {
         icons = { expanded = '', collapsed = '' },
         layouts = {

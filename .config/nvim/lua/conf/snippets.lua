@@ -54,7 +54,7 @@ require('luasnip.loaders.from_lua').lazy_load { paths = './snippets' }
 
 -- require('luasnip.loaders.from_vscode').lazy_load { paths = './snippets' } -- custom snippets
 
--- vim.cmd [[packadd friendly-snippets]]
+-- vim.cmd.packadd 'friendly-snippets'
 -- require('luasnip.loaders.from_vscode').lazy_load() -- friendly snippets
 
 -----------------------------------------------------------------------------//

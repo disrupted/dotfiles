@@ -41,7 +41,7 @@ function M.setup()
     end
 
     vim.api.nvim_create_user_command('Format', function()
-        vim.lsp.buf.format { async = true }
+        vim.lsp.buf.format { async = false }
     end, {})
 
     -- Handle formatting in a smarter way
@@ -179,8 +179,7 @@ function M.setup()
             map('n', 'gd', vim.lsp.buf.definition)
             map('n', 'K', vim.lsp.buf.hover)
             map('n', 'gi', vim.lsp.buf.implementation)
-            map('n', '<C-s>', vim.lsp.buf.signature_help)
-            map('i', '<C-s>', vim.lsp.buf.signature_help)
+            map({ 'n', 'i' }, '<C-s>', vim.lsp.buf.signature_help)
             map('n', '<leader>wa', vim.lsp.buf.add_workspace_folder)
             map('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder)
             map('n', '<leader>wl', function()
@@ -238,7 +237,7 @@ function M.setup()
         callback = function(args)
             local bufnr = args.buf
             local client = vim.lsp.get_client_by_id(args.data.client_id)
-            if client.server_capabilities.documentHighlightProvider then
+            if client.supports_method 'textDocument/documentHighlight' then
                 local augroup_lsp_highlight = 'lsp_highlight'
                 vim.api.nvim_create_augroup(
                     augroup_lsp_highlight,
@@ -293,11 +292,6 @@ function M.setup()
                     end,
                 })
             end
-
-            -- FIXME
-            -- if client.server_capabilities.documentRangeFormattingProvider then
-            --     map('n', '<leader>f', vim.lsp.buf.range_formatting)
-            -- end
         end,
     })
 
@@ -307,13 +301,11 @@ function M.setup()
         callback = function(args)
             local bufnr = args.buf
             local client = vim.lsp.get_client_by_id(args.data.client_id)
-            if client.server_capabilities.codeActionProvider then
+            if client.supports_method 'textDocument/codeAction' then
                 vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
                     buffer = bufnr,
                     callback = function()
-                        if vim.bo.filetype ~= 'java' then
-                            lsp.show_lightbulb()
-                        end
+                        lsp.show_lightbulb()
                     end,
                 })
                 vim.keymap.set(
@@ -360,7 +352,7 @@ function M.setup()
         callback = function(args)
             local bufnr = args.buf
             local client = vim.lsp.get_client_by_id(args.data.client_id)
-            if client.server_capabilities.signatureHelpProvider then
+            if client.supports_method 'textDocument/signatureHelp' then
                 vim.api.nvim_create_autocmd('CursorHoldI', {
                     buffer = bufnr,
                     callback = function()
@@ -406,9 +398,10 @@ function M.setup()
             if client.supports_method 'textDocument/inlayHint' then
                 vim.notify('register inlay hints', vim.lsp.log_levels.INFO)
                 local lsp_inlayhints = require 'lsp-inlayhints'
+                -- TODO: configure inline virtualtext when https://github.com/neovim/neovim/pull/20130 is merged
                 lsp_inlayhints.setup {
                     enabled_at_startup = true,
-                    debug_mode = true,
+                    debug_mode = false,
                 }
                 lsp_inlayhints.on_attach(client, bufnr, false)
             end
@@ -445,7 +438,7 @@ function M.setup()
 end
 
 function M.config()
-    vim.cmd [[packadd nvim-lspconfig]]
+    vim.cmd.packadd 'nvim-lspconfig'
     require('neodev').setup {}
     local lspconfig = require 'lspconfig'
 
@@ -462,7 +455,7 @@ function M.config()
     vim.api.nvim_set_hl(0, 'LspEnumMember', { link = '@constant' })
     -- vim.api.nvim_set_hl(0, 'LspParameter', { link = 'Comment' }) -- TODO: dim unused function parameters
 
-    vim.cmd [[packadd pylance.nvim]]
+    vim.cmd.packadd 'pylance.nvim'
     require 'pylance'
     lspconfig.pylance.setup {
         capabilities = capabilities,
@@ -609,7 +602,7 @@ function M.config()
     require('null-ls').setup {
         sources = sources,
         debug = false,
-        -- Fallback to .bashrc as a project root to enable LSP on loose files
+        -- Fallback to .zshrc as a project root to enable LSP on loose files
         root_dir = function(fname)
             return lspconfig.util.root_pattern(
                 'tsconfig.json',
@@ -629,7 +622,7 @@ function M.config()
 
     -- RUST
     _G.init_rust_analyzer = function()
-        vim.cmd [[packadd rust-tools.nvim]]
+        vim.cmd.packadd 'rust-tools.nvim'
         require('rust-tools').setup {
             server = {
                 capabilities = capabilities,
@@ -662,7 +655,7 @@ function M.config()
                 },
             },
             tools = {
-                autoSetHints = true,
+                autoSetHints = false,
                 runnables = { use_telescope = true },
                 inlay_hints = {
                     show_parameter_hints = true,
@@ -810,7 +803,7 @@ function M.config()
         and vim.bo.modifiable
         and not vim.bo.modified
     then
-        vim.cmd 'bufdo e'
+        vim.cmd 'noautocmd :edit'
     end
 end
 
