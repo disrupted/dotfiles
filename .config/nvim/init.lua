@@ -551,20 +551,49 @@ end
 -- nonumber for commits
 -- cmd [[autocmd BufReadPost * if &ft =~ "commit" | setlocal nonumber norelativenumber | endif]]
 
--- restore cursor position
-vim.api.nvim_create_autocmd('BufReadPost', {
-    callback = function()
-        local previous_pos = vim.api.nvim_buf_get_mark(0, '"')[1]
-        local last_line = vim.api.nvim_buf_line_count(0)
-        if
-            previous_pos >= 1
-            and previous_pos <= last_line
-            and vim.bo.filetype ~= 'commit'
-        then
-            vim.cmd 'normal! g`"'
-        end
-    end,
-})
+-- HACK workaround
+vim.cmd [[
+augroup restore_cursor
+  autocmd!
+  autocmd BufRead * autocmd FileType <buffer> ++once if &ft !~# 'commit\|rebase' && line("'\"") > 1 && line("'\"") <= line("$") | exe 'normal! g`"' | endif
+augroup END
+]]
+
+-- Restore cursor on opening buffer
+-- Automatically opens fold (if needed) and centers the view
+-- from https://github.com/fmadriessen/.dotfiles/blob/07d679e31e1cb9bc02545135411ffb127f506c59/xdg_config/nvim/lua/config/autocmds.lua
+-- FIXME: trigger after FileType detection
+-- vim.api.nvim_create_autocmd('BufReadPost', {
+--     desc = 'Restore cursor to last known position',
+--     group = vim.api.nvim_create_augroup('restore_cursor', { clear = true }),
+--     callback = function()
+--         print 'start restore'
+--         local ignore_filetype = { 'gitcommit', 'gitrebase' }
+--         local ignore_buftype = { 'quickfix', 'nofile', 'help' }
+--
+--         print(vim.bo.filetype) -- FIXME: shouldn't be nil
+--         for _, ft in pairs(ignore_filetype) do -- TODO: use vim.tbl_filter instead
+--             if vim.bo.filetype == ft then
+--                 return
+--             end
+--         end
+--
+--         for _, bt in pairs(ignore_buftype) do
+--             if vim.bo.buftype == bt then
+--                 return
+--             end
+--         end
+--
+--         local row, col = unpack(vim.api.nvim_buf_get_mark(0, '"'))
+--         if row > 0 and row <= vim.api.nvim_buf_line_count(0) then
+--             vim.api.nvim_win_set_cursor(0, { row, col })
+--
+--             if vim.api.nvim_eval 'foldclosed(\'.\')' ~= -1 then
+--                 vim.api.nvim_input 'zv'
+--             end
+--         end
+--     end,
+-- })
 
 -- highlight yanked text briefly
 vim.api.nvim_create_autocmd('TextYankPost', {
@@ -899,15 +928,15 @@ vim.keymap.set('t', '<C-l>', '<C-\\><C-N><C-w>l', remap)
 vim.keymap.set('t', '<C-[><C-[>', '<C-\\><C-N>') -- double ESC to escape terminal
 
 -- more intuitive wildmenu navigation
-vim.keymap.set('c', '<Up>', [[wildmenumode() ? "\<Left>" : "\<Up>"]], expr)
-vim.keymap.set('c', '<Down>', [[wildmenumode() ? "\<Right>" : "\<Down>"]], expr)
-vim.keymap.set('c', '<Left>', [[wildmenumode() ? "\<Up>" : "\<Left>"]], expr)
-vim.keymap.set(
-    'c',
-    '<Right>',
-    [[wildmenumode() ? " \<BS>\<C-Z>" : "\<Right>"]],
-    expr
-)
+-- vim.keymap.set('c', '<Up>', [[wildmenumode() ? "\<Left>" : "\<Up>"]], expr)
+-- vim.keymap.set('c', '<Down>', [[wildmenumode() ? "\<Right>" : "\<Down>"]], expr)
+-- vim.keymap.set('c', '<Left>', [[wildmenumode() ? "\<Up>" : "\<Left>"]], expr)
+-- vim.keymap.set(
+--     'c',
+--     '<Right>',
+--     [[wildmenumode() ? " \<BS>\<C-Z>" : "\<Right>"]],
+--     expr
+-- )
 
 -- command mode
 vim.keymap.set('c', '<C-a>', '<Home>')
