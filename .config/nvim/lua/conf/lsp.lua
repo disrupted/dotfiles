@@ -795,6 +795,11 @@ function M.config()
         single_file_support = true,
     }
 
+    lspconfig.terraformls.setup {
+        capabilities = capabilities,
+        flags = { debounce_text_changes = 150 },
+    }
+
     -- reload if buffer has file, to attach LSP
     if
         vim.api.nvim_buf_get_name(0) ~= ''
