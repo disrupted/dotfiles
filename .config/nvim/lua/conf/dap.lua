@@ -3,10 +3,15 @@ local M = {}
 function M.setup()
     local function dap_continue()
         vim.cmd [[packadd nvim-dap-virtual-text]]
-        require('nvim-dap-virtual-text').setup {}
+        require('nvim-dap-virtual-text').setup {
+            enabled = true,
+            enabled_commands = false,
+            highlight_changed_variables = true,
+            all_references = false,
+            all_frames = false,
+        }
         require('dap').continue()
         -- require('dapui').open()
-        -- vim.cmd 'highlight! EndOfBuffer guibg=bg guifg=bg'
         vim.opt.signcolumn = 'yes:2'
     end
     local function dap_close()
@@ -14,7 +19,6 @@ function M.setup()
         require('dap').disconnect()
         require('dap').close()
         require('dapui').close {}
-        -- vim.api.nvim_set_hl(0, 'EndOfBuffer', {})
         vim.opt.signcolumn = 'yes:1'
     end
 
@@ -33,8 +37,17 @@ function M.setup()
     vim.keymap.set('n', '<leader>d<', function()
         require('dap').step_out()
     end)
+    vim.keymap.set('n', '<leader>dp', function()
+        require('dap').step_back() -- previous
+    end)
     vim.keymap.set('n', '<leader>db', function()
         require('dap').toggle_breakpoint()
+    end)
+    vim.keymap.set('n', '<leader>dB', function()
+        require('dap').set_breakpoint(vim.fn.input 'Breakpoint condition: ')
+    end)
+    vim.keymap.set('n', '<leader>de', function()
+        require('dap').set_exception_breakpoints()
     end)
     vim.keymap.set('n', '<leader>dl', function()
         require('dap').list_breakpoints()
@@ -49,10 +62,19 @@ end
 function M.config()
     local dap = require 'dap'
     dap.defaults.fallback.terminal_win_cmd = '15split new'
+    dap.defaults.fallback.exception_breakpoints = { 'uncaught' } -- { 'raised', 'uncaught' }
 
     vim.fn.sign_define('DapBreakpoint', {
-        text = '●', -- 
+        text = '●',
         texthl = 'DiagnosticError',
+    })
+    vim.fn.sign_define('DapBreakpointCondition', {
+        text = '',
+        texthl = 'DiagnosticError',
+    })
+    vim.fn.sign_define('DapLogPoint', {
+        text = '•',
+        texthl = 'DiagnosticInfo',
     })
     vim.fn.sign_define('DapStopped', {
         text = '■',
@@ -80,7 +102,7 @@ function M.config()
         request = 'launch',
         name = 'FastAPI',
         program = function()
-            return vim.loop.cwd() .. '/main.py'
+            return './main.py'
         end,
         pythonPath = function()
             return 'python'
@@ -93,7 +115,7 @@ function M.config()
         module = 'uvicorn',
         args = {
             'main:app',
-            -- '--reload',
+            -- '--reload', -- doesn't work
             '--use-colors',
         },
         pythonPath = 'python',
@@ -102,6 +124,7 @@ function M.config()
     py.test_runner = 'pytest'
 
     -- DAP UI
+    local ns = vim.api.nvim_create_namespace 'dap'
     vim.api.nvim_create_autocmd('FileType', {
         pattern = {
             'dap-repl',
@@ -112,15 +135,20 @@ function M.config()
         },
         callback = function()
             vim.opt_local.signcolumn = 'no'
-            -- local bufnr = opts.buf
-            -- vim.api.nvim_set_hl(0, 'EndOfBuffer', { fg = 'bg', bg = 'bg' })
-            -- vim.cmd 'redraw!'
+            vim.api.nvim_win_set_hl_ns(0, ns)
+            vim.api.nvim_set_hl(ns, 'EndOfBuffer', { fg = 'bg', bg = 'bg' })
+        end,
+    })
+    vim.api.nvim_create_autocmd('FileType', {
+        pattern = { 'dapui_console' },
+        callback = function()
+            vim.opt_local.laststatus = 0
         end,
     })
 
     vim.cmd.packadd 'nvim-dap-ui'
     require('dapui').setup {
-        icons = { expanded = '', collapsed = '' },
+        icons = { expanded = '', collapsed = '', current_frame = '▸' },
         layouts = {
             {
                 elements = {
@@ -143,7 +171,7 @@ function M.config()
         },
     }
 
-    vim.api.nvim_set_hl(0, 'DapUIScope', { link = 'bold' }) -- FIXME: bold hl group doesn't exist
+    vim.api.nvim_set_hl(0, 'DapUIScope', { bold = true })
     vim.api.nvim_set_hl(0, 'DapUIDecoration', { link = 'CursorLineNr' })
     vim.api.nvim_set_hl(0, 'DapUIThread', { link = 'GitSignsAdd' })
     vim.api.nvim_set_hl(0, 'DapUIStoppedThread', { link = 'Special' })
