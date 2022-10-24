@@ -790,7 +790,7 @@ function M.config()
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
         root_dir = function(fname)
-            return lspconfig.util.find_git_ancestor(fname) or vim.fn.getcwd()
+            return lspconfig.util.find_git_ancestor(fname) or vim.loop.cwd()
         end,
         single_file_support = true,
     }

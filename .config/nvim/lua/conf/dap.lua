@@ -42,7 +42,6 @@ function M.setup()
     vim.keymap.set('n', '<leader>dr', function()
         require('dap').repl.open()
     end)
-    -- vim.keymap.set('n', '<leader>t', dap_test)
     -- FIXME: <ESC> first
     -- vim.keymap.set('v', '<leader>ds', require('dap-python').debug_selection)
 end
@@ -80,7 +79,9 @@ function M.config()
         type = 'python',
         request = 'launch',
         name = 'FastAPI',
-        program = vim.fn.getcwd() .. '/main.py',
+        program = function()
+            return vim.loop.cwd() .. '/main.py'
+        end,
         pythonPath = function()
             return 'python'
         end,
