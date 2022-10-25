@@ -309,23 +309,11 @@ function M.setup()
                     end,
                 })
                 vim.keymap.set(
-                    'n',
+                    { 'n', 'v' },
                     '<leader>a',
                     vim.lsp.buf.code_action,
                     { buffer = bufnr }
                 )
-                -- buf_set_keymap(
-                --     'x',
-                --     '<leader>a',
-                --     [[:'<,'>lua require("telescope.builtin").lsp_range_code_actions({timeout = 10000, start_line = TODO, end_line = TODO})<CR>]],
-                --     opts
-                -- )
-                -- buf_set_keymap(
-                --     'v',
-                --     '<leader>a',
-                --     [[:Telescope lsp_range_code_actions<CR>]],
-                --     opts
-                -- )
             end
         end,
     })
