@@ -495,6 +495,18 @@ packer.startup(function()
         wants = { 'plenary.nvim', 'nvim-treesitter' },
     }
     use {
+        'danymat/neogen',
+        module = 'neogen',
+        cmd = 'Neogen',
+        setup = function()
+            require('conf.neogen').setup()
+        end,
+        config = function()
+            require('conf.neogen').config()
+        end,
+        wants = { 'nvim-treesitter' },
+    }
+    use {
         'jghauser/mkdir.nvim',
         event = 'BufWritePre',
     }
