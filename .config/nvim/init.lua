@@ -601,7 +601,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- resize splits when Vim is resized
-vim.api.nvim_create_autocmd('VimResized', { command = 'wincmd =' })
+vim.api.nvim_create_autocmd('VimResized', { command = 'horizontal wincmd =' })
 
 -- Trim trailing whitespace and trailing blank lines on save
 local function trim_trailing_whitespace()

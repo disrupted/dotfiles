@@ -74,6 +74,8 @@ function M.config()
             },
         },
         view = {
+            adaptive_size = true,
+            preserve_window_proportions = true,
             width = 30,
             side = 'left',
             mappings = {
