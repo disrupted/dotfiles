@@ -485,6 +485,7 @@ packer.startup(function()
         module = 'neotest',
         requires = {
             { 'nvim-neotest/neotest-python', module = 'neotest-python' },
+            { 'rouge8/neotest-rust', module = 'neotest-rust' },
         },
         setup = function()
             require('conf.neotest').setup()

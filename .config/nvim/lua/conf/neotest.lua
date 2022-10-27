@@ -17,8 +17,15 @@ function M.config()
         adapters = {
             require 'neotest-python' {
                 dap = { justMyCode = false },
-                args = { '--log-level', 'DEBUG', '-vv' },
+                runner = 'pytest',
+                args = {
+                    '--log-level',
+                    'DEBUG',
+                    '-vv',
+                    -- '--color=no',
+                },
             },
+            require 'neotest-rust',
         },
     }
 end
