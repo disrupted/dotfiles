@@ -7,6 +7,12 @@ function M.setup()
     vim.keymap.set('n', '<leader>tb', function()
         require('neotest').run.run(vim.fn.expand '%') -- test entire file/buffer
     end)
+    vim.keymap.set('n', '<leader>tl', function()
+        require('neotest').run.run_last() -- re-run the last test
+    end)
+    vim.keymap.set('n', '<leader>to', function()
+        require('neotest').output.open { last_run = true } -- open output of last test run
+    end)
     vim.keymap.set('n', '<leader>td', function()
         require('neotest').run.run { strategy = 'dap' } -- debug nearest function
     end)
