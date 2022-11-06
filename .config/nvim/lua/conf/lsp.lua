@@ -480,8 +480,10 @@ function M.config()
                     '!lambda',
                     '!input',
                 },
+                -- schemaStore = { enable = true },
                 schemas = {
                     ['https://json.schemastore.org/github-workflow.json'] = '/.github/workflows/*',
+                    ['https://json.schemastore.org/chart.json'] = '/templates/*',
                     -- kubernetes = { '*.yaml' },
                     -- ['https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master/v1.18.0-standalone-strict/all.json'] = '/*.k8s.yaml',
                 },
@@ -652,13 +654,12 @@ function M.config()
                 },
             },
         }
-        -- vim.api.nvim_command 'noautocmd :edit'
     end
 
     vim.cmd [[
         augroup rust_analyzer
             autocmd!
-            autocmd FileType rust lua init_rust_analyzer()
+            autocmd FileType rust ++once lua init_rust_analyzer(); vim.cmd.bufdo 'e'
         augroup END
         ]]
 

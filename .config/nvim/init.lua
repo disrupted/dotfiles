@@ -23,6 +23,7 @@ packer.startup(function()
     use {
         'disrupted/one.nvim', -- personal tweaked colorscheme
         config = function()
+            -- vim.o.background = 'light'
             require('one').colorscheme()
         end,
     }
@@ -281,6 +282,14 @@ packer.startup(function()
         end,
     }
     use {
+        'ggandor/leap.nvim',
+        event = 'VimEnter',
+        config = function()
+            require('leap').set_default_keymaps()
+        end,
+        disable = true,
+    }
+    use {
         'lukas-reineke/indent-blankline.nvim',
         -- event = { 'BufWinEnter' },
         after = 'nvim-treesitter',
@@ -344,7 +353,7 @@ packer.startup(function()
     use { 'weilbith/vim-qfloc-edit', ft = 'qf' }
     use {
         'sindrets/diffview.nvim',
-        cmd = { 'DiffviewOpen', 'DiffviewFileHistory' },
+        cmd = { 'DiffviewFileOpen', 'DiffviewFileHistory' },
         config = function()
             require('conf.diffview').config()
         end,
@@ -416,7 +425,6 @@ packer.startup(function()
     -- UI component library
     use {
         'MunifTanjim/nui.nvim',
-        opt = true,
         module = 'nui',
     }
     -- Syntax for Helm chart templates
@@ -465,6 +473,7 @@ packer.startup(function()
     use { 'theHamsta/nvim-semantic-tokens', module = 'nvim-semantic-tokens' }
     use {
         'lvimuser/lsp-inlayhints.nvim',
+        -- branch = 'anticonceal',
         module = 'lsp-inlayhints',
     }
     use {
