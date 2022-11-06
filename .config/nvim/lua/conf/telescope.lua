@@ -74,6 +74,21 @@ function M.config()
     local sorters = require 'telescope.sorters'
     local previewers = require 'telescope.previewers'
     local custom_pickers = require 'conf.telescope_custom_pickers'
+    local action_state = require 'telescope.actions.state'
+
+    local custom_actions = {}
+    function custom_actions.qflist_multi_select(prompt_bufnr)
+        local picker = action_state.get_current_picker(prompt_bufnr)
+        local num_selections = #picker:get_multi_selection()
+
+        if num_selections > 1 then
+            actions.send_selected_to_qflist(prompt_bufnr)
+            actions.open_qflist()
+        else
+            actions.send_to_qflist(prompt_bufnr)
+        end
+    end
+
     local default_options = {
         layout_strategy = 'horizontal',
         layout_config = { preview_width = 0.65 },
@@ -88,6 +103,11 @@ function M.config()
                     ['<C-j>'] = actions.move_selection_next,
                     ['<C-k>'] = actions.move_selection_previous,
                     ['<C-p>'] = require('telescope.actions.layout').toggle_preview,
+                    ['<C-q>'] = custom_actions.qflist_multi_select,
+                    ['<tab>'] = actions.toggle_selection
+                        + actions.move_selection_next,
+                    ['<s-tab>'] = actions.toggle_selection
+                        + actions.move_selection_previous,
                 },
                 n = { ['<ESC>'] = actions.close },
             },
