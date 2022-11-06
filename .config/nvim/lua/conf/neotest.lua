@@ -16,6 +16,9 @@ function M.setup()
     vim.keymap.set('n', '<leader>td', function()
         require('neotest').run.run { strategy = 'dap' } -- debug nearest function
     end)
+    vim.keymap.set('n', '<leader>tq', function()
+        require('neotest').run.stop() -- abort test run
+    end)
 end
 
 function M.config()
