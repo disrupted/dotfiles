@@ -496,6 +496,14 @@ packer.startup(function()
         wants = { 'plenary.nvim', 'nvim-treesitter' },
     }
     use {
+        'andythigpen/nvim-coverage',
+        after = 'neotest',
+        config = function()
+            require('conf.coverage').config()
+        end,
+        wants = 'plenary.nvim',
+    }
+    use {
         'danymat/neogen',
         module = 'neogen',
         cmd = 'Neogen',
