@@ -75,6 +75,10 @@ packer.startup(function()
                 'TornaxO7/tree-setter',
                 after = 'nvim-treesitter',
             },
+            {
+                'yioneko/nvim-yati',
+                after = 'nvim-treesitter',
+            },
         },
         run = ':TSUpdate',
         config = function()

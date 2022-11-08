@@ -50,7 +50,13 @@ function M.config()
             'yaml',
         },
         highlight = { enable = true },
-        indent = { enable = true, disable = { 'python', 'yaml' } },
+        -- indent = { enable = true, disable = { 'python', 'yaml' } },
+        indent = { enable = false },
+        yati = {
+            enable = true,
+            default_lazy = true,
+            default_fallback = 'auto',
+        },
         incremental_selection = {
             enable = true,
             disable = {},
