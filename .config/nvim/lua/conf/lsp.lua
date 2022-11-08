@@ -97,10 +97,10 @@ function M.setup()
         -- TODO: close the floating window directly without having to execute wincmd p twice
     end
 
-    vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
-        vim.lsp.handlers.signature_help,
-        { border = 'single', focusable = false, silent = true }
-    )
+    -- vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
+    --     vim.lsp.handlers.signature_help,
+    --     { border = 'single', focusable = false, silent = true }
+    -- )
 
     vim.lsp.handlers['window/showMessage'] = function(_, result, ctx)
         local client = vim.lsp.get_client_by_id(ctx.client_id)
@@ -334,22 +334,22 @@ function M.setup()
         end,
     })
 
-    vim.api.nvim_create_autocmd('LspAttach', {
-        group = au,
-        desc = 'LSP signature help',
-        callback = function(args)
-            local bufnr = args.buf
-            local client = vim.lsp.get_client_by_id(args.data.client_id)
-            if client.supports_method 'textDocument/signatureHelp' then
-                vim.api.nvim_create_autocmd('CursorHoldI', {
-                    buffer = bufnr,
-                    callback = function()
-                        vim.defer_fn(vim.lsp.buf.signature_help, 200)
-                    end,
-                })
-            end
-        end,
-    })
+    -- vim.api.nvim_create_autocmd('LspAttach', {
+    --     group = au,
+    --     desc = 'LSP signature help',
+    --     callback = function(args)
+    --         local bufnr = args.buf
+    --         local client = vim.lsp.get_client_by_id(args.data.client_id)
+    --         if client.supports_method 'textDocument/signatureHelp' then
+    --             vim.api.nvim_create_autocmd('CursorHoldI', {
+    --                 buffer = bufnr,
+    --                 callback = function()
+    --                     vim.defer_fn(vim.lsp.buf.signature_help, 200)
+    --                 end,
+    --             })
+    --         end
+    --     end,
+    -- })
 
     local au_lsp_semantic_tokens =
         vim.api.nvim_create_augroup('lsp_semantic_tokens', {})
@@ -388,6 +388,46 @@ function M.setup()
                 local lsp_inlayhints = require 'lsp-inlayhints'
                 -- TODO: configure inline virtualtext when https://github.com/neovim/neovim/pull/20130 is merged
                 lsp_inlayhints.setup {
+                    -- inlay_hints = {
+                    --     label_formatter = function(labels, kind, opts, client_name)
+                    --         if kind == 2 and not opts.parameter_hints.show then
+                    --             return ''
+                    --         elseif not opts.type_hints.show then
+                    --             return ''
+                    --         end
+
+                    --         return table.concat(labels or {}, ', ')
+                    --     end,
+                    --     virt_text_formatter = function(label, hint, opts, client_name)
+                    --         if
+                    --             client_name == 'sumneko_lua'
+                    --             or client_name == 'pylance'
+                    --         then
+                    --             if hint.kind == 2 then
+                    --                 hint.paddingLeft = false
+                    --             else
+                    --                 hint.paddingRight = false
+                    --             end
+                    --         end
+
+                    --         if client_name == 'pylance' then
+                    --             hint.paddingLeft = false
+                    --             hint.paddingRight = false
+                    --         end
+
+                    --         local virt_text = {}
+                    --         -- virt_text[#virt_text + 1] = hint.paddingLeft
+                    --         --         and { ' ', 'Normal' }
+                    --         --     or nil
+                    --         virt_text[#virt_text + 1] =
+                    --             { label, opts.highlight }
+                    --         -- virt_text[#virt_text + 1] = hint.paddingRight
+                    --         --         and { ' ', 'Normal' }
+                    --         --     or nil
+
+                    --         return virt_text
+                    --     end,
+                    -- },
                     enabled_at_startup = true,
                     debug_mode = false,
                 }
@@ -648,7 +688,7 @@ function M.config()
                 autoSetHints = false,
                 runnables = { use_telescope = true },
                 inlay_hints = {
-                    show_parameter_hints = true,
+                    show_parameter_hints = false,
                     parameter_hints_prefix = ' ', -- ⟵
                     other_hints_prefix = '⟹  ',
                 },

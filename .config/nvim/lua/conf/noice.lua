@@ -7,9 +7,7 @@ function M.config()
                 cmdline = { pattern = '^:', icon = ':' },
             },
         },
-        lsp_progress = {
-            enabled = true,
-        },
+        lsp = { signature = { enabled = true } },
         routes = {
             {
                 filter = {
@@ -18,6 +16,10 @@ function M.config()
                 },
                 view = 'cmdline',
             },
+        },
+        presets = {
+            long_message_to_split = false, -- long messages will be sent to a split
+            lsp_doc_border = true, -- add a border to hover docs and signature help
         },
     }
     vim.api.nvim_set_hl(0, 'NoiceVirtualText', { link = 'NormalFloat' })
