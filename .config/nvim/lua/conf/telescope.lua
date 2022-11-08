@@ -83,10 +83,10 @@ function M.config()
 
         if num_selections > 1 then
             actions.send_selected_to_qflist(prompt_bufnr)
-            actions.open_qflist()
         else
             actions.send_to_qflist(prompt_bufnr)
         end
+        actions.open_qflist()
     end
 
     local default_options = {
