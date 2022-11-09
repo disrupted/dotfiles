@@ -2,7 +2,7 @@
 [user]
     name = disrupted
     email = hi@salomonpopp.me
-    signingkey = 4814DB82B48EB84B38EA5FA9A299EE8F816BBFA4
+    signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID86PP2HgHDD3TMWiW/Y4CD2YXbYYRd6aFer1EL/TnnS
 
 [github]
     # GitHub username for cli
@@ -55,7 +55,14 @@
     # ff = only
 
 [gpg]
-    program = /opt/homebrew/bin/gpg
+    format = ssh
+
+[commit]
+    gpgsign = true
+
+[gpg "ssh"]
+    program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+    allowedSignersFile = ~/.ssh/allowed_signers
 
 [commit]
     gpgsign = true
