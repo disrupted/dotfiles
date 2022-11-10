@@ -127,10 +127,41 @@ function M.config()
 
     -- autopairs integration: insert () after selecting function or method item
     -- NOTE: disabled in favor of LSPs defining their own behavior
-    -- cmp.event:on(
-    --     'confirm_done',
-    --     lazy_require('nvim-autopairs.completion.cmp').on_confirm_done()
-    -- )
+    --[[ cmp.event:on(
+        'confirm_done',
+        lazy_require('nvim-autopairs.completion.cmp').on_confirm_done {
+            filetypes = {
+                -- "*" is a alias to all filetypes
+                ['*'] = {
+                    ['('] = {
+                        kind = {
+                            cmp.lsp.CompletionItemKind.Function,
+                            cmp.lsp.CompletionItemKind.Method,
+                        },
+                        handler = lazy_require(
+                            'nvim-autopairs.completion.handlers'
+                        )['*'],
+                    },
+                },
+                lua = {
+                    ['('] = {
+                        kind = {
+                            cmp.lsp.CompletionItemKind.Function,
+                            cmp.lsp.CompletionItemKind.Method,
+                        },
+                        ---@param char string
+                        ---@param item item completion
+                        ---@param bufnr buffer number
+                        handler = function(char, item, bufnr)
+                            -- Your handler function. Inpect with print(vim.inspect{char, item, bufnr})
+                        end,
+                    },
+                },
+                -- Disable for tex
+                tex = false,
+            },
+        }
+    ) ]]
 end
 
 return M
