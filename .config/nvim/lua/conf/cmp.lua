@@ -126,10 +126,11 @@ function M.config()
     }
 
     -- autopairs integration: insert () after selecting function or method item
-    cmp.event:on(
-        'confirm_done',
-        lazy_require('nvim-autopairs.completion.cmp').on_confirm_done()
-    )
+    -- NOTE: disabled in favor of LSPs defining their own behavior
+    -- cmp.event:on(
+    --     'confirm_done',
+    --     lazy_require('nvim-autopairs.completion.cmp').on_confirm_done()
+    -- )
 end
 
 return M
