@@ -11,6 +11,8 @@ end
 
 function M.config()
     require('neogit').setup {
+        disable_hint = true,
+        disable_commit_confirmation = true,
         signs = {
             section = { '', '' },
             item = { '', '' },
