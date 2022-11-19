@@ -48,6 +48,7 @@
 [push]
     # Push to the set upstream branch being tracked by default.
     default = current
+    autoSetupRemote = true
 
 [pull]
     # Default to rebasing on pulls
@@ -146,33 +147,9 @@
     autoSquash = true
 
 [url "git@github.com:"]
-    # Always use GitHub SSH protocol to push.
-    # Allows use of git:// for public repositories with push access
-    pushInsteadOf = git://github.com/
-
-[url "https://github.com/"]
-    # Use HTTP for GitHub instead of git:// or git@
-    # Enable this in networks where git:// or git@ are blocked.
-    #insteadOf = git://github.com/
-    #insteadOf = git@github.com:
-    insteadOf = gh:
-
-[url "git@github.com:"]
     # Use SSH for GitHub instead of https://
     # Enable this in networks where https:// has issues.
     insteadOf = https://github.com/
-
-[url "git@gitorious.org:"]
-    # Always use Gitorious SSH protocol to push.
-    # Allows use of git:// for public repositories with push access
-    # (which is often faster).
-    pushInsteadOf = git://gitorious.org/
-
-[url "https://gist.github.com/"]
-    insteadOf = gist:
-
-[url "https://bitbucket.org/"]
-    insteadOf = bb:
 
 [credential]
     # Use macOS Keychain to store HTTP passwords.
