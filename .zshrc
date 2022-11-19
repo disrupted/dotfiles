@@ -292,10 +292,11 @@ export LC_ALL='en_US.UTF-8'
 export WORDCHARS='~!#$%^&*(){}[]<>?.+;'  # sane moving between words on the prompt
 export GPG_TTY=$(tty)
 export PATH="/opt/homebrew/opt/llvm/bin:$PATH"  # llvm (c, cpp)
-export PATH="$PATH:$HOME/.local/bin"  # pipx
-export PATH="$PATH:$HOME/.deno/bin"  # deno
+export PATH="$HOME/.local/bin:$PATH"  # pipx
+export PATH="$HOME/.deno/bin:$PATH"   # deno
+export PATH="$HOME/.cargo/bin:$PATH"  # Rust cargo
 export GOPATH="$HOME/go"
-export PATH="$PATH:$GOPATH/bin"
+export PATH="$GOPATH/bin:$PATH"
 export PROMPT_EOL_MARK=''  # hide % at end of output
 
 #####################
