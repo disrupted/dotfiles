@@ -1,18 +1,6 @@
 ;; extends
 
-;; Decorators (old)
-
- ; ((decorator "@" @function)
- ;  (#set! "priority" 101))
-
-; (decorator) @function
-;  ((decorator (attribute (identifier) @function))
-;   (#match? @function "^([A-Z])@!.*$"))
-;  (decorator) @function
-;  ((decorator (identifier) @function)
-;   (#match? @function "^([A-Z])@!.*$"))
-
-;; Decorators (new)
+;; Decorators
 
 ((decorator "@" @function)
  (#set! "priority" 101))
@@ -26,8 +14,9 @@
   (call (identifier) @function))
 (decorator
   (call (attribute
-          attribute: (identifier) @function)))
+    attribute: (identifier) @function)))
 
 ((decorator
   (identifier) @function.builtin)
- (#any-of? @function.builtin "classmethod" "staticmethod" "property"))
+ (#any-of? @function.builtin "classmethod" "staticmethod" "property")
+ (#set! "priority" 120)) ; set higher priority than semantic tokens so that it doesn't get overwritten as `class`
