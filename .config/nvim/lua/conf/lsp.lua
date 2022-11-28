@@ -243,7 +243,7 @@ function M.setup()
                     augroup_lsp_highlight,
                     { clear = false }
                 )
-                vim.api.nvim_create_autocmd('CursorHold', {
+                vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
                     group = augroup_lsp_highlight,
                     buffer = bufnr,
                     callback = vim.lsp.buf.document_highlight,
@@ -480,8 +480,6 @@ function M.config()
         highlighters = { require 'nvim-semantic-tokens.table-highlighter' },
     }
     vim.api.nvim_set_hl(0, 'LspDeprecated', { link = '@text.strike' })
-    vim.api.nvim_set_hl(0, 'LspEnumMember', { link = '@constant' })
-    -- vim.api.nvim_set_hl(0, 'LspParameter', { link = 'Comment' }) -- TODO: dim unused function parameters
 
     vim.cmd.packadd 'pylance.nvim'
     require 'pylance'
