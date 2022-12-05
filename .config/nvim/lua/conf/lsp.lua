@@ -715,6 +715,7 @@ function M.config()
                 completion = {
                     callSnippet = 'Replace',
                 },
+                workspace = { checkThirdParty = false },
                 telemetry = { enable = false },
             },
         },
