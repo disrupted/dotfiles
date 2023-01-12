@@ -7,11 +7,19 @@ function M.setup()
     vim.keymap.set('n', '<leader>tb', function()
         require('neotest').run.run(vim.fn.expand '%') -- test entire file/buffer
     end)
+    vim.keymap.set('n', '<leader>ta', function()
+        for _, adapter_id in ipairs(require('neotest').run.adapters()) do
+            require('neotest').run.run { suite = true, adapter = adapter_id }
+        end
+    end)
     vim.keymap.set('n', '<leader>tl', function()
         require('neotest').run.run_last() -- re-run the last test
     end)
     vim.keymap.set('n', '<leader>to', function()
         require('neotest').output.open { last_run = true } -- open output of last test run
+    end)
+    vim.keymap.set('n', '<leader>ts', function()
+        require('neotest').summary.toggle() -- toggle summary
     end)
     vim.keymap.set('n', '<leader>td', function()
         require('neotest').run.run { strategy = 'dap' } -- debug nearest function
@@ -35,6 +43,10 @@ function M.config()
                 },
             },
             require 'neotest-rust',
+        },
+        quickfix = {
+            enabled = true,
+            open = true,
         },
     }
 end
