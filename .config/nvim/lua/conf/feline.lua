@@ -432,13 +432,19 @@ require('feline').setup {
     force_inactive = {
         filetypes = {
             '^packer$',
-            'NvimTree',
             '^qf$',
             '^help$',
             'Outline',
             'Trouble',
             'dap-repl',
             '^dapui',
+        },
+        buftypes = {},
+        bufnames = {},
+    },
+    disable = {
+        filetypes = {
+            'NvimTree',
         },
         buftypes = {},
         bufnames = {},
