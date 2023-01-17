@@ -192,7 +192,6 @@ packer.startup(function()
     }
     use {
         'natecraddock/telescope-zf-native.nvim',
-        run = 'make',
         after = { 'telescope.nvim' },
         config = function()
             require('telescope').load_extension 'zf-native'
@@ -366,6 +365,21 @@ packer.startup(function()
         'michaelb/sniprun',
         run = 'bash ./install.sh',
         cmd = { 'SnipRun', 'SnipInfo' },
+    }
+    use {
+        'stevearc/overseer.nvim',
+        module = 'overseer',
+        cmd = { 'OverseerRun', 'OverseerToggle' },
+        config = function()
+            require('overseer').setup {
+                task_list = {
+                    bindings = {
+                        ['<C-l>'] = false,
+                        ['<C-h>'] = false,
+                    },
+                },
+            }
+        end,
     }
     use {
         'NTBBloodbath/rest.nvim',
@@ -761,7 +775,7 @@ opt.iskeyword:prepend { '-' } -- treat dash separated words as a word textobject
 opt.hidden = true -- Enable modified buffers in background
 opt.splitbelow = true -- Put new windows below current
 opt.splitright = true -- Put new windows right of current
-opt.splitkeep = 'screen'
+-- opt.splitkeep = 'screen'
 opt.fillchars = {
     vert = '│',
     fold = ' ',
