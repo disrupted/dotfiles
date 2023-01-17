@@ -466,8 +466,12 @@ function M.setup()
 end
 
 function M.config()
-    vim.cmd.packadd 'nvim-lspconfig'
-    require('neodev').setup {}
+    require('neodev').setup {
+        override = function(root_dir, library)
+            library.enabled = true
+            library.plugins = true
+        end,
+    }
     local lspconfig = require 'lspconfig'
 
     -- client log level
@@ -481,7 +485,6 @@ function M.config()
     }
     vim.api.nvim_set_hl(0, 'LspDeprecated', { link = '@text.strike' })
 
-    vim.cmd.packadd 'pylance.nvim'
     require 'pylance'
     lspconfig.pylance.setup {
         capabilities = capabilities,
@@ -650,7 +653,6 @@ function M.config()
 
     -- RUST
     _G.init_rust_analyzer = function()
-        vim.cmd.packadd 'rust-tools.nvim'
         require('rust-tools').setup {
             server = {
                 capabilities = capabilities,
@@ -720,7 +722,12 @@ function M.config()
             },
         },
         handlers = {
-            ['textDocument/publishDiagnostics'] = function(err, result, ctx, config)
+            ['textDocument/publishDiagnostics'] = function(
+                err,
+                result,
+                ctx,
+                config
+            )
                 result.diagnostics = vim.tbl_filter(function(diagnostic)
                     -- prefix unused variables with an underscore to ignore
                     if
@@ -814,14 +821,14 @@ function M.config()
     -- }
 
     -- Markdown language server
-    lspconfig.prosemd_lsp.setup {
-        capabilities = capabilities,
-        flags = { debounce_text_changes = 150 },
-        root_dir = function(fname)
-            return lspconfig.util.find_git_ancestor(fname) or vim.loop.cwd()
-        end,
-        single_file_support = true,
-    }
+    -- lspconfig.prosemd_lsp.setup {
+    --     capabilities = capabilities,
+    --     flags = { debounce_text_changes = 150 },
+    --     root_dir = function(fname)
+    --         return lspconfig.util.find_git_ancestor(fname) or vim.loop.cwd()
+    --     end,
+    --     single_file_support = true,
+    -- }
 
     lspconfig.terraformls.setup {
         capabilities = capabilities,

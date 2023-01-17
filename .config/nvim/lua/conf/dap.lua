@@ -2,7 +2,6 @@ local M = {}
 
 function M.setup()
     local function dap_continue()
-        vim.cmd [[packadd nvim-dap-virtual-text]]
         require('nvim-dap-virtual-text').setup {
             enabled = true,
             enabled_commands = false,
@@ -82,7 +81,6 @@ function M.config()
     })
 
     -- Python
-    vim.cmd.packadd 'nvim-dap-python'
     local py = require 'dap-python'
     py.setup('~/.local/share/virtualenvs/debugpy/bin/python', {
         include_configs = true,
@@ -139,14 +137,7 @@ function M.config()
             vim.api.nvim_set_hl(ns, 'EndOfBuffer', { fg = 'bg', bg = 'bg' })
         end,
     })
-    vim.api.nvim_create_autocmd('FileType', {
-        pattern = { 'dapui_console' },
-        callback = function()
-            vim.opt_local.laststatus = 0
-        end,
-    })
 
-    vim.cmd.packadd 'nvim-dap-ui'
     require('dapui').setup {
         icons = { expanded = '', collapsed = '', current_frame = '▸' },
         layouts = {
