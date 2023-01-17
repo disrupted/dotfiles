@@ -286,7 +286,7 @@ export LESS_TERMCAP_me=$'\E[0m'     # end mode
 export LESS_TERMCAP_ue=$'\E[0m'     # end underline
 export LESS_TERMCAP_se=$'\E[0m'     # end standout-mode
 export MANPAGER='nvim +Man!'
-export SHELL='zsh'
+export SHELL='/opt/homebrew/bin/zsh'
 export LANG='en_US.UTF-8'
 export LC_ALL='en_US.UTF-8'
 export WORDCHARS='~!#$%^&*(){}[]<>?.+;'  # sane moving between words on the prompt
@@ -351,6 +351,7 @@ bindkey '^F' fzf-file-widget
 # FZF custom OneDark theme
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 --no-separator
+--info=hidden
 --ansi
 --color=fg:-1,bg:-1,border:#4B5164,hl:#d19a66
 --color=fg+:#f7f7f7,bg+:#2c323d,hl+:#e5c07b
@@ -379,7 +380,8 @@ source "/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh
 source "/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
 
 # Node version manager
-eval "$(snm env zsh)"
+# eval "$(snm env zsh)"
 
 # Direnv
 eval "$(direnv hook zsh)"
+source /Users/disrupted/.config/op/plugins.sh
