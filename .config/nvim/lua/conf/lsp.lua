@@ -279,7 +279,6 @@ function M.setup()
                             filter = function(server)
                                 -- return server.name == 'null-ls'
                                 local disabled_servers = {
-                                    'sumneko_lua',
                                     'eslint',
                                     'tsserver',
                                 }
@@ -627,30 +626,6 @@ function M.config()
         },
     }
 
-    -- NULL-LS
-    local sources = require('conf.null-ls').config()
-
-    require('null-ls').setup {
-        sources = sources,
-        debug = false,
-        -- Fallback to .zshrc as a project root to enable LSP on loose files
-        root_dir = function(fname)
-            return lspconfig.util.root_pattern(
-                'tsconfig.json',
-                'pyproject.toml',
-                'stylua.toml',
-                'dprint.json'
-            )(fname) or lspconfig.util.root_pattern(
-                '.eslintrc.js',
-                '.git'
-            )(fname) or lspconfig.util.root_pattern(
-                'package.json',
-                '.git/',
-                '.zshrc'
-            )(fname)
-        end,
-    }
-
     -- RUST
     _G.init_rust_analyzer = function()
         require('rust-tools').setup {
@@ -719,33 +694,9 @@ function M.config()
                 },
                 workspace = { checkThirdParty = false },
                 telemetry = { enable = false },
+                diagnostics = { unusedLocalExclude = { '_*' } },
+                format = { enable = false },
             },
-        },
-        handlers = {
-            ['textDocument/publishDiagnostics'] = function(
-                err,
-                result,
-                ctx,
-                config
-            )
-                result.diagnostics = vim.tbl_filter(function(diagnostic)
-                    -- prefix unused variables with an underscore to ignore
-                    if
-                        string.match(diagnostic.message, 'Unused local `_.+`.')
-                    then
-                        return false
-                    end
-
-                    return true
-                end, result.diagnostics)
-
-                vim.lsp.handlers['textDocument/publishDiagnostics'](
-                    err,
-                    result,
-                    ctx,
-                    config
-                )
-            end,
         },
     }
 
@@ -834,17 +785,6 @@ function M.config()
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
     }
-
-    -- reload if buffer has file, to attach LSP
-    if
-        vim.api.nvim_buf_get_name(0) ~= ''
-        and vim.api.nvim_buf_is_loaded(0)
-        and vim.bo.filetype ~= nil
-        and vim.bo.modifiable
-        and not vim.bo.modified
-    then
-        vim.cmd 'noautocmd :edit'
-    end
 end
 
 return M
