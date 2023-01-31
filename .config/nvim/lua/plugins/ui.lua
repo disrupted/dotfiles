@@ -464,7 +464,6 @@ return {
                 components = components,
                 force_inactive = {
                     filetypes = {
-                        '^packer$',
                         '^qf$',
                         '^help$',
                         'Outline',
@@ -488,7 +487,7 @@ return {
     { 'kyazdani42/nvim-web-devicons', lazy = true },
     {
         'lukas-reineke/indent-blankline.nvim',
-        event = 'VeryLazy',
+        event = 'BufWinEnter',
         opts = {
             char = '▏',
             context_char = '▏',

@@ -229,9 +229,9 @@ return {
             },
         },
         dependencies = {
-            'nvim-neotest/neotest-python',
-            'rouge8/neotest-rust',
-            'haydenmeade/neotest-jest',
+            { 'nvim-neotest/neotest-python', lazy = true },
+            { 'rouge8/neotest-rust', lazy = true },
+            { 'haydenmeade/neotest-jest', lazy = true },
             {
                 'andythigpen/nvim-coverage',
                 opts = {
@@ -287,7 +287,7 @@ return {
             {
                 '<leader>nf',
                 function()
-                    require('neogen').generate()
+                    require('neogen').generate {}
                 end,
             },
         },

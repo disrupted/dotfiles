@@ -2,7 +2,41 @@ return {
     {
         'rcarriga/nvim-dap-ui',
         lazy = true,
-        config = function()
+        opts = {
+            icons = {
+                expanded = '',
+                collapsed = '',
+                current_frame = '▸',
+            },
+            layouts = {
+                {
+                    elements = {
+                        { id = 'scopes', size = 0.4 },
+                        { id = 'breakpoints', size = 0.1 },
+                        'stacks',
+                        'watches',
+                    },
+                    size = 45,
+                    position = 'left',
+                },
+                {
+                    elements = {
+                        'repl',
+                        -- 'console',
+                    },
+                    size = 12,
+                    position = 'bottom',
+                },
+            },
+            controls = {
+                enabled = true,
+            },
+            render = {
+                max_type_length = nil,
+                max_value_lines = nil,
+            },
+        },
+        config = function(_, opts)
             local ns = vim.api.nvim_create_namespace 'dap'
             vim.api.nvim_create_autocmd('FileType', {
                 pattern = {
@@ -22,34 +56,14 @@ return {
                     )
                 end,
             })
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = 'dap-repl',
+                callback = function()
+                    require('dap.ext.autocompl').attach()
+                end,
+            })
 
-            require('dapui').setup {
-                icons = {
-                    expanded = '',
-                    collapsed = '',
-                    current_frame = '▸',
-                },
-                layouts = {
-                    {
-                        elements = {
-                            'scopes',
-                            'breakpoints',
-                            'stacks',
-                            'watches',
-                        },
-                        size = 40,
-                        position = 'left',
-                    },
-                    {
-                        elements = {
-                            'repl',
-                            'console',
-                        },
-                        size = 10,
-                        position = 'bottom',
-                    },
-                },
-            }
+            require('dapui').setup(opts)
 
             vim.api.nvim_set_hl(0, 'DapUIScope', { bold = true })
             vim.api.nvim_set_hl(0, 'DapUIDecoration', { link = 'CursorLineNr' })
@@ -77,15 +91,9 @@ return {
             {
                 '<leader>dc',
                 function()
-                    require('nvim-dap-virtual-text').setup {
-                        enabled = true,
-                        enabled_commands = false,
-                        highlight_changed_variables = true,
-                        all_references = false,
-                        all_frames = false,
-                    }
+                    require 'nvim-dap-virtual-text'
                     require('dap').continue()
-                    -- require('dapui').open()
+                    -- require('dapui').open {}
                     vim.opt.signcolumn = 'yes:2'
                 end,
                 desc = 'continue/start debugger',
@@ -141,7 +149,7 @@ return {
                 '<leader>dB',
                 function()
                     require('dap').set_breakpoint(
-                        vim.fn.input 'Breakpoint condition: '
+                        vim.fn.input { 'Breakpoint condition: ' }
                     )
                 end,
             },
@@ -163,12 +171,22 @@ return {
                     require('dap').repl.open()
                 end,
             },
+            {
+                '<leader>ds',
+                function()
+                    require('dapui').float_element(
+                        'scopes',
+                        { width = 80, height = 30, enter = true }
+                    )
+                end,
+            },
             -- FIXME: <ESC> first
             -- {
             --     '<leader>ds',
             --     function()
             --         require('dap-python').debug_selection()
             --     end,
+            --     mode = 'v',
             -- },
         },
         config = function()
@@ -194,11 +212,7 @@ return {
             })
 
             -- Python
-            local py = require 'dap-python'
-            py.setup('~/.local/share/virtualenvs/debugpy/bin/python', {
-                include_configs = true,
-                console = 'internalConsole',
-            })
+            require 'dap-python'
             table.insert(dap.configurations.python, {
                 type = 'python',
                 request = 'launch',
@@ -232,11 +246,35 @@ return {
                 pythonPath = 'python',
                 console = 'integratedTerminal',
             })
-            py.test_runner = 'pytest'
         end,
         dependencies = {
-            { 'mfussenegger/nvim-dap-python', lazy = true },
-            { 'theHamsta/nvim-dap-virtual-text', lazy = true },
+            {
+                'mfussenegger/nvim-dap-python',
+                lazy = true,
+                opts = {
+                    include_configs = true,
+                    console = 'internalConsole',
+                },
+                config = function(_, opts)
+                    local py = require 'dap-python'
+                    py.setup(
+                        '~/.local/share/virtualenvs/debugpy/bin/python',
+                        opts
+                    )
+                    py.test_runner = 'pytest'
+                end,
+            },
+            {
+                'theHamsta/nvim-dap-virtual-text',
+                lazy = true,
+                opts = {
+                    enabled = true,
+                    enabled_commands = false,
+                    highlight_changed_variables = true,
+                    all_references = false,
+                    all_frames = false,
+                },
+            },
             {
                 'nvim-telescope/telescope-dap.nvim',
                 config = function()

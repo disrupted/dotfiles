@@ -494,10 +494,6 @@ vim.keymap.set('n', '[[', '<cmd>tabprevious<CR>')
 -----------------------------------------------------------------------------//
 
 command('TabDir', 'tcd %:p:h', {})
-cmd [[
-    :cabbrev C PackerCompile
-    :cabbrev U PackerUpdate
-]]
 
 -----------------------------------------------------------------------------//
 -- TabLine {{{1
