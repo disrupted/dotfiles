@@ -274,7 +274,7 @@ return {
                     },
                 },
                 quickfix = {
-                    enabled = true,
+                    enabled = false,
                     open = true,
                 },
             }

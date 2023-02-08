@@ -141,7 +141,6 @@ return {
     },
     {
         'TimUntersberger/neogit',
-        lazy = true,
         keys = {
             {
                 '<leader>g',
@@ -172,7 +171,15 @@ return {
     {
         'akinsho/git-conflict.nvim',
         event = 'VeryLazy',
-        config = true,
+        keys = {
+            { 'co', '<Plug>(git-conflict-ours)' },
+            { 'ct', '<Plug>(git-conflict-theirs)' },
+            { 'cb', '<Plug>(git-conflict-both)' },
+            { 'c0', '<Plug>(git-conflict-none)' },
+            { '[x', '<Plug>(git-conflict-prev-conflict)' },
+            { ']x', '<Plug>(git-conflict-next-conflict)' },
+        },
+        config = { default_mappings = false },
     },
     {
         'sindrets/diffview.nvim',
