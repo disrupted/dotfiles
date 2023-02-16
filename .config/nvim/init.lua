@@ -106,8 +106,8 @@ command('TrimWhitespace', trim_trailing_whitespace, {})
 local function trim_trailing_lines()
     local last_line = vim.api.nvim_buf_line_count(0)
     local last_nonblank_line = fn.prevnonblank(last_line)
-    if last_line > 0 and last_nonblank_line ~= last_line then
-        vim.api.nvim_buf_set_lines(0, last_nonblank_line, -1, true, {})
+    if last_nonblank_line < last_line then
+        vim.api.nvim_buf_set_lines(0, last_nonblank_line, last_line, true, {})
     end
 end
 command('TrimTrailingLines', trim_trailing_lines, {})
