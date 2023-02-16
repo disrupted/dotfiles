@@ -125,6 +125,11 @@ return {
                 default = {
                     augend.integer.alias.decimal,
                     augend.constant.alias.bool,
+                    augend.constant.new {
+                        elements = { 'True', 'False' },
+                        word = true,
+                        cyclic = true,
+                    },
                     augend.semver.alias.semver,
                     augend.date.alias['%Y/%m/%d'], -- date (2022/02/20, etc.)
                     augend.constant.new {
@@ -255,9 +260,10 @@ return {
             return {
                 adapters = {
                     require 'neotest-python' {
-                        dap = { justMyCode = false },
+                        dap = { justMyCode = true },
                         runner = 'pytest',
                         args = {
+                            '-s', -- don't capture console output
                             '--log-level',
                             'DEBUG',
                             '-vv',
