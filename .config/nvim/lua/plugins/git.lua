@@ -179,7 +179,10 @@ return {
             { '[x', '<Plug>(git-conflict-prev-conflict)' },
             { ']x', '<Plug>(git-conflict-next-conflict)' },
         },
-        config = { default_mappings = false },
+        opts = { default_mappings = false },
+        config = function(_, opts)
+            require('git-conflict').setup(opts)
+        end,
     },
     {
         'sindrets/diffview.nvim',
