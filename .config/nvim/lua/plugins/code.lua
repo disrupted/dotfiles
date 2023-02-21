@@ -22,9 +22,9 @@ return {
             textcase_map('d', 'to_dash_case')
             textcase_map('c', 'to_camel_case')
             textcase_map('p', 'to_pascal_case')
-
-            -- experimental
+            textcase_map('v', 'to_constant_case') -- environment variable
             textcase_map('t', 'to_title_case')
+            textcase_map('p', 'to_phrase_case')
             textcase_map('.', 'to_dot_case')
         end,
     },
