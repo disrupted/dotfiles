@@ -2,6 +2,17 @@ return {
     {
         'rcarriga/nvim-dap-ui',
         lazy = true,
+        keys = {
+            {
+                '<leader>ds',
+                function()
+                    require('dapui').float_element(
+                        'scopes',
+                        { width = 80, height = 30, enter = true }
+                    )
+                end,
+            },
+        },
         opts = {
             icons = {
                 expanded = '',
@@ -22,7 +33,7 @@ return {
                 {
                     elements = {
                         'repl',
-                        -- 'console',
+                        'console',
                     },
                     size = 12,
                     position = 'bottom',
@@ -169,15 +180,6 @@ return {
                 '<leader>dr',
                 function()
                     require('dap').repl.open()
-                end,
-            },
-            {
-                '<leader>ds',
-                function()
-                    require('dapui').float_element(
-                        'scopes',
-                        { width = 80, height = 30, enter = true }
-                    )
                 end,
             },
             -- FIXME: <ESC> first
