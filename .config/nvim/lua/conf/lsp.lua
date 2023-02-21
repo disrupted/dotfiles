@@ -399,7 +399,7 @@ function M.setup()
                     --     end,
                     --     virt_text_formatter = function(label, hint, opts, client_name)
                     --         if
-                    --             client_name == 'sumneko_lua'
+                    --             client_name == 'lua_ls'
                     --             or client_name == 'pylance'
                     --         then
                     --             if hint.kind == 2 then
@@ -684,7 +684,7 @@ function M.config()
         flags = { debounce_text_changes = 150 },
     }
 
-    lspconfig.sumneko_lua.setup {
+    lspconfig.lua_ls.setup {
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
         settings = {
