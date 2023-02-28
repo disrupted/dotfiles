@@ -141,3 +141,5 @@ dmypy.json
 # profiling data
 .prof
 
+# direnv
+.envrc

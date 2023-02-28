@@ -71,7 +71,7 @@
 [core]
     pager = delta  # or bat
     # Exclude everything this file. Used for general exclusions.
-    excludesfile = ~/.config/git/gitignore_global
+	excludesFile = ~/.gitignore
     # Set attributes on files. Used for general diff improvements.
     attributesfile = ~/.gitattributes
     # Don't prompt for commit messages for merge commits.
