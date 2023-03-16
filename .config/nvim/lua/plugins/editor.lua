@@ -220,7 +220,7 @@ return {
             {
                 '<C-e>',
                 function()
-                    require('nvim-tree').toggle()
+                    require('nvim-tree.api').tree.toggle()
                 end,
             },
         },
