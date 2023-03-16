@@ -16,6 +16,9 @@ return {
                 vim.keymap.set('n', 'z' .. char, function()
                     require('textcase').operator(operation)
                 end)
+                vim.keymap.set('v', 'z' .. char, function()
+                    require('textcase').visual(operation)
+                end)
             end
 
             textcase_map('s', 'to_snake_case')
