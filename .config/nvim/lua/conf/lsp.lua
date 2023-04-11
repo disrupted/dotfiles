@@ -350,32 +350,6 @@ function M.setup()
     --     end,
     -- })
 
-    local au_lsp_semantic_tokens =
-        vim.api.nvim_create_augroup('lsp_semantic_tokens', {})
-    vim.api.nvim_create_autocmd('LspAttach', {
-        group = au,
-        desc = 'LSP semantic tokens',
-        callback = function(args)
-            local bufnr = args.buf
-            local client = vim.lsp.get_client_by_id(args.data.client_id)
-            if client.supports_method 'textDocument/semanticTokens/full' then
-                vim.notify('register semantic tokens', vim.lsp.log_levels.INFO)
-                vim.api.nvim_create_autocmd({ 'BufEnter', 'TextChanged' }, {
-                    group = au_lsp_semantic_tokens,
-                    buffer = bufnr,
-                    callback = function()
-                        vim.notify(
-                            'refresh semantic tokens',
-                            vim.lsp.log_levels.DEBUG
-                        )
-                        vim.lsp.buf.semantic_tokens_full()
-                    end,
-                })
-                vim.lsp.buf.semantic_tokens_full()
-            end
-        end,
-    })
-
     vim.api.nvim_create_autocmd('LspAttach', {
         group = au,
         desc = 'LSP inlay hints',
@@ -477,12 +451,6 @@ function M.config()
     vim.lsp.set_log_level(vim.lsp.log_levels.INFO)
 
     local capabilities = require('cmp_nvim_lsp').default_capabilities()
-
-    require('nvim-semantic-tokens').setup {
-        preset = 'default',
-        highlighters = { require 'nvim-semantic-tokens.table-highlighter' },
-    }
-    vim.api.nvim_set_hl(0, 'LspDeprecated', { link = '@text.strike' })
 
     require 'pylance'
     lspconfig.pylance.setup {

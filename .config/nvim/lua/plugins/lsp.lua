@@ -14,7 +14,6 @@ return {
         },
     },
     { 'kosayoda/nvim-lightbulb', lazy = true },
-    { 'theHamsta/nvim-semantic-tokens', lazy = true },
     { 'zbirenbaum/neodim', lazy = true },
     {
         'lvimuser/lsp-inlayhints.nvim',
