@@ -1,6 +1,4 @@
 return {
-    { 'nvim-treesitter/playground', cmd = 'TSPlaygroundToggle' },
-    { 'yioneko/nvim-yati', event = 'InsertEnter' },
     { 'TornaxO7/tree-setter', enabled = false },
     {
         'nvim-treesitter/nvim-treesitter',
@@ -27,7 +25,7 @@ return {
                     'gitignore',
                     'go',
                     'graphql',
-                    'help',
+                    'vimdoc',
                     'html',
                     'http',
                     'java',
@@ -62,12 +60,7 @@ return {
                 },
                 highlight = { enable = true },
                 -- indent = { enable = true, disable = { 'python', 'yaml' } },
-                indent = { enable = false },
-                yati = {
-                    enable = true,
-                    default_lazy = true,
-                    default_fallback = 'auto',
-                },
+                indent = { enable = true },
                 incremental_selection = {
                     enable = true,
                     disable = {},
@@ -150,24 +143,6 @@ return {
                     },
                 },
                 autopairs = { enable = true },
-                playground = {
-                    enable = true,
-                    disable = {},
-                    updatetime = 25,
-                    persist_queries = false,
-                    keybindings = {
-                        toggle_query_editor = 'o',
-                        toggle_hl_groups = 'i',
-                        toggle_injected_languages = 't',
-                        toggle_anonymous_nodes = 'a',
-                        toggle_language_display = 'I',
-                        focus_language = 'f',
-                        unfocus_language = 'F',
-                        update = 'R',
-                        goto_node = '<CR>',
-                        show_help = '?',
-                    },
-                },
                 context_commentstring = {
                     enable = true,
                     enable_autocmd = false,
@@ -177,10 +152,8 @@ return {
                 },
             }
 
-            local ft_to_parser =
-                require('nvim-treesitter.parsers').filetype_to_parsername
             -- use treesitter highlighting for markdown in Octo
-            ft_to_parser.octo = 'markdown'
+            vim.treesitter.language.register('markdown', 'octo')
         end,
     },
 }
