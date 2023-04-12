@@ -281,6 +281,7 @@ function M.setup()
                                 local disabled_servers = {
                                     'eslint',
                                     'tsserver',
+                                    'jsonls',
                                 }
                                 return not vim.tbl_contains(
                                     disabled_servers,

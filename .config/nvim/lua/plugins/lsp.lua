@@ -64,12 +64,12 @@ return {
             local function dprint_config()
                 local lsputil = require 'lspconfig.util'
                 local path = lsputil.path.join(vim.loop.cwd(), 'dprint.json')
-                print(path)
                 if lsputil.path.exists(path) then
-                    print 'path exists'
+                    print 'found local dprint config'
+                    print(path)
                     return path
                 end
-                print 'path doesnt exist'
+                print 'falling back to global dprint config'
                 return vim.fn.expand '~/.config/dprint.json'
             end
 
@@ -92,18 +92,19 @@ return {
                     -- condition = function(utils)
                     --     return utils.root_has_file 'dprint.json'
                     -- end,
-                    args = {
+                    args = function() return {
                         'fmt',
                         '--config',
-                        -- dprint_config(),
+                        dprint_config(),
                         -- require('lspconfig.util').path.join(
                         --     vim.loop.cwd(),
                         --     'dprint.json'
                         -- ),
-                        vim.fn.expand '~/.config/dprint.json',
+                        -- vim.fn.expand '~/.config/dprint.json',
                         '--stdin',
                         '$FILEEXT',
-                    },
+                    }
+                    end,
                     to_stdin = true,
                 },
             }
@@ -116,6 +117,8 @@ return {
                 },
                 isortd,
                 blackd,
+                -- null_ls.builtins.diagnostics.ruff,
+                -- null_ls.builtins.formatting.ruff,
                 dprint,
                 null_ls.builtins.formatting.prettierd.with {
                     filetypes = {
@@ -125,7 +128,7 @@ return {
                         -- 'scss',
                         'less',
                         'html',
-                        'yaml',
+                        -- 'yaml',
                         'graphql',
                     },
                     -- condition = function(utils)
