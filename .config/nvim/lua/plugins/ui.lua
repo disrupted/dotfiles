@@ -560,6 +560,9 @@ return {
                 'NoiceCmdlinePopupBorder',
                 { link = 'TelescopePromptBorder' }
             )
+            vim.keymap.set('n', '<M-Enter>', function() -- Alt-Enter
+                require('noice').redirect 'Inspect'
+            end, { desc = 'Show inspect in popup' })
         end,
     },
 }
