@@ -211,4 +211,27 @@ return {
         },
         opts = { date_format = '%Y %b %d %H:%M' },
     },
+    {
+        'ruifm/gitlinker.nvim',
+        keys = {
+            {
+                '<leader>ho',
+                function()
+                    require('gitlinker').get_buf_range_url('n', {
+                        action_callback = require('gitlinker.actions').open_in_browser,
+                    })
+                end,
+            },
+            {
+                '<leader>ho',
+                function()
+                    require('gitlinker').get_buf_range_url('v', {
+                        action_callback = require('gitlinker.actions').open_in_browser,
+                    })
+                end,
+                mode = 'v',
+            },
+        },
+        config = { mappings = nil },
+    },
 }
