@@ -52,6 +52,7 @@ return {
                     'rust',
                     'scheme',
                     'scss',
+                    'terraform',
                     'toml',
                     'tsx',
                     'typescript',
