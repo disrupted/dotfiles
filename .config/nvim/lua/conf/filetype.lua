@@ -7,6 +7,7 @@ function M.config()
         },
         filename = {
             ['poetry.lock'] = 'toml',
+            ['.envrc'] = 'bash',
         },
         pattern = {
             ['templates/.*%.yaml'] = 'helm',
