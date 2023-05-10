@@ -142,6 +142,7 @@ opt.relativenumber = false -- relative line numbers
 opt.numberwidth = 2
 opt.signcolumn = 'yes:1' -- 'auto:1-2'
 opt.cursorline = true
+opt.laststatus = 3 -- global statusline
 vim.api.nvim_create_augroup('cursorline_focus', {})
 vim.api.nvim_create_autocmd({ 'InsertLeave', 'WinEnter' }, {
     group = 'cursorline_focus',
