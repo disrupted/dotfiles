@@ -63,6 +63,12 @@ return {
 
             local function dprint_config()
                 local lsputil = require 'lspconfig.util'
+                local path = lsputil.path.join(vim.loop.cwd(), 'dprint.jsonc')
+                if lsputil.path.exists(path) then
+                    print 'found local dprint config'
+                    print(path)
+                    return path
+                end
                 local path = lsputil.path.join(vim.loop.cwd(), 'dprint.json')
                 if lsputil.path.exists(path) then
                     print 'found local dprint config'
@@ -70,7 +76,7 @@ return {
                     return path
                 end
                 print 'falling back to global dprint config'
-                return vim.fn.expand '~/.config/dprint.json'
+                return vim.fn.expand '~/.config/dprint.jsonc'
             end
 
             local dprint = {
@@ -90,20 +96,16 @@ return {
                 generator = h.formatter_factory {
                     command = 'dprint',
                     -- condition = function(utils)
-                    --     return utils.root_has_file 'dprint.json'
+                    --     return utils.root_has_file 'dprint.jsonc'
                     -- end,
-                    args = function() return {
-                        'fmt',
-                        '--config',
-                        dprint_config(),
-                        -- require('lspconfig.util').path.join(
-                        --     vim.loop.cwd(),
-                        --     'dprint.json'
-                        -- ),
-                        -- vim.fn.expand '~/.config/dprint.json',
-                        '--stdin',
-                        '$FILEEXT',
-                    }
+                    args = function()
+                        return {
+                            'fmt',
+                            '--config',
+                            dprint_config(),
+                            '--stdin',
+                            '$FILEEXT',
+                        }
                     end,
                     to_stdin = true,
                 },
@@ -132,7 +134,7 @@ return {
                         'graphql',
                     },
                     -- condition = function(utils)
-                    --     return not utils.root_has_file 'dprint.json'
+                    --     return not utils.root_has_file 'dprint.jsonc'
                     -- end,
                 },
                 null_ls.builtins.formatting.uncrustify.with {
@@ -175,6 +177,7 @@ return {
                         'tsconfig.json',
                         'pyproject.toml',
                         'stylua.toml',
+                        'dprint.jsonc',
                         'dprint.json'
                     )(fname) or require('lspconfig').util.root_pattern(
                         '.eslintrc.js',
