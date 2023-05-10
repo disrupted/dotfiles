@@ -94,13 +94,13 @@ return {
                 },
             }
             local menu = {
-                luasnip = '[Snip]',
+                luasnip = '[snip]',
                 nvim_lsp = '[LSP]',
-                git = '[Git]',
+                git = '[git]',
                 nvim_lua = '[API]',
-                spell = '[Spell]',
-                path = '[Path]',
-                buffer = '[Buf]',
+                spell = '[spell]',
+                path = '[path]',
+                buffer = '[buf]',
             }
 
             local cmp = require 'cmp'
@@ -161,8 +161,15 @@ return {
                 },
                 mapping = mapping,
                 sources = cmp.config.sources({
+                    -- { name = 'nvim_lsp' },
+                    {
+                        name = 'nvim_lsp',
+                        entry_filter = function(entry, ctx)
+                            return require('cmp.types').lsp.CompletionItemKind[entry:get_kind()]
+                                ~= 'Snippet'
+                        end,
+                    },
                     { name = 'luasnip' },
-                    { name = 'nvim_lsp' },
                     { name = 'git' },
                     -- { name = 'nvim_lua' },
                 }, {
@@ -170,6 +177,31 @@ return {
                     { name = 'buffer', keyword_length = 4 },
                     { name = 'path' },
                 }),
+                sorting = {
+                    comparators = {
+                        cmp.config.compare.offset,
+                        cmp.config.compare.exact,
+                        cmp.config.compare.score,
+                        -- function(entry1, entry2)
+                        --     local entry1_kind = require('cmp.types').lsp.CompletionItemKind[entry1:get_kind()]
+                        --         == 'Snippet'
+                        --     local entry2_kind = require('cmp.types').lsp.CompletionItemKind[entry2:get_kind()]
+                        --         == 'Snippet'
+                        --     print(entry1_kind)
+                        --     print(entry2_kind)
+                        --     -- if entry1_kind and not entry2_kind then
+                        --     --     return false
+                        --     -- else
+                        --     --     return true
+                        --     -- end
+                        --     return true
+                        -- end,
+                        cmp.config.compare.kind,
+                        cmp.config.compare.sort_text,
+                        cmp.config.compare.length,
+                        cmp.config.compare.order,
+                    },
+                },
                 formatting = {
                     format = function(entry, vim_item)
                         -- source name
