@@ -10,6 +10,8 @@
     "json": {
         "indentWidth": 2,
         "associations": [
+            "**/*.json",
+            "**/*.jsonc",
             "**/*.avsc"
         ]
     },
