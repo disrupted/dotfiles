@@ -384,4 +384,4 @@ source "/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completi
 
 # Direnv
 eval "$(direnv hook zsh)"
-source /Users/disrupted/.config/op/plugins.sh
+source ~/.config/op/plugins.sh
