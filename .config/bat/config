@@ -4,7 +4,8 @@
 
 # Specify desired highlighting theme (e.g. "TwoDark"). Run `bat --list-themes`
 # for a list of all available themes
---theme="OneDark"
+# --theme="OneDark"
+--theme="ansi-disrupted"
 
 --style="numbers,header,grid,changes"
 
