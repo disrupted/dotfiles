@@ -497,6 +497,9 @@ return {
                         warning = '',
                         error = '',
                     },
+                    severity = {
+                        min = vim.diagnostic.severity.WARN,
+                    },
                 },
                 update_focused_file = {
                     enable = true,
