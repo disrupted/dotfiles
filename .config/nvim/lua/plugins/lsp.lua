@@ -17,7 +17,7 @@ return {
     { 'zbirenbaum/neodim', lazy = true },
     {
         'lvimuser/lsp-inlayhints.nvim',
-        -- branch = 'anticonceal',
+        branch = 'anticonceal',
         lazy = true,
     },
     {

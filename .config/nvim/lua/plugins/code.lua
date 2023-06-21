@@ -286,6 +286,13 @@ return {
                     enabled = false,
                     open = true,
                 },
+                summary = {
+                    mappings = {
+                        expand = { '<right>', '<left>', '<2-LeftMouse>' },
+                        expand_all = 'e',
+                        jumpto = '<CR>',
+                    },
+                },
             }
         end,
     },

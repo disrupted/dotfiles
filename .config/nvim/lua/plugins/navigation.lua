@@ -32,9 +32,12 @@ return {
     },
     {
         'ggandor/lightspeed.nvim',
+        lazy = true,
         keys = {
-            { 's', mode = { 'n', 'x' } },
-            { 'S', mode = { 'n', 'x' } },
+            -- { 's', mode = { 'n', 'x' } },
+            -- { 'S', mode = { 'n', 'x' } },
+            { 's', mode = 'n' },
+            { 'S', mode = 'n' },
             { 'z', mode = 'o' },
             { 'Z', mode = 'o' },
             { 'x', mode = 'o' },

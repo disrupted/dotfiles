@@ -305,6 +305,7 @@ return {
                                 'NvimTree',
                                 'dap-repl',
                                 '^dapui',
+                                'harpoon',
                             },
                         }, args.buf)
                     end,

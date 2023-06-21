@@ -119,6 +119,44 @@ function M.setup()
     --     })
     -- end
 
+    -- local function hover_wrapper(err, request, ctx, config)
+    --     local bufnr, winnr = vim.lsp.handlers.hover(err, request, ctx, config)
+    --     if bufnr == nil or winnr == nil then
+    --         return
+    --     end
+    --     local contents = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+    --     -- contents = vim.tbl_map(function(line)
+    --     --     line = string.gsub(line, '&gt;', '>')
+    --     --     line = string.gsub(line, '&lt;', '<')
+    --     --     line = string.gsub(line, '&quot;', '"')
+    --     --     line = string.gsub(line, '&apos;', '\'')
+    --     --     line = string.gsub(line, '&ensp;', '')
+    --     --     line = string.gsub(line, '&emsp;', '')
+    --     --     line = string.gsub(line, '&amp;', '&')
+    --     --     return line
+    --     -- end, contents)
+    --     contents = vim.tbl_map(function(line)
+    --         local escapes = {
+    --             ['&gt;'] = '>',
+    --             ['&lt;'] = '<',
+    --             ['&quot;'] = '"',
+    --             ['&apos;'] = '\'',
+    --             ['&ensp;'] = '',
+    --             ['&emsp;'] = '',
+    --             ['&amp;'] = '&',
+    --         }
+    --         return (string.gsub(line, '&[^ ;]+;', escapes))
+    --     end, contents)
+    --     vim.api.nvim_buf_set_option(bufnr, 'modifiable', true)
+    --     vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, contents)
+    --     vim.api.nvim_buf_set_option(bufnr, 'modifiable', false)
+    --     vim.api.nvim_win_set_height(winnr, #contents)
+
+    --     return bufnr, winnr
+    -- end
+
+    -- vim.lsp.handlers['textDocument/hover'] = hover_wrapper
+
     -- show diagnostics for current line as virtual text
     -- from https://github.com/kristijanhusak/neovim-config/blob/5977ad2c5dd9bfbb7f24b169fef01828717ea9dc/nvim/lua/partials/lsp.lua#L169
     local diagnostic_ns = vim.api.nvim_create_namespace 'diagnostics'
@@ -153,15 +191,15 @@ function M.setup()
         desc = 'LSP options',
         callback = function(args)
             local bufnr = args.buf
-            vim.api.nvim_buf_set_option(
-                bufnr,
+            vim.api.nvim_set_option_value(
                 'formatexpr',
-                'v:lua.vim.lsp.formatexpr'
+                'v:lua.vim.lsp.formatexpr',
+                { buf = bufnr }
             )
-            vim.api.nvim_buf_set_option(
-                bufnr,
+            vim.api.nvim_set_option_value(
                 'tagfunc',
-                'v:lua.vim.lsp.tagfunc'
+                'v:lua.vim.lsp.tagfunc',
+                { buf = bufnr }
             )
         end,
     })
@@ -334,22 +372,22 @@ function M.setup()
         end,
     })
 
-    -- vim.api.nvim_create_autocmd('LspAttach', {
-    --     group = au,
-    --     desc = 'LSP signature help',
-    --     callback = function(args)
-    --         local bufnr = args.buf
-    --         local client = vim.lsp.get_client_by_id(args.data.client_id)
-    --         if client.supports_method 'textDocument/signatureHelp' then
-    --             vim.api.nvim_create_autocmd('CursorHoldI', {
-    --                 buffer = bufnr,
-    --                 callback = function()
-    --                     vim.defer_fn(vim.lsp.buf.signature_help, 200)
-    --                 end,
-    --             })
-    --         end
-    --     end,
-    -- })
+    --[[ vim.api.nvim_create_autocmd('LspAttach', {
+        group = au,
+        desc = 'LSP signature help',
+        callback = function(args)
+            local bufnr = args.buf
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            if client.supports_method 'textDocument/signatureHelp' then
+                vim.api.nvim_create_autocmd('CursorHoldI', {
+                    buffer = bufnr,
+                    callback = function()
+                        vim.defer_fn(vim.lsp.buf.signature_help, 200)
+                    end,
+                })
+            end
+        end,
+    }) ]]
 
     vim.api.nvim_create_autocmd('LspAttach', {
         group = au,
@@ -360,52 +398,26 @@ function M.setup()
             if client.supports_method 'textDocument/inlayHint' then
                 vim.notify('register inlay hints', vim.lsp.log_levels.INFO)
                 local lsp_inlayhints = require 'lsp-inlayhints'
-                -- TODO: configure inline virtualtext when https://github.com/neovim/neovim/pull/20130 is merged
                 lsp_inlayhints.setup {
-                    -- inlay_hints = {
-                    --     label_formatter = function(labels, kind, opts, client_name)
-                    --         if kind == 2 and not opts.parameter_hints.show then
-                    --             return ''
-                    --         elseif not opts.type_hints.show then
-                    --             return ''
-                    --         end
-
-                    --         return table.concat(labels or {}, ', ')
-                    --     end,
-                    --     virt_text_formatter = function(label, hint, opts, client_name)
-                    --         if
-                    --             client_name == 'lua_ls'
-                    --             or client_name == 'pylance'
-                    --         then
-                    --             if hint.kind == 2 then
-                    --                 hint.paddingLeft = false
-                    --             else
-                    --                 hint.paddingRight = false
-                    --             end
-                    --         end
-
-                    --         if client_name == 'pylance' then
-                    --             hint.paddingLeft = false
-                    --             hint.paddingRight = false
-                    --         end
-
-                    --         local virt_text = {}
-                    --         -- virt_text[#virt_text + 1] = hint.paddingLeft
-                    --         --         and { ' ', 'Normal' }
-                    --         --     or nil
-                    --         virt_text[#virt_text + 1] =
-                    --             { label, opts.highlight }
-                    --         -- virt_text[#virt_text + 1] = hint.paddingRight
-                    --         --         and { ' ', 'Normal' }
-                    --         --     or nil
-
-                    --         return virt_text
-                    --     end,
-                    -- },
                     enabled_at_startup = true,
                     debug_mode = false,
                 }
                 lsp_inlayhints.on_attach(client, bufnr, false)
+                -- TODO: native inlay hints
+                --[[ vim.api.nvim_create_autocmd({
+                    'BufWritePost',
+                    'BufEnter',
+                    'InsertLeave',
+                    'FocusGained',
+                    'CursorHold',
+                }, {
+                    buffer = bufnr,
+                    callback = function()
+                        vim.lsp.buf.inlay_hint(bufnr, true)
+                    end,
+                })
+                -- initial request
+                vim.lsp.buf.inlay_hint(bufnr) ]]
             end
         end,
     })
@@ -430,13 +442,13 @@ function M.setup()
         end,
     })
 
-    -- vim.api.nvim_create_autocmd('LspAttach', {
-    --     group = au,
-    --     desc = 'LSP notify',
-    --     callback = function()
-    --         vim.notify 'LSP attached'
-    --     end,
-    -- })
+    --[[ vim.api.nvim_create_autocmd('LspAttach', {
+        group = au,
+        desc = 'LSP notify',
+        callback = function()
+            vim.notify 'LSP attached'
+        end,
+    }) ]]
 end
 
 function M.config()
@@ -459,6 +471,52 @@ function M.config()
         flags = { debounce_text_changes = 150 },
     }
 
+    -- local lsp_configs = require 'lspconfig.configs'
+    -- lsp_configs.pylyzer = {
+    --     default_config = {
+    --         cmd = { 'pylyzer' },
+    --         filetypes = { 'python' },
+    --         single_file_support = true,
+    --         root_dir = lspconfig.util.root_pattern(
+    --             '.git',
+    --             'setup.py',
+    --             'setup.cfg',
+    --             'pyproject.toml',
+    --             'requirements.txt'
+    --         ),
+    --         settings = {},
+    --     },
+    -- }
+
+    -- lspconfig.pylyzer.setup {
+    --     capabilities = capabilities,
+    --     flags = { debounce_text_changes = 150 },
+    -- }
+
+    -- Synchronously organise (Go) imports.
+    -- local function go_organize_imports_sync(timeout_ms)
+    --     local context = { source = { organizeImports = true } }
+    --     vim.validate { context = { context, 't', true } }
+    --     local params = vim.lsp.util.make_range_params()
+    --     params.context = context
+
+    --     local result = vim.lsp.buf_request_sync(
+    --         0,
+    --         'textDocument/codeAction',
+    --         params,
+    --         timeout_ms
+    --     )
+    --     if not result then
+    --         return
+    --     end
+    --     result = result[1].result
+    --     if not result then
+    --         return
+    --     end
+    --     local edit = result[1].edit
+    --     vim.lsp.util.apply_workspace_edit(edit, 'utf-16')
+    -- end
+
     lspconfig.dockerls.setup {
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
@@ -480,24 +538,36 @@ function M.config()
         flags = { debounce_text_changes = 150 },
         settings = {
             yaml = {
-                customTags = {
-                    '!secret',
-                    '!include_dir_named',
-                    '!include_dir_list',
-                    '!include_dir_merge_named',
-                    '!include_dir_merge_list',
-                    '!lambda',
-                    '!input',
-                },
+                format = { enable = false },
+                -- customTags = {
+                --     '!secret',
+                --     '!include_dir_named',
+                --     '!include_dir_list',
+                --     '!include_dir_merge_named',
+                --     '!include_dir_merge_list',
+                --     '!lambda',
+                --     '!input',
+                --     '!reference sequence',
+                -- },
                 -- schemaStore = { enable = true },
                 schemas = {
                     ['https://json.schemastore.org/github-workflow.json'] = '/.github/workflows/*',
                     ['https://json.schemastore.org/chart.json'] = '/templates/*',
-                    -- kubernetes = { '*.yaml' },
-                    -- ['https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master/v1.18.0-standalone-strict/all.json'] = '/*.k8s.yaml',
+                    -- ['/Users/disrupted/bakdata/kpops/docs/docs/schema/pipeline.json'] = 'pipeline.yaml',
+                    -- ['/Users/disrupted/bakdata/deploy/hubble-deployment/pipeline.json'] = 'pipeline.yaml',
+                    ['/Users/disrupted/bakdata/kpops/pipeline.json'] = 'pipeline.yaml',
+                    ['/Users/disrupted/bakdata/kpops/docs/docs/schema/config.json'] = 'config.yaml',
+                    ['/Users/disrupted/bakdata/kpops/schema_defaults.json'] = 'defaults.yaml',
+                    -- ['https://bakdata.github.io/kpops/latest/schema/config.json'] = 'config.yaml',
+                    -- ['https://bakdata.github.io/kpops/latest/schema/pipeline.json'] = 'pipeline.yaml',
                 },
             },
         },
+        -- handlers = {
+        --     ['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
+        --         stylize_markdown = true,
+        --     }),
+        -- },
     }
 
     -- JSON
@@ -536,6 +606,10 @@ function M.config()
                             'stylelint.config.json',
                         },
                         url = 'http://json.schemastore.org/stylelintrc.json',
+                    },
+                    {
+                        fileMatch = { 'pipeline.json' },
+                        url = '/Users/disrupted/bakdata/nlp/kafka-nlp-deployment/pipeline.json',
                     },
                 },
             },
@@ -665,6 +739,7 @@ function M.config()
                 telemetry = { enable = false },
                 diagnostics = { unusedLocalExclude = { '_*' } },
                 format = { enable = false },
+                hint = { enable = true },
             },
         },
     }

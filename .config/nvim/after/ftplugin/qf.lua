@@ -1,1 +1,1 @@
-vim.opt_local.laststatus = 0
+-- vim.opt_local.laststatus = 0 -- FIXME: don't hide the statusline globally

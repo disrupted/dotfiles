@@ -135,9 +135,6 @@ return {
                 },
             }
         end,
-        -- config = function()
-        --     vim.cmd [[autocmd User FormatterPost lua require'gitsigns'.refresh()]]
-        -- end,
     },
     {
         'TimUntersberger/neogit',
