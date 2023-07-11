@@ -29,38 +29,6 @@ return {
             -- custom sources
             local h = require 'null-ls.helpers'
 
-            local blackd = {
-                name = 'blackd',
-                method = null_ls.methods.FORMATTING,
-                filetypes = { 'python' },
-                generator = h.formatter_factory {
-                    command = 'blackd-client',
-                    to_stdin = true,
-                },
-            }
-
-            local isortd = {
-                name = 'isortd',
-                method = null_ls.methods.FORMATTING,
-                filetypes = { 'python' },
-                generator = h.formatter_factory {
-                    command = 'curl',
-                    args = {
-                        '-s',
-                        '-X',
-                        'POST',
-                        'localhost:47393',
-                        '-H',
-                        'XX-SRC: $ROOT',
-                        '-H',
-                        'XX-PATH: $FILENAME',
-                        '--data-binary',
-                        '@-',
-                    },
-                    to_stdin = true,
-                },
-            }
-
             local function dprint_config()
                 local lsputil = require 'lspconfig.util'
                 local path = lsputil.path.join(vim.loop.cwd(), 'dprint.jsonc')
@@ -69,7 +37,7 @@ return {
                     print(path)
                     return path
                 end
-                local path = lsputil.path.join(vim.loop.cwd(), 'dprint.json')
+                path = lsputil.path.join(vim.loop.cwd(), 'dprint.json')
                 if lsputil.path.exists(path) then
                     print 'found local dprint config'
                     print(path)
@@ -117,8 +85,13 @@ return {
                         return utils.root_has_file 'stylua.toml'
                     end,
                 },
-                isortd,
-                blackd,
+                null_ls.builtins.formatting.isortd,
+                null_ls.builtins.formatting.blackd.with {
+                    config = {
+                        fast = true,
+                        preview = false,
+                    },
+                },
                 -- null_ls.builtins.diagnostics.ruff,
                 -- null_ls.builtins.formatting.ruff,
                 dprint,
