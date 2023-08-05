@@ -551,3 +551,9 @@ cmd [[
 -----------------------------------------------------------------------------//
 -- }}}1
 -----------------------------------------------------------------------------//
+-- HACK: workaround for libuv issue, exit code 134
+vim.api.nvim_create_autocmd({ 'VimLeave' }, {
+    callback = function()
+        vim.cmd 'sleep 10m'
+    end,
+})
