@@ -204,7 +204,7 @@ return {
                     end
                 end,
             },
-            { '<leader>oi', '<cmd>Octo issue listend<cr>' },
+            { '<leader>oi', '<cmd>Octo issue list<cr>' },
         },
         opts = { date_format = '%Y %b %d %H:%M' },
     },
