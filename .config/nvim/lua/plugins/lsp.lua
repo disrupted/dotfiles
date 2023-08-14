@@ -21,7 +21,7 @@ return {
         lazy = true,
     },
     {
-        'jose-elias-alvarez/null-ls.nvim',
+        'mskelton/null-ls.nvim',
         event = 'BufReadPre',
         opts = function()
             local null_ls = require 'null-ls'
