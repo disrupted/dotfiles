@@ -137,7 +137,7 @@ return {
         end,
     },
     {
-        'TimUntersberger/neogit',
+        'NeogitOrg/neogit',
         keys = {
             {
                 '<leader>g',
