@@ -63,7 +63,7 @@ function M.setup()
         -- abort if the buffer has been modified before the formatting has finished
         if
             not vim.api.nvim_buf_is_loaded(bufnr)
-            or vim.api.nvim_buf_get_option(bufnr, 'modified')
+            or vim.api.nvim_get_option_value('modified', { buf = bufnr })
         then
             return
         end
