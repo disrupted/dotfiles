@@ -670,34 +670,32 @@ function M.config()
     }
 
     -- RUST
-    _G.init_rust_analyzer = function()
-        require('rust-tools').setup {
-            server = {
-                capabilities = capabilities,
-                flags = { debounce_text_changes = 150 },
-                settings = {
-                    ['rust-analyzer'] = {
-                        diagnostics = { enable = true },
-                        assist = {
-                            importGranularity = 'module',
-                            importPrefix = 'by_self',
-                        },
-                        cargo = {
-                            loadOutDirsFromCheck = true,
-                        },
-                        procMacro = {
-                            enable = true,
-                        },
-                        checkOnSave = {
-                            allFeatures = true,
-                            overrideCommand = {
-                                'cargo',
-                                'clippy',
-                                '--workspace',
-                                '--message-format=json',
-                                '--all-targets',
-                                '--all-features',
-                            },
+    require('rust-tools').setup {
+        server = {
+            capabilities = capabilities,
+            flags = { debounce_text_changes = 150 },
+            settings = {
+                ['rust-analyzer'] = {
+                    diagnostics = { enable = true },
+                    assist = {
+                        importGranularity = 'module',
+                        importPrefix = 'by_self',
+                    },
+                    cargo = {
+                        loadOutDirsFromCheck = true,
+                    },
+                    procMacro = {
+                        enable = true,
+                    },
+                    checkOnSave = {
+                        allFeatures = true,
+                        overrideCommand = {
+                            'cargo',
+                            'clippy',
+                            '--workspace',
+                            '--message-format=json',
+                            '--all-targets',
+                            '--all-features',
                         },
                     },
                 },
@@ -711,15 +709,8 @@ function M.config()
                     other_hints_prefix = '⟹  ',
                 },
             },
-        }
-    end
-
-    vim.cmd [[
-        augroup rust_analyzer
-            autocmd!
-            autocmd FileType rust ++once lua init_rust_analyzer(); vim.cmd.bufdo 'e'
-        augroup END
-        ]]
+        },
+    }
 
     -- GO
     lspconfig.gopls.setup {
