@@ -1,5 +1,5 @@
 return {
-    { 'TornaxO7/tree-setter', enabled = false },
+    { 'filNaj/tree-setter', enabled = true },
     {
         'nvim-treesitter/nvim-treesitter',
         event = { 'BufRead', 'BufNewFile' },
@@ -149,7 +149,7 @@ return {
                     enable_autocmd = false,
                 },
                 tree_setter = {
-                    enable = false,
+                    enable = true,
                 },
             }
 
