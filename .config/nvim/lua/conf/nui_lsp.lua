@@ -4,57 +4,6 @@ local event = require('nui.utils.autocmd').event
 local utils = require 'utils'
 local notify = require 'notify'
 
-local function handler(err, result, ctx, _)
-    if err or not result then
-        vim.notify(
-            ('Error running LSP query \'%s\': %s'):format(ctx.method, err),
-            vim.log.levels.ERROR
-        )
-        return
-    end
-
-    local curr_name = vim.fn.expand '<cword>'
-
-    -- the `result` contains all the places we need to update the
-    -- name of the identifier. so we apply those edits.
-    local client = vim.lsp.get_client_by_id(ctx.client_id)
-    vim.lsp.util.apply_workspace_edit(
-        result,
-        client and client.offset_encoding or 'utf-16'
-    )
-
-    -- display notification with the changed files
-    -- https://github.com/mattleong/CosmicNvim/blob/85fea07d98a340813898c35ea8266efdd826fe88/lua/cosmic/core/theme/ui.lua
-    if result.changes then
-        local msg = {}
-        local new_name = ''
-        for f, c in pairs(result.changes) do
-            new_name = c[1].newText
-            table.insert(
-                msg,
-                ('%d changes: %s'):format(#c, utils.get_relative_path(f))
-            )
-        end
-        notify(msg, vim.log.levels.INFO, {
-            title = {
-                ('Rename: %s -> %s'):format(curr_name, new_name),
-                '',
-            },
-        })
-
-        -- after the edits are applied, the files are not saved automatically.
-        -- let's remind ourselves to save those...
-        local total_files = vim.tbl_count(result.changes)
-        print(
-            string.format(
-                'Changed %s file%s. To save them run \':wa\'',
-                total_files,
-                total_files > 1 and 's' or ''
-            )
-        )
-    end
-end
-
 local function nui_lsp_rename()
     local curr_name = vim.fn.expand '<cword>'
 
@@ -71,7 +20,65 @@ local function nui_lsp_rename()
         params.newName = new_name
 
         -- send the `textDocument/rename` request to LSP server
-        vim.lsp.buf_request(0, 'textDocument/rename', params, handler)
+        vim.lsp.buf_request(
+            0,
+            'textDocument/rename',
+            params,
+            function(err, result, ctx, _)
+                if err or not result then
+                    vim.notify(
+                        ('Error running LSP query \'%s\': %s'):format(
+                            ctx.method,
+                            err
+                        ),
+                        vim.log.levels.ERROR
+                    )
+                    return
+                end
+
+                -- the `result` contains all the places we need to update the
+                -- name of the identifier. so we apply those edits.
+                local client = vim.lsp.get_client_by_id(ctx.client_id)
+                vim.lsp.util.apply_workspace_edit(
+                    result,
+                    client and client.offset_encoding or 'utf-16'
+                )
+
+                -- display notification with the changed files
+                -- https://github.com/mattleong/CosmicNvim/blob/85fea07d98a340813898c35ea8266efdd826fe88/lua/cosmic/core/theme/ui.lua
+                if result.documentChanges then
+                    local msg = {}
+                    for _, changes in pairs(result.documentChanges) do
+                        table.insert(
+                            msg,
+                            ('%d changes: %s'):format(
+                                #changes.edits,
+                                utils.get_relative_path(
+                                    changes.textDocument.uri
+                                )
+                            )
+                        )
+                    end
+                    notify(msg, vim.log.levels.INFO, {
+                        title = {
+                            ('Rename: %s -> %s'):format(curr_name, new_name),
+                            '',
+                        },
+                    })
+
+                    -- after the edits are applied, the files are not saved automatically.
+                    -- let's remind ourselves to save those...
+                    local total_files = vim.tbl_count(result.documentChanges)
+                    print(
+                        string.format(
+                            'Changed %s file%s. To save them run \':wa\'',
+                            total_files,
+                            total_files > 1 and 's' or ''
+                        )
+                    )
+                end
+            end
+        )
     end
 
     local popup_options = {

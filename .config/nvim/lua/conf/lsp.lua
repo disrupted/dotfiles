@@ -442,13 +442,17 @@ function M.setup()
         end,
     })
 
-    --[[ vim.api.nvim_create_autocmd('LspAttach', {
+    vim.api.nvim_create_autocmd('LspAttach', {
         group = au,
         desc = 'LSP notify',
-        callback = function()
-            vim.notify 'LSP attached'
+        callback = function(args)
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            vim.notify(
+                ('%s attached to buffer %s'):format(client.name, args.buf),
+                vim.log.levels.DEBUG
+            )
         end,
-    }) ]]
+    })
 end
 
 function M.config()
