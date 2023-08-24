@@ -415,14 +415,14 @@ function M.setup()
             local client = vim.lsp.get_client_by_id(args.data.client_id)
             if client and client.supports_method 'textDocument/inlayHint' then
                 vim.notify('register inlay hints', vim.lsp.log_levels.INFO)
-                local lsp_inlayhints = require 'lsp-inlayhints'
-                lsp_inlayhints.setup {
-                    enabled_at_startup = true,
-                    debug_mode = false,
-                }
-                lsp_inlayhints.on_attach(client, bufnr, false)
+                -- local lsp_inlayhints = require 'lsp-inlayhints'
+                -- lsp_inlayhints.setup {
+                --     enabled_at_startup = true,
+                --     debug_mode = false,
+                -- }
+                -- lsp_inlayhints.on_attach(client, bufnr, false)
                 -- TODO: native inlay hints, also when cycling between two bufs making changes to function parameter hints
-                --[[ vim.api.nvim_create_autocmd({
+                vim.api.nvim_create_autocmd({
                     'BufWritePost',
                     'BufEnter',
                     'InsertLeave',
@@ -434,8 +434,13 @@ function M.setup()
                         vim.lsp.inlay_hint(bufnr, true)
                     end,
                 })
+                vim.api.nvim_create_autocmd('InsertEnter', {
+                    callback = function()
+                        vim.lsp.inlay_hint(bufnr, false)
+                    end,
+                })
                 -- initial request
-                vim.lsp.inlay_hint(bufnr) ]]
+                vim.lsp.inlay_hint(bufnr, true)
             end
         end,
     })
