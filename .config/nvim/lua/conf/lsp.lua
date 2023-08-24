@@ -275,7 +275,10 @@ function M.setup()
         callback = function(args)
             local bufnr = args.buf
             local client = vim.lsp.get_client_by_id(args.data.client_id)
-            if client.supports_method 'textDocument/documentHighlight' then
+            if
+                client
+                and client.supports_method 'textDocument/documentHighlight'
+            then
                 local augroup_lsp_highlight = 'lsp_highlight'
                 vim.api.nvim_create_augroup(
                     augroup_lsp_highlight,
@@ -302,15 +305,30 @@ function M.setup()
         callback = function(args)
             local bufnr = args.buf
             local client = vim.lsp.get_client_by_id(args.data.client_id)
-            if client.supports_method 'textDocument/formatting' then
-                vim.api.nvim_clear_autocmds {
-                    group = augroup_lsp_format,
-                    buffer = bufnr,
-                }
-                vim.api.nvim_create_autocmd('BufWritePost', {
-                    group = augroup_lsp_format,
-                    buffer = bufnr,
-                    callback = function()
+            if not client then
+                return
+            end
+            local existing_autocommands = vim.api.nvim_get_autocmds {
+                group = augroup_lsp_format,
+                buffer = bufnr,
+            }
+            for _, existing_autocommand in ipairs(existing_autocommands) do
+                if existing_autocommand.desc:match(client.name) then
+                    vim.api.nvim_clear_autocmds {
+                        group = augroup_lsp_format,
+                        buffer = bufnr,
+                    }
+                    break
+                end
+            end
+
+            vim.api.nvim_create_autocmd('BufWritePost', {
+                group = augroup_lsp_format,
+                buffer = bufnr,
+                desc = ('%s format'):format(client.name),
+                callback = function()
+                    if client.supports_method 'textDocument/formatting' then
+                        print(('%s format b%s'):format(client.name, bufnr))
                         vim.lsp.buf.format {
                             async = true,
                             bufnr = bufnr,
@@ -327,9 +345,9 @@ function M.setup()
                                 )
                             end,
                         }
-                    end,
-                })
-            end
+                    end
+                end,
+            })
         end,
     })
 
@@ -339,7 +357,7 @@ function M.setup()
         callback = function(args)
             local bufnr = args.buf
             local client = vim.lsp.get_client_by_id(args.data.client_id)
-            if client.supports_method 'textDocument/codeAction' then
+            if client and client.supports_method 'textDocument/codeAction' then
                 vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
                     buffer = bufnr,
                     callback = function()
@@ -395,7 +413,7 @@ function M.setup()
         callback = function(args)
             local bufnr = args.buf
             local client = vim.lsp.get_client_by_id(args.data.client_id)
-            if client.supports_method 'textDocument/inlayHint' then
+            if client and client.supports_method 'textDocument/inlayHint' then
                 vim.notify('register inlay hints', vim.lsp.log_levels.INFO)
                 local lsp_inlayhints = require 'lsp-inlayhints'
                 lsp_inlayhints.setup {
@@ -403,7 +421,7 @@ function M.setup()
                     debug_mode = false,
                 }
                 lsp_inlayhints.on_attach(client, bufnr, false)
-                -- TODO: native inlay hints
+                -- TODO: native inlay hints, also when cycling between two bufs making changes to function parameter hints
                 --[[ vim.api.nvim_create_autocmd({
                     'BufWritePost',
                     'BufEnter',
@@ -413,11 +431,11 @@ function M.setup()
                 }, {
                     buffer = bufnr,
                     callback = function()
-                        vim.lsp.buf.inlay_hint(bufnr, true)
+                        vim.lsp.inlay_hint(bufnr, true)
                     end,
                 })
                 -- initial request
-                vim.lsp.buf.inlay_hint(bufnr) ]]
+                vim.lsp.inlay_hint(bufnr) ]]
             end
         end,
     })
@@ -447,10 +465,12 @@ function M.setup()
         desc = 'LSP notify',
         callback = function(args)
             local client = vim.lsp.get_client_by_id(args.data.client_id)
-            vim.notify(
-                ('%s attached to buffer %s'):format(client.name, args.buf),
-                vim.log.levels.DEBUG
-            )
+            if client then
+                vim.notify(
+                    ('%s attached to buffer %s'):format(client.name, args.buf),
+                    vim.log.levels.DEBUG
+                )
+            end
         end,
     })
 end
@@ -474,23 +494,6 @@ function M.config()
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
     }
-
-    -- local lsp_configs = require 'lspconfig.configs'
-    -- lsp_configs.pylyzer = {
-    --     default_config = {
-    --         cmd = { 'pylyzer' },
-    --         filetypes = { 'python' },
-    --         single_file_support = true,
-    --         root_dir = lspconfig.util.root_pattern(
-    --             '.git',
-    --             'setup.py',
-    --             'setup.cfg',
-    --             'pyproject.toml',
-    --             'requirements.txt'
-    --         ),
-    --         settings = {},
-    --     },
-    -- }
 
     -- lspconfig.pylyzer.setup {
     --     capabilities = capabilities,
@@ -542,7 +545,7 @@ function M.config()
         flags = { debounce_text_changes = 150 },
         settings = {
             yaml = {
-                format = { enable = false },
+                format = { enable = true },
                 -- customTags = {
                 --     '!secret',
                 --     '!include_dir_named',
@@ -557,11 +560,11 @@ function M.config()
                 schemas = {
                     ['https://json.schemastore.org/github-workflow.json'] = '/.github/workflows/*',
                     ['https://json.schemastore.org/chart.json'] = '/templates/*',
-                    -- ['/Users/disrupted/bakdata/kpops/docs/docs/schema/pipeline.json'] = 'pipeline.yaml',
-                    -- ['/Users/disrupted/bakdata/deploy/hubble-deployment/pipeline.json'] = 'pipeline.yaml',
+                    -- ['pipeline.json'] = 'pipeline.yaml',
                     ['/Users/disrupted/bakdata/kpops/pipeline.json'] = 'pipeline.yaml',
+                    -- ['/Users/disrupted/bakdata/kpops/docs/docs/schema/pipeline.json'] = 'pipeline.yaml',
                     ['/Users/disrupted/bakdata/kpops/docs/docs/schema/config.json'] = 'config.yaml',
-                    ['/Users/disrupted/bakdata/kpops/schema_defaults.json'] = 'defaults.yaml',
+                    -- ['/Users/disrupted/bakdata/kpops/schema_defaults.json'] = 'defaults.yaml',
                     -- ['https://bakdata.github.io/kpops/latest/schema/config.json'] = 'config.yaml',
                     -- ['https://bakdata.github.io/kpops/latest/schema/pipeline.json'] = 'pipeline.yaml',
                 },
