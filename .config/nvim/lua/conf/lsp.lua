@@ -736,7 +736,7 @@ function M.config()
                 telemetry = { enable = false },
                 diagnostics = { unusedLocalExclude = { '_*' } },
                 format = { enable = false },
-                hint = { enable = true },
+                hint = { enable = true, arrayIndex = 'Disable' },
             },
         },
     }
