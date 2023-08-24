@@ -9,7 +9,7 @@ return {
             require('conf.lsp').config()
         end,
         dependencies = {
-            'folke/neodev.nvim',
+            { 'folke/neodev.nvim', config = true },
             'hrsh7th/cmp-nvim-lsp',
         },
     },

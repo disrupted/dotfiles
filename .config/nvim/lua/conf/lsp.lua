@@ -481,12 +481,6 @@ function M.setup()
 end
 
 function M.config()
-    require('neodev').setup {
-        override = function(root_dir, library)
-            library.enabled = true
-            library.plugins = true
-        end,
-    }
     local lspconfig = require 'lspconfig'
 
     -- client log level
