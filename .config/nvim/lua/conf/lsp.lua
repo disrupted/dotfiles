@@ -542,38 +542,57 @@ function M.config()
     lspconfig.yamlls.setup {
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
+        handlers = {
+            ['textDocument/publishDiagnostics'] = function(
+                err,
+                result,
+                ctx,
+                config
+            )
+                result.diagnostics = vim.tbl_filter(function(diagnostic)
+                    -- only filter diagnostics for KPOps files
+                    if
+                        not result.uri:match 'pipeline[_%w]*.yaml'
+                        and not result.uri:match 'config.yaml'
+                    then
+                        return true
+                    end
+
+                    -- disable diagnostics for missing property
+                    -- these could be defined in the defaults (for pipeline.yaml)
+                    -- or as environment variables (for config.yaml)
+                    if diagnostic.message:match 'Missing property ' then
+                        return false
+                    end
+
+                    return true
+                end, result.diagnostics)
+
+                vim.lsp.handlers['textDocument/publishDiagnostics'](
+                    err,
+                    result,
+                    ctx,
+                    config
+                )
+            end,
+        },
         settings = {
             yaml = {
                 format = { enable = true },
-                -- customTags = {
-                --     '!secret',
-                --     '!include_dir_named',
-                --     '!include_dir_list',
-                --     '!include_dir_merge_named',
-                --     '!include_dir_merge_list',
-                --     '!lambda',
-                --     '!input',
-                --     '!reference sequence',
-                -- },
-                -- schemaStore = { enable = true },
                 schemas = {
-                    ['https://json.schemastore.org/github-workflow.json'] = '/.github/workflows/*',
-                    ['https://json.schemastore.org/chart.json'] = '/templates/*',
-                    -- ['pipeline.json'] = 'pipeline.yaml',
-                    ['/Users/disrupted/bakdata/kpops/pipeline.json'] = 'pipeline.yaml',
-                    -- ['/Users/disrupted/bakdata/kpops/docs/docs/schema/pipeline.json'] = 'pipeline.yaml',
+                    -- KPOps
+                    ['pipeline.json'] = {
+                        'pipeline.yaml',
+                        'pipeline_*.yaml',
+                    },
                     ['/Users/disrupted/bakdata/kpops/docs/docs/schema/config.json'] = 'config.yaml',
-                    -- ['/Users/disrupted/bakdata/kpops/schema_defaults.json'] = 'defaults.yaml',
-                    -- ['https://bakdata.github.io/kpops/latest/schema/config.json'] = 'config.yaml',
-                    -- ['https://bakdata.github.io/kpops/latest/schema/pipeline.json'] = 'pipeline.yaml',
+                    -- GitHub CI workflows
+                    ['https://json.schemastore.org/github-workflow.json'] = '/.github/workflows/*',
+                    -- Helm charts
+                    ['https://json.schemastore.org/chart.json'] = '/templates/*',
                 },
             },
         },
-        -- handlers = {
-        --     ['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
-        --         stylize_markdown = true,
-        --     }),
-        -- },
     }
 
     -- JSON
