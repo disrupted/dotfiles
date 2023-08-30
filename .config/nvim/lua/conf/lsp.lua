@@ -48,9 +48,16 @@ function M.setup()
     -- If the buffer has been edited before formatting has completed, do not try to
     -- apply the changes, original by Lukas Reineke
     vim.lsp.handlers['textDocument/formatting'] = function(err, result, ctx)
+        local client = vim.lsp.get_client_by_id(ctx.client_id)
+        if not client then
+            return
+        end
         if err then
             local err_msg = type(err) == 'string' and err or err.message
-            vim.notify('error formatting: ' .. err_msg, vim.log.levels.ERROR)
+            vim.notify(
+                ('%s formatting error: %s'):format(client.name, err_msg),
+                vim.log.levels.ERROR
+            )
             return
         end
 
@@ -69,17 +76,19 @@ function M.setup()
         end
 
         -- local pos = vim.api.nvim_win_get_cursor(0)
-        local client = vim.lsp.get_client_by_id(ctx.client_id)
         vim.lsp.util.apply_text_edits(
             result,
             bufnr,
-            client and client.offset_encoding or 'utf-16'
+            client.offset_encoding or 'utf-16'
         )
         -- pcall(vim.api.nvim_win_set_cursor, 0, pos)
         vim.api.nvim_buf_call(bufnr, function()
             vim.cmd 'silent noautocmd update'
         end)
-        vim.notify('formatting success', vim.lsp.log_levels.DEBUG)
+        vim.notify(
+            ('%s formatting success'):format(client.name),
+            vim.lsp.log_levels.DEBUG
+        )
 
         -- Trigger post-formatting autocommand which can be used to refresh gitsigns
         -- vim.api.nvim_exec_autocmds(
@@ -328,13 +337,13 @@ function M.setup()
                 desc = ('%s format'):format(client.name),
                 callback = function()
                     if client.supports_method 'textDocument/formatting' then
-                        print(('%s format b%s'):format(client.name, bufnr))
                         vim.lsp.buf.format {
                             async = true,
                             bufnr = bufnr,
                             filter = function(server)
                                 -- return server.name == 'null-ls'
                                 local disabled_servers = {
+                                    'pylance',
                                     'eslint',
                                     'tsserver',
                                     'jsonls',
@@ -498,30 +507,6 @@ function M.config()
     --     capabilities = capabilities,
     --     flags = { debounce_text_changes = 150 },
     -- }
-
-    -- Synchronously organise (Go) imports.
-    -- local function go_organize_imports_sync(timeout_ms)
-    --     local context = { source = { organizeImports = true } }
-    --     vim.validate { context = { context, 't', true } }
-    --     local params = vim.lsp.util.make_range_params()
-    --     params.context = context
-
-    --     local result = vim.lsp.buf_request_sync(
-    --         0,
-    --         'textDocument/codeAction',
-    --         params,
-    --         timeout_ms
-    --     )
-    --     if not result then
-    --         return
-    --     end
-    --     result = result[1].result
-    --     if not result then
-    --         return
-    --     end
-    --     local edit = result[1].edit
-    --     vim.lsp.util.apply_workspace_edit(edit, 'utf-16')
-    -- end
 
     lspconfig.dockerls.setup {
         capabilities = capabilities,
