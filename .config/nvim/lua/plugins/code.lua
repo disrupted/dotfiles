@@ -84,6 +84,7 @@ return {
             npairs.setup(opts)
 
             local Rule = require 'nvim-autopairs.rule'
+            npairs.add_rule(Rule('[', ']'))
             npairs.add_rule(Rule('<', '>'))
             npairs.add_rule(Rule('|', '|', 'rust'))
         end,
