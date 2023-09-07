@@ -563,7 +563,7 @@ function M.config()
         },
         settings = {
             yaml = {
-                format = { enable = true },
+                editor = { formatOnType = true },
                 schemas = {
                     -- KPOps
                     ['pipeline.json'] = {

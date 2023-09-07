@@ -72,7 +72,7 @@ return {
                             '--config',
                             dprint_config(),
                             '--stdin',
-                            '$FILEEXT',
+                            '$FILENAME', -- full path, necessary to check against include/exclude rules
                         }
                     end,
                     to_stdin = true,
@@ -103,7 +103,7 @@ return {
                         -- 'scss',
                         'less',
                         'html',
-                        -- 'yaml',
+                        'yaml',
                         'graphql',
                     },
                     -- condition = function(utils)
