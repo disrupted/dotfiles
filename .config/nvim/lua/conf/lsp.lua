@@ -423,7 +423,7 @@ function M.setup()
             local bufnr = args.buf
             local client = vim.lsp.get_client_by_id(args.data.client_id)
             if client and client.supports_method 'textDocument/inlayHint' then
-                vim.notify('register inlay hints', vim.lsp.log_levels.INFO)
+                vim.notify('register inlay hints', vim.lsp.log_levels.DEBUG)
                 -- local lsp_inlayhints = require 'lsp-inlayhints'
                 -- lsp_inlayhints.setup {
                 --     enabled_at_startup = true,
@@ -535,6 +535,12 @@ function M.config()
                 config
             )
                 result.diagnostics = vim.tbl_filter(function(diagnostic)
+                    -- HACK: disable diagnostics for KPOps defaults (until a schema exists for it)
+                    -- otherwise it uses the schema for ansible defaults
+                    if result.uri:match 'defaults[_%w]*.yaml' then
+                        return false
+                    end
+
                     -- only filter diagnostics for KPOps files
                     if
                         not result.uri:match 'pipeline[_%w]*.yaml'
