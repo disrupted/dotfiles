@@ -508,6 +508,33 @@ function M.config()
     --     flags = { debounce_text_changes = 150 },
     -- }
 
+    lspconfig.ruff_lsp.setup {
+        commands = {
+            RuffAutofix = {
+                function()
+                    vim.lsp.buf.execute_command {
+                        command = 'ruff.applyAutofix',
+                        arguments = {
+                            { uri = vim.uri_from_bufnr(0) },
+                        },
+                    }
+                end,
+                description = 'Ruff: Fix all auto-fixable problems',
+            },
+            RuffOrganizeImports = {
+                function()
+                    vim.lsp.buf.execute_command {
+                        command = 'ruff.applyOrganizeImports',
+                        arguments = {
+                            { uri = vim.uri_from_bufnr(0) },
+                        },
+                    }
+                end,
+                description = 'Ruff: Format imports',
+            },
+        },
+    }
+
     lspconfig.dockerls.setup {
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
