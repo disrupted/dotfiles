@@ -79,6 +79,25 @@ return {
                 },
             }
 
+            local ruff_format = {
+                name = 'ruff',
+                method = null_ls.methods.FORMATTING,
+                filetypes = { 'python' },
+                generator = h.formatter_factory {
+                    command = 'ruff',
+                    args = {
+                        'format',
+                        '--silent',
+                        '--respect-gitignore',
+                        '--force-exclude',
+                        '--stdin-filename',
+                        '$FILENAME',
+                        '-',
+                    },
+                    to_stdin = true,
+                },
+            }
+
             local sources = {
                 null_ls.builtins.formatting.stylua.with {
                     condition = function(utils)
@@ -94,6 +113,8 @@ return {
                 },
                 -- null_ls.builtins.diagnostics.ruff,
                 -- null_ls.builtins.formatting.ruff,
+                -- ruff_format,
+                -- null_ls.builtins.formatting.dprint,
                 dprint,
                 null_ls.builtins.formatting.prettierd.with {
                     filetypes = {
@@ -103,7 +124,7 @@ return {
                         -- 'scss',
                         'less',
                         'html',
-                        'yaml',
+                        -- 'yaml',
                         'graphql',
                     },
                     -- condition = function(utils)
