@@ -153,6 +153,7 @@ return {
         config = function(_, opts)
             require('nvim-treesitter.configs').setup(opts)
 
+            vim.treesitter.language.register('terraform', 'terraform-vars')
             -- use treesitter highlighting for markdown in Octo
             vim.treesitter.language.register('markdown', 'octo')
         end,
