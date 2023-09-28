@@ -606,9 +606,7 @@ return {
             })
 
             local function lsp_check_diagnostics()
-                if
-                    vim.tbl_isempty(vim.lsp.get_active_clients { bufnr = 0 })
-                then
+                if vim.tbl_isempty(vim.lsp.get_clients { bufnr = 0 }) then
                     return ''
                 end
                 local diagnostics = vim.diagnostic.get(
@@ -769,33 +767,30 @@ return {
     { 'kyazdani42/nvim-web-devicons', lazy = true },
     {
         'lukas-reineke/indent-blankline.nvim',
+        main = 'ibl',
         event = 'BufWinEnter',
         opts = {
-            char = '▏',
-            context_char = '▏',
-            show_first_indent_level = false,
-            filetype_exclude = {
-                'help',
-                'markdown',
-                'gitcommit',
-                'packer',
+            indent = { char = '▏' },
+            exclude = {
+                filetype = {
+                    'help',
+                    'markdown',
+                    'gitcommit',
+                    'packer',
+                },
+                buftype = { 'terminal', 'nofile' },
             },
-            buftype_exclude = { 'terminal', 'nofile' },
-            use_treesitter = true,
-            -- show_current_context = true,
-            -- context_patterns = {
-            --     'class',
-            --     'function',
-            --     'method',
-            --     '^if',
-            --     '^while',
-            --     '^for',
-            --     '^object',
-            --     '^table',
-            --     'block',
-            --     'arguments',
-            -- },
+            scope = { enabled = false },
         },
+        config = function(_, opts)
+            require('ibl').setup(opts)
+
+            local hooks = require 'ibl.hooks'
+            hooks.register(
+                hooks.type.WHITESPACE,
+                hooks.builtin.hide_first_space_indent_level
+            )
+        end,
     },
     {
         'kwkarlwang/bufresize.nvim',
