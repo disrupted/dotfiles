@@ -772,13 +772,13 @@ return {
         opts = {
             indent = { char = '▏' },
             exclude = {
-                filetype = {
+                filetypes = {
                     'help',
                     'markdown',
                     'gitcommit',
                     'packer',
                 },
-                buftype = { 'terminal', 'nofile' },
+                buftypes = { 'terminal', 'nofile' },
             },
             scope = { enabled = false },
         },
