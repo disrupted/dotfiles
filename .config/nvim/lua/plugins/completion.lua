@@ -14,7 +14,9 @@ return {
             vim.api.nvim_set_hl(0, 'LuasnipChoiceNodeActive', { bold = true })
 
             ls.config.set_config {
-                history = true,
+                keep_roots = true,
+                link_roots = true,
+                link_children = true,
                 region_check_events = 'CursorMoved,CursorHold,InsertEnter',
                 delete_check_events = 'InsertLeave',
                 ext_opts = {
@@ -273,14 +275,12 @@ return {
             'f3fora/cmp-spell',
             {
                 'petertriho/cmp-git',
-                config = function()
-                    require('cmp_git').setup {
-                        filetypes = {
-                            'gitcommit',
-                            'markdown', -- for gh cli
-                        },
-                    }
-                end,
+                opts = {
+                    filetypes = {
+                        'gitcommit',
+                        'markdown', -- for gh cli
+                    },
+                },
             },
         },
     },
