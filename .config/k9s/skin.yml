@@ -1,17 +1,16 @@
 # color presets (mostly one_dark)
-foreground: &foreground "#abb2bf"
+foreground: &foreground black
 background: &background default
-black: &black "#080808"
+black: &black black
 blue: &blue "#61afef"
 green: &green "#98c379"
-grey: &grey "#abb2bf"
-orange: &orange "#ffb86c"
-purple: &purple "#c678dd"
-red: &red "#e06370"
-yellow: &yellow "#e5c07b"
-yellow_bright: &yellow_bright "#d19a66"
+grey: &grey grey
+orange: &orange orange
+purple: &purple purple
+red: &red red
+yellow: &yellow orange
+yellow_bright: &yellow_bright default
 border: &border "#4B5263"
-darkgrey: &darkgrey "#5C6370"
 
 k9s:
   body:
