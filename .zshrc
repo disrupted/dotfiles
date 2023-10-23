@@ -290,14 +290,28 @@ export SHELL='/opt/homebrew/bin/zsh'
 export LANG='en_US.UTF-8'
 export LC_ALL='en_US.UTF-8'
 export WORDCHARS='~!#$%^&*(){}[]<>?.+;'  # sane moving between words on the prompt
+export PROMPT_EOL_MARK=''  # hide % at end of output
 export GPG_TTY=$(tty)
-export PATH="/opt/homebrew/opt/llvm/bin:$PATH"  # llvm (c, cpp)
+
+# LLVM (C, C++)
+export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+
+# Python pipx
 export PATH="$HOME/.local/bin:$PATH"  # pipx
-export PATH="$HOME/.deno/bin:$PATH"   # deno
+
+# Rust
 export PATH="$HOME/.cargo/bin:$PATH"  # Rust cargo
+
+# Golang
 export GOPATH="$HOME/go"
 export PATH="$GOPATH/bin:$PATH"
-export PROMPT_EOL_MARK=''  # hide % at end of output
+
+# Mojo
+export MODULAR_HOME="$HOME/.modular"
+export PATH="$MODULAR_HOME/pkg/packages.modular.com_mojo/bin:$PATH"
+
+# Deno
+export PATH="$HOME/.deno/bin:$PATH"   # deno
 
 #####################
 # COMPLETIONS       #
