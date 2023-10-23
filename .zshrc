@@ -268,12 +268,32 @@ bindkey "^[[1;5A" up-line-or-history    # [CTRL] + Cursor up
 bindkey "^[[1;5B" down-line-or-history  # [CTRL] + Cursor down
 
 #####################
-# ENV VARIABLE      #
+# HOMEBREW          #
+#####################
+if type brew &>/dev/null; then
+    export HOMEBREW_HOME=$(brew --prefix)
+    export HOMEBREW_CASK_OPTS=--no-quarantine
+    export PATH="$HOMEBREW_HOME/bin:$PATH"
+    export PATH="$HOMEBREW_HOME/sbin:$PATH"
+    export SHELL="$HOMEBREW_HOME/bin/zsh"
+
+    # completions
+    FPATH="$HOMEBREW_HOME/share/zsh/site-functions:$FPATH"
+
+    # LLVM (C, C++)
+    export PATH="$HOMEBREW_HOME/opt/llvm/bin:$PATH"
+
+    # For compilers and pkgconfig to find zlib, bzip2, llvm (c, cpp)
+    export LDFLAGS="-L$HOMEBREW_HOME/opt/zlib/lib -L$HOMEBREW_HOME/opt/bzip2/lib -L$HOMEBREW_HOME/opt/llvm/lib -Wl,-rpath,$HOMEBREW_HOME/opt/llvm/lib"
+    export CPPFLAGS="-I$HOMEBREW_HOME/opt/zlib/include -I$HOMEBREW_HOME/opt/bzip2/include -I$HOMEBREW_HOME/opt/llvm/include"
+    export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} $HOMEBREW_HOME/opt/zlib/lib/pkgconfig"
+fi
+
+#####################
+# SHELL ENVIRONMENT #
 #####################
 # export TERM=xterm-256color
 export TERMINAL='kitty'
-export PATH="/opt/homebrew/bin:$PATH"  # Homebrew
-export PATH="/opt/homebrew/sbin:$PATH"
 export EDITOR='nvim'
 export VISUAL=$EDITOR
 export PAGER='less'
@@ -286,24 +306,19 @@ export LESS_TERMCAP_me=$'\E[0m'     # end mode
 export LESS_TERMCAP_ue=$'\E[0m'     # end underline
 export LESS_TERMCAP_se=$'\E[0m'     # end standout-mode
 export MANPAGER='nvim +Man!'
-export SHELL='/opt/homebrew/bin/zsh'
 export LANG='en_US.UTF-8'
 export LC_ALL='en_US.UTF-8'
 export WORDCHARS='~!#$%^&*(){}[]<>?.+;'  # sane moving between words on the prompt
 export PROMPT_EOL_MARK=''  # hide % at end of output
 export GPG_TTY=$(tty)
 
-# LLVM (C, C++)
-export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-
 # Python pipx
-export PATH="$HOME/.local/bin:$PATH"  # pipx
+export PATH="$HOME/.local/bin:$PATH"
 
 # Rust
-export PATH="$HOME/.cargo/bin:$PATH"  # Rust cargo
+export PATH="$HOME/.cargo/bin:$PATH"
 
 # Golang
-export GOPATH="$HOME/go"
 export PATH="$GOPATH/bin:$PATH"
 
 # Mojo
@@ -311,15 +326,11 @@ export MODULAR_HOME="$HOME/.modular"
 export PATH="$MODULAR_HOME/pkg/packages.modular.com_mojo/bin:$PATH"
 
 # Deno
-export PATH="$HOME/.deno/bin:$PATH"   # deno
+export PATH="$HOME/.deno/bin:$PATH"
 
 #####################
 # COMPLETIONS       #
 #####################
-if type brew &>/dev/null; then
-  FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
-fi
-
 # load additional completions
 fpath+=~/.zfunc
 
@@ -376,22 +387,14 @@ export _ZO_FZF_OPTS=$FZF_DEFAULT_OPTS'
 --height=7'
 
 #####################
-# HOMEBREW          #
-#####################
-export HOMEBREW_CASK_OPTS=--no-quarantine
-
-#####################
 # MISC              #
 #####################
-# For compilers and pkgconfig to find zlib, bzip2, llvm (c, cpp)
-export LDFLAGS="-L/opt/homebrew/opt/zlib/lib -L/opt/homebrew/opt/bzip2/lib -L/opt/homebrew/opt/llvm/lib -Wl,-rpath,/opt/homebrew/opt/llvm/lib"
-export CPPFLAGS="-I/opt/homebrew/opt/zlib/include -I/opt/homebrew/opt/bzip2/include -I/opt/homebrew/opt/llvm/include"
-export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} /opt/homebrew/opt/zlib/lib/pkgconfig"
 
 # Google cloud cli
-[ -s "/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk" ] && \
-source "/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"  && \
-source "/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
+if [[ -s "$HOMEBREW_HOME/Caskroom/google-cloud-sdk/latest/google-cloud-sdk" ]]; then
+    source "$HOMEBREW_HOME/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
+    source "$HOMEBREW_HOME/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
+fi
 
 # Node version manager
 # eval "$(snm env zsh)"
@@ -400,7 +403,9 @@ source "/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completi
 eval "$(direnv hook zsh)"
 source ~/.config/op/plugins.sh
 
-# GIT
+#####################
+# GIT               #
+#####################
 # from https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh#L31-L41
 function git_main_branch() {
   command git rev-parse --git-dir &>/dev/null || return
