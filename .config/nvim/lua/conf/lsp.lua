@@ -34,7 +34,7 @@ function M.setup()
             sign = { enabled = false, priority = 99 },
             virtual_text = {
                 enabled = true,
-                text = '💡',
+                text = '',
                 hl_mode = 'combine',
             },
         }
@@ -554,56 +554,21 @@ function M.config()
     lspconfig.yamlls.setup {
         capabilities = capabilities,
         flags = { debounce_text_changes = 150 },
-        handlers = {
-            ['textDocument/publishDiagnostics'] = function(
-                err,
-                result,
-                ctx,
-                config
-            )
-                result.diagnostics = vim.tbl_filter(function(diagnostic)
-                    -- HACK: disable diagnostics for KPOps defaults (until a schema exists for it)
-                    -- otherwise it uses the schema for ansible defaults
-                    if result.uri:match 'defaults[_%w]*.yaml' then
-                        return false
-                    end
-
-                    -- only filter diagnostics for KPOps files
+        single_file_support = false,
+        root_dir = function(filename)
                     if
-                        not result.uri:match 'pipeline[_%w]*.yaml'
-                        and not result.uri:match 'config.yaml'
+                filename:match 'pipeline[_%w]*.yaml'
+                or filename:match 'config.yaml'
+                or filename:match 'defaults[_%w]*.yaml'
                     then
-                        return true
+                return nil -- handled by KPOps LSP
                     end
-
-                    -- disable diagnostics for missing property
-                    -- these could be defined in the defaults (for pipeline.yaml)
-                    -- or as environment variables (for config.yaml)
-                    if diagnostic.message:match 'Missing property ' then
-                        return false
-                    end
-
-                    return true
-                end, result.diagnostics)
-
-                vim.lsp.handlers['textDocument/publishDiagnostics'](
-                    err,
-                    result,
-                    ctx,
-                    config
-                )
+            return lspconfig.util.find_git_ancestor(filename) or vim.loop.cwd()
             end,
-        },
         settings = {
             yaml = {
                 editor = { formatOnType = true },
                 schemas = {
-                    -- KPOps
-                    ['pipeline.json'] = {
-                        'pipeline.yaml',
-                        'pipeline_*.yaml',
-                    },
-                    ['/Users/disrupted/bakdata/kpops/docs/docs/schema/config.json'] = 'config.yaml',
                     -- GitHub CI workflows
                     ['https://json.schemastore.org/github-workflow.json'] = '/.github/workflows/*',
                     -- Helm charts
@@ -649,10 +614,6 @@ function M.config()
                             'stylelint.config.json',
                         },
                         url = 'http://json.schemastore.org/stylelintrc.json',
-                    },
-                    {
-                        fileMatch = { 'pipeline.json' },
-                        url = '/Users/disrupted/bakdata/nlp/kafka-nlp-deployment/pipeline.json',
                     },
                 },
             },
@@ -747,6 +708,7 @@ function M.config()
                 runnables = { use_telescope = true },
                 inlay_hints = {
                     auto = false,
+                    only_current_line = true,
                     show_parameter_hints = false,
                     parameter_hints_prefix = ' ', -- ⟵
                     other_hints_prefix = '⟹  ',

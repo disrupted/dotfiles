@@ -13,6 +13,14 @@ return {
             'hrsh7th/cmp-nvim-lsp',
         },
     },
+    {
+        dir = '~/bakdata/kpops.nvim',
+        ft = 'yaml',
+        config = true,
+        dependencies = {
+            'neovim/nvim-lspconfig',
+        },
+    },
     { 'kosayoda/nvim-lightbulb', lazy = true },
     { 'zbirenbaum/neodim', lazy = true },
     {
@@ -102,6 +110,7 @@ return {
                 null_ls.builtins.formatting.stylua.with {
                     condition = function(utils)
                         return utils.root_has_file 'stylua.toml'
+                            or utils.root_has_file '.stylua.toml'
                     end,
                 },
                 null_ls.builtins.formatting.isortd,
@@ -171,6 +180,7 @@ return {
                         'tsconfig.json',
                         'pyproject.toml',
                         'stylua.toml',
+                        '.stylua.toml',
                         'dprint.jsonc',
                         'dprint.json'
                     )(fname) or require('lspconfig').util.root_pattern(
