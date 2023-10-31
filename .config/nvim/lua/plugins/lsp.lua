@@ -1,7 +1,7 @@
 return {
     {
         'neovim/nvim-lspconfig',
-        event = { 'BufReadPre', 'BufNewFile' },
+        event = { 'BufReadPost', 'BufNewFile' },
         init = function()
             require('conf.lsp').setup()
         end,
@@ -30,7 +30,7 @@ return {
     },
     {
         'mskelton/null-ls.nvim',
-        event = 'BufReadPre',
+        event = { 'BufReadPost', 'BufNewFile' },
         opts = function()
             local null_ls = require 'null-ls'
 

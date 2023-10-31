@@ -307,6 +307,13 @@ function M.setup()
         end,
     })
 
+    local servers_autoformat_disabled = {
+        'pylance',
+        'eslint',
+        'tsserver',
+        'jsonls',
+        'lua_ls',
+    }
     local augroup_lsp_format = vim.api.nvim_create_augroup('lsp_format', {})
     vim.api.nvim_create_autocmd('LspAttach', {
         group = au,
@@ -317,6 +324,11 @@ function M.setup()
             if not client then
                 return
             end
+
+            if vim.tbl_contains(servers_autoformat_disabled, client.name) then
+                return
+            end
+
             local existing_autocommands = vim.api.nvim_get_autocmds {
                 group = augroup_lsp_format,
                 buffer = bufnr,
@@ -340,19 +352,13 @@ function M.setup()
                         vim.lsp.buf.format {
                             async = true,
                             bufnr = bufnr,
-                            filter = function(server)
+                            --[[ filter = function(server)
                                 -- return server.name == 'null-ls'
-                                local disabled_servers = {
-                                    'pylance',
-                                    'eslint',
-                                    'tsserver',
-                                    'jsonls',
-                                }
                                 return not vim.tbl_contains(
-                                    disabled_servers,
+                                    servers_autoformat_disabled,
                                     server.name
                                 )
-                            end,
+                            end, ]]
                         }
                     end
                 end,
