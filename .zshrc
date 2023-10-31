@@ -328,6 +328,9 @@ export PATH="$MODULAR_HOME/pkg/packages.modular.com_mojo/bin:$PATH"
 # Deno
 export PATH="$HOME/.deno/bin:$PATH"
 
+# Lua
+export PATH="$HOME/.luarocks/bin:$PATH"
+
 #####################
 # COMPLETIONS       #
 #####################
