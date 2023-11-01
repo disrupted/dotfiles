@@ -3,23 +3,809 @@ return {
         'neovim/nvim-lspconfig',
         event = { 'BufReadPost', 'BufNewFile' },
         init = function()
-            require('conf.lsp').setup()
-        end,
-        config = function()
-            require('conf.lsp').config()
+            local lsp = {}
+            -- client log level
+            vim.lsp.set_log_level(vim.lsp.log_levels.INFO)
+
+            local function sign(severity, icon)
+                local hl = 'Diagnostic' .. severity
+                vim.fn.sign_define(
+                    'DiagnosticSign' .. severity,
+                    { text = icon, texthl = hl, numhl = hl }
+                )
+            end
+
+            sign('Error', '') -- ◉
+            sign('Warn', '') -- ●
+            sign('Info', '') -- •
+            sign('Hint', '') -- ·
+
+            vim.diagnostic.config {
+                underline = true,
+                -- signs = { severity = { min = vim.diagnostic.severity.WARN } },
+                signs = true,
+                float = { header = false, source = 'always' },
+                virtual_text = false,
+                -- virtual_text = {
+                --     -- spacing = 4,
+                --     -- prefix = '■', -- ■ 
+                -- },
+                update_in_insert = true,
+                severity_sort = true,
+            }
+
+            function lsp.show_lightbulb()
+                require('nvim-lightbulb').update_lightbulb {
+                    sign = { enabled = false, priority = 99 },
+                    virtual_text = {
+                        enabled = true,
+                        text = '',
+                        hl_mode = 'combine',
+                    },
+                }
+            end
+
+            vim.api.nvim_create_user_command('Format', function()
+                vim.lsp.buf.format { async = false }
+            end, {})
+
+            -- Handle formatting in a smarter way
+            -- If the buffer has been edited before formatting has completed, do not try to
+            -- apply the changes, original by Lukas Reineke
+            vim.lsp.handlers['textDocument/formatting'] = function(
+                err,
+                result,
+                ctx
+            )
+                local client = vim.lsp.get_client_by_id(ctx.client_id)
+                if not client then
+                    return
+                end
+                if err then
+                    local err_msg = type(err) == 'string' and err or err.message
+                    vim.notify(
+                        ('%s formatting error: %s'):format(client.name, err_msg),
+                        vim.log.levels.ERROR
+                    )
+                    return
+                end
+
+                if result == nil then
+                    -- vim.notify('no formatting changes', vim.lsp.log_levels.DEBUG)
+                    return
+                end
+
+                local bufnr = ctx.bufnr
+                -- abort if the buffer has been modified before the formatting has finished
+                if
+                    not vim.api.nvim_buf_is_loaded(bufnr)
+                    or vim.api.nvim_get_option_value(
+                        'modified',
+                        { buf = bufnr }
+                    )
+                then
+                    return
+                end
+
+                -- local pos = vim.api.nvim_win_get_cursor(0)
+                vim.lsp.util.apply_text_edits(
+                    result,
+                    bufnr,
+                    client.offset_encoding or 'utf-16'
+                )
+                -- pcall(vim.api.nvim_win_set_cursor, 0, pos)
+                vim.api.nvim_buf_call(bufnr, function()
+                    vim.cmd 'silent noautocmd update'
+                end)
+                vim.notify(
+                    ('%s formatting success'):format(client.name),
+                    vim.lsp.log_levels.DEBUG
+                )
+
+                -- Trigger post-formatting autocommand which can be used to refresh gitsigns
+                -- vim.api.nvim_exec_autocmds(
+                --     'User FormatterPost',
+                --     { modeline = false }
+                -- )
+            end
+
+            -- show diagnostics for current line as virtual text
+            -- from https://github.com/kristijanhusak/neovim-config/blob/5977ad2c5dd9bfbb7f24b169fef01828717ea9dc/nvim/lua/partials/lsp.lua#L169
+            local diagnostic_ns = vim.api.nvim_create_namespace 'diagnostics'
+            function lsp.show_diagnostics()
+                vim.schedule(function()
+                    local line = vim.api.nvim_win_get_cursor(0)[1] - 1
+                    local bufnr = vim.api.nvim_get_current_buf()
+                    local diagnostics = vim.diagnostic.get(bufnr, {
+                        lnum = line,
+                        severity = { min = vim.diagnostic.severity.INFO },
+                    })
+                    vim.diagnostic.show(
+                        diagnostic_ns,
+                        bufnr,
+                        diagnostics,
+                        { virtual_text = true }
+                    )
+                end)
+            end
+            function lsp.refresh_diagnostics()
+                vim.diagnostic.setloclist { open = false }
+                lsp.show_diagnostics()
+                if vim.tbl_isempty(vim.fn.getloclist(0)) then
+                    vim.cmd [[lclose]]
+                end
+            end
+
+            local au =
+                vim.api.nvim_create_augroup('LspAttach', { clear = true })
+
+            vim.api.nvim_create_autocmd('LspAttach', {
+                group = au,
+                desc = 'LSP options',
+                callback = function(args)
+                    local bufnr = args.buf
+                    vim.api.nvim_set_option_value(
+                        'formatexpr',
+                        'v:lua.vim.lsp.formatexpr',
+                        { buf = bufnr }
+                    )
+                    vim.api.nvim_set_option_value(
+                        'tagfunc',
+                        'v:lua.vim.lsp.tagfunc',
+                        { buf = bufnr }
+                    )
+                end,
+            })
+
+            vim.api.nvim_create_autocmd('LspAttach', {
+                group = au,
+                desc = 'LSP keymaps',
+                callback = function(args)
+                    local bufnr = args.buf
+                    local function map(mode, lhs, rhs)
+                        vim.keymap.set(mode, lhs, rhs, { buffer = bufnr })
+                    end
+
+                    map('n', 'gD', vim.lsp.buf.declaration)
+                    map('n', 'gd', vim.lsp.buf.definition)
+                    map('n', 'K', vim.lsp.buf.hover)
+                    map('n', 'gi', vim.lsp.buf.implementation)
+                    map({ 'n', 'i' }, '<C-s>', vim.lsp.buf.signature_help)
+                    map('n', '<leader>wa', vim.lsp.buf.add_workspace_folder)
+                    map('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder)
+                    map('n', '<leader>wl', function()
+                        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+                    end)
+                    map('n', '<leader>D', vim.lsp.buf.type_definition)
+                    map('n', '<leader>r', function()
+                        require('conf.nui_lsp').lsp_rename()
+                    end)
+                    map('n', 'gr', function()
+                        require('trouble').open { mode = 'lsp_references' }
+                    end)
+                    map('n', 'gR', vim.lsp.buf.references)
+                    map('n', '<leader>li', vim.lsp.buf.incoming_calls)
+                    map('n', '<leader>lo', vim.lsp.buf.outgoing_calls)
+                    map('n', '<leader>lt', vim.lsp.buf.document_symbol)
+                    map('n', '<leader>d', function()
+                        vim.diagnostic.open_float {
+                            {
+                                scope = 'line',
+                                border = 'single',
+                                focusable = false,
+                                severity_sort = true,
+                            },
+                        }
+                    end)
+                    map('n', '[d', function()
+                        vim.diagnostic.goto_prev { float = false }
+                    end)
+                    map('n', ']d', function()
+                        vim.diagnostic.goto_next { float = false }
+                    end)
+                    map('n', '[e', function()
+                        vim.diagnostic.goto_prev {
+                            enable_popup = false,
+                            severity = { min = vim.diagnostic.severity.WARN },
+                        }
+                    end)
+                    map('n', ']e', function()
+                        vim.diagnostic.goto_next {
+                            enable_popup = false,
+                            severity = { min = vim.diagnostic.severity.WARN },
+                        }
+                    end)
+                    map('n', '<leader>q', vim.diagnostic.setloclist)
+                    map('n', '<leader>ls', vim.lsp.buf.document_symbol)
+                    map('n', '<leader>lS', vim.lsp.buf.workspace_symbol)
+                    vim.opt.shortmess:append 'c'
+                end,
+            })
+
+            vim.api.nvim_create_autocmd('LspAttach', {
+                group = au,
+                desc = 'LSP highlight',
+                callback = function(args)
+                    local bufnr = args.buf
+                    local client = vim.lsp.get_client_by_id(args.data.client_id)
+                    if
+                        client
+                        and client.supports_method 'textDocument/documentHighlight'
+                    then
+                        local augroup_lsp_highlight = 'lsp_highlight'
+                        vim.api.nvim_create_augroup(
+                            augroup_lsp_highlight,
+                            { clear = false }
+                        )
+                        vim.api.nvim_create_autocmd(
+                            { 'CursorHold', 'CursorHoldI' },
+                            {
+                                group = augroup_lsp_highlight,
+                                buffer = bufnr,
+                                callback = vim.lsp.buf.document_highlight,
+                            }
+                        )
+                        vim.api.nvim_create_autocmd('CursorMoved', {
+                            group = augroup_lsp_highlight,
+                            buffer = bufnr,
+                            callback = vim.lsp.buf.clear_references,
+                        })
+                    end
+                end,
+            })
+
+            local servers_autoformat_disabled = {
+                'pylance',
+                'eslint',
+                'tsserver',
+                'jsonls',
+                'lua_ls',
+            }
+            local augroup_lsp_format =
+                vim.api.nvim_create_augroup('lsp_format', {})
+            vim.api.nvim_create_autocmd('LspAttach', {
+                group = au,
+                desc = 'LSP format',
+                callback = function(args)
+                    local bufnr = args.buf
+                    local client = vim.lsp.get_client_by_id(args.data.client_id)
+                    if not client then
+                        return
+                    end
+
+                    if
+                        vim.tbl_contains(
+                            servers_autoformat_disabled,
+                            client.name
+                        )
+                    then
+                        return
+                    end
+
+                    local existing_autocommands = vim.api.nvim_get_autocmds {
+                        group = augroup_lsp_format,
+                        buffer = bufnr,
+                    }
+                    for _, existing_autocommand in ipairs(existing_autocommands) do
+                        if existing_autocommand.desc:match(client.name) then
+                            vim.api.nvim_clear_autocmds {
+                                group = augroup_lsp_format,
+                                buffer = bufnr,
+                            }
+                            break
+                        end
+                    end
+
+                    vim.api.nvim_create_autocmd('BufWritePost', {
+                        group = augroup_lsp_format,
+                        buffer = bufnr,
+                        desc = ('%s format'):format(client.name),
+                        callback = function()
+                            if
+                                client.supports_method 'textDocument/formatting'
+                            then
+                                vim.lsp.buf.format {
+                                    async = true,
+                                    bufnr = bufnr,
+                                    --[[ filter = function(server)
+                                -- return server.name == 'null-ls'
+                                return not vim.tbl_contains(
+                                    servers_autoformat_disabled,
+                                    server.name
+                                )
+                            end, ]]
+                                }
+                            end
+                        end,
+                    })
+                end,
+            })
+
+            vim.api.nvim_create_autocmd('LspAttach', {
+                group = au,
+                desc = 'LSP code actions',
+                callback = function(args)
+                    local bufnr = args.buf
+                    local client = vim.lsp.get_client_by_id(args.data.client_id)
+                    if
+                        client
+                        and client.supports_method 'textDocument/codeAction'
+                    then
+                        vim.api.nvim_create_autocmd(
+                            { 'CursorHold', 'CursorHoldI' },
+                            {
+                                buffer = bufnr,
+                                callback = function()
+                                    lsp.show_lightbulb()
+                                end,
+                            }
+                        )
+                        vim.keymap.set(
+                            { 'n', 'v' },
+                            '<leader>a',
+                            vim.lsp.buf.code_action,
+                            { buffer = bufnr }
+                        )
+                    end
+                end,
+            })
+
+            vim.api.nvim_create_autocmd('LspAttach', {
+                group = au,
+                desc = 'LSP diagnostics',
+                callback = function(args)
+                    local bufnr = args.buf
+                    vim.api.nvim_create_autocmd(
+                        { 'CursorHold', 'CursorHoldI' },
+                        {
+                            buffer = bufnr,
+                            callback = lsp.show_diagnostics,
+                        }
+                    )
+                    vim.api.nvim_create_autocmd('DiagnosticChanged', {
+                        buffer = bufnr,
+                        callback = lsp.refresh_diagnostics,
+                    })
+                end,
+            })
+
+            --[[ vim.api.nvim_create_autocmd('LspAttach', {
+                group = au,
+                desc = 'LSP signature help',
+                callback = function(args)
+                    local bufnr = args.buf
+                    local client = vim.lsp.get_client_by_id(args.data.client_id)
+                    if client.supports_method 'textDocument/signatureHelp' then
+                        vim.api.nvim_create_autocmd('CursorHoldI', {
+                            buffer = bufnr,
+                            callback = function()
+                                vim.defer_fn(vim.lsp.buf.signature_help, 200)
+                            end,
+                        })
+                    end
+                end,
+            }) ]]
+
+            vim.api.nvim_create_autocmd('LspAttach', {
+                group = au,
+                desc = 'LSP inlay hints',
+                callback = function(args)
+                    local bufnr = args.buf
+                    local client = vim.lsp.get_client_by_id(args.data.client_id)
+                    if
+                        client
+                        and client.supports_method 'textDocument/inlayHint'
+                    then
+                        vim.notify(
+                            'register inlay hints',
+                            vim.lsp.log_levels.DEBUG
+                        )
+                        -- local lsp_inlayhints = require 'lsp-inlayhints'
+                        -- lsp_inlayhints.setup {
+                        --     enabled_at_startup = true,
+                        --     debug_mode = false,
+                        -- }
+                        -- lsp_inlayhints.on_attach(client, bufnr, false)
+                        -- TODO: native inlay hints, also when cycling between two bufs making changes to function parameter hints
+                        vim.api.nvim_create_autocmd({
+                            'BufWritePost',
+                            'BufEnter',
+                            'InsertLeave',
+                            'FocusGained',
+                            'CursorHold',
+                        }, {
+                            buffer = bufnr,
+                            callback = function()
+                                vim.lsp.inlay_hint(bufnr, true)
+                            end,
+                        })
+                        vim.api.nvim_create_autocmd('InsertEnter', {
+                            callback = function()
+                                vim.lsp.inlay_hint(bufnr, false)
+                            end,
+                        })
+                        -- initial request
+                        vim.lsp.inlay_hint(bufnr, true)
+                    end
+                end,
+            })
+
+            vim.api.nvim_create_autocmd('LspAttach', {
+                group = au,
+                desc = 'LSP dim unused',
+                callback = function()
+                    require('neodim').setup {
+                        alpha = 0.70,
+                        blend_color = '#000000',
+                        update_in_insert = {
+                            enable = false,
+                            delay = 100,
+                        },
+                        hide = {
+                            virtual_text = false,
+                            signs = false,
+                            underline = true,
+                        },
+                    }
+                end,
+            })
+
+            vim.api.nvim_create_autocmd('LspAttach', {
+                group = au,
+                desc = 'LSP notify',
+                callback = function(args)
+                    local client = vim.lsp.get_client_by_id(args.data.client_id)
+                    if client then
+                        vim.notify(
+                            ('%s attached to buffer %s'):format(
+                                client.name,
+                                args.buf
+                            ),
+                            vim.log.levels.DEBUG
+                        )
+                    end
+                end,
+            })
         end,
         dependencies = {
-            { 'folke/neodev.nvim', config = true },
             'hrsh7th/cmp-nvim-lsp',
+            { 'folke/neodev.nvim', config = true },
+            { 'williamboman/mason.nvim', lazy = false, config = true },
+            {
+                'williamboman/mason-lspconfig.nvim',
+                config = function(_, opts)
+                    require('mason-lspconfig').setup {
+                        ensure_installed = {
+                            'lua_ls',
+                            'ruff_lsp',
+                            'pylyzer',
+                            'rust_analyzer',
+                            'dockerls',
+                            'yamlls',
+                            'jsonls',
+                            'html',
+                            'cssls',
+                            'gopls',
+                            'clangd',
+                            'texlab',
+                            'eslint',
+                            'tsserver',
+                            'prosemd_lsp',
+                            'terraformls',
+                            'denols',
+                        },
+                    }
+                    require('mason-lspconfig').setup_handlers {
+                        function(server_name)
+                            require('lspconfig')[server_name].setup {}
+                        end,
+                        ['yamlls'] = function()
+                            require('lspconfig').yamlls.setup {
+                                single_file_support = false,
+                                root_dir = function(filename)
+                                    if
+                                        filename:match 'pipeline[_%w]*.yaml'
+                                        or filename:match 'config.yaml'
+                                        or filename:match 'defaults[_%w]*.yaml'
+                                    then
+                                        return nil -- handled by KPOps LSP
+                                    end
+                                    return require('lspconfig.util').find_git_ancestor(
+                                        filename
+                                    ) or vim.loop.cwd()
+                                end,
+                                settings = {
+                                    yaml = {
+                                        editor = { formatOnType = true },
+                                        schemas = {
+                                            -- GitHub CI workflows
+                                            ['https://json.schemastore.org/github-workflow.json'] = '/.github/workflows/*',
+                                            -- Helm charts
+                                            ['https://json.schemastore.org/chart.json'] = '/templates/*',
+                                        },
+                                    },
+                                },
+                            }
+                        end,
+                        ['ruff_lsp'] = function()
+                            require('lspconfig').ruff_lsp.setup {
+                                handlers = {
+                                    ['textDocument/hover'] = function() end,
+                                },
+                                commands = {
+                                    RuffAutofix = {
+                                        function()
+                                            vim.lsp.buf.execute_command {
+                                                command = 'ruff.applyAutofix',
+                                                arguments = {
+                                                    {
+                                                        uri = vim.uri_from_bufnr(
+                                                            0
+                                                        ),
+                                                    },
+                                                },
+                                            }
+                                        end,
+                                        description = 'Ruff: Fix all auto-fixable problems',
+                                    },
+                                    RuffOrganizeImports = {
+                                        function()
+                                            vim.lsp.buf.execute_command {
+                                                command = 'ruff.applyOrganizeImports',
+                                                arguments = {
+                                                    {
+                                                        uri = vim.uri_from_bufnr(
+                                                            0
+                                                        ),
+                                                    },
+                                                },
+                                            }
+                                        end,
+                                        description = 'Ruff: Format imports',
+                                    },
+                                },
+                            }
+                        end,
+                        ['pylyzer'] = function() end, -- disable
+                        ['rust_analyzer'] = function()
+                            require('rust-tools').setup {
+                                server = {
+                                    settings = {
+                                        ['rust-analyzer'] = {
+                                            diagnostics = { enable = true },
+                                            assist = {
+                                                importGranularity = 'module',
+                                                importPrefix = 'by_self',
+                                            },
+                                            cargo = {
+                                                loadOutDirsFromCheck = true,
+                                            },
+                                            procMacro = {
+                                                enable = true,
+                                            },
+                                            checkOnSave = {
+                                                allFeatures = true,
+                                                overrideCommand = {
+                                                    'cargo',
+                                                    'clippy',
+                                                    '--workspace',
+                                                    '--message-format=json',
+                                                    '--all-targets',
+                                                    '--all-features',
+                                                },
+                                            },
+                                        },
+                                    },
+                                    tools = {
+                                        runnables = { use_telescope = true },
+                                        inlay_hints = {
+                                            auto = false,
+                                            only_current_line = true,
+                                            show_parameter_hints = false,
+                                            parameter_hints_prefix = ' ', -- ⟵
+                                            other_hints_prefix = '⟹  ',
+                                        },
+                                    },
+                                },
+                            }
+                        end,
+                    }
+                end,
+                ['dockerls'] = function()
+                    require('lspconfig').dockerls.setup {
+                        settings = {
+                            docker = {
+                                languageserver = {
+                                    formatter = {
+                                        ignoreMultilineInstructions = true,
+                                    },
+                                },
+                            },
+                        },
+                    }
+                end,
+                ['jsonls'] = function()
+                    require('lspconfig').jsonls.setup {
+                        filetypes = { 'json', 'jsonc' },
+                        settings = {
+                            json = {
+                                schemas = {
+                                    {
+                                        fileMatch = { 'package.json' },
+                                        url = 'https://json.schemastore.org/package.json',
+                                    },
+                                    {
+                                        fileMatch = { 'tsconfig*.json' },
+                                        url = 'https://json.schemastore.org/tsconfig.json',
+                                    },
+                                    {
+                                        fileMatch = {
+                                            '.prettierrc',
+                                            '.prettierrc.json',
+                                            'prettier.config.json',
+                                        },
+                                        url = 'https://json.schemastore.org/prettierrc.json',
+                                    },
+                                    {
+                                        fileMatch = {
+                                            '.eslintrc',
+                                            '.eslintrc.json',
+                                        },
+                                        url = 'https://json.schemastore.org/eslintrc.json',
+                                    },
+                                    {
+                                        fileMatch = {
+                                            '.stylelintrc',
+                                            '.stylelintrc.json',
+                                            'stylelint.config.json',
+                                        },
+                                        url = 'http://json.schemastore.org/stylelintrc.json',
+                                    },
+                                },
+                            },
+                        },
+                    }
+                end,
+                ['html'] = function()
+                    require('lspconfig').html.setup {
+                        settings = {
+                            html = {
+                                format = {
+                                    templating = true,
+                                    wrapLineLength = 120,
+                                    wrapAttributes = 'auto',
+                                },
+                                hover = {
+                                    documentation = true,
+                                    references = true,
+                                },
+                            },
+                        },
+                    }
+                end,
+                ['tsserver'] = function()
+                    require('lspconfig').tsserver.setup {
+                        root_dir = require('lspconfig.util').root_pattern 'package.json',
+                        commands = {
+                            OrganizeImports = {
+                                function()
+                                    local params = {
+                                        command = '_typescript.organizeImports',
+                                        arguments = {
+                                            vim.api.nvim_buf_get_name(0),
+                                        },
+                                        title = '',
+                                    }
+                                    vim.lsp.buf.execute_command(params)
+                                end,
+                            },
+                        },
+                    }
+                end,
+                ['lua_ls'] = function()
+                    require('lspconfig').lua_ls.setup {
+                        settings = {
+                            Lua = {
+                                completion = {
+                                    callSnippet = 'Replace',
+                                },
+                                workspace = { checkThirdParty = false },
+                                telemetry = { enable = false },
+                                diagnostics = { unusedLocalExclude = { '_*' } },
+                                format = { enable = false },
+                                hint = { enable = true, arrayIndex = 'Disable' },
+                            },
+                        },
+                    }
+                end,
+                ['prosemd_lsp'] = function()
+                    require('lspconfig').prosemd_lsp.setup {
+                        root_dir = function(fname)
+                            return require('lspconfig.util').find_git_ancestor(
+                                fname
+                            ) or vim.loop.cwd()
+                        end,
+                        single_file_support = true,
+                    }
+                end,
+                ['texlab'] = function()
+                    require('lspconfig').texlab.setup {
+                        settings = {
+                            texlab = {
+                                auxDirectory = '.',
+                                bibtexFormatter = 'texlab',
+                                build = {
+                                    args = {
+                                        '-pdflua',
+                                        '-shell-escape',
+                                        '-interaction=nonstopmode',
+                                        '-synctex=1',
+                                        '-pv',
+                                        '%f',
+                                    },
+                                    executable = 'latexmk',
+                                    forwardSearchAfter = false,
+                                    onSave = false,
+                                },
+                                chktex = {
+                                    onEdit = false,
+                                    onOpenAndSave = false,
+                                },
+                                diagnosticsDelay = 300,
+                                formatterLineLength = 80,
+                                forwardSearch = {
+                                    args = {},
+                                },
+                                latexFormatter = 'latexindent',
+                                latexindent = {
+                                    modifyLineBreaks = false,
+                                },
+                            },
+                        },
+                    }
+                end,
+                ['denols'] = function()
+                    require('lspconfig').denols.setup {
+                        root_dir = require('lspconfig.util').root_pattern(
+                            'deno.json',
+                            'deno.jsonc'
+                        ),
+                        filetypes = {
+                            'javascript',
+                            'javascriptreact',
+                            'javascript.jsx',
+                            'typescript',
+                            'typescriptreact',
+                            'typescript.tsx',
+                            'yaml',
+                            'json',
+                            'markdown',
+                            'html',
+                            'css',
+                        },
+                        init_options = {
+                            enable = true,
+                            lint = true,
+                            unstable = true,
+                            importMap = './import_map.json',
+                        },
+                        single_file_support = false,
+                    }
+                end,
+            },
         },
     },
     {
+        'disrupted/pylance.nvim',
+        build = 'bash ./install.sh',
+        ft = 'python',
+        config = true,
+    },
+    {
         dir = '~/bakdata/kpops.nvim',
+        -- 'disrupted/kpops.nvim',
         ft = 'yaml',
         config = true,
-        dependencies = {
-            'neovim/nvim-lspconfig',
-        },
     },
     { 'kosayoda/nvim-lightbulb', lazy = true },
     { 'zbirenbaum/neodim', lazy = true },
@@ -38,8 +824,10 @@ return {
             local h = require 'null-ls.helpers'
 
             local function dprint_config()
-                local lsputil = require 'lspconfig.util'
-                local path = lsputil.path.join(vim.loop.cwd(), 'dprint.jsonc')
+                local path = require('lspconfig.util').path.join(
+                    vim.loop.cwd(),
+                    'dprint.jsonc'
+                )
                 if lsputil.path.exists(path) then
                     print 'found local dprint config'
                     print(path)
@@ -91,7 +879,7 @@ return {
             local ruff_format = {
                 name = 'ruff',
                 meta = {
-                    url = 'https://github.com/charliermarsh/ruff/',
+                    url = 'https://github.com/charliermarsh/ruff',
                     description = 'An extremely fast Python linter and formatter, written in Rust.',
                 },
                 method = null_ls.methods.FORMATTING,
@@ -153,13 +941,16 @@ return {
                     condition = function(utils)
                         return utils.root_has_file 'uncrustify.cfg'
                     end,
-                    extra_args = {
-                        '-c',
-                        require('lspconfig.util').path.join(
-                            vim.loop.cwd(),
-                            'uncrustify.cfg'
-                        ),
-                    }, -- for neovim/neovim repo
+                    extra_args = function()
+                        return {
+                            -- for neovim/neovim repo
+                            '-c',
+                            require('lspconfig.util').path.join(
+                                vim.loop.cwd(),
+                                'uncrustify.cfg'
+                            ),
+                        }
+                    end,
                 },
                 null_ls.builtins.formatting.shfmt.with {
                     extra_args = { '-i', '4', '-ci' },
@@ -185,17 +976,17 @@ return {
                 debug = false,
                 -- Fallback to .zshrc as a project root to enable LSP on loose files
                 root_dir = function(fname)
-                    return require('lspconfig').util.root_pattern(
+                    return require('lspconfig.util').root_pattern(
                         'tsconfig.json',
                         'pyproject.toml',
                         'stylua.toml',
                         '.stylua.toml',
                         'dprint.jsonc',
                         'dprint.json'
-                    )(fname) or require('lspconfig').util.root_pattern(
+                    )(fname) or require('lspconfig.util').root_pattern(
                         '.eslintrc.js',
                         '.git'
-                    )(fname) or require('lspconfig').util.root_pattern(
+                    )(fname) or require('lspconfig.util').root_pattern(
                         'package.json',
                         '.git/',
                         '.zshrc'
@@ -203,11 +994,6 @@ return {
                 end,
             }
         end,
-    },
-    {
-        'disrupted/pylance.nvim',
-        build = 'bash ./install.sh',
-        lazy = true,
     },
     { 'simrat39/rust-tools.nvim', lazy = true },
     {
