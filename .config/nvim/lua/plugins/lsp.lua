@@ -1,3 +1,4 @@
+local au = vim.api.nvim_create_augroup('LspAttach', { clear = true })
 return {
     {
         'neovim/nvim-lspconfig',
@@ -128,6 +129,7 @@ return {
                     )
                 end)
             end
+
             function lsp.refresh_diagnostics()
                 vim.diagnostic.setloclist { open = false }
                 lsp.show_diagnostics()
@@ -135,9 +137,6 @@ return {
                     vim.cmd [[lclose]]
                 end
             end
-
-            local au =
-                vim.api.nvim_create_augroup('LspAttach', { clear = true })
 
             vim.api.nvim_create_autocmd('LspAttach', {
                 group = au,
@@ -388,70 +387,6 @@ return {
 
             vim.api.nvim_create_autocmd('LspAttach', {
                 group = au,
-                desc = 'LSP inlay hints',
-                callback = function(args)
-                    local bufnr = args.buf
-                    local client = vim.lsp.get_client_by_id(args.data.client_id)
-                    if
-                        client
-                        and client.supports_method 'textDocument/inlayHint'
-                    then
-                        vim.notify(
-                            'register inlay hints',
-                            vim.lsp.log_levels.DEBUG
-                        )
-                        -- local lsp_inlayhints = require 'lsp-inlayhints'
-                        -- lsp_inlayhints.setup {
-                        --     enabled_at_startup = true,
-                        --     debug_mode = false,
-                        -- }
-                        -- lsp_inlayhints.on_attach(client, bufnr, false)
-                        -- TODO: native inlay hints, also when cycling between two bufs making changes to function parameter hints
-                        vim.api.nvim_create_autocmd({
-                            'BufWritePost',
-                            'BufEnter',
-                            'InsertLeave',
-                            'FocusGained',
-                            'CursorHold',
-                        }, {
-                            buffer = bufnr,
-                            callback = function()
-                                vim.lsp.inlay_hint(bufnr, true)
-                            end,
-                        })
-                        vim.api.nvim_create_autocmd('InsertEnter', {
-                            callback = function()
-                                vim.lsp.inlay_hint(bufnr, false)
-                            end,
-                        })
-                        -- initial request
-                        vim.lsp.inlay_hint(bufnr, true)
-                    end
-                end,
-            })
-
-            vim.api.nvim_create_autocmd('LspAttach', {
-                group = au,
-                desc = 'LSP dim unused',
-                callback = function()
-                    require('neodim').setup {
-                        alpha = 0.70,
-                        blend_color = '#000000',
-                        update_in_insert = {
-                            enable = false,
-                            delay = 100,
-                        },
-                        hide = {
-                            virtual_text = false,
-                            signs = false,
-                            underline = true,
-                        },
-                    }
-                end,
-            })
-
-            vim.api.nvim_create_autocmd('LspAttach', {
-                group = au,
                 desc = 'LSP notify',
                 callback = function(args)
                     local client = vim.lsp.get_client_by_id(args.data.client_id)
@@ -473,7 +408,7 @@ return {
             { 'williamboman/mason.nvim', lazy = false, config = true },
             {
                 'williamboman/mason-lspconfig.nvim',
-                config = function(_, opts)
+                config = function()
                     require('mason-lspconfig').setup {
                         ensure_installed = {
                             'lua_ls',
@@ -530,7 +465,7 @@ return {
                         ['ruff_lsp'] = function()
                             require('lspconfig').ruff_lsp.setup {
                                 handlers = {
-                                    ['textDocument/hover'] = function() end,
+                                    ['textDocument/hover'] = function() end, -- disable
                                 },
                                 commands = {
                                     RuffAutofix = {
@@ -567,48 +502,7 @@ return {
                             }
                         end,
                         ['pylyzer'] = function() end, -- disable
-                        ['rust_analyzer'] = function()
-                            require('rust-tools').setup {
-                                server = {
-                                    settings = {
-                                        ['rust-analyzer'] = {
-                                            diagnostics = { enable = true },
-                                            assist = {
-                                                importGranularity = 'module',
-                                                importPrefix = 'by_self',
-                                            },
-                                            cargo = {
-                                                loadOutDirsFromCheck = true,
-                                            },
-                                            procMacro = {
-                                                enable = true,
-                                            },
-                                            checkOnSave = {
-                                                allFeatures = true,
-                                                overrideCommand = {
-                                                    'cargo',
-                                                    'clippy',
-                                                    '--workspace',
-                                                    '--message-format=json',
-                                                    '--all-targets',
-                                                    '--all-features',
-                                                },
-                                            },
-                                        },
-                                    },
-                                    tools = {
-                                        runnables = { use_telescope = true },
-                                        inlay_hints = {
-                                            auto = false,
-                                            only_current_line = true,
-                                            show_parameter_hints = false,
-                                            parameter_hints_prefix = ' ', -- ⟵
-                                            other_hints_prefix = '⟹  ',
-                                        },
-                                    },
-                                },
-                            }
-                        end,
+                        ['rust_analyzer'] = function() end, -- use rustaceanvim instead
                     }
                 end,
                 ['dockerls'] = function()
@@ -808,11 +702,81 @@ return {
         config = true,
     },
     { 'kosayoda/nvim-lightbulb', lazy = true },
-    { 'zbirenbaum/neodim', lazy = true },
+    {
+        'zbirenbaum/neodim',
+        event = { 'BufReadPost', 'BufNewFile' },
+        opts = {
+            alpha = 0.70,
+            blend_color = '#000000',
+            update_in_insert = {
+                enable = false,
+                delay = 100,
+            },
+            hide = {
+                virtual_text = false,
+                signs = false,
+                underline = true,
+            },
+        },
+        config = function(_, opts)
+            vim.api.nvim_create_autocmd('LspAttach', {
+                group = au,
+                desc = 'LSP dim unused',
+                callback = function()
+                    require('neodim').setup(opts)
+                end,
+            })
+        end,
+    },
     {
         'lvimuser/lsp-inlayhints.nvim',
         branch = 'anticonceal',
-        lazy = true,
+        event = { 'BufReadPost', 'BufNewFile' },
+        config = function()
+            vim.api.nvim_create_autocmd('LspAttach', {
+                group = au,
+                desc = 'LSP inlay hints',
+                callback = function(args)
+                    local bufnr = args.buf
+                    local client = vim.lsp.get_client_by_id(args.data.client_id)
+                    if
+                        client
+                        and client.supports_method 'textDocument/inlayHint'
+                    then
+                        vim.notify(
+                            'register inlay hints',
+                            vim.lsp.log_levels.DEBUG
+                        )
+                        -- local lsp_inlayhints = require 'lsp-inlayhints'
+                        -- lsp_inlayhints.setup {
+                        --     enabled_at_startup = true,
+                        --     debug_mode = false,
+                        -- }
+                        -- lsp_inlayhints.on_attach(client, bufnr, false)
+                        -- TODO: native inlay hints, also when cycling between two bufs making changes to function parameter hints
+                        vim.api.nvim_create_autocmd({
+                            'BufWritePost',
+                            'BufEnter',
+                            'InsertLeave',
+                            'FocusGained',
+                            'CursorHold',
+                        }, {
+                            buffer = bufnr,
+                            callback = function()
+                                vim.lsp.inlay_hint(bufnr, true)
+                            end,
+                        })
+                        vim.api.nvim_create_autocmd('InsertEnter', {
+                            callback = function()
+                                vim.lsp.inlay_hint(bufnr, false)
+                            end,
+                        })
+                        -- initial request
+                        vim.lsp.inlay_hint(bufnr, true)
+                    end
+                end,
+            })
+        end,
     },
     {
         'nvimtools/none-ls.nvim',
@@ -828,13 +792,16 @@ return {
                     vim.loop.cwd(),
                     'dprint.jsonc'
                 )
-                if lsputil.path.exists(path) then
+                if require('lspconfig.util').path.exists(path) then
                     print 'found local dprint config'
                     print(path)
                     return path
                 end
-                path = lsputil.path.join(vim.loop.cwd(), 'dprint.json')
-                if lsputil.path.exists(path) then
+                path = require('lspconfig.util').path.join(
+                    vim.loop.cwd(),
+                    'dprint.json'
+                )
+                if require('lspconfig.util').path.exists(path) then
                     print 'found local dprint config'
                     print(path)
                     return path
@@ -995,7 +962,7 @@ return {
             }
         end,
     },
-    { 'simrat39/rust-tools.nvim', lazy = true },
+    { 'mrcjkb/rustaceanvim', ft = 'rust' },
     {
         'folke/trouble.nvim',
         cmd = 'Trouble',
