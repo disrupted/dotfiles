@@ -29,7 +29,7 @@ return {
         lazy = true,
     },
     {
-        'mskelton/null-ls.nvim',
+        'nvimtools/none-ls.nvim',
         event = { 'BufReadPost', 'BufNewFile' },
         opts = function()
             local null_ls = require 'null-ls'
@@ -60,6 +60,7 @@ return {
                 method = null_ls.methods.FORMATTING,
                 filetypes = {
                     'json',
+                    'jsonc',
                     'markdown',
                     'javascript',
                     'javascriptreact',
@@ -89,6 +90,10 @@ return {
 
             local ruff_format = {
                 name = 'ruff',
+                meta = {
+                    url = 'https://github.com/charliermarsh/ruff/',
+                    description = 'An extremely fast Python linter and formatter, written in Rust.',
+                },
                 method = null_ls.methods.FORMATTING,
                 filetypes = { 'python' },
                 generator = h.formatter_factory {
@@ -113,16 +118,16 @@ return {
                             or utils.root_has_file '.stylua.toml'
                     end,
                 },
-                null_ls.builtins.formatting.isortd,
-                null_ls.builtins.formatting.blackd.with {
-                    config = {
-                        fast = true,
-                        preview = false,
-                    },
-                },
-                -- null_ls.builtins.diagnostics.ruff,
-                -- null_ls.builtins.formatting.ruff,
-                -- ruff_format,
+                -- null_ls.builtins.formatting.isortd,
+                -- null_ls.builtins.formatting.blackd.with {
+                --     config = {
+                --         fast = true,
+                --         preview = false,
+                --     },
+                -- },
+                null_ls.builtins.diagnostics.ruff,
+                null_ls.builtins.formatting.ruff,
+                ruff_format,
                 -- null_ls.builtins.formatting.dprint,
                 dprint,
                 null_ls.builtins.formatting.prettierd.with {
@@ -140,6 +145,10 @@ return {
                     --     return not utils.root_has_file 'dprint.jsonc'
                     -- end,
                 },
+                -- null_ls.builtins.formatting.prettierd.with {
+                --     filetypes = { 'htmldjango' },
+                --     extra_args = { '--parser', 'html' },
+                -- },
                 null_ls.builtins.formatting.uncrustify.with {
                     condition = function(utils)
                         return utils.root_has_file 'uncrustify.cfg'
