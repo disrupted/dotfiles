@@ -23,8 +23,10 @@
         "lineWidth": 80,
         "useTabs": false
     },
+    "malva": {},
+    "markup": {},
     "includes": [
-        "**/*.{ts,tsx,js,jsx,cjs,mjs,json,avsc,md,toml,css}",
+        "**/*.{ts,tsx,js,jsx,cjs,mjs,json,avsc,md,toml,css,html,vue,svelte}",
         "dockerfile"
     ],
     "excludes": [
@@ -38,6 +40,8 @@
         "https://plugins.dprint.dev/markdown-0.15.3.wasm",
         "https://plugins.dprint.dev/toml-0.5.4.wasm",
         "https://plugins.dprint.dev/dockerfile-0.3.0.wasm",
-        "https://plugins.dprint.dev/disrupted/css-0.2.1.wasm"
+        // "https://plugins.dprint.dev/disrupted/css-0.2.1.wasm",
+        "https://plugins.dprint.dev/g-plane/malva-v0.1.0.wasm",
+        "https://plugins.dprint.dev/g-plane/markup_fmt-v0.1.1.wasm"
     ]
 }
