@@ -8,18 +8,16 @@ return {
             -- client log level
             vim.lsp.set_log_level(vim.lsp.log_levels.INFO)
 
-            local function sign(severity, icon)
-                local hl = 'Diagnostic' .. severity
-                vim.fn.sign_define(
-                    'DiagnosticSign' .. severity,
-                    { text = icon, texthl = hl, numhl = hl }
-                )
+            local signs = {
+                Error = '', -- ◉
+                Warn = '', -- ●
+                Info = '', -- •
+                Hint = '', -- ·
+            }
+            for severity, icon in pairs(signs) do
+                local hl = 'DiagnosticSign' .. severity
+                vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
             end
-
-            sign('Error', '') -- ◉
-            sign('Warn', '') -- ●
-            sign('Info', '') -- •
-            sign('Hint', '') -- ·
 
             vim.diagnostic.config {
                 underline = true,
@@ -408,29 +406,32 @@ return {
             { 'williamboman/mason.nvim', lazy = false, config = true },
             {
                 'williamboman/mason-lspconfig.nvim',
-                config = function()
-                    require('mason-lspconfig').setup {
-                        ensure_installed = {
-                            'lua_ls',
-                            'ruff_lsp',
-                            'pylyzer',
-                            'rust_analyzer',
-                            'dockerls',
-                            'yamlls',
-                            'jsonls',
-                            'html',
-                            'cssls',
-                            'gopls',
-                            'clangd',
-                            'texlab',
-                            'eslint',
-                            'tsserver',
-                            'prosemd_lsp',
-                            'terraformls',
-                            'denols',
-                        },
-                    }
-                    require('mason-lspconfig').setup_handlers {
+                opts = {
+                    ensure_installed = {
+                        'lua_ls',
+                        'ruff_lsp',
+                        'pylyzer',
+                        'rust_analyzer',
+                        'dockerls',
+                        'yamlls',
+                        'jsonls',
+                        'html',
+                        'cssls',
+                        'gopls',
+                        'clangd',
+                        'texlab',
+                        'vtsls',
+                        'denols',
+                        'tsserver',
+                        'eslint',
+                        'prosemd_lsp',
+                        'terraformls',
+                    },
+                },
+                config = function(_, opts)
+                    local mason_lspconfig = require 'mason-lspconfig'
+                    mason_lspconfig.setup(opts)
+                    mason_lspconfig.setup_handlers {
                         function(server_name)
                             require('lspconfig')[server_name].setup {}
                         end,
@@ -503,187 +504,196 @@ return {
                         end,
                         ['pylyzer'] = function() end, -- disable
                         ['rust_analyzer'] = function() end, -- use rustaceanvim instead
-                    }
-                end,
-                ['dockerls'] = function()
-                    require('lspconfig').dockerls.setup {
-                        settings = {
-                            docker = {
-                                languageserver = {
-                                    formatter = {
-                                        ignoreMultilineInstructions = true,
-                                    },
-                                },
-                            },
-                        },
-                    }
-                end,
-                ['jsonls'] = function()
-                    require('lspconfig').jsonls.setup {
-                        filetypes = { 'json', 'jsonc' },
-                        settings = {
-                            json = {
-                                schemas = {
-                                    {
-                                        fileMatch = { 'package.json' },
-                                        url = 'https://json.schemastore.org/package.json',
-                                    },
-                                    {
-                                        fileMatch = { 'tsconfig*.json' },
-                                        url = 'https://json.schemastore.org/tsconfig.json',
-                                    },
-                                    {
-                                        fileMatch = {
-                                            '.prettierrc',
-                                            '.prettierrc.json',
-                                            'prettier.config.json',
+                        ['dockerls'] = function()
+                            require('lspconfig').dockerls.setup {
+                                settings = {
+                                    docker = {
+                                        languageserver = {
+                                            formatter = {
+                                                ignoreMultilineInstructions = true,
+                                            },
                                         },
-                                        url = 'https://json.schemastore.org/prettierrc.json',
-                                    },
-                                    {
-                                        fileMatch = {
-                                            '.eslintrc',
-                                            '.eslintrc.json',
-                                        },
-                                        url = 'https://json.schemastore.org/eslintrc.json',
-                                    },
-                                    {
-                                        fileMatch = {
-                                            '.stylelintrc',
-                                            '.stylelintrc.json',
-                                            'stylelint.config.json',
-                                        },
-                                        url = 'http://json.schemastore.org/stylelintrc.json',
                                     },
                                 },
-                            },
-                        },
-                    }
-                end,
-                ['html'] = function()
-                    require('lspconfig').html.setup {
-                        settings = {
-                            html = {
-                                format = {
-                                    templating = true,
-                                    wrapLineLength = 120,
-                                    wrapAttributes = 'auto',
-                                },
-                                hover = {
-                                    documentation = true,
-                                    references = true,
-                                },
-                            },
-                        },
-                    }
-                end,
-                ['tsserver'] = function()
-                    require('lspconfig').tsserver.setup {
-                        root_dir = require('lspconfig.util').root_pattern 'package.json',
-                        commands = {
-                            OrganizeImports = {
-                                function()
-                                    local params = {
-                                        command = '_typescript.organizeImports',
-                                        arguments = {
-                                            vim.api.nvim_buf_get_name(0),
-                                        },
-                                        title = '',
-                                    }
-                                    vim.lsp.buf.execute_command(params)
-                                end,
-                            },
-                        },
-                    }
-                end,
-                ['lua_ls'] = function()
-                    require('lspconfig').lua_ls.setup {
-                        settings = {
-                            Lua = {
-                                completion = {
-                                    callSnippet = 'Replace',
-                                },
-                                workspace = { checkThirdParty = false },
-                                telemetry = { enable = false },
-                                diagnostics = { unusedLocalExclude = { '_*' } },
-                                format = { enable = false },
-                                hint = { enable = true, arrayIndex = 'Disable' },
-                            },
-                        },
-                    }
-                end,
-                ['prosemd_lsp'] = function()
-                    require('lspconfig').prosemd_lsp.setup {
-                        root_dir = function(fname)
-                            return require('lspconfig.util').find_git_ancestor(
-                                fname
-                            ) or vim.loop.cwd()
+                            }
                         end,
-                        single_file_support = true,
-                    }
-                end,
-                ['texlab'] = function()
-                    require('lspconfig').texlab.setup {
-                        settings = {
-                            texlab = {
-                                auxDirectory = '.',
-                                bibtexFormatter = 'texlab',
-                                build = {
-                                    args = {
-                                        '-pdflua',
-                                        '-shell-escape',
-                                        '-interaction=nonstopmode',
-                                        '-synctex=1',
-                                        '-pv',
-                                        '%f',
+                        ['jsonls'] = function()
+                            require('lspconfig').jsonls.setup {
+                                filetypes = { 'json', 'jsonc' },
+                                settings = {
+                                    json = {
+                                        schemas = {
+                                            {
+                                                fileMatch = { 'package.json' },
+                                                url = 'https://json.schemastore.org/package.json',
+                                            },
+                                            {
+                                                fileMatch = { 'tsconfig*.json' },
+                                                url = 'https://json.schemastore.org/tsconfig.json',
+                                            },
+                                            {
+                                                fileMatch = {
+                                                    '.prettierrc',
+                                                    '.prettierrc.json',
+                                                    'prettier.config.json',
+                                                },
+                                                url = 'https://json.schemastore.org/prettierrc.json',
+                                            },
+                                            {
+                                                fileMatch = {
+                                                    '.eslintrc',
+                                                    '.eslintrc.json',
+                                                },
+                                                url = 'https://json.schemastore.org/eslintrc.json',
+                                            },
+                                            {
+                                                fileMatch = {
+                                                    '.stylelintrc',
+                                                    '.stylelintrc.json',
+                                                    'stylelint.config.json',
+                                                },
+                                                url = 'http://json.schemastore.org/stylelintrc.json',
+                                            },
+                                        },
                                     },
-                                    executable = 'latexmk',
-                                    forwardSearchAfter = false,
-                                    onSave = false,
                                 },
-                                chktex = {
-                                    onEdit = false,
-                                    onOpenAndSave = false,
+                            }
+                        end,
+                        ['html'] = function()
+                            require('lspconfig').html.setup {
+                                settings = {
+                                    html = {
+                                        format = {
+                                            templating = true,
+                                            wrapLineLength = 120,
+                                            wrapAttributes = 'auto',
+                                        },
+                                        hover = {
+                                            documentation = true,
+                                            references = true,
+                                        },
+                                    },
                                 },
-                                diagnosticsDelay = 300,
-                                formatterLineLength = 80,
-                                forwardSearch = {
-                                    args = {},
+                            }
+                        end,
+                        ['tsserver'] = function()
+                            require('lspconfig').tsserver.setup {
+                                autostart = false,
+                                root_dir = require('lspconfig.util').root_pattern 'package.json',
+                                commands = {
+                                    OrganizeImports = {
+                                        function()
+                                            local params = {
+                                                command = '_typescript.organizeImports',
+                                                arguments = {
+                                                    vim.api.nvim_buf_get_name(
+                                                        0
+                                                    ),
+                                                },
+                                                title = '',
+                                            }
+                                            vim.lsp.buf.execute_command(params)
+                                        end,
+                                    },
                                 },
-                                latexFormatter = 'latexindent',
-                                latexindent = {
-                                    modifyLineBreaks = false,
+                            }
+                        end,
+                        ['lua_ls'] = function()
+                            require('lspconfig').lua_ls.setup {
+                                settings = {
+                                    Lua = {
+                                        completion = {
+                                            callSnippet = 'Replace',
+                                        },
+                                        workspace = { checkThirdParty = false },
+                                        telemetry = { enable = false },
+                                        diagnostics = {
+                                            unusedLocalExclude = { '_*' },
+                                        },
+                                        format = { enable = false },
+                                        hint = {
+                                            enable = true,
+                                            arrayIndex = 'Disable',
+                                        },
+                                    },
                                 },
-                            },
-                        },
-                    }
-                end,
-                ['denols'] = function()
-                    require('lspconfig').denols.setup {
-                        root_dir = require('lspconfig.util').root_pattern(
-                            'deno.json',
-                            'deno.jsonc'
-                        ),
-                        filetypes = {
-                            'javascript',
-                            'javascriptreact',
-                            'javascript.jsx',
-                            'typescript',
-                            'typescriptreact',
-                            'typescript.tsx',
-                            'yaml',
-                            'json',
-                            'markdown',
-                            'html',
-                            'css',
-                        },
-                        init_options = {
-                            enable = true,
-                            lint = true,
-                            unstable = true,
-                            importMap = './import_map.json',
-                        },
-                        single_file_support = false,
+                            }
+                        end,
+                        ['denols'] = function()
+                            require('lspconfig').denols.setup {
+                                autostart = false,
+                                root_dir = require('lspconfig.util').root_pattern(
+                                    'deno.json',
+                                    'deno.jsonc'
+                                ),
+                                filetypes = {
+                                    'javascript',
+                                    'javascriptreact',
+                                    'javascript.jsx',
+                                    'typescript',
+                                    'typescriptreact',
+                                    'typescript.tsx',
+                                    'yaml',
+                                    'json',
+                                    'markdown',
+                                    'html',
+                                    'css',
+                                },
+                                init_options = {
+                                    enable = true,
+                                    lint = true,
+                                    unstable = true,
+                                    importMap = './import_map.json',
+                                },
+                                single_file_support = false,
+                            }
+                        end,
+                        ['prosemd_lsp'] = function()
+                            require('lspconfig').prosemd_lsp.setup {
+                                root_dir = function(fname)
+                                    return require('lspconfig.util').find_git_ancestor(
+                                        fname
+                                    ) or vim.loop.cwd()
+                                end,
+                                single_file_support = true,
+                            }
+                        end,
+                        ['texlab'] = function()
+                            require('lspconfig').texlab.setup {
+                                settings = {
+                                    texlab = {
+                                        auxDirectory = '.',
+                                        bibtexFormatter = 'texlab',
+                                        build = {
+                                            args = {
+                                                '-pdflua',
+                                                '-shell-escape',
+                                                '-interaction=nonstopmode',
+                                                '-synctex=1',
+                                                '-pv',
+                                                '%f',
+                                            },
+                                            executable = 'latexmk',
+                                            forwardSearchAfter = false,
+                                            onSave = false,
+                                        },
+                                        chktex = {
+                                            onEdit = false,
+                                            onOpenAndSave = false,
+                                        },
+                                        diagnosticsDelay = 300,
+                                        formatterLineLength = 80,
+                                        forwardSearch = {
+                                            args = {},
+                                        },
+                                        latexFormatter = 'latexindent',
+                                        latexindent = {
+                                            modifyLineBreaks = false,
+                                        },
+                                    },
+                                },
+                            }
+                        end,
                     }
                 end,
             },
@@ -824,6 +834,8 @@ return {
                     'toml',
                     'dockerfile',
                     'css',
+                    'html',
+                    'htmldjango',
                 },
                 generator = h.formatter_factory {
                     command = 'dprint',
@@ -887,23 +899,13 @@ return {
                 dprint,
                 null_ls.builtins.formatting.prettierd.with {
                     filetypes = {
-                        'vue',
-                        'svelte',
-                        -- 'css',
-                        -- 'scss',
-                        'less',
-                        'html',
-                        -- 'yaml',
+                        'yaml',
                         'graphql',
                     },
                     -- condition = function(utils)
                     --     return not utils.root_has_file 'dprint.jsonc'
                     -- end,
                 },
-                -- null_ls.builtins.formatting.prettierd.with {
-                --     filetypes = { 'htmldjango' },
-                --     extra_args = { '--parser', 'html' },
-                -- },
                 null_ls.builtins.formatting.uncrustify.with {
                     condition = function(utils)
                         return utils.root_has_file 'uncrustify.cfg'
