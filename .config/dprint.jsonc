@@ -18,15 +18,22 @@
     "markdown": {},
     "toml": {},
     "dockerfile": {},
-    "css": {
-        "indentWidth": 2,
-        "lineWidth": 80,
-        "useTabs": false
-    },
+    // "css": {
+    //     "indentWidth": 2,
+    //     "lineWidth": 80,
+    //     "useTabs": false
+    // },
     "malva": {},
-    "markup": {},
+    "markup": {
+        "associations": [
+            "**/*.html",
+            "**/*.vue",
+            "**/*.svelte",
+            "**/*.jinja2"
+        ]
+    },
     "includes": [
-        "**/*.{ts,tsx,js,jsx,cjs,mjs,json,avsc,md,toml,css,html,vue,svelte}",
+        "**/*.{ts,tsx,js,jsx,cjs,mjs,json,avsc,md,toml,css,html,vue,svelte,jinja2}",
         "dockerfile"
     ],
     "excludes": [
