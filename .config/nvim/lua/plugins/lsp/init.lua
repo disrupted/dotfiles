@@ -21,8 +21,10 @@ return {
 
             vim.diagnostic.config {
                 underline = true,
-                -- signs = { severity = { min = vim.diagnostic.severity.WARN } },
-                signs = true,
+                signs = {
+                    severity = { min = vim.diagnostic.severity.WARN },
+                    -- prefix = "icons", -- TODO: nvim 0.10.0
+                },
                 float = { header = false, source = 'always' },
                 virtual_text = false,
                 -- virtual_text = {
@@ -403,7 +405,16 @@ return {
         dependencies = {
             'hrsh7th/cmp-nvim-lsp',
             { 'folke/neodev.nvim', config = true },
-            { 'williamboman/mason.nvim', lazy = false, config = true },
+            {
+                'williamboman/mason.nvim',
+                opts = {
+                    registries = {
+                        'github:mason-org/mason-registry',
+                        'lua:plugins.lsp.custom',
+                    },
+                },
+                config = true,
+            },
             {
                 'williamboman/mason-lspconfig.nvim',
                 opts = {
@@ -427,12 +438,12 @@ return {
                         'prosemd_lsp',
                         'terraformls',
                     },
-                },
-                config = function(_, opts)
-                    local mason_lspconfig = require 'mason-lspconfig'
-                    mason_lspconfig.setup(opts)
-                    mason_lspconfig.setup_handlers {
+                    handlers = {
                         function(server_name)
+                            -- vim.notify(
+                            --     'Mason LSP setup ' .. server_name,
+                            --     vim.log.levels.DEBUG
+                            -- )
                             require('lspconfig')[server_name].setup {}
                         end,
                         ['yamlls'] = function()
@@ -694,8 +705,8 @@ return {
                                 },
                             }
                         end,
-                    }
-                end,
+                    },
+                },
             },
         },
     },
@@ -704,6 +715,9 @@ return {
         build = 'bash ./install.sh',
         ft = 'python',
         config = true,
+        -- config = function()
+        --     require('lspconfig').pylance.setup {}
+        -- end,
     },
     {
         dir = '~/bakdata/kpops.nvim',
@@ -897,7 +911,7 @@ return {
                 ruff_format,
                 -- null_ls.builtins.formatting.dprint,
                 dprint,
-                null_ls.builtins.formatting.prettierd.with {
+                null_ls.builtins.formatting.prettier.with {
                     filetypes = {
                         'yaml',
                         'graphql',
