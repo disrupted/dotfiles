@@ -142,13 +142,7 @@ return {
                 },
             },
             autopairs = { enable = true },
-            context_commentstring = {
-                enable = true,
-                enable_autocmd = false,
-            },
-            tree_setter = {
-                enable = true,
-            },
+            tree_setter = { enable = true },
         },
         config = function(_, opts)
             require('nvim-treesitter.configs').setup(opts)
