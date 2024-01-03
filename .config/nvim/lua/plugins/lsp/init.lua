@@ -437,6 +437,7 @@ return {
                         'eslint',
                         'prosemd_lsp',
                         'terraformls',
+                        'helm_ls',
                     },
                     handlers = {
                         function(server_name)
