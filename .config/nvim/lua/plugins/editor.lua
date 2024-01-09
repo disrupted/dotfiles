@@ -679,4 +679,5 @@ return {
         },
         config = true,
     },
+    { 'tpope/vim-abolish' },
 }
