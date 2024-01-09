@@ -17,7 +17,6 @@ return {
         end,
     },
     { 'soywod/himalaya', cmd = 'Himalaya' },
-    { 'towolf/vim-helm', ft = 'helm' },
     { 'ellisonleao/glow.nvim', cmd = 'Glow' },
     {
         'jamestthompson3/nvim-remote-containers',

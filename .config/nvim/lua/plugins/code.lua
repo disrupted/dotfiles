@@ -56,6 +56,11 @@ return {
             }
         end,
         dependencies = { 'JoosepAlviste/nvim-ts-context-commentstring' },
+        config = function(_, opts)
+            require('Comment').setup(opts)
+            local ft = require 'Comment.ft'
+            ft.helm = { '{{/* %s */}}', '{{/* %s */}}' }
+        end,
     },
     {
         'abecodes/tabout.nvim',

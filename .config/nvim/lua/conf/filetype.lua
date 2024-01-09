@@ -11,7 +11,9 @@ function M.config()
             ['.envrc'] = 'bash',
         },
         pattern = {
-            ['templates/.*%.yaml'] = 'helm',
+            ['.*/templates/.*%.yaml'] = 'helm',
+            ['.*/templates/.*%.tpl'] = 'helm',
+            ['helmfile.*.yaml'] = 'helm',
         },
     }
 end
