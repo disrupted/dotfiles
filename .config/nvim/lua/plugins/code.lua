@@ -273,6 +273,7 @@ return {
                             '-vv',
                             -- '--color=no',
                         },
+                        pytest_discover_instances = true, -- experimental, support parametrized test cases
                     },
                     require 'neotest-rust',
                     require 'neotest-jest' {
