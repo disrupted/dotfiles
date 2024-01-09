@@ -165,9 +165,6 @@ zinit wait'2b' lucid \
   mv'cht* -> _cht' \
   as'completion' \
   for https://cheat.sh/:zsh
-# sad
-zinit ice lucid wait'0' as'program' from'gh-r' id-as'sad' mv'sad* -> sad'
-zinit light 'ms-jpq/sad'
 # mmv renamer
 zinit ice lucid wait'0' as'program' id-as'mmv' from'gh-r' \
   mv'mmv* -> mmv' pick'mmv/mmv'
