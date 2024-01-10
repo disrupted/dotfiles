@@ -12,7 +12,16 @@ alias tree='exa --group-directories-first -T --icons'
 alias c='clear'
 alias gs='git status -sb'
 alias gc='git commit'
-alias gp='git push'
+function gp() {
+  git push $@
+
+  if [[ $(git remote get-url origin) =~ 'github.com' ]] || gh repo view >/dev/null 2>&1; then
+    sleep 2 # GitHub is slooow mkay
+    gh run watch --exit-status || gh run view --log-failed
+  elif [[ $(git remote get-url origin) =~ 'gitlab.com' ]] || glab repo view >/dev/null 2>&1; then
+    glab ci view
+  fi
+}
 alias gm='git switch $(git_main_branch)'
 alias t='tmux attach -t $(tmux list-sessions -F "#{session_name}" | fzf) || tmux new-session'
 alias wget='wget --content-disposition'
