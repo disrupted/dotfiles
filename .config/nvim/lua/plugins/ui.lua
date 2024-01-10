@@ -824,7 +824,7 @@ return {
             -- },
             lsp = {
                 signature = { enabled = true },
-                hover = { enabled = false },
+                hover = { enabled = false, silent = true },
             },
             routes = {
                 {
