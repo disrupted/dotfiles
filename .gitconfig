@@ -71,7 +71,7 @@
 [core]
     pager = delta  # or bat
     # Exclude everything this file. Used for general exclusions.
-	excludesFile = ~/.gitignore
+    excludesFile = ~/.gitignore
     # Set attributes on files. Used for general diff improvements.
     attributesfile = ~/.gitattributes
     # Don't prompt for commit messages for merge commits.
@@ -104,6 +104,12 @@
 [mergetool "Kaleidoscope"]
     cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
     trustExitCode = true
+
+[filter "lfs"]
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
 
 [help]
     # Autocorrect mistyped commands.
@@ -203,3 +209,6 @@
 
 [includeIf "gitdir:~/bakdata/"]
     path = ~/bakdata/.gitconfig
+
+[include]
+    path = ~/.gitconfig_private
