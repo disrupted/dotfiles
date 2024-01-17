@@ -202,6 +202,7 @@ return {
             },
             {
                 'nvim-telescope/telescope-ui-select.nvim',
+                enabled = false, -- FIXME
                 config = function()
                     require('telescope').load_extension 'ui-select'
                 end,
