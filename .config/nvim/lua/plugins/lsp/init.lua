@@ -471,6 +471,11 @@ return {
                                             -- Helm charts
                                             ['https://json.schemastore.org/chart.json'] = '/templates/*',
                                         },
+                                        customTags = {
+                                            -- GitLab CI
+                                            '!reference sequence',
+                                            '!reference scalar',
+                                        },
                                     },
                                 },
                             }
