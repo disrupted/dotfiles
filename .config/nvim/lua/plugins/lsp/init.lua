@@ -475,6 +475,10 @@ return {
                                             -- GitLab CI
                                             '!reference sequence',
                                             '!reference scalar',
+                                            -- mkdocs
+                                            "tag:yaml.org,2002:python/name:material.extensions.emoji.twemoji",
+                                            "tag:yaml.org,2002:python/name:material.extensions.emoji.to_svg",
+                                            "tag:yaml.org,2002:python/name:pymdownx.superfences.fence_code_format"
                                         },
                                     },
                                 },
