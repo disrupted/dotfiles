@@ -419,3 +419,8 @@ function git_main_branch() {
   done
   echo master
 }
+
+#####################
+# WORK              #
+#####################
+source ~/bakdata/.zshrc
