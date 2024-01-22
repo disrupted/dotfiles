@@ -40,7 +40,7 @@
                 <key>settings</key>
                 <dict>
                     <key>foreground</key>
-                    <string>#02000000</string>
+                    <string>#08000000</string> <!-- brightblack -->
                 </dict>
             </dict>
             <dict>
