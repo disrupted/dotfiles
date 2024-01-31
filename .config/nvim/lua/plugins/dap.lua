@@ -113,7 +113,7 @@ return {
                 '<leader>dq',
                 function()
                     require('dap.breakpoints').clear()
-                    require('dap').disconnect()
+                    require('dap').terminate()
                     require('dap').close()
                     require('dapui').close {}
                     vim.opt.signcolumn = 'yes:1'
