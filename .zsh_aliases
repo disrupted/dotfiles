@@ -15,10 +15,11 @@ alias gc='git commit'
 function gp() {
   git push $@
 
-  if [[ $(git remote get-url origin) =~ 'github.com' ]] || gh repo view >/dev/null 2>&1; then
+  if test -s .github/workflows && [[ $(git remote get-url origin) =~ 'github.com' ]] || gh repo view >/dev/null 2>&1; then
     sleep 2 # GitHub is slooow mkay
-    gh run watch --exit-status || gh run view --log-failed
-  elif [[ $(git remote get-url origin) =~ 'gitlab.com' ]] || glab repo view >/dev/null 2>&1; then
+    local job=$(gh run list --json databaseId --jq '.[0].databaseId')
+    gh run watch --exit-status $job || gh run view --log-failed $job
+  elif test -s .gitlab-ci.yml && [[ $(git remote get-url origin) =~ 'gitlab.com' ]] || glab repo view >/dev/null 2>&1; then
     glab ci view
   fi
 }
