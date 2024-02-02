@@ -6,14 +6,14 @@ require('conf.filetype').config()
 
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
-    vim.fn.system {
+    vim.system({
         'git',
         'clone',
         '--filter=blob:none',
         'https://github.com/folke/lazy.nvim.git',
         '--branch=stable',
         lazypath,
-    }
+    }, { text = true }):wait()
 end
 vim.opt.rtp:prepend(lazypath)
 
@@ -105,7 +105,7 @@ command('TrimWhitespace', trim_trailing_whitespace, {})
 
 local function trim_trailing_lines()
     local last_line = vim.api.nvim_buf_line_count(0)
-    local last_nonblank_line = fn.prevnonblank(last_line)
+    local last_nonblank_line = assert(fn.prevnonblank(last_line))
     if last_nonblank_line < last_line then
         vim.api.nvim_buf_set_lines(0, last_nonblank_line, last_line, true, {})
     end
