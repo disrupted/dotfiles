@@ -822,25 +822,13 @@ return {
             local h = require 'null-ls.helpers'
 
             local function dprint_config()
-                local path = require('lspconfig.util').path.join(
-                    vim.loop.cwd(),
-                    'dprint.jsonc'
-                )
-                if require('lspconfig.util').path.exists(path) then
-                    print 'found local dprint config'
-                    print(path)
-                    return path
+                for _, dprint_config in ipairs { 'dprint.jsonc', 'dprint.json' } do
+                    if vim.loop.fs_stat(dprint_config) then
+                        vim.notify('found local ' .. dprint_config)
+                        return dprint_config
                 end
-                path = require('lspconfig.util').path.join(
-                    vim.loop.cwd(),
-                    'dprint.json'
-                )
-                if require('lspconfig.util').path.exists(path) then
-                    print 'found local dprint config'
-                    print(path)
-                    return path
                 end
-                print 'falling back to global dprint config'
+                vim.notify 'falling back to global dprint config'
                 return vim.fn.expand '~/.config/dprint.jsonc'
             end
 
