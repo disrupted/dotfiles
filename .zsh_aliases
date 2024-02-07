@@ -16,8 +16,26 @@ function gp() {
   git push $@
 
   if test -s .github/workflows && [[ $(git remote get-url origin) =~ 'github.com' ]] || gh repo view >/dev/null 2>&1; then
-    sleep 2 # GitHub is slooow mkay
-    local job=$(gh run list --json databaseId --jq '.[0].databaseId')
+    max_retries=10
+    retry_count=0
+
+    # Loop until the job exists for commit or maximum retries reached
+    while [ $retry_count -lt $max_retries ]; do
+        local job=$(gh run list --commit $(git rev-parse HEAD) --json databaseId --jq '.[0].databaseId')
+        if [[ -n $job ]]; then
+            echo "Job found: $job"
+            break
+        else
+            echo "Job not found, retrying..."
+            ((retry_count++))
+            sleep 1
+        fi
+    done
+    if [ $retry_count -ge $max_retries ]; then
+        echo "Max retries reached, aborting"
+        return 1
+    fi
+
     gh run watch --exit-status $job || gh run view --log-failed $job
   elif test -s .gitlab-ci.yml && [[ $(git remote get-url origin) =~ 'gitlab.com' ]] || glab repo view >/dev/null 2>&1; then
     glab ci view
