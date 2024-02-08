@@ -1,3 +1,4 @@
+# vim: ft=zsh
 function mkcd() { mkdir -p $1; cd $1;}
 alias cp='cp -riv'
 alias mv='mv -iv'
