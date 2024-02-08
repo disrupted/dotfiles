@@ -162,7 +162,9 @@ return {
                 '<leader>rr',
                 mode = 'v',
                 function()
-                    require('refactoring').select_refactor()
+                    require('refactoring').select_refactor {
+                        show_success_message = true,
+                    }
                 end,
             },
             {
@@ -188,9 +190,21 @@ return {
             {
                 '<leader>tb',
                 function()
-                    require('neotest').run.run(vim.fn.expand '%')
+                    require('neotest').run.run(vim.api.nvim_buf_get_name(0))
                 end,
                 desc = 'test entire file/buffer',
+            },
+            {
+                '<leader>tu',
+                function()
+                    require('neotest').run.run {
+                        vim.api.nvim_buf_get_name(0),
+                        suite = true,
+                        extra_args = { '--snapshot-update' },
+                    }
+                end,
+                ft = 'python',
+                desc = 'update snapshot for entire file/buffer',
             },
             {
                 '<leader>ta',
@@ -230,7 +244,7 @@ return {
             {
                 '<leader>td',
                 function()
-                    require('neotest').run.run { strategy = 'dap' }
+                    require('neotest').run.run { strategy = 'dap', suite = false }
                 end,
                 desc = 'debug nearest function',
             },
