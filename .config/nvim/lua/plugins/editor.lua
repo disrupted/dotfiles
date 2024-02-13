@@ -101,6 +101,7 @@ return {
             local default_options = {
                 layout_strategy = 'horizontal',
                 layout_config = { preview_width = 0.65 },
+                sorter = telescope.extensions['zf-native'].native_zf_scorer(), -- HACK: override for lsp_dynamic_workspace_symbols because not set automatically
             }
 
             telescope.setup {
@@ -178,6 +179,7 @@ return {
                 },
                 extensions = {
                     fzf = {
+                        fuzzy = true,
                         override_generic_sorter = true,
                         override_file_sorter = true,
                         case_mode = 'smart_case',
