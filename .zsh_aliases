@@ -42,6 +42,26 @@ function gp() {
     glab ci view
   fi
 }
+function gh-ci-retry() {
+    local max_retries=${1:-20} # read from argument or default to 20
+    retry_count=0
+
+    # Loop until the job succeeds or maximum retries reached
+    local job=$(gh run list --commit $(git rev-parse HEAD) --json databaseId --jq '.[0].databaseId')
+    while [ $retry_count -lt $max_retries ]; do
+        gh run rerun $job --failed
+        if gh run watch --exit-status $job; then
+            break
+        else
+            echo "retrying..."
+            ((retry_count++))
+        fi
+    done
+    if [ $retry_count -ge $max_retries ]; then
+        echo "Max retries reached, aborting"
+        return 1
+    fi
+}
 alias gm='git switch $(git_main_branch)'
 alias t='tmux attach -t $(tmux list-sessions -F "#{session_name}" | fzf) || tmux new-session'
 alias wget='wget --content-disposition'
