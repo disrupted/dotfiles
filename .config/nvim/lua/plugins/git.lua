@@ -213,32 +213,32 @@ return {
         cmd = 'GhActions',
         build = 'make',
         dependencies = { 'nvim-lua/plenary.nvim', 'MunifTanjim/nui.nvim' },
-        opts = {},
-        config = function(_, opts)
-            require('gh-actions').setup(opts)
-        end,
+        config = true,
     },
     {
-        'ruifm/gitlinker.nvim',
+        'harrisoncramer/gitlab.nvim',
+        lazy = true,
+        dependencies = {
+            'MunifTanjim/nui.nvim',
+            'nvim-lua/plenary.nvim',
+            'sindrets/diffview.nvim',
+        },
+        build = function()
+            require('gitlab.server').build(true)
+        end,
+        config = true,
+    },
+    {
+        'linrongbin16/gitlinker.nvim',
+        cmd = 'GitLink',
         keys = {
             {
-                '<leader>ho',
-                function()
-                    require('gitlinker').get_buf_range_url('n', {
-                        action_callback = require('gitlinker.actions').open_in_browser,
-                    })
-                end,
-            },
-            {
-                '<leader>ho',
-                function()
-                    require('gitlinker').get_buf_range_url('v', {
-                        action_callback = require('gitlinker.actions').open_in_browser,
-                    })
-                end,
-                mode = 'v',
+                '<leader>hl',
+                '<cmd>GitLink<cr>',
+                mode = { 'n', 'v' },
+                desc = 'Copy git permlink to clipboard',
             },
         },
-        config = { mappings = nil },
+        config = true,
     },
 }
