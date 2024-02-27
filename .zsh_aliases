@@ -14,7 +14,7 @@ alias c='clear'
 alias gs='git status -sb'
 alias gc='git commit'
 function gp() {
-  git push $@
+  git push $@ || return 1
 
   if test -s .github/workflows && ([[ $(git remote get-url origin) =~ 'github.com' ]] || gh repo view >/dev/null 2>&1); then
     max_retries=10
