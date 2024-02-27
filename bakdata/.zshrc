@@ -11,10 +11,12 @@ function kubeconfig-select {
     local config=$(echo $configs | fzf $fzf_arguments | paste -sd: -)
 
     # nothing selected, quit
-    if  test -z "$config"; then
+    if test -z "$config"; then
         return 1
     fi
 
     export KUBECONFIG=$base_path/$config/config
     echo "Updated KUBECONFIG to $KUBECONFIG"
 }
+
+source ~/bakdata/.zshrc_private
