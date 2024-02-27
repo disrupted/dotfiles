@@ -489,7 +489,7 @@ return {
                                 },
                             }
                         end,
-                        ['ruff_lsp'] = function()
+                        ['ruff_lsp'] = function() end --[[ function()
                             require('lspconfig').ruff_lsp.setup {
                                 handlers = {
                                     ['textDocument/hover'] = function() end, -- disable
@@ -527,7 +527,7 @@ return {
                                     },
                                 },
                             }
-                        end,
+                        end ]],
                         ['pylyzer'] = function() end, -- disable
                         ['rust_analyzer'] = function() end, -- use rustaceanvim instead
                         ['dockerls'] = function()
@@ -738,6 +738,13 @@ return {
         dir = '~/bakdata/kpops.nvim',
         -- 'disrupted/kpops.nvim',
         ft = 'yaml',
+        opts = {
+            settings = {
+                kpops = {
+                    generate_schema = true,
+                },
+            },
+        },
         config = true,
     },
     { 'kosayoda/nvim-lightbulb', lazy = true },
@@ -831,7 +838,7 @@ return {
                     if vim.loop.fs_stat(dprint_config) then
                         vim.notify('found local ' .. dprint_config)
                         return dprint_config
-                end
+                    end
                 end
                 vim.notify 'falling back to global dprint config'
                 return vim.fn.expand '~/.config/dprint.jsonc'
@@ -909,8 +916,9 @@ return {
                 --         preview = false,
                 --     },
                 -- },
-                null_ls.builtins.diagnostics.ruff,
-                null_ls.builtins.formatting.ruff,
+                -- null_ls.builtins.diagnostics.ruff,
+                -- null_ls.builtins.formatting.ruff,
+                -- null_ls.builtins.formatting.ruff_format,
                 ruff_format,
                 -- null_ls.builtins.formatting.dprint,
                 dprint,
@@ -943,7 +951,7 @@ return {
                 },
                 -- null_ls.builtins.formatting.trim_whitespace,
                 -- null_ls.builtins.formatting.trim_newlines,
-                null_ls.builtins.diagnostics.shellcheck,
+                -- null_ls.builtins.diagnostics.shellcheck,
                 null_ls.builtins.diagnostics.actionlint.with {
                     -- based on https://github.com/jose-elias-alvarez/null-ls.nvim/pull/804
                     runtime_condition = function()
