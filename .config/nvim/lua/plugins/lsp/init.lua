@@ -286,7 +286,11 @@ return {
                         buffer = bufnr,
                     }
                     for _, existing_autocommand in ipairs(existing_autocommands) do
-                        if existing_autocommand.desc:match(client.name) then
+                        if
+                            existing_autocommand.desc:match(
+                                client.name:gsub('%-', '%%-') -- convert string to pattern
+                            )
+                        then
                             vim.api.nvim_clear_autocmds {
                                 group = augroup_lsp_format,
                                 buffer = bufnr,
