@@ -46,10 +46,7 @@ M.actions = transform_mod {
 
             live_grep_filters.extension = input
 
-            actions._close(
-                prompt_bufnr,
-                current_picker.initial_mode == 'insert'
-            )
+            actions.close(prompt_bufnr, current_picker.initial_mode == 'insert')
             run_live_grep(current_input)
         end)
     end,
@@ -69,7 +66,7 @@ M.actions = transform_mod {
         })
         table.insert(data, 1, '.' .. os_sep)
 
-        actions._close(prompt_bufnr, current_picker.initial_mode == 'insert')
+        actions.close(prompt_bufnr, current_picker.initial_mode == 'insert')
         pickers
             .new({}, {
                 prompt_title = 'Folders for Live Grep',
