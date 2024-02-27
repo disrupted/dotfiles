@@ -597,6 +597,7 @@ return {
                         end
                     end
                 end,
+                desc = 'Close NvimTree if last window',
             })
         end,
     },
@@ -620,13 +621,14 @@ return {
         event = 'VimLeavePre',
         keys = {
             {
-                '<leader>R',
+                '<leader>R', -- TODO: change
                 function()
                     require('persisted').load {}
                 end,
             },
         },
         config = true,
+        enable = false,
     },
     {
         'famiu/bufdelete.nvim',
@@ -635,47 +637,60 @@ return {
     },
     {
         'ThePrimeagen/harpoon',
+        branch = 'harpoon2',
+        dependencies = { 'nvim-lua/plenary.nvim' },
         keys = {
             {
                 ';;',
                 function()
-                    require('harpoon.ui').toggle_quick_menu()
+                    local harpoon = require 'harpoon'
+                    harpoon.ui:toggle_quick_menu(harpoon:list())
                 end,
             },
             {
                 'M',
                 function()
-                    require('harpoon.mark').toggle_file()
+                    local harpoon = require 'harpoon'
+                    local list = harpoon:list()
+                    local item = list.config.create_list_item(list.config)
+                    local name = item.value
+
+                    if not list:get_by_display(name) then
+                        list:append(item)
+                    else
+                        list:remove(item)
+                    end
                 end,
+                desc = 'Toggle file',
             },
             {
                 ';a',
                 function()
-                    require('harpoon.ui').nav_file(1)
+                    require('harpoon'):list():select(1)
                 end,
             },
             {
                 ';s',
                 function()
-                    require('harpoon.ui').nav_file(2)
+                    require('harpoon'):list():select(2)
                 end,
             },
             {
                 ';d',
                 function()
-                    require('harpoon.ui').nav_file(3)
+                    require('harpoon'):list():select(3)
                 end,
             },
             {
                 ';f',
                 function()
-                    require('harpoon.ui').nav_file(4)
+                    require('harpoon'):list():select(4)
                 end,
             },
             {
                 ';g',
                 function()
-                    require('harpoon.ui').nav_file(5)
+                    require('harpoon'):list():select(5)
                 end,
             },
         },

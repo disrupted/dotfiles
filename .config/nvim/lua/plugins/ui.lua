@@ -258,7 +258,16 @@ return {
 
             local Harpoon = {
                 provider = function()
-                    return require('harpoon.mark').status()
+                    local harpoon = require 'harpoon'
+                    local list = harpoon:list()
+
+                    local name = vim.fn.expand '%'
+                    local item = list:get_by_display(name)
+
+                    if not item then
+                        return
+                    end
+                    return 'M'
                 end,
             }
 
