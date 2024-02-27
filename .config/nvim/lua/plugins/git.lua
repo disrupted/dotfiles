@@ -205,6 +205,7 @@ return {
                 end,
             },
             { '<leader>oi', '<cmd>Octo issue list<cr>' },
+            { '<leader>os', '<cmd>Octo search assignee:disrupted<cr>' },
         },
         opts = { date_format = '%Y %b %d %H:%M' },
     },
