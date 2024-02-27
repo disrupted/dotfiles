@@ -143,3 +143,5 @@ dmypy.json
 
 # direnv
 .envrc
+
+scratch_*
