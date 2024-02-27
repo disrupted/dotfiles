@@ -88,7 +88,7 @@ return {
                 smart_rename = {
                     enable = true,
                     keymaps = {
-                        smart_rename = 'grr', -- mapping to rename reference under cursor
+                        smart_rename = '<leader>R', -- mapping to rename reference under cursor
                     },
                 },
                 navigation = {
