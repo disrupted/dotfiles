@@ -169,6 +169,10 @@
     # Show all of my configured aliases
     aliases = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
     branches = branch -a --sort=-authordate
+    # delete all local branches that have been deleted/merged on the remote
+    cleanup = "!git branch -D $(git for-each-ref --format '%(refname:strip=2) %(upstream:track)' refs/heads | awk '$2 == \"[gone]\" {print $1}')"
+    # NOTE: alternative
+    # cleanup = "!git fetch --prune && for branch in $(git for-each-ref --format '%(refname) %(upstream:track)' refs/heads | gawk '{print $1,$4}' | grep 'gone]' | gawk '{print $1}'); do git branch -D $branch; done"
     stashes = stash list
     remotes = remote -v
     tags = tag --list
