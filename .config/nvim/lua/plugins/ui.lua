@@ -21,7 +21,17 @@ return {
             local conditions = require 'heirline.conditions'
             local utils = require 'heirline.utils'
 
-            local colors = require('one').colors
+            local colors = require('one.colors').get()
+            require('heirline').load_colors(colors)
+
+            local augroup =
+                vim.api.nvim_create_augroup('Heirline', { clear = true })
+            vim.api.nvim_create_autocmd('ColorScheme', {
+                callback = function()
+                    utils.on_colorscheme(require('one.colors').get())
+                end,
+                group = augroup,
+            })
 
             local Align = { provider = '%=' }
             local Space = { provider = ' ' }
@@ -37,8 +47,8 @@ return {
                     return icon .. cwd
                 end,
                 hl = {
-                    fg = colors.mono_1,
-                    bg = colors.syntax_cursor,
+                    fg = 'mono_1',
+                    bg = 'syntax_cursor',
                     bold = true,
                 },
             }
@@ -158,7 +168,7 @@ return {
             local Git = {
                 condition = conditions.is_git_repo,
 
-                hl = { bg = colors.syntax_cursor },
+                hl = { bg = 'syntax_cursor' },
 
                 init = function(self)
                     self.status_dict = vim.b.gitsigns_status_dict ---@diagnostic disable-line: undefined-field
@@ -172,7 +182,10 @@ return {
                         local count = self.status_dict.added or 0
                         return count > 0 and ('+' .. count)
                     end,
-                    hl = { fg = colors.hue_4 },
+                    hl = {
+                        fg = 'hue_4',
+                        bg = 'syntax_cursor',
+                    },
                 },
                 Space,
                 {
@@ -180,7 +193,10 @@ return {
                         local count = self.status_dict.changed or 0
                         return count > 0 and ('~' .. count)
                     end,
-                    hl = { fg = colors.hue_6_2 },
+                    hl = {
+                        fg = 'hue_6_2',
+                        bg = 'syntax_cursor',
+                    },
                 },
                 Space,
                 {
@@ -188,7 +204,10 @@ return {
                         local count = self.status_dict.removed or 0
                         return count > 0 and ('-' .. count)
                     end,
-                    hl = { fg = colors.hue_5 },
+                    hl = {
+                        fg = 'hue_5',
+                        bg = 'syntax_cursor',
+                    },
                 },
                 Space,
                 { -- git branch name
@@ -209,7 +228,7 @@ return {
                     info_icon = ' ',
                 },
 
-                hl = { bg = colors.syntax_cursor },
+                hl = { bg = 'syntax_cursor' },
 
                 init = function(self)
                     self.errors = #vim.diagnostic.get(
@@ -238,21 +257,30 @@ return {
                         return self.errors > 0
                             and (self.error_icon .. self.errors .. ' ')
                     end,
-                    hl = { fg = colors.hue_5 },
+                    hl = {
+                        fg = 'hue_5',
+                        bg = 'syntax_cursor',
+                    },
                 },
                 {
                     provider = function(self)
                         return self.warnings > 0
                             and (self.warn_icon .. self.warnings .. ' ')
                     end,
-                    hl = { fg = colors.hue_6_2 },
+                    hl = {
+                        fg = 'hue_6_2',
+                        bg = 'syntax_cursor',
+                    },
                 },
                 {
                     provider = function(self)
                         return self.info > 0
                             and (self.info_icon .. self.info .. ' ')
                     end,
-                    hl = { fg = colors.hue_2 },
+                    hl = {
+                        fg = 'hue_2',
+                        bg = 'syntax_cursor',
+                    },
                 },
             }
 
