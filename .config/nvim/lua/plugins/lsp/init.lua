@@ -800,6 +800,9 @@ return {
                         -- }
                         -- lsp_inlayhints.on_attach(client, bufnr, false)
                         -- TODO: native inlay hints, also when cycling between two bufs making changes to function parameter hints
+                        if not pcall(vim.lsp, 'inlay_hint') then
+                            return
+                        end
                         vim.api.nvim_create_autocmd({
                             'BufWritePost',
                             'BufEnter',
