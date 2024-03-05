@@ -730,9 +730,6 @@ return {
         build = 'bash ./install.sh',
         ft = 'python',
         config = true,
-        -- config = function()
-        --     require('lspconfig').pylance.setup {}
-        -- end,
     },
     {
         dir = '~/bakdata/kpops.nvim',
@@ -788,6 +785,7 @@ return {
                     if
                         client
                         and client.supports_method 'textDocument/inlayHint'
+                        and pcall(require, 'vim.lsp.inlay_hint') -- NOTE: check that API exists
                     then
                         vim.notify(
                             'register inlay hints',
@@ -800,9 +798,6 @@ return {
                         -- }
                         -- lsp_inlayhints.on_attach(client, bufnr, false)
                         -- TODO: native inlay hints, also when cycling between two bufs making changes to function parameter hints
-                        if not pcall(vim.lsp, 'inlay_hint') then
-                            return
-                        end
                         vim.api.nvim_create_autocmd({
                             'BufWritePost',
                             'BufEnter',
@@ -1039,7 +1034,6 @@ return {
         config = function(_, opts)
             require('trouble').setup(opts)
             vim.api.nvim_set_hl(0, 'TroubleText', { link = 'CursorLineNr' })
-
 
             vim.api.nvim_create_autocmd('QuitPre', {
                 callback = function()
