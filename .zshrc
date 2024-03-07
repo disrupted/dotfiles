@@ -345,7 +345,7 @@ autoload colors && colors
 #####################
 source $HOME/.zsh_aliases
 source $HOME/.zsh_aliases_private
-eval "$(zoxide init zsh)"
+eval "$(zoxide init --cmd j zsh)"
 
 #####################
 # FANCY-CTRL-Z      #
