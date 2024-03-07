@@ -424,3 +424,5 @@ function git_main_branch() {
 # WORK              #
 #####################
 source ~/bakdata/.zshrc
+
+export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock" # HACK: docker-py not supporting current context https://github.com/docker/docker-py/issues/3146
