@@ -411,6 +411,7 @@ return {
             { 'folke/neodev.nvim', config = true },
             {
                 'williamboman/mason.nvim',
+                cmd = 'Mason',
                 opts = {
                     registries = {
                         'github:mason-org/mason-registry',
@@ -440,7 +441,7 @@ return {
                         'denols',
                         'tsserver',
                         'eslint',
-                        'prosemd_lsp',
+                        'vale_ls',
                         'terraformls',
                         'helm_ls',
                         'bashls',
@@ -673,16 +674,6 @@ return {
                                     importMap = './import_map.json',
                                 },
                                 single_file_support = false,
-                            }
-                        end,
-                        ['prosemd_lsp'] = function()
-                            require('lspconfig').prosemd_lsp.setup {
-                                root_dir = function(fname)
-                                    return require('lspconfig.util').find_git_ancestor(
-                                        fname
-                                    ) or vim.loop.cwd()
-                                end,
-                                single_file_support = true,
                             }
                         end,
                         ['texlab'] = function()
