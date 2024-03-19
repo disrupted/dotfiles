@@ -10,6 +10,8 @@ function M.config()
             ['poetry.lock'] = 'toml',
             ['.envrc'] = 'bash',
             ['Chart.lock'] = 'yaml',
+            ['docker-compose.yaml'] = 'yaml.docker-compose',
+            ['docker-compose.yml'] = 'yaml.docker-compose',
         },
         pattern = {
             ['.*/templates/.*%.yaml'] = 'helm',
