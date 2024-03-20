@@ -257,6 +257,7 @@ return {
             },
         },
         dependencies = {
+            { 'nvim-neotest/nvim-nio', lazy = true },
             { 'nvim-neotest/neotest-python', lazy = true },
             { 'rouge8/neotest-rust', lazy = true },
             { 'haydenmeade/neotest-jest', lazy = true },
