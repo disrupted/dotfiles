@@ -170,4 +170,10 @@ return {
         dependencies = 'nvim-treesitter/nvim-treesitter',
         config = true,
     },
+    {
+        'IndianBoy42/tree-sitter-just', -- Justfile
+        dependencies = 'nvim-treesitter/nvim-treesitter',
+        build = ':TSInstall just',
+        config = true,
+    },
 }
