@@ -38,6 +38,7 @@ return {
                 'json',
                 'json5',
                 'jsonc',
+                'just',
                 'kotlin',
                 'latex',
                 'llvm',
@@ -168,12 +169,6 @@ return {
     {
         'kmoschcau/tree-sitter-go-template', -- Helm -- TODO: ngalaiko/tree-sitter-go-template after https://github.com/ngalaiko/tree-sitter-go-template/pull/13 is merged
         dependencies = 'nvim-treesitter/nvim-treesitter',
-        config = true,
-    },
-    {
-        'IndianBoy42/tree-sitter-just', -- Justfile
-        dependencies = 'nvim-treesitter/nvim-treesitter',
-        build = ':TSInstall just',
         config = true,
     },
 }
