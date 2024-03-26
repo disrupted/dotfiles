@@ -8,8 +8,14 @@ return {
         enabled = false,
     },
     {
-        'NTBBloodbath/rest.nvim',
+        'vhyrro/luarocks.nvim',
+        priority = 1000,
+        config = true,
+    },
+    {
+        'rest-nvim/rest.nvim',
         ft = 'http',
+        dependencies = { 'luarocks.nvim' },
         config = function()
             vim.api.nvim_create_user_command('Rest', function()
                 require('rest-nvim').run()

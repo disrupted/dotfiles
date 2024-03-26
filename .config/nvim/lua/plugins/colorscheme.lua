@@ -2,9 +2,8 @@ return {
     {
         'disrupted/one.nvim', -- personal tweaked colorscheme
         lazy = false,
-        priority = 1000,
+        priority = 9999,
         config = function()
-            -- vim.o.background = 'light'
             require('one').colorscheme()
         end,
     },
