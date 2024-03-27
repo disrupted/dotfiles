@@ -871,10 +871,32 @@ return {
                 },
             }
 
-            local ruff_format = {
+            local ruff_fix = {
                 name = 'ruff',
                 meta = {
-                    url = 'https://github.com/charliermarsh/ruff',
+                    url = 'https://github.com/astral-sh/ruff',
+                    description = 'An extremely fast Python linter and formatter, written in Rust.',
+                },
+                method = null_ls.methods.FORMATTING,
+                filetypes = { 'python' },
+                generator = h.formatter_factory {
+                    command = 'ruff',
+                    args = {
+                        '--fix',
+                        '-e',
+                        '-n',
+                        '--stdin-filename',
+                        '$FILENAME',
+                        '-',
+                    },
+                    to_stdin = true,
+                },
+            }
+
+            local ruff_format = {
+                name = 'ruff format',
+                meta = {
+                    url = 'https://github.com/astral-sh/ruff',
                     description = 'An extremely fast Python linter and formatter, written in Rust.',
                 },
                 method = null_ls.methods.FORMATTING,
@@ -908,9 +930,7 @@ return {
                 --         preview = false,
                 --     },
                 -- },
-                -- null_ls.builtins.diagnostics.ruff,
-                -- null_ls.builtins.formatting.ruff,
-                -- null_ls.builtins.formatting.ruff_format,
+                ruff_fix,
                 ruff_format,
                 -- null_ls.builtins.formatting.dprint,
                 dprint,
