@@ -446,6 +446,7 @@ return {
                         'terraformls',
                         'helm_ls',
                         'bashls',
+                        'pylance',
                     },
                     handlers = {
                         function(server_name)
@@ -720,9 +721,9 @@ return {
     },
     {
         'disrupted/pylance.nvim',
-        build = 'bash ./install.sh',
+        -- build = 'bash ./install.sh',
         ft = 'python',
-        config = true,
+        -- config = true,
     },
     {
         dir = '~/bakdata/kpops.nvim',
