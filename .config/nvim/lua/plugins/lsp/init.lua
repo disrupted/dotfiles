@@ -255,6 +255,7 @@ return {
 
             local servers_autoformat_disabled = {
                 'pylance',
+                'ruff_lsp', -- FIXME: chain formatting with multiple LSPs to avoid corruption
                 'eslint',
                 'tsserver',
                 'jsonls',
@@ -491,7 +492,7 @@ return {
                                 },
                             }
                         end,
-                        ['ruff_lsp'] = function() end --[[ function()
+                        ['ruff_lsp'] = function()
                             require('lspconfig').ruff_lsp.setup {
                                 handlers = {
                                     ['textDocument/hover'] = function() end, -- disable
@@ -529,7 +530,7 @@ return {
                                     },
                                 },
                             }
-                        end ]],
+                        end,
                         ['pylyzer'] = function() end, -- disable
                         ['rust_analyzer'] = function() end, -- use rustaceanvim instead
                         ['dockerls'] = function()
