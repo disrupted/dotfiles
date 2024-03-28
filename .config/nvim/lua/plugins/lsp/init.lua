@@ -497,15 +497,8 @@ return {
                         end,
                         ['yamlls'] = function()
                             require('lspconfig').yamlls.setup {
-                                single_file_support = false,
+                                single_file_support = true,
                                 root_dir = function(filename)
-                                    if
-                                        filename:match 'pipeline[_%w]*.yaml'
-                                        or filename:match 'config.yaml'
-                                        or filename:match 'defaults[_%w]*.yaml'
-                                    then
-                                        return nil -- handled by KPOps LSP
-                                    end
                                     return require('lspconfig.util').find_git_ancestor(
                                         filename
                                     ) or vim.loop.cwd()
@@ -767,7 +760,7 @@ return {
     {
         dir = '~/bakdata/kpops.nvim',
         -- 'disrupted/kpops.nvim',
-        ft = 'yaml',
+        ft = 'yaml.kpops',
         opts = {
             settings = {
                 kpops = {
@@ -775,7 +768,6 @@ return {
                 },
             },
         },
-        config = true,
     },
     { 'kosayoda/nvim-lightbulb', lazy = true },
     {
