@@ -85,6 +85,7 @@ return {
                         { buf = bufnr }
                     )
                 then
+                    vim.notify 'buffer was modified during formatting'
                     return
                 end
 
@@ -249,6 +250,44 @@ return {
                             buffer = bufnr,
                             callback = vim.lsp.buf.clear_references,
                         })
+                    end
+                end,
+            })
+
+            vim.api.nvim_create_autocmd('LspAttach', {
+                group = au,
+                desc = 'LSP inlay hints',
+                callback = function(args)
+                    local bufnr = args.buf
+                    local client = vim.lsp.get_client_by_id(args.data.client_id)
+                    if
+                        client
+                        and client.supports_method 'textDocument/inlayHint'
+                        and pcall(require, 'vim.lsp.inlay_hint') -- NOTE: check that API exists
+                    then
+                        vim.notify(
+                            'register inlay hints',
+                            vim.lsp.log_levels.DEBUG
+                        )
+                        vim.api.nvim_create_autocmd({
+                            'BufWritePost',
+                            'BufEnter',
+                            'InsertLeave',
+                            'FocusGained',
+                            'CursorHold',
+                        }, {
+                            buffer = bufnr,
+                            callback = function()
+                                vim.lsp.inlay_hint.enable(bufnr, true)
+                            end,
+                        })
+                        vim.api.nvim_create_autocmd('InsertEnter', {
+                            callback = function()
+                                vim.lsp.inlay_hint.enable(bufnr, false)
+                            end,
+                        })
+                        -- initial request
+                        vim.lsp.inlay_hint.enable(bufnr, true)
                     end
                 end,
             })
@@ -766,57 +805,6 @@ return {
         end,
     },
     {
-        'lvimuser/lsp-inlayhints.nvim',
-        branch = 'anticonceal',
-        event = { 'BufReadPost', 'BufNewFile' },
-        config = function()
-            vim.api.nvim_create_autocmd('LspAttach', {
-                group = au,
-                desc = 'LSP inlay hints',
-                callback = function(args)
-                    local bufnr = args.buf
-                    local client = vim.lsp.get_client_by_id(args.data.client_id)
-                    if
-                        client
-                        and client.supports_method 'textDocument/inlayHint'
-                        and pcall(require, 'vim.lsp.inlay_hint') -- NOTE: check that API exists
-                    then
-                        vim.notify(
-                            'register inlay hints',
-                            vim.lsp.log_levels.DEBUG
-                        )
-                        -- local lsp_inlayhints = require 'lsp-inlayhints'
-                        -- lsp_inlayhints.setup {
-                        --     enabled_at_startup = true,
-                        --     debug_mode = false,
-                        -- }
-                        -- lsp_inlayhints.on_attach(client, bufnr, false)
-                        -- TODO: native inlay hints, also when cycling between two bufs making changes to function parameter hints
-                        vim.api.nvim_create_autocmd({
-                            'BufWritePost',
-                            'BufEnter',
-                            'InsertLeave',
-                            'FocusGained',
-                            'CursorHold',
-                        }, {
-                            buffer = bufnr,
-                            callback = function()
-                                vim.lsp.inlay_hint.enable(bufnr, true)
-                            end,
-                        })
-                        vim.api.nvim_create_autocmd('InsertEnter', {
-                            callback = function()
-                                vim.lsp.inlay_hint.enable(bufnr, false)
-                            end,
-                        })
-                        -- initial request
-                        vim.lsp.inlay_hint.enable(bufnr, true)
-                    end
-                end,
-            })
-        end,
-    },
-    {
         'nvimtools/none-ls.nvim',
         event = { 'BufReadPost', 'BufNewFile' },
         opts = function()
@@ -872,7 +860,7 @@ return {
             }
 
             local ruff_fix = {
-                name = 'ruff',
+                name = 'ruff fix',
                 meta = {
                     url = 'https://github.com/astral-sh/ruff',
                     description = 'An extremely fast Python linter and formatter, written in Rust.',
