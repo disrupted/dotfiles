@@ -498,6 +498,7 @@ return {
                         ['yamlls'] = function()
                             require('lspconfig').yamlls.setup {
                                 single_file_support = true,
+                                filetypes = { 'yaml' },
                                 root_dir = function(filename)
                                     return require('lspconfig.util').find_git_ancestor(
                                         filename
