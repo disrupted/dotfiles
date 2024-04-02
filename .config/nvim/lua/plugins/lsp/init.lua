@@ -865,11 +865,14 @@ return {
                 generator = h.formatter_factory {
                     command = 'ruff',
                     args = {
+                        'check',
                         '--fix',
-                        '-e',
-                        '-n',
+                        '--respect-gitignore',
+                        '--force-exclude',
                         '--stdin-filename',
                         '$FILENAME',
+                        '--exit-zero',
+                        '--no-cache',
                         '-',
                     },
                     to_stdin = true,
