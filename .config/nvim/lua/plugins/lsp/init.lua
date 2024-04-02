@@ -295,10 +295,12 @@ return {
             local servers_autoformat_disabled = {
                 'pylance',
                 'ruff_lsp', -- FIXME: chain formatting with multiple LSPs to avoid corruption
+                'docker_compose_language_service',
                 'eslint',
                 'tsserver',
                 'jsonls',
                 'lua_ls',
+                'yamlls',
             }
             local augroup_lsp_format =
                 vim.api.nvim_create_augroup('lsp_format', {})
