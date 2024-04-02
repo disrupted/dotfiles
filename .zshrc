@@ -317,7 +317,7 @@ export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 
 # Golang
-export PATH="$GOPATH/bin:$PATH"
+[[ -v $GOPATH ]] && export PATH="$GOPATH/bin:$PATH"
 
 # Mojo
 export MODULAR_HOME="$HOME/.modular"
