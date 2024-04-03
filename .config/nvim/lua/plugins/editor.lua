@@ -656,7 +656,7 @@ return {
                     local name = item.value
 
                     if not list:get_by_display(name) then
-                        list:append(item)
+                        list:add(item)
                     else
                         list:remove(item)
                     end
