@@ -215,39 +215,6 @@ return {
 
             -- Python
             require 'dap-python'
-            table.insert(dap.configurations.python, {
-                type = 'python',
-                request = 'launch',
-                name = 'Launch file',
-                program = '${file}',
-                pythonPath = function()
-                    return 'python'
-                end,
-            })
-            table.insert(dap.configurations.python, {
-                type = 'python',
-                request = 'launch',
-                name = 'FastAPI',
-                program = function()
-                    return './main.py'
-                end,
-                pythonPath = function()
-                    return 'python'
-                end,
-            })
-            table.insert(dap.configurations.python, {
-                type = 'python',
-                request = 'launch',
-                name = 'FastAPI module',
-                module = 'uvicorn',
-                args = {
-                    'main:app',
-                    -- '--reload', -- doesn't work
-                    '--use-colors',
-                },
-                pythonPath = 'python',
-                console = 'integratedTerminal',
-            })
         end,
         dependencies = {
             {
@@ -264,6 +231,73 @@ return {
                         opts
                     )
                     py.test_runner = 'pytest'
+                    local dap = require 'dap'
+                    table.insert(dap.configurations.python, {
+                        type = 'python',
+                        request = 'launch',
+                        name = 'Launch file',
+                        program = '${file}',
+                        pythonPath = function()
+                            return 'python'
+                        end,
+                    })
+                    table.insert(dap.configurations.python, {
+                        type = 'python',
+                        request = 'launch',
+                        name = 'FastAPI main.py',
+                        program = function()
+                            return './main.py'
+                        end,
+                        pythonPath = function()
+                            return 'python'
+                        end,
+                    })
+                    table.insert(dap.configurations.python, {
+                        type = 'python',
+                        request = 'launch',
+                        name = 'FastAPI module',
+                        module = 'uvicorn',
+                        args = function()
+                            return {
+                                vim.fn.input(
+                                    'FastAPI app module > ',
+                                    'main:app',
+                                    'file'
+                                ),
+                                -- '--reload', -- doesn't work
+                                '--use-colors',
+                            }
+                        end,
+                        pythonPath = 'python',
+                        console = 'integratedTerminal',
+                    })
+                    table.insert(dap.configurations.python, {
+                        type = 'python',
+                        request = 'attach',
+                        name = 'Remote Python: Attach',
+                        port = 5678,
+                        host = '127.0.0.1',
+                        mode = 'remote',
+                        cwd = vim.loop.cwd(),
+                        pathMappings = {
+                            {
+                                localRoot = function()
+                                    return vim.fn.input(
+                                        'Local code folder > ',
+                                        vim.loop.cwd(),
+                                        'file'
+                                    )
+                                end,
+                                remoteRoot = function()
+                                    return vim.fn.input(
+                                        'Container code folder > ',
+                                        '/',
+                                        'file'
+                                    )
+                                end,
+                            },
+                        },
+                    })
                 end,
             },
             {
