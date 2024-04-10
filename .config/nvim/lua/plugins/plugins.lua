@@ -17,9 +17,8 @@ return {
         ft = 'http',
         dependencies = { 'luarocks.nvim' },
         config = function()
-            vim.api.nvim_create_user_command('Rest', function()
-                require('rest-nvim').run()
-            end, {})
+            ---@diagnostic disable-next-line: missing-parameter
+            require('rest-nvim').setup()
         end,
     },
     { 'soywod/himalaya', cmd = 'Himalaya' },
