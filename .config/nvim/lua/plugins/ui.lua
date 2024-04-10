@@ -290,7 +290,7 @@ return {
                     local list = harpoon:list()
 
                     local name = vim.fn.expand '%'
-                    local item = list:get_by_display(name)
+                    local item = list:get_by_value(name)
 
                     if not item then
                         return

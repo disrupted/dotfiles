@@ -653,9 +653,8 @@ return {
                     local harpoon = require 'harpoon'
                     local list = harpoon:list()
                     local item = list.config.create_list_item(list.config)
-                    local name = item.value
 
-                    if not list:get_by_display(name) then
+                    if not list:get_by_value(item.value) then
                         list:add(item)
                     else
                         list:remove(item)
