@@ -216,7 +216,7 @@ return {
                 'mfussenegger/nvim-dap-python',
                 lazy = true,
                 opts = {
-                    include_configs = true,
+                    include_configs = false,
                     console = 'internalConsole',
                 },
                 config = function(_, opts)
@@ -227,18 +227,38 @@ return {
                     )
                     py.test_runner = 'pytest'
                     local dap = require 'dap'
-                    table.insert(dap.configurations.python, {
+                    local configs = dap.configurations.python or {}
+                    dap.configurations.python = configs
+                    table.insert(configs, {
                         type = 'python',
                         request = 'launch',
-                        name = 'FastAPI main.py',
+                        name = 'Launch file',
+                        program = '${file}',
+                        console = opts.console,
+                        pythonPath = opts.pythonPath,
+                    })
+                    table.insert(configs, {
+                        type = 'python',
+                        request = 'launch',
+                        name = 'Launch file with arguments',
+                        program = '${file}',
+                        args = function()
+                            local args_string = vim.fn.input 'Arguments: '
+                            return vim.split(args_string, ' +')
+                        end,
+                        console = opts.console,
+                        pythonPath = opts.pythonPath,
+                    })
+                    table.insert(configs, {
+                        type = 'python',
+                        request = 'launch',
+                        name = 'Launch main.py',
                         program = function()
                             return './main.py'
                         end,
-                        pythonPath = function()
-                            return 'python'
-                        end,
+                        pythonPath = opts.pythonPath,
                     })
-                    table.insert(dap.configurations.python, {
+                    table.insert(configs, {
                         type = 'python',
                         request = 'launch',
                         name = 'FastAPI module',
@@ -257,32 +277,39 @@ return {
                         pythonPath = 'python',
                         console = 'integratedTerminal',
                     })
-                    table.insert(dap.configurations.python, {
+                    table.insert(configs, {
                         type = 'python',
                         request = 'attach',
-                        name = 'Remote Python: Attach',
-                        port = 5678,
-                        host = '127.0.0.1',
+                        name = 'Attach remote',
                         mode = 'remote',
-                        cwd = vim.loop.cwd(),
-                        pathMappings = {
-                            {
-                                localRoot = function()
-                                    return vim.fn.input(
-                                        'Local code folder > ',
-                                        vim.loop.cwd(),
-                                        'file'
-                                    )
-                                end,
-                                remoteRoot = function()
-                                    return vim.fn.input(
-                                        'Container code folder > ',
-                                        '/',
-                                        'file'
-                                    )
-                                end,
-                            },
-                        },
+                        connect = function()
+                            local host = vim.fn.input 'Host [127.0.0.1]: '
+                            host = host ~= '' and host or '127.0.0.1'
+                            local port = tonumber(vim.fn.input 'Port [5678]: ')
+                                or 5678
+                            local localRoot = function()
+                                return vim.fn.input(
+                                    'Local code folder: ',
+                                    vim.loop.cwd(),
+                                    'file'
+                                )
+                            end
+                            local remoteRoot = function()
+                                return vim.fn.input(
+                                    'Container code folder: ',
+                                    '/',
+                                    'file'
+                                )
+                            end
+                            return {
+                                host = host,
+                                port = port,
+                                pathMappings = {
+                                    localRoot = localRoot,
+                                    remoteRoot = remoteRoot,
+                                },
+                            }
+                        end,
                     })
                 end,
             },
