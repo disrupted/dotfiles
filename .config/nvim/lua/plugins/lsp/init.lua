@@ -47,69 +47,12 @@ return {
             end
 
             vim.api.nvim_create_user_command('Format', function()
-                vim.lsp.buf.format { async = false }
+                require('conform').format()
             end, {})
 
-            -- Handle formatting in a smarter way
-            -- If the buffer has been edited before formatting has completed, do not try to
-            -- apply the changes, original by Lukas Reineke
-            vim.lsp.handlers['textDocument/formatting'] = function(
-                err,
-                result,
-                ctx
-            )
-                local client = vim.lsp.get_client_by_id(ctx.client_id)
-                if not client then
-                    return
-                end
-                if err then
-                    local err_msg = type(err) == 'string' and err or err.message
-                    vim.notify(
-                        ('%s formatting error: %s'):format(client.name, err_msg),
-                        vim.log.levels.ERROR
-                    )
-                    return
-                end
-
-                if result == nil then
-                    -- vim.notify('no formatting changes', vim.lsp.log_levels.DEBUG)
-                    return
-                end
-
-                local bufnr = ctx.bufnr
-                -- abort if the buffer has been modified before the formatting has finished
-                if
-                    not vim.api.nvim_buf_is_loaded(bufnr)
-                    or vim.api.nvim_get_option_value(
-                        'modified',
-                        { buf = bufnr }
-                    )
-                then
-                    vim.notify 'buffer was modified during formatting'
-                    return
-                end
-
-                -- local pos = vim.api.nvim_win_get_cursor(0)
-                vim.lsp.util.apply_text_edits(
-                    result,
-                    bufnr,
-                    client.offset_encoding or 'utf-16'
-                )
-                -- pcall(vim.api.nvim_win_set_cursor, 0, pos)
-                vim.api.nvim_buf_call(bufnr, function()
-                    vim.cmd 'silent noautocmd update'
-                end)
-                vim.notify(
-                    ('%s formatting success'):format(client.name),
-                    vim.lsp.log_levels.DEBUG
-                )
-
-                -- Trigger post-formatting autocommand which can be used to refresh gitsigns
-                -- vim.api.nvim_exec_autocmds(
-                --     'User FormatterPost',
-                --     { modeline = false }
-                -- )
-            end
+            vim.api.nvim_create_user_command('LspFormat', function()
+                vim.lsp.buf.format { async = false }
+            end, {})
 
             -- show diagnostics for current line as virtual text
             -- from https://github.com/kristijanhusak/neovim-config/blob/5977ad2c5dd9bfbb7f24b169fef01828717ea9dc/nvim/lua/partials/lsp.lua#L169
@@ -146,7 +89,7 @@ return {
                     local bufnr = args.buf
                     vim.api.nvim_set_option_value(
                         'formatexpr',
-                        'v:lua.vim.lsp.formatexpr',
+                        'v:lua.require\'conform\'.formatexpr()',
                         { buf = bufnr }
                     )
                     vim.api.nvim_set_option_value(
@@ -289,80 +232,6 @@ return {
                         -- initial request
                         vim.lsp.inlay_hint.enable(bufnr, true)
                     end
-                end,
-            })
-
-            local servers_autoformat_disabled = {
-                'pylance',
-                'ruff_lsp', -- FIXME: chain formatting with multiple LSPs to avoid corruption
-                'docker_compose_language_service',
-                'eslint',
-                'tsserver',
-                'jsonls',
-                'lua_ls',
-                'yamlls',
-            }
-            local augroup_lsp_format =
-                vim.api.nvim_create_augroup('lsp_format', {})
-            vim.api.nvim_create_autocmd('LspAttach', {
-                group = au,
-                desc = 'LSP format',
-                callback = function(args)
-                    local bufnr = args.buf
-                    local client = vim.lsp.get_client_by_id(args.data.client_id)
-                    if not client then
-                        return
-                    end
-
-                    if
-                        vim.tbl_contains(
-                            servers_autoformat_disabled,
-                            client.name
-                        )
-                    then
-                        return
-                    end
-
-                    local existing_autocommands = vim.api.nvim_get_autocmds {
-                        group = augroup_lsp_format,
-                        buffer = bufnr,
-                    }
-                    for _, existing_autocommand in ipairs(existing_autocommands) do
-                        if
-                            existing_autocommand.desc:match(
-                                client.name:gsub('%-', '%%-') -- convert string to pattern
-                            )
-                        then
-                            vim.api.nvim_clear_autocmds {
-                                group = augroup_lsp_format,
-                                buffer = bufnr,
-                            }
-                            break
-                        end
-                    end
-
-                    vim.api.nvim_create_autocmd('BufWritePost', {
-                        group = augroup_lsp_format,
-                        buffer = bufnr,
-                        desc = ('%s format'):format(client.name),
-                        callback = function()
-                            if
-                                client.supports_method 'textDocument/formatting'
-                            then
-                                vim.lsp.buf.format {
-                                    async = true,
-                                    bufnr = bufnr,
-                                    --[[ filter = function(server)
-                                -- return server.name == 'null-ls'
-                                return not vim.tbl_contains(
-                                    servers_autoformat_disabled,
-                                    server.name
-                                )
-                            end, ]]
-                                }
-                            end
-                        end,
-                    })
                 end,
             })
 
@@ -568,6 +437,7 @@ return {
                             }
                         end,
                         ['pylyzer'] = function() end, -- disable
+                        ['vale_ls'] = function() end, -- disable
                         ['rust_analyzer'] = function() end, -- use rustaceanvim instead
                         ['dockerls'] = function()
                             require('lspconfig').dockerls.setup {
@@ -800,6 +670,91 @@ return {
         end,
     },
     {
+        'stevearc/conform.nvim',
+        event = { 'BufWritePre' },
+        opts = {
+            formatters_by_ft = {
+                lua = { 'stylua' },
+                python = function(bufnr)
+                    if
+                        require('conform').get_formatter_info(
+                            'ruff_format',
+                            bufnr
+                        ).available
+                    then
+                        return { 'ruff_fix', 'ruff_format' }
+                    else
+                        return { 'isort', 'black' }
+                    end
+                end,
+                json = { 'dprint' },
+                jsonc = { 'dprint' },
+                markdown = { 'dprint', 'injected' },
+                javascript = { 'dprint' },
+                javascriptreact = { 'dprint' },
+                typescript = { 'dprint' },
+                typescriptreact = { 'dprint' },
+                toml = { 'dprint' },
+                dockerfile = { 'dprint' },
+                css = { 'dprint' },
+                html = { 'dprint' },
+                htmldjango = { 'dprint' },
+                yaml = { { 'prettierd', 'prettier' } },
+                graphql = { { 'prettierd', 'prettier' } },
+                sh = { 'shfmt' },
+                http = { 'injected', 'trim_newlines', 'trim_whitespace' },
+                ['_'] = { 'trim_newlines', 'trim_whitespace' },
+            },
+            format_on_save = {
+                timeout_ms = 5000, -- HACK: high because dprint needs to download WASM plugins on first run
+                lsp_fallback = true,
+            },
+        },
+        config = function(_, opts)
+            local conform = require 'conform'
+            conform.setup(opts)
+
+            conform.formatters.stylua = {
+                require_cwd = true,
+            }
+            conform.formatters.ruff_fix = {
+                prepend_args = { '--respect-gitignore' },
+            }
+            conform.formatters.ruff_format = {
+                prepend_args = { '--silent', '--respect-gitignore' },
+            }
+            conform.formatters.shfmt = {
+                prepend_args = { '-i', '4', '-ci' },
+            }
+            conform.formatters.dprint = {
+                prepend_args = function(self, ctx)
+                    local cwd = self.cwd(self, ctx)
+                    if not cwd then
+                        vim.notify 'falling back to global dprint config'
+                        return {
+                            '--config',
+                            vim.fn.expand '~/.config/dprint.jsonc',
+                        }
+                    end
+                end,
+            }
+            conform.formatters.injected = {
+                options = {
+                    ignore_errors = false,
+                    lang_to_formatters = {
+                        json = { 'jq' }, -- FIXME: dprint
+                        python = { 'black' }, -- FIXME: ruff_format deletes content
+                    },
+                },
+            }
+
+            -- TODO: custom formatters
+            conform.formatters.blackd = {
+                command = 'blackd-client',
+            }
+        end,
+    },
+    {
         'nvimtools/none-ls.nvim',
         event = { 'BufReadPost', 'BufNewFile' },
         opts = function()
@@ -903,12 +858,12 @@ return {
             }
 
             local sources = {
-                null_ls.builtins.formatting.stylua.with {
+                --[[ null_ls.builtins.formatting.stylua.with {
                     condition = function(utils)
                         return utils.root_has_file 'stylua.toml'
                             or utils.root_has_file '.stylua.toml'
                     end,
-                },
+                }, ]]
                 -- null_ls.builtins.formatting.isortd,
                 -- null_ls.builtins.formatting.blackd.with {
                 --     config = {
@@ -916,11 +871,11 @@ return {
                 --         preview = false,
                 --     },
                 -- },
-                ruff_fix,
-                ruff_format,
+                -- ruff_fix,
+                -- ruff_format,
                 -- null_ls.builtins.formatting.dprint,
-                dprint,
-                null_ls.builtins.formatting.prettier.with {
+                -- dprint,
+                --[[ null_ls.builtins.formatting.prettier.with {
                     filetypes = {
                         'yaml',
                         'graphql',
@@ -928,8 +883,8 @@ return {
                     -- condition = function(utils)
                     --     return not utils.root_has_file 'dprint.jsonc'
                     -- end,
-                },
-                null_ls.builtins.formatting.uncrustify.with {
+                }, ]]
+                --[[ null_ls.builtins.formatting.uncrustify.with {
                     condition = function(utils)
                         return utils.root_has_file 'uncrustify.cfg'
                     end,
@@ -943,13 +898,10 @@ return {
                             ),
                         }
                     end,
-                },
-                null_ls.builtins.formatting.shfmt.with {
+                }, ]]
+                --[[ null_ls.builtins.formatting.shfmt.with {
                     extra_args = { '-i', '4', '-ci' },
-                },
-                -- null_ls.builtins.formatting.trim_whitespace,
-                -- null_ls.builtins.formatting.trim_newlines,
-                -- null_ls.builtins.diagnostics.shellcheck,
+                }, ]]
                 null_ls.builtins.diagnostics.actionlint.with {
                     -- based on https://github.com/jose-elias-alvarez/null-ls.nvim/pull/804
                     runtime_condition = function()
