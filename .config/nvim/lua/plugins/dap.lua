@@ -73,27 +73,8 @@ return {
                     require('dap.ext.autocompl').attach()
                 end,
             })
-
-            require('dapui').setup(opts)
-
-            vim.api.nvim_set_hl(0, 'DapUIScope', { bold = true })
-            vim.api.nvim_set_hl(0, 'DapUIDecoration', { link = 'CursorLineNr' })
-            vim.api.nvim_set_hl(0, 'DapUIThread', { link = 'GitSignsAdd' })
-            vim.api.nvim_set_hl(0, 'DapUIStoppedThread', { link = 'Special' })
-            vim.api.nvim_set_hl(0, 'DapUILineNumber', { link = 'Normal' })
-            vim.api.nvim_set_hl(0, 'DapUIType', { link = 'Type' })
-            vim.api.nvim_set_hl(0, 'DapUISource', { link = 'Keyword' })
-            vim.api.nvim_set_hl(0, 'DapUIWatchesEmpty', { link = 'Comment' })
-            vim.api.nvim_set_hl(
-                0,
-                'DapUIWatchesValue',
-                { link = 'GitSignsAdd' }
-            )
-            vim.api.nvim_set_hl(
-                0,
-                'DapUIWatchesError',
-                { link = 'DiagnosticError' }
-            )
+            local dapui = require 'dapui'
+            dapui.setup(opts)
         end,
     },
     {
@@ -104,7 +85,6 @@ return {
                 function()
                     require 'nvim-dap-virtual-text'
                     require('dap').continue()
-                    -- require('dapui').open {}
                     vim.opt.signcolumn = 'yes:2'
                 end,
                 desc = 'continue/start debugger',
@@ -160,7 +140,7 @@ return {
                 '<leader>dB',
                 function()
                     require('dap').set_breakpoint(
-                        vim.fn.input { 'Breakpoint condition: ' }
+                        vim.fn.input 'Breakpoint condition: '
                     )
                 end,
             },
@@ -213,6 +193,21 @@ return {
                 texthl = 'Special',
             })
 
+            local dap = require 'dap'
+            local dapui = require 'dapui'
+            dap.listeners.before.attach.dapui_config = function()
+                dapui.open()
+            end
+            dap.listeners.before.launch.dapui_config = function()
+                dapui.open()
+            end
+            dap.listeners.before.event_terminated.dapui_config = function()
+                dapui.close()
+            end
+            dap.listeners.before.event_exited.dapui_config = function()
+                dapui.close()
+            end
+
             -- Python
             require 'dap-python'
         end,
@@ -232,15 +227,6 @@ return {
                     )
                     py.test_runner = 'pytest'
                     local dap = require 'dap'
-                    table.insert(dap.configurations.python, {
-                        type = 'python',
-                        request = 'launch',
-                        name = 'Launch file',
-                        program = '${file}',
-                        pythonPath = function()
-                            return 'python'
-                        end,
-                    })
                     table.insert(dap.configurations.python, {
                         type = 'python',
                         request = 'launch',
