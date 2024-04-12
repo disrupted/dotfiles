@@ -855,7 +855,7 @@ return {
                     if not linter then
                         vim.notify(
                             'Linter not found: ' .. name,
-                            vim.log.level.WARN
+                            vim.log.levels.WARN
                         )
                     end
                     return linter
