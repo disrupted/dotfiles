@@ -301,8 +301,8 @@ return {
 
             local DAPMessages = {
                 condition = function()
-                    local session = require('dap').session()
-                    return session ~= nil
+                    return package.loaded['dap']
+                        and require('dap').session() ~= nil
                 end,
                 provider = function()
                     return ' ' .. require('dap').status()
