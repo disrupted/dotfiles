@@ -280,9 +280,10 @@ if type brew &>/dev/null; then
     # LLVM (C, C++)
     export PATH="$HOMEBREW_HOME/opt/llvm/bin:$PATH"
 
-    # For compilers and pkgconfig to find zlib, bzip2, llvm (c, cpp)
-    export LDFLAGS="-L$HOMEBREW_HOME/opt/zlib/lib -L$HOMEBREW_HOME/opt/bzip2/lib -L$HOMEBREW_HOME/opt/llvm/lib -Wl,-rpath,$HOMEBREW_HOME/opt/llvm/lib"
-    export CPPFLAGS="-I$HOMEBREW_HOME/opt/zlib/include -I$HOMEBREW_HOME/opt/bzip2/include -I$HOMEBREW_HOME/opt/llvm/include"
+    # For compilers and pkgconfig to find zlib, bzip2, llvm (c, cpp), FreeTDS (PyMSSQL)
+    export LDFLAGS="-L$HOMEBREW_HOME/opt/zlib/lib -L$HOMEBREW_HOME/opt/bzip2/lib -L$HOMEBREW_HOME/opt/llvm/lib -Wl,-rpath,$HOMEBREW_HOME/opt/llvm/lib -L$HOMEBREW_HOME/opt/freetds/lib -L$HOMEBREW_HOME/opt/openssl@3/lib"
+    export CFLAGS="-I$HOMEBREW_HOME/opt/freetds/include"
+    export CPPFLAGS="-I$HOMEBREW_HOME/opt/zlib/include -I$HOMEBREW_HOME/opt/bzip2/include -I$HOMEBREW_HOME/opt/llvm/include -I$HOMEBREW_HOME/opt/openssl@3/include"
     export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} $HOMEBREW_HOME/opt/zlib/lib/pkgconfig"
     export DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH:/opt/homebrew/lib"
 fi
