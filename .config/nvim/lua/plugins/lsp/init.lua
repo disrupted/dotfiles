@@ -758,13 +758,18 @@ return {
                 yaml = { { 'prettierd', 'prettier' } },
                 graphql = { { 'prettierd', 'prettier' } },
                 sh = { 'shfmt' },
-                http = { 'injected', 'trim_newlines', 'trim_whitespace' },
+                http = {
+                    'injected',
+                    -- 'trim_newlines', -- FIXME: breaks injected
+                    'trim_whitespace',
+                },
                 ['_'] = { 'trim_newlines', 'trim_whitespace' },
             },
             format_on_save = {
                 timeout_ms = 5000, -- HACK: high because dprint needs to download WASM plugins on first run
                 lsp_fallback = true,
             },
+            log_level = vim.log.levels.TRACE,
         },
         config = function(_, opts)
             local conform = require 'conform'
@@ -784,8 +789,7 @@ return {
             }
             conform.formatters.dprint = {
                 prepend_args = function(self, ctx)
-                    local cwd = self.cwd(self, ctx)
-                    if not cwd then
+                    if not self:cwd(ctx) then
                         vim.notify 'falling back to global dprint config'
                         return {
                             '--config',
@@ -794,11 +798,26 @@ return {
                     end
                 end,
             }
+            conform.formatters.dprint_injected = vim.tbl_deep_extend(
+                'force',
+                require 'conform.formatters.dprint',
+                conform.formatters.dprint,
+                {
+                    args = function(self, ctx)
+                        local extension = vim.fn.fnamemodify(ctx.filename, ':e')
+                        local ret = vim.list_extend(
+                            { 'fmt', '--stdin', extension },
+                            self:prepend_args(ctx)
+                        )
+                        return ret
+                    end,
+                }
+            )
             conform.formatters.injected = {
                 options = {
                     ignore_errors = false,
                     lang_to_formatters = {
-                        json = { 'jq' }, -- FIXME: dprint
+                        json = { 'dprint_injected' },
                         python = { 'black' }, -- FIXME: ruff_format deletes content
                     },
                 },
