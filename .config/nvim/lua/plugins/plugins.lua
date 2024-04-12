@@ -14,12 +14,22 @@ return {
     },
     {
         'rest-nvim/rest.nvim',
+        main = 'rest-nvim',
         ft = 'http',
+        keys = {
+            {
+                '<localleader>rr',
+                '<cmd>Rest run<cr>',
+                desc = 'Run request under the cursor',
+            },
+            {
+                '<localleader>rl',
+                '<cmd>Rest run last<cr>',
+                desc = 'Re-run latest request',
+            },
+        },
         dependencies = { 'luarocks.nvim' },
-        config = function()
-            ---@diagnostic disable-next-line: missing-parameter
-            require('rest-nvim').setup()
-        end,
+        config = true,
     },
     { 'soywod/himalaya', cmd = 'Himalaya' },
     { 'ellisonleao/glow.nvim', cmd = 'Glow' },
