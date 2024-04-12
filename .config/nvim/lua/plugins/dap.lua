@@ -27,30 +27,35 @@ return {
                 function()
                     require('dap').step_over()
                 end,
+                desc = 'step over',
             },
             {
                 '<leader>d>',
                 function()
                     require('dap').step_into()
                 end,
+                desc = 'step into',
             },
             {
                 '<leader>d<',
                 function()
                     require('dap').step_out()
                 end,
+                desc = 'step out',
             },
             {
                 '<leader>dp',
                 function()
                     require('dap').step_back() -- previous
                 end,
+                desc = 'step back',
             },
             {
                 '<leader>db',
                 function()
                     require('dap').toggle_breakpoint()
                 end,
+                desc = 'toggle breakpoint',
             },
             {
                 '<leader>dB',
@@ -59,33 +64,29 @@ return {
                         vim.fn.input 'Breakpoint condition: '
                     )
                 end,
+                desc = 'toggle conditional breakpoint',
             },
             {
                 '<leader>de',
                 function()
                     require('dap').set_exception_breakpoints()
                 end,
+                desc = 'set exception breakpoints',
             },
             {
                 '<leader>dl',
                 function()
                     require('dap').list_breakpoints()
                 end,
+                desc = 'list breakpoints',
             },
             {
                 '<leader>dr',
                 function()
                     require('dap').repl.open()
                 end,
+                desc = 'REPL',
             },
-            -- FIXME: <ESC> first
-            -- {
-            --     '<leader>ds',
-            --     function()
-            --         require('dap-python').debug_selection()
-            --     end,
-            --     mode = 'v',
-            -- },
         },
         config = function()
             local dap = require 'dap'
@@ -217,6 +218,16 @@ return {
                     end
                 end,
             },
+            -- TODO
+            -- {
+            --     'folke/which-key.nvim',
+            --     optional = true,
+            --     opts = {
+            --         defaults = {
+            --             ['<leader>d'] = { name = '+debug' },
+            --         },
+            --     },
+            -- },
             {
                 'jay-babu/mason-nvim-dap.nvim',
                 dependencies = 'mason.nvim',
@@ -229,6 +240,16 @@ return {
             },
             {
                 'mfussenegger/nvim-dap-python',
+                keys = {
+                    -- FIXME: <ESC> first
+                    -- {
+                    --     '<leader>ds',
+                    --     function()
+                    --         require('dap-python').debug_selection()
+                    --     end,
+                    --     mode = 'v',
+                    -- },
+                },
                 dependencies = {
                     {
                         'mason-nvim-dap.nvim',

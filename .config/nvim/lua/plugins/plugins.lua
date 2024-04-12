@@ -13,6 +13,15 @@ return {
         config = true,
     },
     {
+        'folke/which-key.nvim',
+        event = 'VeryLazy',
+        init = function()
+            vim.o.timeout = true
+            vim.o.timeoutlen = 500
+        end,
+        opts = {},
+    },
+    {
         'rest-nvim/rest.nvim',
         main = 'rest-nvim',
         ft = 'http',

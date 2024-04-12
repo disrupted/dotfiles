@@ -86,7 +86,7 @@ return {
                 }
             end
 
-            vim.keymap.set('n', '<leader>d', function()
+            vim.keymap.set('n', '<leader>cd', function()
                 vim.diagnostic.open_float {
                     {
                         scope = 'line',
@@ -95,26 +95,31 @@ return {
                         severity_sort = true,
                     },
                 }
-            end)
+            end, { desc = 'Line diagnostics' })
             vim.keymap.set('n', '[d', function()
                 vim.diagnostic.goto_prev { float = false }
-            end)
+            end, { desc = 'Prev diagnostic' })
             vim.keymap.set('n', ']d', function()
                 vim.diagnostic.goto_next { float = false }
-            end)
+            end, { desc = 'Next diagnostic' })
             vim.keymap.set('n', '[e', function()
                 vim.diagnostic.goto_prev {
                     enable_popup = false,
                     severity = { min = vim.diagnostic.severity.WARN },
                 }
-            end)
+            end, { desc = 'Prev error/warning' })
             vim.keymap.set('n', ']e', function()
                 vim.diagnostic.goto_next {
                     enable_popup = false,
                     severity = { min = vim.diagnostic.severity.WARN },
                 }
-            end)
-            vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
+            end, { desc = 'Next error/warning' })
+            vim.keymap.set(
+                'n',
+                '<leader>q',
+                vim.diagnostic.setloclist,
+                { desc = 'Populate loclist with diagnostics' }
+            )
 
             vim.api.nvim_create_user_command('Format', function()
                 require('conform').format()

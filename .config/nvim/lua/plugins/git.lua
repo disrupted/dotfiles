@@ -67,7 +67,6 @@ return {
                     row = 0,
                     col = 1,
                 },
-                yadm = { enable = true },
                 trouble = false,
                 on_attach = function(bufnr)
                     local function map(mode, l, r, opts)
@@ -145,12 +144,14 @@ return {
                 function()
                     require('neogit').open()
                 end,
+                desc = 'Neogit',
             },
             {
                 '<leader>c',
                 function()
                     require('neogit').open { 'commit' }
                 end,
+                desc = 'Commit',
             },
         },
         opts = {

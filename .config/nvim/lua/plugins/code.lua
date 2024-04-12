@@ -44,8 +44,8 @@ return {
     {
         'numToStr/Comment.nvim',
         keys = {
-            { 'gc', mode = { 'n', 'v' } },
-            { 'gb', mode = { 'n', 'v' } },
+            { 'gc', mode = { 'n', 'v' }, desc = 'Toggle linewise comment' },
+            { 'gb', mode = { 'n', 'v' }, desc = 'Toggle blockwise comment' },
         },
         opts = function()
             return {
@@ -327,6 +327,7 @@ return {
                 function()
                     require('neogen').generate {}
                 end,
+                desc = 'generate docs for function',
             },
         },
         opts = {
@@ -367,17 +368,24 @@ return {
                 function()
                     require('todo-comments').jump_next()
                 end,
+                desc = 'jump to next todo',
             },
             {
                 '[t',
                 function()
                     require('todo-comments').jump_prev()
                 end,
+                desc = 'jump to previous todo',
             },
         },
         init = function()
             vim.api.nvim_create_user_command('Todo', 'TodoTrouble', {})
         end,
+        opts = {
+            search = {
+                pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
+            },
+        },
         config = true,
     },
 }
