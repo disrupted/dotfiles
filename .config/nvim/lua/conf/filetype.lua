@@ -17,6 +17,8 @@ function M.config()
             ['.*/templates/.*%.yaml'] = 'helm',
             ['.*/templates/.*%.tpl'] = 'helm',
             ['helmfile.*.yaml'] = 'helm',
+            ['.*/%.github[%w/]+.*%.yml'] = 'gha',
+            ['.*/%.github[%w/]+.*%.yaml'] = 'gha',
         },
     }
 end

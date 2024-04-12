@@ -160,10 +160,11 @@ return {
         config = function(_, opts)
             require('nvim-treesitter.configs').setup(opts)
 
+            -- the filetype on the RHS will use the parser and queries on the LHS
             vim.treesitter.language.register('bash', 'zsh')
             vim.treesitter.language.register('terraform', 'terraform-vars')
-            -- use treesitter highlighting for markdown in Octo
             vim.treesitter.language.register('markdown', 'octo')
+            vim.treesitter.language.register('yaml', 'gha')
         end,
     },
     {

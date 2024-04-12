@@ -46,6 +46,36 @@ return {
                 }
             end
 
+            vim.keymap.set('n', '<leader>d', function()
+                vim.diagnostic.open_float {
+                    {
+                        scope = 'line',
+                        border = 'single',
+                        focusable = false,
+                        severity_sort = true,
+                    },
+                }
+            end)
+            vim.keymap.set('n', '[d', function()
+                vim.diagnostic.goto_prev { float = false }
+            end)
+            vim.keymap.set('n', ']d', function()
+                vim.diagnostic.goto_next { float = false }
+            end)
+            vim.keymap.set('n', '[e', function()
+                vim.diagnostic.goto_prev {
+                    enable_popup = false,
+                    severity = { min = vim.diagnostic.severity.WARN },
+                }
+            end)
+            vim.keymap.set('n', ']e', function()
+                vim.diagnostic.goto_next {
+                    enable_popup = false,
+                    severity = { min = vim.diagnostic.severity.WARN },
+                }
+            end)
+            vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
+
             vim.api.nvim_create_user_command('Format', function()
                 require('conform').format()
             end, {})
@@ -130,35 +160,6 @@ return {
                     map('n', '<leader>li', vim.lsp.buf.incoming_calls)
                     map('n', '<leader>lo', vim.lsp.buf.outgoing_calls)
                     map('n', '<leader>lt', vim.lsp.buf.document_symbol)
-                    map('n', '<leader>d', function()
-                        vim.diagnostic.open_float {
-                            {
-                                scope = 'line',
-                                border = 'single',
-                                focusable = false,
-                                severity_sort = true,
-                            },
-                        }
-                    end)
-                    map('n', '[d', function()
-                        vim.diagnostic.goto_prev { float = false }
-                    end)
-                    map('n', ']d', function()
-                        vim.diagnostic.goto_next { float = false }
-                    end)
-                    map('n', '[e', function()
-                        vim.diagnostic.goto_prev {
-                            enable_popup = false,
-                            severity = { min = vim.diagnostic.severity.WARN },
-                        }
-                    end)
-                    map('n', ']e', function()
-                        vim.diagnostic.goto_next {
-                            enable_popup = false,
-                            severity = { min = vim.diagnostic.severity.WARN },
-                        }
-                    end)
-                    map('n', '<leader>q', vim.diagnostic.setloclist)
                     map('n', '<leader>ls', vim.lsp.buf.document_symbol)
                     map('n', '<leader>lS', vim.lsp.buf.workspace_symbol)
                     vim.opt.shortmess:append 'c'
@@ -672,6 +673,23 @@ return {
     {
         'stevearc/conform.nvim',
         event = { 'BufWritePre' },
+        dependencies = {
+            {
+                'williamboman/mason.nvim',
+                opts = function(_, opts)
+                    opts.ensure_installed = opts.ensure_installed or {}
+                    vim.list_extend(opts.ensure_installed, {
+                        'stylua',
+                        'ruff',
+                        'dprint',
+                        'isort',
+                        'black',
+                        'prettierd',
+                        'shfmt',
+                    })
+                end,
+            },
+        },
         opts = {
             formatters_by_ft = {
                 lua = { 'stylua' },
@@ -755,187 +773,116 @@ return {
         end,
     },
     {
-        'nvimtools/none-ls.nvim',
-        event = { 'BufReadPost', 'BufNewFile' },
-        opts = function()
-            local null_ls = require 'null-ls'
-
-            -- custom sources
-            local h = require 'null-ls.helpers'
-
-            local function dprint_config()
-                for _, dprint_config in ipairs { 'dprint.jsonc', 'dprint.json' } do
-                    if vim.loop.fs_stat(dprint_config) then
-                        vim.notify('found local ' .. dprint_config)
-                        return dprint_config
-                    end
+        'mfussenegger/nvim-lint',
+        ft = { 'gha' },
+        dependencies = {
+            {
+                'williamboman/mason.nvim',
+                opts = function(_, opts)
+                    opts.ensure_installed = opts.ensure_installed or {}
+                    vim.list_extend(opts.ensure_installed, { 'actionlint' })
+                end,
+            },
+        },
+        opts = {
+            events = { 'BufWritePost', 'BufReadPost', 'InsertLeave' },
+            linters_by_ft = {
+                gha = { 'actionlint' },
+            },
+            -- from LazyVim: https://github.com/LazyVim/LazyVim/blob/bb36f71b77d8e15788a5b62c82a1c9ec7b209e49/lua/lazyvim/plugins/linting.lua#L16
+            -- easily override linter options or add custom linters
+            ---@type table<string,table>
+            linters = {
+                -- Example of using selene only when a selene.toml file is present
+                -- selene = {
+                --   -- dynamically enable/disable linters based on the context.
+                --   condition = function(ctx)
+                --     return vim.fs.find({ "selene.toml" }, { path = ctx.filename, upward = true })[1]
+                --   end,
+                -- },
+            },
+        },
+        config = function(_, opts)
+            local lint = require 'lint'
+            for name, linter in pairs(opts.linters) do
+                if
+                    type(linter) == 'table'
+                    and type(lint.linters[name]) == 'table'
+                then
+                    lint.linters[name] =
+                        vim.tbl_deep_extend('force', lint.linters[name], linter)
+                else
+                    lint.linters[name] = linter
                 end
-                vim.notify 'falling back to global dprint config'
-                return vim.fn.expand '~/.config/dprint.jsonc'
+            end
+            lint.linters_by_ft = opts.linters_by_ft
+
+            local M = {}
+            function M.debounce(ms, fn)
+                local timer = assert(vim.uv.new_timer())
+                return function(...)
+                    local argv = { ... }
+                    timer:start(ms, 0, function()
+                        timer:stop()
+                        vim.schedule_wrap(fn)(unpack(argv))
+                    end)
+                end
             end
 
-            local dprint = {
-                name = 'dprint',
-                method = null_ls.methods.FORMATTING,
-                filetypes = {
-                    'json',
-                    'jsonc',
-                    'markdown',
-                    'javascript',
-                    'javascriptreact',
-                    'typescript',
-                    'typescriptreact',
-                    'toml',
-                    'dockerfile',
-                    'css',
-                    'html',
-                    'htmldjango',
-                },
-                generator = h.formatter_factory {
-                    command = 'dprint',
-                    -- condition = function(utils)
-                    --     return utils.root_has_file 'dprint.jsonc'
-                    -- end,
-                    args = function()
-                        return {
-                            'fmt',
-                            '--config',
-                            dprint_config(),
-                            '--stdin',
-                            '$FILENAME', -- full path, necessary to check against include/exclude rules
-                        }
-                    end,
-                    to_stdin = true,
-                },
-            }
+            function M.lint()
+                -- Use nvim-lint's logic first:
+                -- * checks if linters exist for the full filetype first
+                -- * otherwise will split filetype by "." and add all those linters
+                -- * this differs from conform.nvim which only uses the first filetype that has a formatter
+                local names = lint._resolve_linter_by_ft(vim.bo.filetype)
 
-            local ruff_fix = {
-                name = 'ruff fix',
-                meta = {
-                    url = 'https://github.com/astral-sh/ruff',
-                    description = 'An extremely fast Python linter and formatter, written in Rust.',
-                },
-                method = null_ls.methods.FORMATTING,
-                filetypes = { 'python' },
-                generator = h.formatter_factory {
-                    command = 'ruff',
-                    args = {
-                        'check',
-                        '--fix',
-                        '--respect-gitignore',
-                        '--force-exclude',
-                        '--stdin-filename',
-                        '$FILENAME',
-                        '--exit-zero',
-                        '--no-cache',
-                        '-',
-                    },
-                    to_stdin = true,
-                },
-            }
+                -- Create a copy of the names table to avoid modifying the original.
+                names = vim.list_extend({}, names)
 
-            local ruff_format = {
-                name = 'ruff format',
-                meta = {
-                    url = 'https://github.com/astral-sh/ruff',
-                    description = 'An extremely fast Python linter and formatter, written in Rust.',
-                },
-                method = null_ls.methods.FORMATTING,
-                filetypes = { 'python' },
-                generator = h.formatter_factory {
-                    command = 'ruff',
-                    args = {
-                        'format',
-                        '--silent',
-                        '--respect-gitignore',
-                        '--force-exclude',
-                        '--stdin-filename',
-                        '$FILENAME',
-                        '-',
-                    },
-                    to_stdin = true,
-                },
-            }
+                -- Add fallback linters.
+                if #names == 0 then
+                    vim.list_extend(names, lint.linters_by_ft['_'] or {})
+                end
 
-            local sources = {
-                --[[ null_ls.builtins.formatting.stylua.with {
-                    condition = function(utils)
-                        return utils.root_has_file 'stylua.toml'
-                            or utils.root_has_file '.stylua.toml'
-                    end,
-                }, ]]
-                -- null_ls.builtins.formatting.isortd,
-                -- null_ls.builtins.formatting.blackd.with {
-                --     config = {
-                --         fast = true,
-                --         preview = false,
-                --     },
-                -- },
-                -- ruff_fix,
-                -- ruff_format,
-                -- null_ls.builtins.formatting.dprint,
-                -- dprint,
-                --[[ null_ls.builtins.formatting.prettier.with {
-                    filetypes = {
-                        'yaml',
-                        'graphql',
-                    },
-                    -- condition = function(utils)
-                    --     return not utils.root_has_file 'dprint.jsonc'
-                    -- end,
-                }, ]]
-                --[[ null_ls.builtins.formatting.uncrustify.with {
-                    condition = function(utils)
-                        return utils.root_has_file 'uncrustify.cfg'
-                    end,
-                    extra_args = function()
-                        return {
-                            -- for neovim/neovim repo
-                            '-c',
-                            require('lspconfig.util').path.join(
-                                vim.loop.cwd(),
-                                'uncrustify.cfg'
-                            ),
-                        }
-                    end,
-                }, ]]
-                --[[ null_ls.builtins.formatting.shfmt.with {
-                    extra_args = { '-i', '4', '-ci' },
-                }, ]]
-                null_ls.builtins.diagnostics.actionlint.with {
-                    -- based on https://github.com/jose-elias-alvarez/null-ls.nvim/pull/804
-                    runtime_condition = function()
-                        local path = vim.api.nvim_buf_get_name(
-                            vim.api.nvim_get_current_buf()
+                -- Add global linters.
+                vim.list_extend(names, lint.linters_by_ft['*'] or {})
+
+                -- Filter out linters that don't exist or don't match the condition.
+                local ctx = { filename = vim.api.nvim_buf_get_name(0) }
+                ctx.dirname = vim.fn.fnamemodify(ctx.filename, ':h')
+                names = vim.tbl_filter(function(name)
+                    local linter = lint.linters[name]
+                    if not linter then
+                        vim.notify(
+                            'Linter not found: ' .. name,
+                            vim.log.level.WARN
                         )
-                        return path:match 'github/workflows/' ~= nil
+                    end
+                    return linter
+                        and not (
+                            type(linter) == 'table'
+                            and linter.condition
+                            and not linter.condition(ctx)
+                        )
+                end, names)
+
+                -- Run linters.
+                if #names > 0 then
+                    lint.try_lint(names)
+                end
+            end
+
+            vim.api.nvim_create_autocmd(opts.events, {
+                group = vim.api.nvim_create_augroup(
+                    'nvim-lint',
+                    { clear = true }
+                ),
+                callback = M.debounce(100, M.lint),
+            })
+        end,
+    },
                     end,
                 },
-                -- null_ls.builtins.code_actions.refactoring,
-                null_ls.builtins.code_actions.gitrebase,
-            }
-
-            return {
-                sources = sources,
-                debug = false,
-                -- Fallback to .zshrc as a project root to enable LSP on loose files
-                root_dir = function(fname)
-                    return require('lspconfig.util').root_pattern(
-                        'tsconfig.json',
-                        'pyproject.toml',
-                        'stylua.toml',
-                        '.stylua.toml',
-                        'dprint.jsonc',
-                        'dprint.json'
-                    )(fname) or require('lspconfig.util').root_pattern(
-                        '.eslintrc.js',
-                        '.git'
-                    )(fname) or require('lspconfig.util').root_pattern(
-                        'package.json',
-                        '.git/',
-                        '.zshrc'
-                    )(fname)
-                end,
             }
         end,
     },
