@@ -1,83 +1,5 @@
 return {
     {
-        'rcarriga/nvim-dap-ui',
-        lazy = true,
-        keys = {
-            {
-                '<leader>ds',
-                function()
-                    require('dapui').float_element(
-                        'scopes',
-                        { width = 80, height = 30, enter = true }
-                    )
-                end,
-            },
-        },
-        opts = {
-            icons = {
-                expanded = '',
-                collapsed = '',
-                current_frame = '▸',
-            },
-            layouts = {
-                {
-                    elements = {
-                        { id = 'scopes', size = 0.4 },
-                        { id = 'breakpoints', size = 0.1 },
-                        'stacks',
-                        'watches',
-                    },
-                    size = 45,
-                    position = 'left',
-                },
-                {
-                    elements = {
-                        'repl',
-                        'console',
-                    },
-                    size = 12,
-                    position = 'bottom',
-                },
-            },
-            controls = {
-                enabled = true,
-            },
-            render = {
-                max_type_length = nil,
-                max_value_lines = nil,
-            },
-        },
-        config = function(_, opts)
-            local ns = vim.api.nvim_create_namespace 'dap'
-            vim.api.nvim_create_autocmd('FileType', {
-                pattern = {
-                    'dap-repl',
-                    'dapui_scopes',
-                    'dapui_breakpoints',
-                    'dapui_stacks',
-                    'dapui_watches',
-                },
-                callback = function()
-                    vim.opt_local.signcolumn = 'no'
-                    vim.api.nvim_win_set_hl_ns(0, ns)
-                    vim.api.nvim_set_hl(
-                        ns,
-                        'EndOfBuffer',
-                        { fg = 'bg', bg = 'bg' }
-                    )
-                end,
-            })
-            vim.api.nvim_create_autocmd('FileType', {
-                pattern = 'dap-repl',
-                callback = function()
-                    require('dap.ext.autocompl').attach()
-                end,
-            })
-            local dapui = require 'dapui'
-            dapui.setup(opts)
-        end,
-    },
-    {
         'mfussenegger/nvim-dap',
         keys = {
             {
@@ -99,12 +21,6 @@ return {
                     vim.opt.signcolumn = 'yes:1'
                 end,
                 desc = 'close debugger',
-            },
-            {
-                '<leader>du',
-                function()
-                    require('dapui').toggle {}
-                end,
             },
             {
                 '<leader>do',
@@ -192,37 +108,150 @@ return {
                 text = '■',
                 texthl = 'Special',
             })
-
-            local dap = require 'dap'
-            local dapui = require 'dapui'
-            dap.listeners.before.attach.dapui_config = function()
-                dapui.open()
-            end
-            dap.listeners.before.launch.dapui_config = function()
-                dapui.open()
-            end
-            dap.listeners.before.event_terminated.dapui_config = function()
-                dapui.close()
-            end
-            dap.listeners.before.event_exited.dapui_config = function()
-                dapui.close()
-            end
-
-            -- Python
-            require 'dap-python'
         end,
         dependencies = {
             {
+                'rcarriga/nvim-dap-ui',
+                keys = {
+                    {
+                        '<leader>du',
+                        function()
+                            require('dapui').toggle {}
+                        end,
+                        desc = 'Toggle DAP UI',
+                    },
+                    {
+                        '<leader>ds',
+                        function()
+                            require('dapui').float_element(
+                                'scopes',
+                                { width = 80, height = 30, enter = true }
+                            )
+                        end,
+                        desc = 'Float DAP UI',
+                    },
+                    {
+                        '<leader>de',
+                        function()
+                            require('dapui').eval()
+                        end,
+                        desc = 'Eval',
+                        mode = { 'n', 'v' },
+                    },
+                },
+                opts = {
+                    icons = {
+                        expanded = '',
+                        collapsed = '',
+                        current_frame = '▸',
+                    },
+                    layouts = {
+                        {
+                            elements = {
+                                { id = 'scopes', size = 0.4 },
+                                { id = 'breakpoints', size = 0.1 },
+                                'stacks',
+                                'watches',
+                            },
+                            size = 45,
+                            position = 'left',
+                        },
+                        {
+                            elements = {
+                                'repl',
+                                'console',
+                            },
+                            size = 12,
+                            position = 'bottom',
+                        },
+                    },
+                    controls = {
+                        enabled = true,
+                    },
+                    render = {
+                        max_type_length = nil,
+                        max_value_lines = nil,
+                    },
+                },
+                config = function(_, opts)
+                    local ns = vim.api.nvim_create_namespace 'dap'
+                    vim.api.nvim_create_autocmd('FileType', {
+                        pattern = {
+                            'dap-repl',
+                            'dapui_scopes',
+                            'dapui_breakpoints',
+                            'dapui_stacks',
+                            'dapui_watches',
+                        },
+                        callback = function()
+                            vim.opt_local.signcolumn = 'no'
+                            vim.api.nvim_win_set_hl_ns(0, ns)
+                            vim.api.nvim_set_hl(
+                                ns,
+                                'EndOfBuffer',
+                                { fg = 'bg', bg = 'bg' }
+                            )
+                        end,
+                    })
+                    vim.api.nvim_create_autocmd('FileType', {
+                        pattern = 'dap-repl',
+                        callback = function()
+                            require('dap.ext.autocompl').attach()
+                        end,
+                    })
+                    local dapui = require 'dapui'
+                    dapui.setup(opts)
+
+                    local dap = require 'dap'
+                    dap.listeners.before.attach.dapui_config = function()
+                        dapui.open()
+                    end
+                    dap.listeners.before.launch.dapui_config = function()
+                        dapui.open()
+                    end
+                    dap.listeners.before.event_terminated.dapui_config = function()
+                        dapui.close()
+                    end
+                    dap.listeners.before.event_exited.dapui_config = function()
+                        dapui.close()
+                    end
+                end,
+            },
+            {
+                'jay-babu/mason-nvim-dap.nvim',
+                dependencies = 'mason.nvim',
+                cmd = { 'DapInstall', 'DapUninstall' },
+                opts = {
+                    automatic_installation = true,
+                    handlers = {},
+                    ensure_installed = {},
+                },
+            },
+            {
                 'mfussenegger/nvim-dap-python',
-                lazy = true,
+                dependencies = {
+                    {
+                        'mason-nvim-dap.nvim',
+                        opts = function(_, opts)
+                            opts.ensure_installed = opts.ensure_installed or {}
+                            vim.list_extend(opts.ensure_installed, {
+                                'python',
+                            })
+                        end,
+                    },
+                },
                 opts = {
                     include_configs = false,
                     console = 'internalConsole',
                 },
                 config = function(_, opts)
                     local py = require 'dap-python'
+                    local debugpy_path = require('mason-registry')
+                        .get_package('debugpy')
+                        :get_install_path()
                     py.setup(
-                        '~/.local/share/virtualenvs/debugpy/bin/python',
+                        debugpy_path .. '/venv/bin/python',
+                        -- '~/.local/share/virtualenvs/debugpy/bin/python',
                         opts
                     )
                     py.test_runner = 'pytest'

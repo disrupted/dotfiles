@@ -1,6 +1,46 @@
 local au = vim.api.nvim_create_augroup('LspAttach', { clear = true })
 return {
     {
+        'williamboman/mason.nvim',
+        cmd = 'Mason',
+        opts = {
+            ensure_installed = {},
+            registries = {
+                'github:mason-org/mason-registry',
+                'lua:plugins.lsp.custom',
+            },
+        },
+        config = function(_, opts)
+            require('mason').setup(opts)
+
+            local registry = require 'mason-registry'
+            registry:on('package:install:success', function()
+                vim.defer_fn(function()
+                    -- trigger FileType event to possibly load this newly installed LSP server
+                    require('lazy.core.handler.event').trigger {
+                        event = 'FileType',
+                        buf = vim.api.nvim_get_current_buf(),
+                    }
+                end, 100)
+            end)
+
+            local function ensure_installed()
+                for _, tool in ipairs(opts.ensure_installed) do
+                    local package = registry.get_package(tool)
+                    if not package:is_installed() then
+                        package:install()
+                    end
+                end
+            end
+
+            if registry.refresh then
+                registry.refresh(ensure_installed)
+            else
+                ensure_installed()
+            end
+        end,
+    },
+    {
         'neovim/nvim-lspconfig',
         event = { 'BufReadPost', 'BufNewFile' },
         init = function()
@@ -321,17 +361,7 @@ return {
         dependencies = {
             'hrsh7th/cmp-nvim-lsp',
             { 'folke/neodev.nvim', config = true },
-            {
-                'williamboman/mason.nvim',
-                cmd = 'Mason',
-                opts = {
-                    registries = {
-                        'github:mason-org/mason-registry',
-                        'lua:plugins.lsp.custom',
-                    },
-                },
-                config = true,
-            },
+            'mason.nvim',
             {
                 'williamboman/mason-lspconfig.nvim',
                 opts = {
