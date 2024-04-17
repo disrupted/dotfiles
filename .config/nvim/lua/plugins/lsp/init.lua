@@ -666,21 +666,13 @@ return {
     },
     {
         'disrupted/pylance.nvim',
-        -- build = 'bash ./install.sh',
         ft = 'python',
-        -- config = true,
     },
     {
-        dir = '~/bakdata/kpops.nvim',
         -- 'disrupted/kpops.nvim',
+        dir = '~/bakdata/kpops.nvim',
         ft = 'yaml.kpops',
-        opts = {
-            settings = {
-                kpops = {
-                    generate_schema = true,
-                },
-            },
-        },
+        opts = {},
     },
     { 'kosayoda/nvim-lightbulb', lazy = true },
     {
