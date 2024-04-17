@@ -165,7 +165,21 @@ return {
             integrations = {
                 diffview = true,
             },
+            graph_style = 'unicode',
         },
+        config = function(_, opts)
+            local neogit = require 'neogit'
+            neogit.setup(opts)
+
+            vim.api.nvim_create_autocmd('User', {
+                pattern = 'NeogitPushComplete',
+                group = vim.api.nvim_create_augroup(
+                    'NeogitEvents',
+                    { clear = true }
+                ),
+                callback = neogit.close,
+            })
+        end,
     },
     {
         'akinsho/git-conflict.nvim',
