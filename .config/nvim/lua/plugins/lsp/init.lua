@@ -44,125 +44,18 @@ return {
         'neovim/nvim-lspconfig',
         event = { 'BufReadPost', 'BufNewFile' },
         init = function()
-            local lsp = {}
             -- client log level
             vim.lsp.set_log_level(vim.lsp.log_levels.INFO)
-
-            local signs = {
-                Error = '', -- ◉
-                Warn = '', -- ●
-                Info = '', -- •
-                Hint = '', -- ·
-            }
-            for severity, icon in pairs(signs) do
-                local hl = 'DiagnosticSign' .. severity
-                vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-            end
-
-            vim.diagnostic.config {
-                underline = true,
-                signs = {
-                    severity = { min = vim.diagnostic.severity.WARN },
-                    -- prefix = "icons", -- TODO: nvim 0.10.0
-                },
-                float = { header = false, source = 'always' },
-                virtual_text = false,
-                -- virtual_text = {
-                --     -- spacing = 4,
-                --     -- prefix = '■', -- ■ 
-                -- },
-                update_in_insert = true,
-                severity_sort = true,
-            }
-
-            function lsp.show_lightbulb()
-                require('nvim-lightbulb').update_lightbulb {
-                    sign = { enabled = false, priority = 99 },
-                    virtual_text = {
-                        enabled = true,
-                        text = '',
-                        hl_mode = 'combine',
-                    },
-                }
-            end
-
-            vim.keymap.set('n', '<leader>cd', function()
-                vim.diagnostic.open_float {
-                    {
-                        scope = 'line',
-                        border = 'single',
-                        focusable = false,
-                        severity_sort = true,
-                    },
-                }
-            end, { desc = 'Line diagnostics' })
-            vim.keymap.set('n', '[d', function()
-                vim.diagnostic.goto_prev { float = false }
-            end, { desc = 'Prev diagnostic' })
-            vim.keymap.set('n', ']d', function()
-                vim.diagnostic.goto_next { float = false }
-            end, { desc = 'Next diagnostic' })
-            vim.keymap.set('n', '[e', function()
-                vim.diagnostic.goto_prev {
-                    enable_popup = false,
-                    severity = { min = vim.diagnostic.severity.WARN },
-                }
-            end, { desc = 'Prev error/warning' })
-            vim.keymap.set('n', ']e', function()
-                vim.diagnostic.goto_next {
-                    enable_popup = false,
-                    severity = { min = vim.diagnostic.severity.WARN },
-                }
-            end, { desc = 'Next error/warning' })
-            vim.keymap.set(
-                'n',
-                '<leader>q',
-                vim.diagnostic.setloclist,
-                { desc = 'Populate loclist with diagnostics' }
-            )
 
             vim.api.nvim_create_user_command('LspFormat', function()
                 vim.lsp.buf.format { async = false }
             end, {})
 
-            -- show diagnostics for current line as virtual text
-            -- from https://github.com/kristijanhusak/neovim-config/blob/5977ad2c5dd9bfbb7f24b169fef01828717ea9dc/nvim/lua/partials/lsp.lua#L169
-            local diagnostic_ns = vim.api.nvim_create_namespace 'diagnostics'
-            function lsp.show_diagnostics()
-                vim.schedule(function()
-                    local line = vim.api.nvim_win_get_cursor(0)[1] - 1
-                    local bufnr = vim.api.nvim_get_current_buf()
-                    local diagnostics = vim.diagnostic.get(bufnr, {
-                        lnum = line,
-                        severity = { min = vim.diagnostic.severity.INFO },
-                    })
-                    vim.diagnostic.show(
-                        diagnostic_ns,
-                        bufnr,
-                        diagnostics,
-                        { virtual_text = true }
-                    )
-                end)
-            end
-
-            function lsp.refresh_diagnostics()
-                vim.diagnostic.setloclist { open = false }
-                lsp.show_diagnostics()
-                if vim.tbl_isempty(vim.fn.getloclist(0)) then
-                    vim.cmd [[lclose]]
-                end
-            end
-
             vim.api.nvim_create_autocmd('LspAttach', {
                 group = au,
-                desc = 'LSP options',
+                desc = 'LSP tagfunc',
                 callback = function(args)
                     local bufnr = args.buf
-                    vim.api.nvim_set_option_value(
-                        'formatexpr',
-                        'v:lua.require\'conform\'.formatexpr()',
-                        { buf = bufnr }
-                    )
                     vim.api.nvim_set_option_value(
                         'tagfunc',
                         'v:lua.vim.lsp.tagfunc',
@@ -277,54 +170,6 @@ return {
                 end,
             })
 
-            vim.api.nvim_create_autocmd('LspAttach', {
-                group = au,
-                desc = 'LSP code actions',
-                callback = function(args)
-                    local bufnr = args.buf
-                    local client = vim.lsp.get_client_by_id(args.data.client_id)
-                    if
-                        client
-                        and client.supports_method 'textDocument/codeAction'
-                    then
-                        vim.api.nvim_create_autocmd(
-                            { 'CursorHold', 'CursorHoldI' },
-                            {
-                                buffer = bufnr,
-                                callback = function()
-                                    lsp.show_lightbulb()
-                                end,
-                            }
-                        )
-                        vim.keymap.set(
-                            { 'n', 'v' },
-                            '<leader>a',
-                            vim.lsp.buf.code_action,
-                            { buffer = bufnr }
-                        )
-                    end
-                end,
-            })
-
-            vim.api.nvim_create_autocmd('LspAttach', {
-                group = au,
-                desc = 'LSP diagnostics',
-                callback = function(args)
-                    local bufnr = args.buf
-                    vim.api.nvim_create_autocmd(
-                        { 'CursorHold', 'CursorHoldI' },
-                        {
-                            buffer = bufnr,
-                            callback = lsp.show_diagnostics,
-                        }
-                    )
-                    vim.api.nvim_create_autocmd('DiagnosticChanged', {
-                        buffer = bufnr,
-                        callback = lsp.refresh_diagnostics,
-                    })
-                end,
-            })
-
             --[[ vim.api.nvim_create_autocmd('LspAttach', {
                 group = au,
                 desc = 'LSP signature help',
@@ -360,8 +205,14 @@ return {
             })
         end,
         dependencies = {
+            {
+                'folke/neoconf.nvim',
+                cmd = 'Neoconf',
+                config = false,
+                dependencies = { 'nvim-lspconfig' },
+            },
+            { 'folke/neodev.nvim', opts = {} },
             'hrsh7th/cmp-nvim-lsp',
-            { 'folke/neodev.nvim', config = true },
             'mason.nvim',
             {
                 'williamboman/mason-lspconfig.nvim',
@@ -674,7 +525,51 @@ return {
         ft = 'yaml.kpops',
         opts = {},
     },
-    { 'kosayoda/nvim-lightbulb', lazy = true },
+    {
+        'kosayoda/nvim-lightbulb',
+        lazy = true,
+        init = function()
+            local function show_lightbulb()
+                require('nvim-lightbulb').update_lightbulb {
+                    sign = { enabled = false, priority = 99 },
+                    virtual_text = {
+                        enabled = true,
+                        text = '',
+                        hl_mode = 'combine',
+                    },
+                }
+            end
+
+            vim.api.nvim_create_autocmd('LspAttach', {
+                group = au,
+                desc = 'LSP code actions',
+                callback = function(args)
+                    local bufnr = args.buf
+                    local client = vim.lsp.get_client_by_id(args.data.client_id)
+                    if
+                        client
+                        and client.supports_method 'textDocument/codeAction'
+                    then
+                        vim.api.nvim_create_autocmd(
+                            { 'CursorHold', 'CursorHoldI' },
+                            {
+                                buffer = bufnr,
+                                callback = function()
+                                    show_lightbulb()
+                                end,
+                            }
+                        )
+                        vim.keymap.set(
+                            { 'n', 'v' },
+                            '<leader>a',
+                            vim.lsp.buf.code_action,
+                            { buffer = bufnr }
+                        )
+                    end
+                end,
+            })
+        end,
+    },
     {
         'zbirenbaum/neodim',
         event = { 'BufReadPost', 'BufNewFile' },
@@ -797,6 +692,19 @@ return {
             end, {
                 desc = 'Re-enable autoformat-on-save',
             })
+
+            vim.api.nvim_create_autocmd('LspAttach', {
+                group = au,
+                desc = 'LSP formatexpr',
+                callback = function(args)
+                    local bufnr = args.buf
+                    vim.api.nvim_set_option_value(
+                        'formatexpr',
+                        'v:lua.require\'conform\'.formatexpr()',
+                        { buf = bufnr }
+                    )
+                end,
+            })
         end,
         config = function(_, opts)
             local conform = require 'conform'
@@ -805,12 +713,12 @@ return {
             conform.formatters.stylua = {
                 require_cwd = true,
             }
-            conform.formatters.ruff_fix = {
-                prepend_args = { '--respect-gitignore' },
-            }
-            conform.formatters.ruff_format = {
-                prepend_args = { '--silent', '--respect-gitignore' },
-            }
+            -- conform.formatters.ruff_fix = {
+            --     prepend_args = { '--respect-gitignore' },
+            -- }
+            -- conform.formatters.ruff_format = {
+            --     prepend_args = { '--silent', '--respect-gitignore' },
+            -- }
             conform.formatters.shfmt = {
                 prepend_args = { '-i', '4', '-ci' },
             }
