@@ -766,7 +766,7 @@ return {
     },
     {
         'mfussenegger/nvim-lint',
-        ft = { 'gha' },
+        ft = { 'yaml.gha' },
         dependencies = {
             {
                 'williamboman/mason.nvim',
@@ -779,7 +779,7 @@ return {
         opts = {
             events = { 'BufWritePost', 'BufReadPost', 'InsertLeave' },
             linters_by_ft = {
-                gha = { 'actionlint' },
+                ['yaml.gha'] = { 'actionlint' },
             },
             -- from LazyVim: https://github.com/LazyVim/LazyVim/blob/bb36f71b77d8e15788a5b62c82a1c9ec7b209e49/lua/lazyvim/plugins/linting.lua#L16
             -- easily override linter options or add custom linters
