@@ -51,10 +51,6 @@ local executable = function(e)
     return fn.executable(e) > 0
 end
 
-if fn.filereadable '~/.local/share/virtualenvs/debugpy/bin/python' then
-    vim.g.python3_host_prog = '~/.local/share/virtualenvs/debugpy/bin/python'
-end
-
 -- Restore cursor on opening buffer
 -- Automatically opens fold (if needed) and centers the view
 -- original from https://github.com/fmadriessen/.dotfiles/blob/07d679e31e1cb9bc02545135411ffb127f506c59/xdg_config/nvim/lua/config/autocmds.lua
