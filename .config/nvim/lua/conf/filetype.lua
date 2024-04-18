@@ -16,5 +16,6 @@ vim.filetype.add {
         ['helmfile.*.yaml'] = 'helm',
         ['.*/%.github[%w/]+.*%.yml'] = 'yaml.gha',
         ['.*/%.github[%w/]+.*%.yaml'] = 'yaml.gha',
+        ['.*%.gitlab%-ci%.yml'] = 'yaml.gitlab',
     },
 }
