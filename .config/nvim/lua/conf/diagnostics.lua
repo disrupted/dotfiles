@@ -84,7 +84,7 @@ vim.api.nvim_create_autocmd(
 local function refresh_diagnostics_loclist()
     pcall(vim.diagnostic.setloclist, { open = false })
     if vim.tbl_isempty(vim.fn.getloclist(0)) then
-        vim.cmd.lclose()
+        pcall(vim.cmd.lclose)
     end
 end
 
