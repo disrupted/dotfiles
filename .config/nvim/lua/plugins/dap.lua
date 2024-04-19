@@ -270,11 +270,7 @@ return {
                     local debugpy_path = require('mason-registry')
                         .get_package('debugpy')
                         :get_install_path()
-                    py.setup(
-                        debugpy_path .. '/venv/bin/python',
-                        -- '~/.local/share/virtualenvs/debugpy/bin/python',
-                        opts
-                    )
+                    py.setup(debugpy_path .. '/venv/bin/python', opts)
                     py.test_runner = 'pytest'
                     local dap = require 'dap'
                     local configs = dap.configurations.python or {}
@@ -332,34 +328,32 @@ return {
                         request = 'attach',
                         name = 'Attach remote',
                         mode = 'remote',
-                        connect = function()
+                        host = function()
                             local host = vim.fn.input 'Host [127.0.0.1]: '
-                            host = host ~= '' and host or '127.0.0.1'
-                            local port = tonumber(vim.fn.input 'Port [5678]: ')
-                                or 5678
-                            local localRoot = function()
-                                return vim.fn.input(
-                                    'Local code folder: ',
-                                    vim.loop.cwd(),
-                                    'file'
-                                )
-                            end
-                            local remoteRoot = function()
-                                return vim.fn.input(
-                                    'Container code folder: ',
-                                    '/',
-                                    'file'
-                                )
-                            end
-                            return {
-                                host = host,
-                                port = port,
-                                pathMappings = {
-                                    localRoot = localRoot,
-                                    remoteRoot = remoteRoot,
-                                },
-                            }
+                            return host ~= '' and host or '127.0.0.1'
                         end,
+                        port = function()
+                            return tonumber(vim.fn.input 'Port [5678]: ')
+                                or 5678
+                        end,
+                        pathMappings = {
+                            {
+                                localRoot = function()
+                                    return vim.fn.input(
+                                        'Local code folder > ',
+                                        vim.loop.cwd(),
+                                        'file'
+                                    )
+                                end,
+                                remoteRoot = function()
+                                    return vim.fn.input(
+                                        'Container code folder > ',
+                                        '/',
+                                        'file'
+                                    )
+                                end,
+                            },
+                        },
                     })
                 end,
             },
