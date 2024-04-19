@@ -410,7 +410,7 @@ return {
             -- },
             lsp = {
                 signature = { enabled = true },
-                hover = { enabled = false, silent = true },
+                hover = { enabled = true, silent = true },
             },
             routes = {
                 {
@@ -438,5 +438,35 @@ return {
                 require('noice').redirect 'Inspect'
             end, { desc = 'Show inspect in popup' })
         end,
+    },
+    {
+        'folke/zen-mode.nvim',
+        cmd = 'ZenMode',
+        dependencies = {
+            {
+                'folke/twilight.nvim',
+                cmd = 'Twilight',
+                opts = { context = 10 },
+            },
+        },
+        opts = {
+            window = {
+                options = {
+                    -- signcolumn = 'no', -- disable signcolumn
+                    list = false, -- disable whitespace characters
+                },
+            },
+            plugins = {
+                options = {
+                    enabled = true,
+                    laststatus = 0, -- turn off the statusline in zen mode
+                },
+                tmux = { enabled = true },
+                kitty = {
+                    enabled = true,
+                    font = '+4',
+                },
+            },
+        },
     },
 }
