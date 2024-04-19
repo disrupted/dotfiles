@@ -729,6 +729,31 @@ return {
         end,
     },
     {
+        'joechrisellis/lsp-format-modifications.nvim',
+        lazy = true,
+        dependencies = { 'nvim-lua/plenary.nvim' },
+        init = function()
+            vim.api.nvim_create_user_command('FormatModified', function()
+                local bufnr = vim.api.nvim_get_current_buf()
+                local clients = vim.lsp.get_clients {
+                    bufnr = bufnr,
+                    method = require('vim.lsp.protocol').Methods.textDocument_rangeFormatting,
+                }
+
+                if #clients == 0 then
+                    vim.notify '[LSP] Format request failed, no matching language servers.'
+                end
+
+                for _, client in pairs(clients) do
+                    require('lsp-format-modifications').format_modifications(
+                        client,
+                        bufnr
+                    )
+                end
+            end, {})
+        end,
+    },
+    {
         'mfussenegger/nvim-lint',
         ft = { 'yaml.gha' },
         dependencies = {
