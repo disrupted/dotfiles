@@ -166,6 +166,9 @@ return {
                 diffview = true,
             },
             graph_style = 'unicode',
+            status = {
+                recent_commit_count = 50,
+            },
         },
         config = function(_, opts)
             local neogit = require 'neogit'
