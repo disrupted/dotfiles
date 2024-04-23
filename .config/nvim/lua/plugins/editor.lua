@@ -28,7 +28,7 @@ return {
                 '<C-f>',
                 function()
                     -- Launch file search using Telescope
-                    if vim.loop.fs_stat '.git' then
+                    if vim.uv.fs_stat '.git' then
                         -- if in a git project, use :Telescope git_files
                         require('telescope.builtin').git_files()
                     else

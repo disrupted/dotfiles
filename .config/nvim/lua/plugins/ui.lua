@@ -39,7 +39,7 @@ return {
             local WorkDir = {
                 provider = function()
                     local icon = '  '
-                    local cwd = vim.loop.cwd()
+                    local cwd = vim.uv.cwd()
                     cwd = vim.fn.fnamemodify(cwd, ':~')
                     -- if not conditions.width_percent_below(#cwd, 0.25) then
                     --     cwd = vim.fn.pathshorten(cwd)

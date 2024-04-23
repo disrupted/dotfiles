@@ -300,7 +300,7 @@ return {
                         jestCommand = 'npm test --',
                         env = { CI = true },
                         cwd = function()
-                            return vim.loop.cwd()
+                            return vim.uv.cwd()
                         end,
                     },
                 },

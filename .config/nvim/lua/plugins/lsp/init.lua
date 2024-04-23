@@ -259,7 +259,7 @@ return {
                                 root_dir = function(filename)
                                     return require('lspconfig.util').find_git_ancestor(
                                         filename
-                                    ) or vim.loop.cwd()
+                                    ) or vim.uv.cwd()
                                 end,
                                 settings = {
                                     yaml = {

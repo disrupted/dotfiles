@@ -341,7 +341,7 @@ return {
                                 localRoot = function()
                                     return vim.fn.input(
                                         'Local code folder > ',
-                                        vim.loop.cwd(),
+                                        vim.uv.cwd(),
                                         'file'
                                     )
                                 end,

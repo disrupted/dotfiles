@@ -56,7 +56,7 @@ M.actions = transform_mod {
         local current_input = action_state.get_current_line()
 
         local data = {}
-        scan.scan_dir(vim.loop.cwd(), {
+        scan.scan_dir(vim.uv.cwd(), {
             hidden = true,
             only_dirs = true,
             respect_gitignore = true,

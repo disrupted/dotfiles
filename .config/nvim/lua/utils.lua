@@ -39,7 +39,7 @@ function M.get_relative_path(file_path)
     local plenary_path = require 'plenary.path'
     local parsed_path, _ = file_path:gsub('file://', '')
     local path = plenary_path:new(parsed_path)
-    local relative_path = path:make_relative(vim.loop.cwd())
+    local relative_path = path:make_relative(vim.uv.cwd())
     return './' .. relative_path
 end
 
