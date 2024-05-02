@@ -44,15 +44,27 @@ end, { desc = 'Next diagnostic' })
 vim.keymap.set('n', '[e', function()
     vim.diagnostic.goto_prev {
         enable_popup = false,
-        severity = { min = vim.diagnostic.severity.WARN },
+        severity = vim.diagnostic.severity.ERROR,
     }
-end, { desc = 'Prev error/warning' })
+end, { desc = 'Prev error' })
 vim.keymap.set('n', ']e', function()
     vim.diagnostic.goto_next {
         enable_popup = false,
-        severity = { min = vim.diagnostic.severity.WARN },
+        severity = vim.diagnostic.severity.ERROR,
     }
-end, { desc = 'Next error/warning' })
+end, { desc = 'Next error' })
+vim.keymap.set('n', '[w', function()
+    vim.diagnostic.goto_prev {
+        enable_popup = false,
+        severity = vim.diagnostic.severity.WARN,
+    }
+end, { desc = 'Prev warning' })
+vim.keymap.set('n', ']w', function()
+    vim.diagnostic.goto_next {
+        enable_popup = false,
+        severity = vim.diagnostic.severity.WARN,
+    }
+end, { desc = 'Next warning' })
 
 local diagnostic_ns = vim.api.nvim_create_namespace 'diagnostics'
 -- show diagnostics for current line as virtual text
@@ -61,6 +73,12 @@ local function show_diagnostics()
     vim.schedule(function()
         local line = vim.api.nvim_win_get_cursor(0)[1] - 1
         local bufnr = vim.api.nvim_get_current_buf()
+        if
+            vim.api.nvim_get_option_value('buftype', { buf = bufnr })
+            == 'nofile'
+        then
+            return
+        end
         local diagnostics = vim.diagnostic.get(bufnr, {
             lnum = line,
             severity = { min = vim.diagnostic.severity.INFO },
