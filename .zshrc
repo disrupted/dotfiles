@@ -182,7 +182,7 @@ zinit ice as'program' id-as'carapace' from'gh-r' atload' \
   autoload -Uz compinit; \
   compinit; \
   source <(carapace _carapace);'
-zinit light rsteube/carapace-bin
+zinit light carapace-sh/carapace-bin
 
 #####################
 # HISTORY           #
