@@ -117,13 +117,13 @@ zstyle ':fzf-tab:*' query-string prefix first
 zstyle ':fzf-tab:*' continuous-trigger '/'
 zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm,cmd -w -w"
 zstyle ':fzf-tab:complete:kill:argument-rest' fzf-flags --preview=$extract'ps --pid=$in[(w)1] -o cmd --no-headers -w -w' --preview-window=down:3:wrap
-# zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'  # disable for tmux-popup
+# zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'  # disable for tmux-popup
 zstyle ':fzf-tab:*' switch-group ',' '.'
 zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 zstyle ':fzf-tab:*' popup-pad 0 0
 zstyle ':completion:*:git-checkout:*' sort false
-zstyle ':completion:*:exa' file-sort modification
-zstyle ':completion:*:exa' sort false
+zstyle ':completion:*:eza' file-sort modification
+zstyle ':completion:*:eza' sort false
 
 # TMUX plugin manager
 zinit ice lucid wait'!0a' as'null' id-as'tpm' \
@@ -218,14 +218,14 @@ setopt sharehistory           # global history
 chpwd() {
   if [[ $(ls | wc -l) -ge 20 ]]; then
     # print as grid
-    exa -G -a -F --icons --group-directories-first --git --color=always --ignore-glob=".DS_Store|__*"
+    eza -G -a -F --icons --group-directories-first --git --color=always --ignore-glob=".DS_Store|__*"
   else
     # print as list and add left padding
-    exa -1 -a -F --icons --group-directories-first --git --color=always --ignore-glob=".DS_Store|__*" | sed 's/^/  /'
+    eza -1 -a -F --icons --group-directories-first --git --color=always --ignore-glob=".DS_Store|__*" | sed 's/^/  /'
   fi
 }
 
-# chpwd() { exa -l -a -F --icons --group-directories-first --git --color=always --no-permissions --no-user --no-filesize --time=modified | sed 's/^/  /'; }  # alternative showing last modified date for files
+# chpwd() { eza -l -a -F --icons --group-directories-first --git --color=always --no-permissions --no-user --no-filesize --time=modified | sed 's/^/  /'; }  # alternative showing last modified date for files
 
 #####################
 # VI KEYBINDINGS    #
@@ -373,7 +373,7 @@ export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_CTRL_T_OPTS='--preview="bat --color=always --style=header {} 2>/dev/null" --preview-window=right:60%:wrap'
 export FZF_ALT_C_COMMAND='fd -t d -d 1'
-export FZF_ALT_C_OPTS='--preview="exa -1 --icons --git --git-ignore {}" --preview-window=right:60%:wrap'
+export FZF_ALT_C_OPTS='--preview="eza -1 --icons --git --git-ignore {}" --preview-window=right:60%:wrap'
 bindkey '^F' fzf-file-widget
 # FZF custom OneDark theme
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'

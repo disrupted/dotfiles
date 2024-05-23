@@ -3,13 +3,13 @@ function mkcd() { mkdir -p $1; cd $1;}
 alias cp='cp -riv'
 alias mv='mv -iv'
 alias mkdir='mkdir -pv'
-alias v='nvim'
-alias l='exa --sort=changed --icons -la --git --git-ignore --ignore-glob=".DS_Store|__MACOSX|__pycache__"'
-alias la='exa --group-directories-first --icons -la'
-alias ll='exa --group-directories-first --icons -la --color-scale --time-style=long-iso --git --git-ignore --ignore-glob=".git|.DS_Store|__MACOSX|__pycache__" -T -L2'
-alias ll3='exa --group-directories-first --icons -la --git --git-ignore --ignore-glob=".git|.DS_Store|__MACOSX" -T -L3'
-alias ll4='exa --group-directories-first --icons -la --git --git-ignore --ignore-glob=".git|.DS_Store|__MACOSX" -T -L4'
-alias tree='exa --group-directories-first -T --icons'
+alias v='nvim --listen ~/.cache/nvim/server.pipe'
+alias l='eza --sort=changed --icons -la --git --git-ignore --ignore-glob=".DS_Store|__MACOSX|__pycache__"'
+alias la='eza --group-directories-first --icons -la'
+alias ll='eza --group-directories-first --icons -la --color-scale --time-style=long-iso --git --git-ignore --ignore-glob=".git|.DS_Store|__MACOSX|__pycache__" -T -L2'
+alias ll3='eza --group-directories-first --icons -la --git --git-ignore --ignore-glob=".git|.DS_Store|__MACOSX" -T -L3'
+alias ll4='eza --group-directories-first --icons -la --git --git-ignore --ignore-glob=".git|.DS_Store|__MACOSX" -T -L4'
+alias tree='eza --group-directories-first -T --icons'
 alias c='clear'
 alias gs='git status -sb'
 alias gc='git commit'
@@ -17,7 +17,7 @@ function gp() {
   git push $@ || return 1
 
   if test -s .github/workflows && ([[ $(git remote get-url origin) =~ 'github.com' ]] || gh repo view >/dev/null 2>&1); then
-    max_retries=10
+    max_retries=50
     retry_count=0
 
     # Loop until the job exists for commit or maximum retries reached
