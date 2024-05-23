@@ -1,17 +1,30 @@
-local signs = {
-    Error = '', -- ◉
-    Warn = '', -- ●
-    Info = '', -- •
-    Hint = '', -- ·
-}
-for severity, icon in pairs(signs) do
-    local hl = 'DiagnosticSign' .. severity
-    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-end
-
 vim.diagnostic.config {
     underline = true,
     signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = '', -- ◉
+            [vim.diagnostic.severity.WARN] = '', -- ●
+            [vim.diagnostic.severity.INFO] = '', -- •
+            [vim.diagnostic.severity.HINT] = '', -- ·
+        },
+        linehl = {
+            [vim.diagnostic.severity.ERROR] = '',
+            [vim.diagnostic.severity.WARN] = '',
+            [vim.diagnostic.severity.INFO] = '',
+            [vim.diagnostic.severity.HINT] = '',
+        },
+        texthl = {
+            [vim.diagnostic.severity.ERROR] = 'DiagnosticSignError',
+            [vim.diagnostic.severity.WARN] = 'DiagnosticSignWarn',
+            [vim.diagnostic.severity.INFO] = 'DiagnosticSignInfo',
+            [vim.diagnostic.severity.HINT] = 'DiagnosticSignHint',
+        },
+        numhl = {
+            [vim.diagnostic.severity.ERROR] = 'DiagnosticSignError',
+            [vim.diagnostic.severity.WARN] = 'DiagnosticSignWarn',
+            [vim.diagnostic.severity.INFO] = 'DiagnosticSignInfo',
+            [vim.diagnostic.severity.HINT] = 'DiagnosticSignHint',
+        },
         severity = { min = vim.diagnostic.severity.WARN },
         -- prefix = "icons", -- TODO: nvim 0.10.0
     },
