@@ -2,6 +2,7 @@ return {
     {
         'lewis6991/gitsigns.nvim',
         event = { 'BufWinEnter', 'BufNewFile' },
+        dependencies = { 'seanbreckenridge/gitsigns-yadm.nvim' },
         opts = function()
             return {
                 signs = {
@@ -52,9 +53,6 @@ return {
                     delay = 1000,
                     ignore_whitespace = true,
                 },
-                current_line_blame_formatter_opts = {
-                    relative_time = false,
-                },
                 sign_priority = 6,
                 update_debounce = 100,
                 status_formatter = nil, -- Use default
@@ -68,6 +66,9 @@ return {
                     col = 1,
                 },
                 trouble = false,
+                _on_attach_pre = function(_, callback)
+                    require('gitsigns-yadm').yadm_signs(callback)
+                end,
                 on_attach = function(bufnr)
                     local function map(mode, l, r, opts)
                         opts = opts or {}
@@ -137,7 +138,6 @@ return {
     },
     {
         'NeogitOrg/neogit',
-        branch = 'nightly',
         keys = {
             {
                 '<leader>g',
