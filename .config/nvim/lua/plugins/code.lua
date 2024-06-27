@@ -81,18 +81,18 @@ return {
         },
     },
     {
-        'windwp/nvim-autopairs',
-        event = 'InsertCharPre',
-        opts = { check_ts = true },
-        config = function(_, opts)
-            local npairs = require 'nvim-autopairs'
-            npairs.setup(opts)
-
-            local Rule = require 'nvim-autopairs.rule'
-            npairs.add_rule(Rule('[', ']'))
-            npairs.add_rule(Rule('<', '>'))
-            npairs.add_rule(Rule('|', '|', 'rust'))
-        end,
+        'altermo/ultimate-autopair.nvim',
+        event = { 'InsertEnter', 'CmdlineEnter' },
+        branch = 'v0.6',
+        opts = {
+            space2 = { enable = true },
+            tabout = {
+                enable = true,
+                map = '<Tab>',
+                cmap = '<Tab>',
+                hopout = true,
+            },
+        },
     },
     {
         'monaqa/dial.nvim',

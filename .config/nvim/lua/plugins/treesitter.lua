@@ -154,7 +154,6 @@ return {
                     },
                 },
             },
-            autopairs = { enable = true },
             tree_setter = { enable = true },
         },
         config = function(_, opts)
