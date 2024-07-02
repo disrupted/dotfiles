@@ -156,16 +156,22 @@ return {
                         }, {
                             buffer = bufnr,
                             callback = function()
-                                vim.lsp.inlay_hint.enable(bufnr, true)
+                                vim.lsp.inlay_hint.enable(
+                                    true,
+                                    { bufnr = bufnr }
+                                )
                             end,
                         })
                         vim.api.nvim_create_autocmd('InsertEnter', {
                             callback = function()
-                                vim.lsp.inlay_hint.enable(bufnr, false)
+                                vim.lsp.inlay_hint.enable(
+                                    false,
+                                    { bufnr = bufnr }
+                                )
                             end,
                         })
                         -- initial request
-                        vim.lsp.inlay_hint.enable(bufnr, true)
+                        vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
                     end
                 end,
             })
