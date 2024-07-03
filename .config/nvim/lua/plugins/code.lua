@@ -85,11 +85,11 @@ return {
         event = { 'InsertEnter', 'CmdlineEnter' },
         branch = 'v0.6',
         opts = {
+            cmap = false,
             space2 = { enable = true },
             tabout = {
                 enable = true,
                 map = '<Tab>',
-                cmap = '<Tab>',
                 hopout = true,
             },
         },
