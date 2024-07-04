@@ -613,7 +613,7 @@ return {
                 css = { 'dprint' },
                 html = { 'dprint' },
                 htmldjango = { 'dprint' },
-                yaml = { { 'prettierd', 'prettier' } },
+                yaml = { 'dprint' },
                 graphql = { { 'prettierd', 'prettier' } },
                 sh = { 'shfmt' },
                 http = {
