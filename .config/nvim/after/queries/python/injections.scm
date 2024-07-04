@@ -29,9 +29,3 @@
 
 ; attribute docstring
 ; ((expression_statement (assignment)) . (expression_statement (string) @string.documentation))
-
-; regex in raw strings: r"[a-z]"
-(string
-  (string_start) @_prefix (#lua-match? @_prefix "^r")
-  (string_content) @injection.content (#set! injection.language "regex")
-  (string_end))
