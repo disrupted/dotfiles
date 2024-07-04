@@ -900,13 +900,16 @@ return {
             {
                 '<leader>xw',
                 function()
-                    require('trouble').toggle { mode = 'workspace_diagnostics' }
+                    require('trouble').toggle { mode = 'diagnostics' }
                 end,
             },
             {
                 '<leader>xb',
                 function()
-                    require('trouble').toggle { mode = 'document_diagnostics' }
+                    require('trouble').toggle {
+                        mode = 'diagnostics',
+                        filter = { buf = 0 },
+                    }
                 end,
             },
             {
