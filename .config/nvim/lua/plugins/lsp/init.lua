@@ -245,6 +245,7 @@ return {
                         'helm_ls',
                         'bashls',
                         'pylance',
+                        'gitlab_ci_ls',
                     },
                     handlers = {
                         function(server_name)
@@ -260,7 +261,6 @@ return {
                                 filetypes = {
                                     'yaml',
                                     'yaml.gha',
-                                    'yaml.gitlab',
                                 },
                                 root_dir = function(filename)
                                     return require('lspconfig.util').find_git_ancestor(
@@ -277,13 +277,22 @@ return {
                                             ['https://json.schemastore.org/chart.json'] = '/templates/*',
                                         },
                                         customTags = {
-                                            -- GitLab CI
-                                            '!reference sequence',
-                                            '!reference scalar',
                                             -- mkdocs
                                             'tag:yaml.org,2002:python/name:material.extensions.emoji.twemoji',
                                             'tag:yaml.org,2002:python/name:material.extensions.emoji.to_svg',
                                             'tag:yaml.org,2002:python/name:pymdownx.superfences.fence_code_format',
+                                        },
+                                    },
+                                },
+                            }
+                            require('lspconfig').yamlls.setup {
+                                name = 'yamlls GitLab',
+                                filetypes = { 'yaml.gitlab' },
+                                settings = {
+                                    yaml = {
+                                        customTags = {
+                                            '!reference sequence',
+                                            '!reference scalar',
                                         },
                                     },
                                 },
