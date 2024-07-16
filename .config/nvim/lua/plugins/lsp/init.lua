@@ -176,6 +176,26 @@ return {
                 end,
             })
 
+            vim.api.nvim_create_autocmd('LspAttach', {
+                group = au,
+                desc = 'LSP code actions',
+                callback = function(args)
+                    local bufnr = args.buf
+                    local client = vim.lsp.get_client_by_id(args.data.client_id)
+                    if
+                        client
+                        and client.supports_method 'textDocument/codeAction'
+                    then
+                        vim.keymap.set(
+                            { 'n', 'v' },
+                            '<leader>a',
+                            vim.lsp.buf.code_action,
+                            { buffer = bufnr }
+                        )
+                    end
+                end,
+            })
+
             --[[ vim.api.nvim_create_autocmd('LspAttach', {
                 group = au,
                 desc = 'LSP signature help',
@@ -505,49 +525,16 @@ return {
         opts = {},
     },
     {
-        'kosayoda/nvim-lightbulb',
-        lazy = true,
-        init = function()
-            local function show_lightbulb()
-                require('nvim-lightbulb').update_lightbulb {
+        'neovim-plugin/lightbulb.nvim',
+        event = 'LspAttach',
+        opts = {
                     sign = { enabled = false, priority = 99 },
                     virtual_text = {
                         enabled = true,
                         text = '',
                         hl_mode = 'combine',
                     },
-                }
-            end
-
-            vim.api.nvim_create_autocmd('LspAttach', {
-                group = au,
-                desc = 'LSP code actions',
-                callback = function(args)
-                    local bufnr = args.buf
-                    local client = vim.lsp.get_client_by_id(args.data.client_id)
-                    if
-                        client
-                        and client.supports_method 'textDocument/codeAction'
-                    then
-                        vim.api.nvim_create_autocmd(
-                            { 'CursorHold', 'CursorHoldI' },
-                            {
-                                buffer = bufnr,
-                                callback = function()
-                                    show_lightbulb()
-                                end,
-                            }
-                        )
-                        vim.keymap.set(
-                            { 'n', 'v' },
-                            '<leader>a',
-                            vim.lsp.buf.code_action,
-                            { buffer = bufnr }
-                        )
-                    end
-                end,
-            })
-        end,
+        },
     },
     {
         'zbirenbaum/neodim',
