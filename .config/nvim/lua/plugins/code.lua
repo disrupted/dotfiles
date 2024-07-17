@@ -183,7 +183,10 @@ return {
             {
                 '<leader>tf',
                 function()
-                    require('neotest').run.run()
+                    require('neotest').run.run {
+                        suite = false,
+                        env = {},
+                    }
                 end,
                 desc = 'test nearest function',
             },
