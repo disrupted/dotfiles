@@ -309,13 +309,177 @@ return {
                 end,
             }
 
+            local neotest_ok, neotest = pcall(require, 'neotest')
+            local NeoTestBlock = {
+                condition = function()
+                    return neotest_ok
+                        and conditions.is_active()
+                        and #neotest.state.adapter_ids() > 0
+                end,
+                init = function(self)
+                    self.adapter_ids = neotest.state.adapter_ids()
+                    self.buffer = vim.api.nvim_get_current_buf()
+                end,
+            }
+            local NeoTest = {
+                condition = function(self)
+                    local status = neotest.state.status_counts(
+                        self.adapter_ids[1],
+                        { buffer = self.buffer }
+                    )
+                    return status
+                end,
+                init = function(self)
+                    self.status = neotest.state.status_counts(
+                        self.adapter_ids[1],
+                        { buffer = self.buffer }
+                    )
+                end,
+                static = {
+                    icon = {
+                        total = ' ',
+                        passed = ' ',
+                        failed = ' ',
+                        skipped = ' ',
+                        running = ' ',
+                    },
+                },
+                {
+                    condition = function(self)
+                        return self.status.total > 0
+                    end,
+                    init = function(self)
+                        self.adapter = vim.split(
+                            vim.split(
+                                self.adapter_ids[1],
+                                ':',
+                                { plain = true }
+                            )[1],
+                            'neotest-',
+                            { plain = true }
+                        )[2]
+                    end,
+                    provider = function(self)
+                        -- return string.format('%s ', self.adapter)
+                    end,
+                    hl = { bg = 'syntax_cursor' },
+                    {
+                        {
+                            condition = function(self)
+                                return self.status.total > 0
+                            end,
+                            provider = function(self)
+                                return string.format(
+                                    '%s%s ',
+                                    self.icon.total,
+                                    self.status.total
+                                )
+                            end,
+                        },
+                        {
+                            condition = function(self)
+                                return self.status.running > 0
+                            end,
+                            provider = function(self)
+                                return string.format(
+                                    '%s%s ',
+                                    self.icon.running,
+                                    self.status.running
+                                )
+                            end,
+                            hl = function()
+                                local hl = utils.get_highlight 'NeotestRunning'
+                                return hl
+                            end,
+                        },
+                        {
+                            condition = function(self)
+                                return self.status.passed > 0
+                            end,
+                            provider = function(self)
+                                return string.format(
+                                    '%s%s ',
+                                    self.icon.passed,
+                                    self.status.passed
+                                )
+                            end,
+                            hl = function()
+                                local hl = utils.get_highlight 'NeotestPassed'
+                                return hl
+                            end,
+                        },
+                        {
+                            condition = function(self)
+                                return self.status.failed > 0
+                            end,
+                            provider = function(self)
+                                return string.format(
+                                    '%s%s ',
+                                    self.icon.failed,
+                                    self.status.failed
+                                )
+                            end,
+                            hl = function()
+                                local hl = utils.get_highlight 'NeotestFailed'
+                                return hl
+                            end,
+                        },
+                        {
+                            condition = function(self)
+                                return self.status.skipped > 0
+                            end,
+                            provider = function(self)
+                                return string.format(
+                                    '%s%s ',
+                                    self.icon.skipped,
+                                    self.status.skipped
+                                )
+                            end,
+                            hl = function()
+                                local hl = utils.get_highlight 'NeotestSkipped'
+                                return hl
+                            end,
+                        },
+                    },
+                },
+            }
+            NeoTestBlock = utils.insert(NeoTestBlock, NeoTest, Space)
+
+            local MacroRecordingBlock = {
+                condition = conditions.is_active,
+                init = function(self)
+                    self.register = vim.fn.reg_recording()
+                end,
+            }
+            local MacroRecording = {
+                condition = function(self)
+                    return self.register ~= ''
+                end,
+                {
+                    provider = '  ',
+                    hl = { fg = colors.hue_5 },
+                },
+                {
+                    provider = function(self)
+                        return string.format('%s ', self.register)
+                    end,
+                    hl = { bold = true },
+                },
+                hl = { bg = colors.yellow },
+                update = { 'RecordingEnter', 'RecordingLeave' },
+            }
+            MacroRecordingBlock =
+                utils.insert(MacroRecordingBlock, MacroRecording)
+
             local StatusLine = {
+                MacroRecordingBlock,
                 WorkDir,
                 Space,
                 Diagnostics,
                 Align,
                 Align,
                 DAPMessages,
+                NeoTestBlock,
                 Space,
                 Git,
             }
