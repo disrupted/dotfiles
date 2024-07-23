@@ -25,6 +25,17 @@ return {
                 mode = { 'i', 's' },
                 desc = 'jump to previous snippet',
             },
+            {
+                '<C-e>',
+                function()
+                    local luasnip = require 'luasnip'
+                    if luasnip.choice_active() then
+                        luasnip.change_choice(1)
+                    end
+                end,
+                mode = { 'i', 's' },
+                desc = 'cycle through snippet choice node',
+            },
         },
         opts = {},
         config = function()

@@ -36,7 +36,6 @@ return {
                 luasnip = '[snip]',
                 nvim_lsp = '[LSP]',
                 git = '[git]',
-                nvim_lua = '[API]',
                 spell = '[spell]',
                 path = '[path]',
                 buffer = '[buf]',
@@ -61,7 +60,6 @@ return {
                 ),
                 ['<C-d>'] = cmp.mapping.scroll_docs(-4),
                 ['<C-f>'] = cmp.mapping.scroll_docs(4),
-                -- ['<C-Space>'] = cmp.mapping.complete(),
                 ['<C-c>'] = cmp.mapping.complete {
                     config = {
                         sources = {
@@ -69,7 +67,6 @@ return {
                         },
                     },
                 },
-                ['<C-e>'] = cmp.mapping.close(),
                 ['<Up>'] = cmp.config.disable,
                 ['<Down>'] = cmp.config.disable,
             }
@@ -88,14 +85,14 @@ return {
                 },
                 mapping = mapping,
                 sources = cmp.config.sources({
-                    -- { name = 'nvim_lsp' },
-                    {
-                        name = 'nvim_lsp',
-                        entry_filter = function(entry, ctx)
-                            return require('cmp.types').lsp.CompletionItemKind[entry:get_kind()]
-                                ~= 'Snippet'
-                        end,
-                    },
+                    { name = 'nvim_lsp' },
+                    -- {
+                    --     name = 'nvim_lsp',
+                    --     entry_filter = function(entry, ctx)
+                    --         return require('cmp.types').lsp.CompletionItemKind[entry:get_kind()]
+                    --             ~= 'Snippet'
+                    --     end,
+                    -- },
                     { name = 'luasnip' },
                     { name = 'git' },
                 }, {
