@@ -91,7 +91,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- resize splits when Vim is resized
-vim.api.nvim_create_autocmd('VimResized', { command = 'horizontal wincmd =' })
+vim.api.nvim_create_autocmd(
+    'VimResized',
+    { command = 'tabdo horizontal wincmd =' }
+)
 
 -----------------------------------------------------------------------------//
 -- Indentation {{{1
@@ -263,30 +266,29 @@ opt.diffopt:prepend {
 -- Terminal {{{1
 -----------------------------------------------------------------------------//
 -- Open a terminal pane on the right using :Term
--- cmd [[command Term :botright vsplit term://$SHELL]]
 command('Term', 'botright vsplit term://$SHELL', {})
 
--- Terminal visual tweaks
--- Enter insert mode when switching to terminal
--- Close terminal buffer on process exit
 vim.api.nvim_create_autocmd('TermOpen', {
     callback = function()
         vim.opt_local.number = false
         vim.opt_local.relativenumber = false
         vim.opt_local.cursorline = false
     end,
+    desc = 'Terminal visual tweaks',
 })
 vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter', 'WinEnter' }, {
     pattern = 'term://*',
     callback = function()
         vim.api.nvim_command 'startinsert'
     end,
+    desc = 'Enter insert mode when switching to terminal',
 })
 vim.api.nvim_create_autocmd('BufLeave', {
     pattern = 'term://*',
     callback = function()
         vim.api.nvim_command 'stopinsert'
     end,
+    desc = 'Close terminal buffer on process exit',
 })
 
 -- autocmd TermClose term://* call nvim_input('<CR>')
