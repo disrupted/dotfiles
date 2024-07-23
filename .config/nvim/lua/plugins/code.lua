@@ -122,6 +122,20 @@ return {
                 disable_end = true,
             },
         },
+        config = function(_, opts)
+            local aupair = require 'ultimate-autopair'
+            aupair.init {
+                aupair.extend_default(opts),
+                {
+                    profile = require('ultimate-autopair.experimental.cmpair').init,
+                },
+                {
+                    profile = require(
+                        'ultimate-autopair.experimental.matchpair'
+                    ).init,
+                },
+            }
+        end,
     },
     {
         'monaqa/dial.nvim',
