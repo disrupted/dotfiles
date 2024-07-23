@@ -16,7 +16,7 @@ alias gc='git commit'
 function gp() {
   git push $@ || return 1
 
-  if test -s .github/workflows && ([[ $(git remote get-url origin) =~ 'github.com' ]] || gh repo view >/dev/null 2>&1); then
+  if test -s "$(git root)/.github/workflows" && ([[ $(git remote get-url origin) =~ 'github.com' ]] || gh repo view >/dev/null 2>&1); then
     max_retries=50
     retry_count=0
 
@@ -38,7 +38,7 @@ function gp() {
     fi
 
     gh run watch --exit-status $job || gh run view --log-failed $job
-  elif test -s .gitlab-ci.yml && ([[ $(git remote get-url origin) =~ 'gitlab.com' ]] || glab repo view >/dev/null 2>&1); then
+  elif test -s "$(git root)/.gitlab-ci.yml" && ([[ $(git remote get-url origin) =~ 'gitlab.com' ]] || glab repo view >/dev/null 2>&1); then
     glab ci view
   fi
 }
