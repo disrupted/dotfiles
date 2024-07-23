@@ -214,18 +214,44 @@ return {
                     require('telescope').load_extension 'gh'
                 end,
             },
+            {
+                'Marskey/telescope-sg',
+                config = function()
+                    require('telescope').load_extension 'ast_grep'
+                end,
+            },
+        },
+    },
+    {
+        'nvim-neo-tree/neo-tree.nvim',
+        branch = 'v3.x',
+        dependencies = {
+            'nvim-lua/plenary.nvim',
+            'nvim-tree/nvim-web-devicons',
+            'MunifTanjim/nui.nvim',
+        },
+        cmd = 'Neotree',
+        keys = {
+            { '<C-e>', '<cmd>Neotree toggle<CR>' },
+        },
+        opts = {
+            filesystem = {
+                follow_current_file = { enabled = true },
+            },
         },
     },
     {
         'nvim-tree/nvim-tree.lua',
-        keys = {
-            {
-                '<C-e>',
-                function()
-                    require('nvim-tree.api').tree.toggle()
-                end,
-            },
-        },
+        -- enabled = false,
+        cmd = { 'NvimTreeOpen', 'NvimTreeToggle' },
+        -- keys = {
+        --     {
+        --         '<C-e>',
+        --         function()
+        --             require('nvim-tree.api').tree.toggle()
+        --         end,
+        --     },
+        -- },
         opts = function()
             return {
                 on_attach = function(bufnr)
