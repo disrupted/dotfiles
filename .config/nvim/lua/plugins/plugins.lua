@@ -8,11 +8,6 @@ return {
         enabled = false,
     },
     {
-        'vhyrro/luarocks.nvim',
-        priority = 1000,
-        config = true,
-    },
-    {
         'folke/which-key.nvim',
         event = 'VeryLazy',
         init = function()
@@ -37,7 +32,6 @@ return {
                 desc = 'Re-run latest request',
             },
         },
-        dependencies = { 'luarocks.nvim' },
         config = true,
     },
     { 'soywod/himalaya', cmd = 'Himalaya' },
