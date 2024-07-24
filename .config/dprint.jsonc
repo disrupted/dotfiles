@@ -1,54 +1,55 @@
 {
-    "$schema": "https://dprint.dev/schemas/v0.json",
-    "incremental": true,
-    "typescript": {
-        "indentWidth": 2,
-        "lineWidth": 80,
-        "arguments.trailingCommas": "never",
-        "parameters.trailingCommas": "never"
-    },
-    "json": {
-        "indentWidth": 2,
-        "associations": [
-            "**/*.json",
-            "**/*.jsonc",
-            "**/*.avsc"
-        ]
-    },
-    "markdown": {},
-    "toml": {},
-    "dockerfile": {},
-    // "css": {
-    //     "indentWidth": 2,
-    //     "lineWidth": 80,
-    //     "useTabs": false
-    // },
-    "malva": {},
-    "markup": {
-        "associations": [
-            "**/*.html",
-            "**/*.vue",
-            "**/*.svelte",
-            "**/*.jinja2"
-        ]
-    },
-    "includes": [
-        "**/*.{ts,tsx,js,jsx,cjs,mjs,json,avsc,md,toml,css,html,vue,svelte,jinja2,yaml}",
-        "dockerfile"
+  "$schema": "https://dprint.dev/schemas/v0.json",
+  "incremental": true,
+  "typescript": {
+    "indentWidth": 2,
+    "lineWidth": 80,
+    "arguments.trailingCommas": "never",
+    "parameters.trailingCommas": "never",
+  },
+  "json": {
+    "indentWidth": 2,
+    "associations": [
+      "**/*.json",
+      "**/*.jsonc",
+      "**/*.avsc",
     ],
-    "excludes": [
-        "**/node_modules",
-        "**/*-lock.json",
-        "**/target"
+  },
+  "yaml": {},
+  "markdown": {},
+  "toml": {},
+  "dockerfile": {},
+  // "css": {
+  //     "indentWidth": 2,
+  //     "lineWidth": 80,
+  //     "useTabs": false
+  // },
+  "malva": {},
+  "markup": {
+    "associations": [
+      "**/*.html",
+      "**/*.vue",
+      "**/*.svelte",
+      "**/*.jinja2",
     ],
-    "plugins": [
-        "https://plugins.dprint.dev/typescript-0.91.1.wasm",
-        "https://plugins.dprint.dev/json-0.19.3.wasm",
-        "https://plugins.dprint.dev/markdown-0.17.1.wasm",
-        "https://plugins.dprint.dev/toml-0.6.2.wasm",
-        "https://plugins.dprint.dev/dockerfile-0.3.2.wasm",
-        "https://plugins.dprint.dev/g-plane/malva-v0.4.0.wasm",
-        "https://plugins.dprint.dev/g-plane/markup_fmt-v0.9.0.wasm",
-        "https://plugins.dprint.dev/g-plane/pretty_yaml-v0.1.0.wasm"
-    ]
+  },
+  "includes": [
+    "**/*.{ts,tsx,js,jsx,cjs,mjs,json,jsonc,avsc,md,toml,css,html,vue,svelte,jinja2,yaml}",
+    "dockerfile",
+  ],
+  "excludes": [
+    "**/node_modules",
+    "**/*-lock.json",
+    "**/target",
+  ],
+  "plugins": [
+    "https://plugins.dprint.dev/typescript-0.91.1.wasm",
+    "https://plugins.dprint.dev/json-0.19.3.wasm",
+    "https://plugins.dprint.dev/markdown-0.17.1.wasm",
+    "https://plugins.dprint.dev/toml-0.6.2.wasm",
+    "https://plugins.dprint.dev/dockerfile-0.3.2.wasm",
+    "https://plugins.dprint.dev/g-plane/malva-v0.4.0.wasm",
+    "https://plugins.dprint.dev/g-plane/markup_fmt-v0.9.0.wasm",
+    "https://plugins.dprint.dev/g-plane/pretty_yaml-v0.1.0.wasm",
+  ],
 }
