@@ -34,7 +34,7 @@
     ],
   },
   "includes": [
-    "**/*.{ts,tsx,js,jsx,cjs,mjs,json,jsonc,avsc,md,toml,css,html,vue,svelte,jinja2,yaml}",
+    "**/*.{ts,tsx,js,jsx,cjs,mjs,json,jsonc,avsc,md,toml,css,html,vue,svelte,jinja2,yaml,yml}",
     "dockerfile",
   ],
   "excludes": [
