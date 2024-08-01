@@ -92,7 +92,8 @@ return {
             end
 
             local function is_file(bufnr)
-                local bt = vim.api.nvim_buf_get_option(bufnr, 'buftype')
+                local bt =
+                    vim.api.nvim_get_option_value('buftype', { buf = bufnr })
                 return bt ~= 'nofile' and bt ~= 'terminal'
             end
 

@@ -10,7 +10,7 @@ vim.api.nvim_create_autocmd('BufNewFile', {
     pattern = { '*.lua', '*.tsx', 'tests/**.py' },
     desc = 'Load skeleton when creating new file',
     callback = function(args)
-        local ft = vim.api.nvim_buf_get_option(args.buf, 'filetype')
+        local ft = vim.api.nvim_get_option_value('filetype', { buf = args.buf })
         local skeleton = skeletons[ft]
         vim.cmd('read ' .. skeleton .. ' | 1delete_')
     end,
