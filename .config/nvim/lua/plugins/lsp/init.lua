@@ -90,12 +90,8 @@ return {
                     map('n', 'gr', function()
                         require('trouble').open { mode = 'lsp_references' }
                     end)
-                    map('n', 'gR', vim.lsp.buf.references)
                     map('n', '<leader>li', vim.lsp.buf.incoming_calls)
                     map('n', '<leader>lo', vim.lsp.buf.outgoing_calls)
-                    map('n', '<leader>lt', vim.lsp.buf.document_symbol)
-                    map('n', '<leader>ls', vim.lsp.buf.document_symbol)
-                    map('n', '<leader>lS', vim.lsp.buf.workspace_symbol)
                     vim.opt.shortmess:append 'c'
                 end,
             })

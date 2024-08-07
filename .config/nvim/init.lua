@@ -529,3 +529,8 @@ cmd [[
 --         vim.cmd 'sleep 10m'
 --     end,
 -- })
+
+-- remove some default keymaps
+vim.keymap.del('n', 'grr')
+vim.keymap.del('n', 'gra')
+vim.keymap.del('n', 'grn')

@@ -644,10 +644,11 @@ return {
     { 'tversteeg/registers.nvim', lazy = true },
     {
         'olimorris/persisted.nvim',
+        enabled = false,
         event = 'VimLeavePre',
         keys = {
             {
-                '<leader>R', -- TODO: change
+                '<leader>R', -- TODO: change, clashes with treesitter rename
                 function()
                     require('persisted').load {}
                 end,
