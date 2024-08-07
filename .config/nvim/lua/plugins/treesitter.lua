@@ -97,8 +97,8 @@ return {
                     keymaps = {
                         goto_definition = 'gnd', -- mapping to go to definition of symbol under cursor
                         list_definitions = 'gnD', -- mapping to list all definitions in current file
-                        goto_next_usage = '<leader>n',
-                        goto_previous_usage = '<leader>N',
+                        goto_next_usage = '<C-n>',
+                        goto_previous_usage = '<C-p>',
                     },
                 },
             },
