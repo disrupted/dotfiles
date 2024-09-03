@@ -17,12 +17,17 @@ return {
     {
         'rebelot/heirline.nvim',
         event = 'UIEnter',
+        dependencies = { 'Zeioth/heirline-components.nvim' },
         opts = function()
+            local heirline = require 'heirline'
+            local lib = require 'heirline-components.all'
+            lib.init.subscribe_to_events()
             local conditions = require 'heirline.conditions'
             local utils = require 'heirline.utils'
 
             local colors = require('one.colors').get()
-            require('heirline').load_colors(colors)
+            heirline.load_colors(colors)
+            local lazy_require = require('utils').lazy_require
 
             local augroup =
                 vim.api.nvim_create_augroup('Heirline', { clear = true })
@@ -37,15 +42,18 @@ return {
             local Space = { provider = ' ' }
 
             local WorkDir = {
-                provider = function()
-                    local icon = '  '
-                    local cwd = vim.uv.cwd()
-                    cwd = vim.fn.fnamemodify(cwd, ':~')
+                static = { icon = '' },
+                init = function(self)
+                    self.cwd = assert(vim.uv.cwd())
+                end,
+                provider = function(self)
+                    local cwd = vim.fn.fnamemodify(self.cwd, ':~')
                     -- if not conditions.width_percent_below(#cwd, 0.25) then
                     --     cwd = vim.fn.pathshorten(cwd)
                     -- end
-                    return icon .. cwd
+                    return string.format(' %s %s', self.icon, cwd)
                 end,
+                update = { 'DirChanged' },
                 hl = {
                     fg = 'mono_1',
                     bg = 'syntax_cursor',
@@ -55,7 +63,7 @@ return {
 
             local FileNameBlock = {
                 init = function(self)
-                    self.filename = vim.api.nvim_buf_get_name(0)
+                    self.filename = vim.api.nvim_buf_get_name(self.bufnr)
                 end,
                 hl = { bold = false },
             }
@@ -71,8 +79,11 @@ return {
                             { default = true }
                         )
                 end,
+                condition = function(self)
+                    return self.icon
+                end,
                 provider = function(self)
-                    return self.icon and (self.icon .. ' ')
+                    return string.format('%s ', self.icon)
                 end,
                 -- hl = function(self)
                 --     return { fg = self.icon_color }
@@ -99,8 +110,7 @@ return {
 
             local FilePath = {
                 provider = function(self)
-                    local bufnr = vim.api.nvim_win_get_buf(0)
-                    if not is_file(bufnr) then
+                    if not is_file(self.bufnr) then
                         return ''
                     end
                     local filename = self.filename
@@ -145,14 +155,12 @@ return {
                         return vim.bo.modified
                     end,
                     provider = '',
-                    -- hl = { fg = 'green' },
                 },
                 {
                     condition = function()
                         return not vim.bo.modifiable or vim.bo.readonly
                     end,
                     provider = '',
-                    -- hl = { fg = 'orange' },
                 },
             }
 
@@ -170,18 +178,34 @@ return {
                 condition = conditions.is_git_repo,
 
                 hl = { bg = 'syntax_cursor' },
-
+                static = {
+                    icons = {
+                        added = '+',
+                        changed = '~',
+                        removed = '-',
+                        head = '',
+                    },
+                },
                 init = function(self)
-                    self.status_dict = vim.b.gitsigns_status_dict ---@diagnostic disable-line: undefined-field
-                    self.has_changes = self.status_dict.added ~= 0
-                        or self.status_dict.removed ~= 0
-                        or self.status_dict.changed ~= 0
+                    self.status = vim.b[self.bufnr].gitsigns_status_dict
+                    self.status.added = self.status.added or 0
+                    self.status.changed = self.status.changed or 0
+                    self.status.removed = self.status.removed or 0
+                    self.has_changes = self.status.added ~= 0
+                        or self.status.removed ~= 0
+                        or self.status.changed ~= 0
                 end,
 
                 {
+                    condition = function(self)
+                        return self.status.added ~= 0
+                    end,
                     provider = function(self)
-                        local count = self.status_dict.added or 0
-                        return count > 0 and ('+' .. count)
+                        return string.format(
+                            '%s%s',
+                            self.icons.added,
+                            self.status.added
+                        )
                     end,
                     hl = {
                         fg = 'hue_4',
@@ -190,9 +214,15 @@ return {
                 },
                 Space,
                 {
+                    condition = function(self)
+                        return self.status.changed ~= 0
+                    end,
                     provider = function(self)
-                        local count = self.status_dict.changed or 0
-                        return count > 0 and ('~' .. count)
+                        return string.format(
+                            '%s%s',
+                            self.icons.changed,
+                            self.status.changed
+                        )
                     end,
                     hl = {
                         fg = 'hue_6_2',
@@ -201,9 +231,15 @@ return {
                 },
                 Space,
                 {
+                    condition = function(self)
+                        return self.status.removed ~= 0
+                    end,
                     provider = function(self)
-                        local count = self.status_dict.removed or 0
-                        return count > 0 and ('-' .. count)
+                        return string.format(
+                            '%s%s',
+                            self.icons.removed,
+                            self.status.removed
+                        )
                     end,
                     hl = {
                         fg = 'hue_5',
@@ -213,7 +249,11 @@ return {
                 Space,
                 { -- git branch name
                     provider = function(self)
-                        return ' ' .. self.status_dict.head
+                        return string.format(
+                            '%s %s',
+                            self.icons.head,
+                            self.status.head
+                        )
                     end,
                     hl = { bold = false },
                 },
@@ -221,42 +261,33 @@ return {
 
             local Diagnostics = {
 
-                condition = conditions.has_diagnostics,
-
-                static = {
-                    error_icon = ' ',
-                    warn_icon = ' ',
-                    info_icon = ' ',
-                },
+                condition = function(self)
+                    return not vim.tbl_isempty(vim.diagnostic.count(self.bufnr))
+                end,
 
                 hl = { bg = 'syntax_cursor' },
 
                 init = function(self)
-                    self.errors = #vim.diagnostic.get(
-                        0,
-                        { severity = vim.diagnostic.severity.ERROR }
-                    )
-                    self.warnings = #vim.diagnostic.get(
-                        0,
-                        { severity = vim.diagnostic.severity.WARN }
-                    )
-                    self.hints = #vim.diagnostic.get(
-                        0,
-                        { severity = vim.diagnostic.severity.HINT }
-                    )
-                    self.info = #vim.diagnostic.get(
-                        0,
-                        { severity = vim.diagnostic.severity.INFO }
-                    )
+                    self.status = vim.diagnostic.count(self.bufnr)
                 end,
 
                 update = { 'DiagnosticChanged', 'BufEnter' },
 
                 {
+                    static = {
+                        severity = vim.diagnostic.severity.ERROR,
+                        icon = '',
+                    },
+                    condition = function(self)
+                        local count = self.status[self.severity]
+                        return count and count > 0
+                    end,
                     provider = function(self)
-                        -- 0 is just another output, we can decide to print it or not!
-                        return self.errors > 0
-                            and (self.error_icon .. self.errors .. ' ')
+                        return string.format(
+                            '%s %s ',
+                            self.icon,
+                            self.status[self.severity]
+                        )
                     end,
                     hl = {
                         fg = 'hue_5',
@@ -264,9 +295,20 @@ return {
                     },
                 },
                 {
+                    static = {
+                        severity = vim.diagnostic.severity.WARN,
+                        icon = '',
+                    },
+                    condition = function(self)
+                        local count = self.status[self.severity]
+                        return count and count > 0
+                    end,
                     provider = function(self)
-                        return self.warnings > 0
-                            and (self.warn_icon .. self.warnings .. ' ')
+                        return string.format(
+                            '%s %s ',
+                            self.icon,
+                            self.status[self.severity]
+                        )
                     end,
                     hl = {
                         fg = 'hue_6_2',
@@ -274,9 +316,20 @@ return {
                     },
                 },
                 {
+                    static = {
+                        severity = vim.diagnostic.severity.INFO,
+                        icon = '',
+                    },
+                    condition = function(self)
+                        local count = self.status[self.severity]
+                        return count and count > 0
+                    end,
                     provider = function(self)
-                        return self.info > 0
-                            and (self.info_icon .. self.info .. ' ')
+                        return string.format(
+                            '%s %s ',
+                            self.icon,
+                            self.status[self.severity]
+                        )
                     end,
                     hl = {
                         fg = 'hue_2',
@@ -286,7 +339,11 @@ return {
             }
 
             local Harpoon = {
-                provider = function()
+                static = { icons = { mark = 'M' } },
+                condition = function()
+                    return package.loaded['harpoon']
+                end,
+                provider = function(self)
                     local harpoon = require 'harpoon'
                     local list = harpoon:list()
 
@@ -296,53 +353,56 @@ return {
                     if not item then
                         return
                     end
-                    return 'M'
+                    return self.icons.mark
                 end,
             }
 
+            local dap = lazy_require 'dap'
             local DAPMessages = {
+                static = { icon = '' },
                 condition = function()
-                    return package.loaded['dap']
-                        and require('dap').session() ~= nil
+                    return package.loaded['dap'] and dap.session() ~= nil
                 end,
-                provider = function()
-                    return ' ' .. require('dap').status()
+                init = function(self)
+                    self.status = dap.status()
+                end,
+                provider = function(self)
+                    return string.format('%s %s', self.icon, self.status)
                 end,
             }
 
-            local neotest_ok, neotest = pcall(require, 'neotest')
+            local neotest = lazy_require 'neotest'
             local NeoTestBlock = {
                 condition = function()
-                    return neotest_ok
+                    return package.loaded['neotest']
                         and conditions.is_active()
                         and #neotest.state.adapter_ids() > 0
                 end,
                 init = function(self)
                     self.adapter_ids = neotest.state.adapter_ids()
-                    self.buffer = vim.api.nvim_get_current_buf()
                 end,
             }
             local NeoTest = {
                 condition = function(self)
                     local status = neotest.state.status_counts(
                         self.adapter_ids[1],
-                        { buffer = self.buffer }
+                        { buffer = self.bufnr }
                     )
                     return status
                 end,
                 init = function(self)
                     self.status = neotest.state.status_counts(
                         self.adapter_ids[1],
-                        { buffer = self.buffer }
+                        { buffer = self.bufnr }
                     )
                 end,
                 static = {
                     icon = {
-                        total = ' ',
-                        passed = ' ',
-                        failed = ' ',
-                        skipped = ' ',
-                        running = ' ',
+                        total = '',
+                        passed = '',
+                        failed = '',
+                        skipped = '',
+                        running = '',
                     },
                 },
                 {
@@ -371,7 +431,7 @@ return {
                             end,
                             provider = function(self)
                                 return string.format(
-                                    '%s%s ',
+                                    '%s %s ',
                                     self.icon.total,
                                     self.status.total
                                 )
@@ -383,7 +443,7 @@ return {
                             end,
                             provider = function(self)
                                 return string.format(
-                                    '%s%s ',
+                                    '%s %s ',
                                     self.icon.running,
                                     self.status.running
                                 )
@@ -399,7 +459,7 @@ return {
                             end,
                             provider = function(self)
                                 return string.format(
-                                    '%s%s ',
+                                    '%s %s ',
                                     self.icon.passed,
                                     self.status.passed
                                 )
@@ -415,7 +475,7 @@ return {
                             end,
                             provider = function(self)
                                 return string.format(
-                                    '%s%s ',
+                                    '%s %s ',
                                     self.icon.failed,
                                     self.status.failed
                                 )
@@ -431,7 +491,7 @@ return {
                             end,
                             provider = function(self)
                                 return string.format(
-                                    '%s%s ',
+                                    '%s %s ',
                                     self.icon.skipped,
                                     self.status.skipped
                                 )
@@ -456,8 +516,11 @@ return {
                 condition = function(self)
                     return self.register ~= ''
                 end,
+                static = { icon = '' },
                 {
-                    provider = '  ',
+                    provider = function(self)
+                        return string.format(' %s ', self.icon)
+                    end,
                     hl = { fg = colors.hue_5 },
                 },
                 {
@@ -472,28 +535,43 @@ return {
             MacroRecordingBlock =
                 utils.insert(MacroRecordingBlock, MacroRecording)
 
-            local StatusLine = {
-                MacroRecordingBlock,
-                WorkDir,
-                Space,
-                Diagnostics,
-                Align,
-                Align,
-                DAPMessages,
-                NeoTestBlock,
-                Space,
-                Git,
-            }
-
-            local WinBar = {
-                Harpoon,
-                Space,
-                FileNameBlock,
-            }
-
             return {
-                statusline = StatusLine,
-                winbar = WinBar,
+                statusline = {
+                    init = function(self)
+                        self.bufnr = vim.api.nvim_get_current_buf()
+                    end,
+                    MacroRecordingBlock,
+                    WorkDir,
+                    Space,
+                    Diagnostics,
+                    Align,
+                    Align,
+                    DAPMessages,
+                    NeoTestBlock,
+                    Space,
+                    Git,
+                    -- lib.component.compiler_state(),
+                },
+                winbar = {
+                    init = function(self)
+                        self.bufnr = vim.api.nvim_get_current_buf()
+                    end,
+                    Harpoon,
+                    Space,
+                    FileNameBlock,
+                    -- lib.component.breadcrumbs(),
+                },
+                statuscolumn = {
+                    lib.component.foldcolumn(),
+                    lib.component.fill(),
+                    lib.component.numbercolumn(),
+                    lib.component.signcolumn(),
+                },
+                -- tabline = {
+                --     lib.component.tabline_conditional_padding(),
+                --     lib.component.tabline_buffers(),
+                --     lib.component.tabline_tabpages(),
+                -- },
                 opts = {
                     disable_winbar_cb = function(args)
                         return conditions.buffer_matches({
@@ -520,6 +598,8 @@ return {
         'lukas-reineke/indent-blankline.nvim',
         main = 'ibl',
         event = 'BufWinEnter',
+        ---@module "ibl"
+        ---@type ibl.config
         opts = {
             indent = { char = '▏' },
             exclude = {
