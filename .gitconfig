@@ -76,13 +76,16 @@
     commitGraph = true
 
 [diff]
-    tool = Kaleidoscope
+    tool = Kaleidoscope # or diffsitter
 
 [difftool]
     prompt = false
 
 [difftool "Kaleidoscope"]
-    cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
+    cmd = ksdiff --partial-changeset --relative-path "$MERGED" -- "$LOCAL" "$REMOTE"
+
+[difftool "diffsitter"]
+    cmd = diffsitter "$LOCAL" "$REMOTE"
 
 [merge]
     tool = Kaleidoscope
