@@ -645,17 +645,29 @@ return {
     {
         'olimorris/persisted.nvim',
         enabled = false,
-        event = 'VimLeavePre',
-        keys = {
-            {
-                '<leader>R', -- TODO: change, clashes with treesitter rename
-                function()
-                    require('persisted').load {}
-                end,
+        lazy = false,
+        opts = { autoload = true },
+    },
+    {
+        'jedrzejboczar/possession.nvim',
+        enabled = true,
+        event = 'UIEnter',
+        opts = {
+            -- autoload = true,
+            commands = {
+                save = 'SessionSave',
+                load = 'SessionLoad',
+                save_cwd = 'SessionSaveCwd',
+                load_cwd = 'SessionLoadCwd',
+                rename = 'SessionRename',
+                close = 'SessionClose',
+                delete = 'SessionDelete',
+                show = 'SessionShow',
+                list = 'SessionList',
+                list_cwd = 'SessionListCwd',
+                migrate = 'SessionMigrate',
             },
         },
-        config = true,
-        enable = false,
     },
     {
         'famiu/bufdelete.nvim',
