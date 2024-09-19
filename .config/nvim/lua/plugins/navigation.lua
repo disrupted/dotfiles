@@ -32,6 +32,7 @@ return {
     },
     {
         'ggandor/lightspeed.nvim',
+        enabled = false,
         lazy = true,
         keys = {
             -- { 's', mode = { 'n', 'x' } },
@@ -52,10 +53,110 @@ return {
     },
     {
         'ggandor/leap.nvim',
+        enabled = false,
         event = 'VimEnter',
         config = function()
             require('leap').set_default_keymaps()
         end,
-        enabled = false,
+    },
+    {
+        'folke/flash.nvim',
+        ---@type Flash.Config
+        opts = {},
+        keys = {
+            {
+                's',
+                mode = { 'n', 'x', 'o' },
+                function()
+                    require('flash').jump()
+                end,
+                desc = 'Flash',
+            },
+            {
+                'S',
+                mode = { 'n', 'x', 'o' },
+                function()
+                    require('flash').treesitter()
+                end,
+                desc = 'Flash Treesitter',
+            },
+            {
+                'r',
+                mode = 'o',
+                function()
+                    require('flash').remote()
+                end,
+                desc = 'Remote Flash',
+            },
+            {
+                'R',
+                mode = { 'o', 'x' },
+                function()
+                    require('flash').treesitter_search()
+                end,
+                desc = 'Treesitter Search',
+            },
+            {
+                '<c-s>',
+                mode = { 'c' },
+                function()
+                    require('flash').toggle()
+                end,
+                desc = 'Toggle Flash Search',
+            },
+        },
+    },
+    {
+        -- move through camelCase, snake_case words better
+        'chrisgrieser/nvim-spider',
+        keys = {
+            {
+                'w',
+                function()
+                    require('spider').motion 'w'
+                end,
+                desc = 'Spider-w',
+                -- might have to use Ex commands for dot-repeat to work
+                -- '<cmd>lua require(\'spider\').motion(\'w\')<CR>',
+                mode = { 'n', 'o', 'x' },
+            },
+            {
+                'e',
+                function()
+                    require('spider').motion 'e'
+                end,
+                desc = 'Spider-e',
+                mode = { 'n', 'o', 'x' },
+            },
+            {
+                'b',
+                function()
+                    require('spider').motion 'b'
+                end,
+                desc = 'Spider-b',
+                mode = { 'n', 'o', 'x' },
+            },
+            {
+                'ge',
+                function()
+                    require('spider').motion 'ge'
+                end,
+                desc = 'Spider-ge',
+                mode = { 'n', 'o', 'x' },
+            },
+        },
+        opts = {
+            skipInsignificantPunctuation = false,
+        },
+    },
+    {
+        'SmiteshP/nvim-navbuddy',
+        cmd = 'Navbuddy',
+        keys = { { '<leader>n', '<cmd>Navbuddy<cr>' } },
+        dependencies = {
+            'SmiteshP/nvim-navic',
+            'MunifTanjim/nui.nvim',
+        },
+        opts = { lsp = { auto_attach = true } },
     },
 }
