@@ -82,7 +82,10 @@ return {
     },
     {
         'altermo/ultimate-autopair.nvim',
-        event = { 'InsertEnter', 'CmdlineEnter' },
+        event = {
+            'InsertEnter',
+            -- 'CmdlineEnter'
+        },
         branch = 'v0.6',
         opts = {
             cmap = false,
@@ -111,6 +114,7 @@ return {
                 enable = true,
                 map = '<Tab>',
                 hopout = true,
+                do_nothing_if_fail = false,
             },
             { '\\(', '\\)' },
             { '\\[', '\\]' },
@@ -339,7 +343,7 @@ return {
                             '-vv',
                             -- '--color=no',
                         },
-                        pytest_discover_instances = true, -- experimental, support parametrized test cases
+                        -- pytest_discover_instances = true, -- experimental, support parametrized test cases
                     },
                     require 'neotest-rust',
                     require 'neotest-jest' {
@@ -369,7 +373,7 @@ return {
         cmd = 'Neogen',
         keys = {
             {
-                '<leader>nf',
+                '<leader>fd',
                 function()
                     require('neogen').generate {}
                 end,
@@ -395,15 +399,34 @@ return {
     { 'hkupty/iron.nvim', enabled = false },
     {
         'stevearc/overseer.nvim',
-        cmd = { 'OverseerRun', 'OverseerToggle' },
+        cmd = {
+            'OverseerRun',
+            'OverseerToggle',
+            'CompilerOpen',
+            'CompilerToggleResults',
+            'CompilerRedo',
+        },
         opts = {
             task_list = {
                 bindings = {
                     ['<C-l>'] = false,
                     ['<C-h>'] = false,
                 },
+                direction = 'bottom',
+                min_height = 25,
+                max_height = 25,
+                default_detail = 1,
             },
         },
+    },
+    {
+        'Zeioth/compiler.nvim',
+        cmd = { 'CompilerOpen', 'CompilerToggleResults', 'CompilerRedo' },
+        dependencies = {
+            'stevearc/overseer.nvim',
+            'nvim-telescope/telescope.nvim',
+        },
+        opts = {},
     },
     {
         'folke/todo-comments.nvim',
