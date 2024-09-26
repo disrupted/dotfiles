@@ -225,6 +225,33 @@ return {
                     end
                 end,
             })
+
+            local function periodic_refresh_semantic_tokens()
+                vim.notify(
+                    'periodic refresh semantic tokens',
+                    vim.log.levels.DEBUG
+                )
+                vim.lsp.semantic_tokens.force_refresh()
+                vim.defer_fn(periodic_refresh_semantic_tokens, 30000)
+            end
+
+            local function debounce(ms, fn)
+                local timer = assert(vim.uv.new_timer())
+                return function(...)
+                    local argv = { ... }
+                    timer:start(ms, 0, function()
+                        timer:stop()
+                        vim.schedule_wrap(fn)(unpack(argv))
+                    end)
+                end
+            end
+
+            vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave' }, {
+                callback = debounce(1000, function()
+                    vim.notify('refresh semantic tokens', vim.log.levels.DEBUG)
+                    vim.lsp.semantic_tokens.force_refresh()
+                end),
+            })
         end,
         dependencies = {
             {
