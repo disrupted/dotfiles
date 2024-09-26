@@ -66,7 +66,14 @@ return {
                     col = 1,
                 },
                 trouble = false,
-                _on_attach_pre = function(_, callback)
+                _on_attach_pre = function(bufnr, callback)
+                    local ft = vim.api.nvim_get_option_value(
+                        'filetype',
+                        { buf = bufnr }
+                    )
+                    if ft and vim.startswith(ft, 'Neogit') then
+                        return callback()
+                    end
                     require('gitsigns-yadm').yadm_signs(callback)
                 end,
                 on_attach = function(bufnr)
