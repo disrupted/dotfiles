@@ -551,12 +551,12 @@ return {
         'neovim-plugin/lightbulb.nvim',
         event = 'LspAttach',
         opts = {
-                    sign = { enabled = false, priority = 99 },
-                    virtual_text = {
-                        enabled = true,
-                        text = '',
-                        hl_mode = 'combine',
-                    },
+            sign = { enabled = false, priority = 99 },
+            virtual_text = {
+                enabled = true,
+                text = '',
+                hl_mode = 'combine',
+            },
         },
     },
     {

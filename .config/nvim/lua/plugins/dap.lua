@@ -168,6 +168,9 @@ return {
                     },
                     controls = {
                         enabled = true,
+                        icons = {
+                            terminate = '■',
+                        },
                     },
                     render = {
                         max_type_length = nil,

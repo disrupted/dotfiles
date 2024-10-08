@@ -100,31 +100,31 @@ return {
                     { name = 'buffer', keyword_length = 4 },
                     { name = 'path' },
                 }),
-                sorting = {
-                    comparators = {
-                        cmp.config.compare.offset,
-                        cmp.config.compare.exact,
-                        cmp.config.compare.score,
-                        -- function(entry1, entry2)
-                        --     local entry1_kind = require('cmp.types').lsp.CompletionItemKind[entry1:get_kind()]
-                        --         == 'Snippet'
-                        --     local entry2_kind = require('cmp.types').lsp.CompletionItemKind[entry2:get_kind()]
-                        --         == 'Snippet'
-                        --     print(entry1_kind)
-                        --     print(entry2_kind)
-                        --     -- if entry1_kind and not entry2_kind then
-                        --     --     return false
-                        --     -- else
-                        --     --     return true
-                        --     -- end
-                        --     return true
-                        -- end,
-                        -- cmp.config.compare.kind,
-                        cmp.config.compare.sort_text,
-                        cmp.config.compare.length,
-                        cmp.config.compare.order,
-                    },
-                },
+                -- sorting = {
+                --     comparators = {
+                --         cmp.config.compare.offset,
+                --         cmp.config.compare.exact,
+                --         cmp.config.compare.score,
+                --         -- function(entry1, entry2)
+                --         --     local entry1_kind = require('cmp.types').lsp.CompletionItemKind[entry1:get_kind()]
+                --         --         == 'Snippet'
+                --         --     local entry2_kind = require('cmp.types').lsp.CompletionItemKind[entry2:get_kind()]
+                --         --         == 'Snippet'
+                --         --     print(entry1_kind)
+                --         --     print(entry2_kind)
+                --         --     -- if entry1_kind and not entry2_kind then
+                --         --     --     return false
+                --         --     -- else
+                --         --     --     return true
+                --         --     -- end
+                --         --     return true
+                --         -- end,
+                --         -- cmp.config.compare.kind,
+                --         cmp.config.compare.sort_text,
+                --         cmp.config.compare.length,
+                --         cmp.config.compare.order,
+                --     },
+                -- },
                 formatting = {
                     format = function(entry, vim_item)
                         -- source name
@@ -142,7 +142,7 @@ return {
                         return vim_item
                     end,
                 },
-                experimental = { ghost_text = true },
+                -- experimental = { ghost_text = true },
             }
         end,
         dependencies = {

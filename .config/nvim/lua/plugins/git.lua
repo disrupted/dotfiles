@@ -53,7 +53,7 @@ return {
                     delay = 1000,
                     ignore_whitespace = true,
                 },
-                sign_priority = 6,
+                sign_priority = 9999,
                 update_debounce = 100,
                 status_formatter = nil, -- Use default
                 max_file_length = 40000,
@@ -122,24 +122,24 @@ return {
                     -- Text object
                     map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
                 end,
-                _signs_staged_enable = true,
-                _signs_staged = {
-                    add = {
-                        text = '┃',
-                    },
-                    change = {
-                        text = '┃',
-                    },
-                    delete = {
-                        text = '▁',
-                    },
-                    topdelete = {
-                        text = '▔',
-                    },
-                    changedelete = {
-                        text = '~',
-                    },
-                },
+                -- _signs_staged_enable = true,
+                -- _signs_staged = {
+                --     add = {
+                --         text = '┃',
+                --     },
+                --     change = {
+                --         text = '┃',
+                --     },
+                --     delete = {
+                --         text = '▁',
+                --     },
+                --     topdelete = {
+                --         text = '▔',
+                --     },
+                --     changedelete = {
+                --         text = '~',
+                --     },
+                -- },
             }
         end,
     },
