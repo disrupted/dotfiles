@@ -530,7 +530,23 @@ cmd [[
 --     end,
 -- })
 
+local function keymap_exists(mode, key)
+    local mappings = vim.api.nvim_get_keymap(mode)
+
+    local lhs_mappings = vim.tbl_map(function(mapping)
+        return mapping.lhs
+    end, mappings)
+
+    return vim.tbl_contains(lhs_mappings, key)
+end
+
 -- remove some default keymaps
-vim.keymap.del('n', 'grr')
-vim.keymap.del('n', 'gra')
-vim.keymap.del('n', 'grn')
+if keymap_exists('n', 'grr') then
+    vim.keymap.del('n', 'grr')
+end
+if keymap_exists('n', 'gra') then
+    vim.keymap.del('n', 'gra')
+end
+if keymap_exists('n', 'grn') then
+    vim.keymap.del('n', 'grn')
+end
