@@ -61,12 +61,13 @@ return {
     },
     {
         'folke/flash.nvim',
+        ---@module 'flash.config'
         ---@type Flash.Config
         opts = {},
         keys = {
             {
                 's',
-                mode = { 'n', 'x', 'o' },
+                mode = { 'n', 'o' },
                 function()
                     require('flash').jump()
                 end,
@@ -151,8 +152,14 @@ return {
     },
     {
         'SmiteshP/nvim-navbuddy',
-        cmd = 'Navbuddy',
-        keys = { { '<leader>n', '<cmd>Navbuddy<cr>' } },
+        keys = {
+            {
+                '<leader>n',
+                function()
+                    require('nvim-navbuddy').open()
+                end,
+            },
+        },
         dependencies = {
             'SmiteshP/nvim-navic',
             'MunifTanjim/nui.nvim',
