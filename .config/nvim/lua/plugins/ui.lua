@@ -598,7 +598,7 @@ return {
         'lukas-reineke/indent-blankline.nvim',
         main = 'ibl',
         event = 'BufWinEnter',
-        ---@module "ibl"
+        ---@module 'ibl'
         ---@type ibl.config
         opts = {
             indent = { char = '▏' },

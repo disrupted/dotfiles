@@ -256,15 +256,46 @@ return {
                 end),
             })
         end,
+        config = function(_, opts)
+            local lspconfig = require 'lspconfig'
+            for server, config in pairs(opts.servers or {}) do
+                config.capabilities = require('blink.cmp').get_lsp_capabilities(
+                    config.capabilities
+                )
+                lspconfig[server].setup(config)
+            end
+        end,
         dependencies = {
+            { 'saghen/blink.cmp' },
             {
                 'folke/neoconf.nvim',
                 cmd = 'Neoconf',
                 config = false,
                 dependencies = { 'nvim-lspconfig' },
             },
-            { 'folke/neodev.nvim', opts = {} },
-            'hrsh7th/cmp-nvim-lsp',
+            {
+                'folke/lazydev.nvim',
+                ft = 'lua',
+                opts = {
+                    library = {
+                        'luvit-meta/library',
+                    },
+                },
+                dependencies = {
+                    { 'Bilal2453/luvit-meta', lazy = true }, -- optional `vim.uv` typings
+                    {
+                        'hrsh7th/nvim-cmp', -- optional completion source for require statements and module annotations
+                        opts = function(_, opts)
+                            opts.sources = opts.sources or {}
+                            table.insert(opts.sources, {
+                                name = 'lazydev',
+                                group_index = 0, -- set group index to 0 to skip loading LuaLS completions
+                            })
+                        end,
+                    },
+                },
+            },
+            -- 'hrsh7th/cmp-nvim-lsp', -- NOTE: disabled because nvim-cmp is disabled
             'mason.nvim',
             {
                 'williamboman/mason-lspconfig.nvim',
