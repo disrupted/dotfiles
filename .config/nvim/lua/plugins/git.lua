@@ -245,11 +245,15 @@ return {
         opts = { date_format = '%Y %b %d %H:%M' },
     },
     {
-        'topaxi/gh-actions.nvim',
-        cmd = 'GhActions',
+        'topaxi/pipeline.nvim',
+        cmd = 'Pipeline',
+        keys = {
+            { '<leader>ci', '<cmd>Pipeline<cr>', desc = 'Open pipeline.nvim' },
+        },
         build = 'make',
         dependencies = { 'nvim-lua/plenary.nvim', 'MunifTanjim/nui.nvim' },
-        config = true,
+        ---@type pipeline.Config
+        opts = {},
     },
     {
         'harrisoncramer/gitlab.nvim',
