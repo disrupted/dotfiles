@@ -231,7 +231,10 @@ return {
                     'periodic refresh semantic tokens',
                     vim.log.levels.DEBUG
                 )
-                vim.lsp.semantic_tokens.force_refresh()
+                if not vim.api.nvim_buf_is_valid(0) then
+                    return
+                end
+                vim.lsp.semantic_tokens.force_refresh(0)
                 vim.defer_fn(periodic_refresh_semantic_tokens, 30000)
             end
 
@@ -249,7 +252,7 @@ return {
             vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave' }, {
                 callback = debounce(1000, function()
                     vim.notify('refresh semantic tokens', vim.log.levels.DEBUG)
-                    vim.lsp.semantic_tokens.force_refresh()
+                    vim.lsp.semantic_tokens.force_refresh(0)
                 end),
             })
         end,
