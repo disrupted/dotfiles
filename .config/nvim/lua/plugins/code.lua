@@ -232,7 +232,7 @@ return {
                 function()
                     require('neotest').run.run {
                         suite = false,
-                        env = {},
+                        env = { REUSE_CONTAINERS = '1' },
                     }
                 end,
                 desc = 'test nearest function',
@@ -240,7 +240,11 @@ return {
             {
                 '<leader>tb',
                 function()
-                    require('neotest').run.run(vim.api.nvim_buf_get_name(0))
+                    require('neotest').run.run {
+                        vim.api.nvim_buf_get_name(0),
+                        suite = false,
+                        env = { REUSE_CONTAINERS = '1' },
+                    }
                 end,
                 desc = 'test entire file/buffer',
             },
@@ -248,8 +252,21 @@ return {
                 '<leader>tu',
                 function()
                     require('neotest').run.run {
+                        suite = false,
+                        env = { REUSE_CONTAINERS = '1' },
+                        extra_args = { '--snapshot-update' },
+                    }
+                end,
+                ft = 'python',
+                desc = 'update snapshot for nearest function',
+            },
+            {
+                '<leader>tU',
+                function()
+                    require('neotest').run.run {
                         vim.api.nvim_buf_get_name(0),
-                        suite = true,
+                        suite = false,
+                        env = { REUSE_CONTAINERS = '1' },
                         extra_args = { '--snapshot-update' },
                     }
                 end,
@@ -264,6 +281,7 @@ return {
                     do
                         require('neotest').run.run {
                             suite = true,
+                            env = { REUSE_CONTAINERS = '1' },
                             adapter = adapter_id,
                         }
                     end
@@ -294,7 +312,11 @@ return {
             {
                 '<leader>td',
                 function()
-                    require('neotest').run.run { strategy = 'dap', suite = false }
+                    require('neotest').run.run {
+                        strategy = 'dap',
+                        suite = false,
+                        env = { REUSE_CONTAINERS = '1' },
+                    }
                 end,
                 desc = 'debug nearest function',
             },
@@ -330,6 +352,8 @@ return {
                 },
             },
         },
+        ---@module 'neotest.config'
+        ---@type fun(): neotest.CoreConfig
         opts = function()
             return {
                 adapters = {
