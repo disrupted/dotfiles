@@ -4,3 +4,7 @@
 
 [commit]
     gpgsign = false
+
+[url "git@github.com:"]
+    # Use SSH for GitHub instead of HTTPS
+    insteadOf = https://github.com/
