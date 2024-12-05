@@ -315,7 +315,7 @@ return {
                         'texlab',
                         'vtsls',
                         'denols',
-                        'tsserver',
+                        'ts_ls',
                         'eslint',
                         'vale_ls',
                         'terraformls',
@@ -450,8 +450,8 @@ return {
                                 },
                             }
                         end,
-                        ['tsserver'] = function()
-                            require('lspconfig').tsserver.setup {
+                        ['ts_ls'] = function()
+                            require('lspconfig').ts_ls.setup {
                                 autostart = false,
                                 root_dir = require('lspconfig.util').root_pattern 'package.json',
                                 commands = {
