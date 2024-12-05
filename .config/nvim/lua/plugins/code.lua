@@ -278,12 +278,12 @@ return {
                 '<leader>ta',
                 function()
                     for _, adapter_id in
-                        ipairs(require('neotest').run.adapters())
+                        ipairs(require('neotest').state.adapter_ids())
                     do
                         require('neotest').run.run {
                             suite = true,
                             env = { REUSE_CONTAINERS = '1' },
-                            adapter = adapter_id,
+                            adapter_id = adapter_id,
                         }
                     end
                 end,
