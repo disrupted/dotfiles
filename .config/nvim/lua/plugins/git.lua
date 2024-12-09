@@ -71,13 +71,6 @@ return {
                         -- disable YADM if inside Git repo
                         return callback()
                     end
-                    local ft = vim.api.nvim_get_option_value(
-                        'filetype',
-                        { buf = bufnr }
-                    )
-                    if ft and vim.startswith(ft, 'Neogit') then
-                        return callback()
-                    end
                     require('gitsigns-yadm').yadm_signs(callback)
                 end,
                 on_attach = function(bufnr)
