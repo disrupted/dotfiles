@@ -2,12 +2,48 @@ return {
     {
         'saghen/blink.cmp',
         lazy = false, -- lazy loading handled internally
-        -- optional: provides snippets for the snippet source
-        -- dependencies = 'rafamadriz/friendly-snippets',
+        dependencies = {
+            -- { 'rafamadriz/friendly-snippets' },
+            {
+                'saghen/blink.compat', -- compatibility layer with nvim-cmp sources
+                version = '*',
+                lazy = true,
+                opts = {},
+            },
+            {
+                'petertriho/cmp-git',
+                opts = {
+                    filetypes = {
+                        'gitcommit',
+                        'octo',
+                        'markdown', -- for gh & glab CLI
+                    },
+                },
+            },
+        },
         version = 'v0.*',
         ---@module 'blink.cmp'
         ---@type blink.cmp.Config
         opts = {
+            sources = {
+                completion = {
+                    enabled_providers = {
+                        'lsp',
+                        'path',
+                        'snippets',
+                        'buffer',
+                        'git',
+                    },
+                },
+                providers = {
+                    git = {
+                        name = 'git',
+                        module = 'blink.compat.source',
+                        score_offset = 3,
+                        opts = {},
+                    },
+                },
+            },
             trigger = { signature_help = { enabled = true } },
             highlight = {
                 -- sets the fallback highlight groups to nvim-cmp's highlight groups
