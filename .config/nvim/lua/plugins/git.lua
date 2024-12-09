@@ -67,6 +67,10 @@ return {
                 },
                 trouble = false,
                 _on_attach_pre = function(bufnr, callback)
+                    if vim.uv.fs_stat '.git' then
+                        -- disable YADM if inside Git repo
+                        return callback()
+                    end
                     local ft = vim.api.nvim_get_option_value(
                         'filetype',
                         { buf = bufnr }
