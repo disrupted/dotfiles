@@ -466,7 +466,10 @@ vim.keymap.set('n', '[[', '<cmd>tabprevious<CR>')
 -- Commands {{{1
 -----------------------------------------------------------------------------//
 
-command('TabDir', 'tcd %:p:h', {})
+command('Cclear', 'cexpr []', { desc = 'clear QuickFix list' })
+command('TabDir', 'tcd %:p:h', {
+    desc = 'change working directory of current tab to the directory of the currently open file',
+})
 
 -----------------------------------------------------------------------------//
 -- TabLine {{{1
