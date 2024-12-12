@@ -21,9 +21,8 @@ vim.g.mapleader = ' ' -- set leader to space
 vim.g.maplocalleader = ','
 
 require('lazy').setup 'plugins'
-
 require 'conf.diagnostics'
-
+vim.o.exrc = true
 -----------------------------------------------------------------------------//
 -- Utils {{{1
 -----------------------------------------------------------------------------//

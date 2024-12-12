@@ -276,6 +276,7 @@ return {
                 desc = 'Copy git permlink to clipboard',
             },
         },
-        config = true,
+        ---@type gitlinker.Options
+        opts = {},
     },
 }
