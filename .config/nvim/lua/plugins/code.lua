@@ -432,6 +432,7 @@ return {
             'CompilerRedo',
         },
         opts = {
+            templates = { 'builtin', 'user.poetry' },
             task_list = {
                 bindings = {
                     ['<C-l>'] = false,
