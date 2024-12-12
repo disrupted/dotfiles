@@ -132,14 +132,10 @@ return {
                     goto_next_start = {
                         [']f'] = '@function.outer',
                         [']C'] = '@class.outer',
-                        ['<down>'] = '@function.outer',
-                        ['<right>'] = '@class.outer',
                     },
                     goto_previous_start = {
                         ['[f'] = '@function.outer',
                         ['[C'] = '@class.outer',
-                        ['<up>'] = '@function.outer',
-                        ['<left>'] = '@class.outer',
                     },
                 },
                 swap = {

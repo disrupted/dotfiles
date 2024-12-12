@@ -166,4 +166,39 @@ return {
         },
         opts = { lsp = { auto_attach = true } },
     },
+    {
+        'aaronik/treewalker.nvim',
+        cmd = 'Treewalker',
+        keys = {
+            {
+                '<up>',
+                function()
+                    require('treewalker').move_up()
+                end,
+                desc = 'Up to prev neighbor node',
+            },
+            {
+                '<down>',
+                function()
+                    require('treewalker').move_down()
+                end,
+                desc = 'Down to next neighbor node',
+            },
+            {
+                '<left>',
+                function()
+                    require('treewalker').move_out()
+                end,
+                desc = 'Prev good child node',
+            },
+            {
+                '<right>',
+                function()
+                    require('treewalker').move_in()
+                end,
+                desc = 'Next good child node',
+            },
+        },
+        opts = {},
+    },
 }
