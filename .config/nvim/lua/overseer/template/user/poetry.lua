@@ -19,11 +19,13 @@ local function is_poetry_pyproject()
 
     local ts_query = vim.treesitter.query.parse(parser:lang(), query)
 
-    for _, match in ts_query:iter_matches(tree:root(), buf) do
-        local first_node = match[1] -- The first capture group (dotted_key)
-        local contents = vim.treesitter.get_node_text(first_node, buf)
-        if contents == 'tool.poetry' then
-            return true
+    for _, matches in ts_query:iter_matches(tree:root(), buf) do
+        for _, match in pairs(matches) do
+            local node = match[1]
+            local contents = vim.treesitter.get_node_text(node, buf)
+            if contents == 'tool.poetry' then
+                return true
+            end
         end
     end
 
@@ -51,8 +53,9 @@ return {
         filetype = { 'toml' },
         callback = function(search)
             local fname = vim.fn.expand '%:t'
-            return fname == 'pyproject.toml' and is_poetry_installed()
-            -- and is_poetry_pyproject() -- FIXME: error on latest nightly
+            return fname == 'pyproject.toml'
+                and is_poetry_installed()
+                and is_poetry_pyproject()
         end,
     },
 }
