@@ -338,9 +338,10 @@ return {
                                     'yaml.gha',
                                 },
                                 root_dir = function(filename)
-                                    return require('lspconfig.util').find_git_ancestor(
-                                        filename
-                                    ) or vim.uv.cwd()
+                                    local parent_dir =
+                                        assert(vim.fs.dirname(filename))
+                                    return vim.fs.root(parent_dir, '.git')
+                                        or vim.uv.cwd()
                                 end,
                                 settings = {
                                     yaml = {
@@ -507,10 +508,6 @@ return {
                         ['denols'] = function()
                             require('lspconfig').denols.setup {
                                 autostart = false,
-                                root_dir = require('lspconfig.util').root_pattern(
-                                    'deno.json',
-                                    'deno.jsonc'
-                                ),
                                 filetypes = {
                                     'javascript',
                                     'javascriptreact',
