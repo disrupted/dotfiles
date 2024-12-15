@@ -67,6 +67,9 @@ return {
                 },
                 trouble = false,
                 _on_attach_pre = function(bufnr, callback)
+                    if vim.bo[bufnr].filetype == 'gitcommit' then
+                        return -- do not attach to YADM commit buffer
+                    end
                     if vim.uv.fs_stat '.git' then
                         -- disable YADM if inside Git repo
                         return callback()
