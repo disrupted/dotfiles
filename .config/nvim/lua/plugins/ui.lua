@@ -552,15 +552,16 @@ return {
                     Git,
                     -- lib.component.compiler_state(),
                 },
-                winbar = {
-                    init = function(self)
-                        self.bufnr = vim.api.nvim_get_current_buf()
-                    end,
-                    Harpoon,
-                    Space,
-                    FileNameBlock,
-                    -- lib.component.breadcrumbs(),
-                },
+                -- NOTE: disabled in favor of dropbar.nvim
+                -- winbar = {
+                --     init = function(self)
+                --         self.bufnr = vim.api.nvim_get_current_buf()
+                --     end,
+                --     Harpoon,
+                --     Space,
+                --     FileNameBlock,
+                --     -- lib.component.breadcrumbs(), -- requires aerial.nvim
+                -- },
                 statuscolumn = {
                     lib.component.foldcolumn(),
                     lib.component.fill(),
@@ -592,6 +593,41 @@ return {
                 },
             }
         end,
+    },
+    {
+        'Bekaboo/dropbar.nvim',
+        event = 'VeryLazy',
+        keys = {
+            {
+                '<leader>;',
+                function()
+                    require('dropbar.api').pick()
+                end,
+                desc = 'Pick symbols in winbar',
+            },
+        },
+        opts = {
+            bar = {
+                ---@type boolean|fun(buf: integer, win: integer, info: table?): boolean
+                enable = function(buf, win, _)
+                    return vim.api.nvim_buf_is_valid(buf)
+                        and vim.api.nvim_win_is_valid(win)
+                        and vim.bo[buf].filetype ~= 'gitcommit'
+                        and vim.wo[win].winbar == ''
+                        and (
+                            (
+                                    pcall(
+                                        vim.treesitter.get_parser,
+                                        buf,
+                                        vim.bo[buf].ft
+                                    )
+                                )
+                                and true
+                            or false
+                        )
+                end,
+            },
+        },
     },
     { 'kyazdani42/nvim-web-devicons', lazy = true },
     {
