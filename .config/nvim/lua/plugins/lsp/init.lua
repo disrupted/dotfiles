@@ -270,8 +270,7 @@ return {
             {
                 'folke/neoconf.nvim',
                 cmd = 'Neoconf',
-                config = false,
-                dependencies = { 'nvim-lspconfig' },
+                opts = {},
             },
             {
                 'folke/lazydev.nvim',
@@ -315,7 +314,6 @@ return {
                         'texlab',
                         'vtsls',
                         'denols',
-                        'ts_ls',
                         'eslint',
                         'vale_ls',
                         'terraformls',
@@ -378,6 +376,13 @@ return {
                         ['pylyzer'] = function() end, -- disable
                         ['vale_ls'] = function() end, -- disable
                         ['rust_analyzer'] = function() end, -- use rustaceanvim instead
+                        ['ruff'] = function()
+                            -- require('lspconfig').ruff.setup {
+                            --     handlers = {
+                            --         ['textDocument/codeAction'] = function() end,
+                            --     },
+                            -- }
+                        end,
                         ['dockerls'] = function()
                             require('lspconfig').dockerls.setup {
                                 settings = {
@@ -393,7 +398,35 @@ return {
                         end,
                         ['jsonls'] = function()
                             require('lspconfig').jsonls.setup {
-                                filetypes = { 'json', 'jsonc' },
+                                init_options = {
+                                    provideFormatter = false,
+                                },
+                                handlers = {
+                                    ['textDocument/publishDiagnostics'] = function(
+                                        err,
+                                        result,
+                                        ctx,
+                                        config
+                                    )
+                                        result.diagnostics = vim.tbl_filter(
+                                            function(diagnostic)
+                                                -- disable diagnostics for trailing comma in JSONC
+                                                if diagnostic.code == 519 then
+                                                    return false
+                                                end
+
+                                                return true
+                                            end,
+                                            result.diagnostics
+                                        )
+                                        vim.lsp.handlers['textDocument/publishDiagnostics'](
+                                            err,
+                                            result,
+                                            ctx,
+                                            config
+                                        )
+                                    end,
+                                },
                                 settings = {
                                     json = {
                                         schemas = {
@@ -446,28 +479,6 @@ return {
                                             documentation = true,
                                             references = true,
                                         },
-                                    },
-                                },
-                            }
-                        end,
-                        ['ts_ls'] = function()
-                            require('lspconfig').ts_ls.setup {
-                                autostart = false,
-                                root_dir = require('lspconfig.util').root_pattern 'package.json',
-                                commands = {
-                                    OrganizeImports = {
-                                        function()
-                                            local params = {
-                                                command = '_typescript.organizeImports',
-                                                arguments = {
-                                                    vim.api.nvim_buf_get_name(
-                                                        0
-                                                    ),
-                                                },
-                                                title = '',
-                                            }
-                                            vim.lsp.buf.execute_command(params)
-                                        end,
                                     },
                                 },
                             }
@@ -734,7 +745,16 @@ return {
             conform.setup(opts)
 
             conform.formatters.stylua = {
-                require_cwd = true,
+                -- require_cwd = true,
+                prepend_args = function(self, ctx)
+                    if not self:cwd(ctx) then
+                        vim.notify 'falling back to global stylua config'
+                        return {
+                            '--config-path',
+                            vim.fs.normalize '~/.config/nvim/stylua.toml',
+                        }
+                    end
+                end,
             }
             -- conform.formatters.ruff_fix = {
             --     prepend_args = { '--respect-gitignore' },
@@ -751,7 +771,7 @@ return {
                         vim.notify 'falling back to global dprint config'
                         return {
                             '--config',
-                            vim.fn.expand '~/.config/dprint.jsonc',
+                            vim.fs.normalize '~/.config/dprint.jsonc',
                         }
                     end
                 end,
@@ -985,6 +1005,7 @@ return {
                 other = '', -- 
             },
             action_keys = { jump = { '<cr>' }, toggle_fold = { '<tab>' } },
+            auto_refresh = false,
         },
         config = function(_, opts)
             require('trouble').setup(opts)
@@ -1015,43 +1036,5 @@ return {
                 desc = 'Close Trouble if last window',
             })
         end,
-    },
-    {
-        'simrat39/symbols-outline.nvim',
-        cmd = 'SymbolsOutline',
-        keys = { { '|', '<cmd>SymbolsOutline<cr>' } },
-        opts = {
-            show_guides = false,
-            auto_preview = false,
-            preview_bg_highlight = 'Normal',
-            symbols = {
-                File = { icon = '', hl = 'TSURI' },
-                Module = { icon = '', hl = 'TSNamespace' },
-                Namespace = { icon = '', hl = 'TSNamespace' },
-                Package = { icon = '', hl = 'TSNamespace' },
-                Class = { icon = 'ﴯ', hl = 'TSType' },
-                Method = { icon = '', hl = 'TSMethod' },
-                Property = { icon = 'ﰠ', hl = 'TSMethod' },
-                Field = { icon = 'ﰠ', hl = 'TSField' },
-                Constructor = { icon = '', hl = 'TSConstructor' },
-                Enum = { icon = '', hl = 'TSType' },
-                Interface = { icon = '', hl = 'TSType' },
-                Function = { icon = '', hl = 'TSFunction' },
-                Variable = { icon = '', hl = 'TSConstant' },
-                Constant = { icon = '', hl = 'TSConstant' },
-                String = { icon = '', hl = 'TSString' },
-                Number = { icon = '', hl = 'TSNumber' },
-                Boolean = { icon = '⊨', hl = 'TSBoolean' },
-                Array = { icon = '', hl = 'TSConstant' },
-                Object = { icon = '⦿', hl = 'TSType' },
-                Key = { icon = '', hl = 'TSType' },
-                Null = { icon = 'NULL', hl = 'TSType' },
-                EnumMember = { icon = '', hl = 'TSField' },
-                Struct = { icon = 'פּ', hl = 'TSType' },
-                Event = { icon = '', hl = 'TSType' },
-                Operator = { icon = '', hl = 'TSOperator' },
-                TypeParameter = { icon = '', hl = 'TSParameter' },
-            },
-        },
     },
 }
