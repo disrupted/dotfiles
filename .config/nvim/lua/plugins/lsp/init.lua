@@ -294,24 +294,11 @@ return {
                 ft = 'lua',
                 opts = {
                     library = {
-                        'luvit-meta/library',
-                    },
-                },
-                dependencies = {
-                    { 'Bilal2453/luvit-meta', lazy = true }, -- optional `vim.uv` typings
-                    {
-                        'hrsh7th/nvim-cmp', -- optional completion source for require statements and module annotations
-                        opts = function(_, opts)
-                            opts.sources = opts.sources or {}
-                            table.insert(opts.sources, {
-                                name = 'lazydev',
-                                group_index = 0, -- set group index to 0 to skip loading LuaLS completions
-                            })
-                        end,
+                        -- Load luvit types when the `vim.uv` word is found
+                        { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
                     },
                 },
             },
-            -- 'hrsh7th/cmp-nvim-lsp', -- NOTE: disabled because nvim-cmp is disabled
             'mason.nvim',
             {
                 'williamboman/mason-lspconfig.nvim',
