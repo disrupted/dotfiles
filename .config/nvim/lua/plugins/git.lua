@@ -171,7 +171,6 @@ return {
         },
         opts = {
             disable_hint = true,
-            disable_commit_confirmation = true,
             signs = {
                 section = { '', '' },
                 item = { '', '' },
@@ -180,7 +179,7 @@ return {
             integrations = {
                 diffview = true,
             },
-            graph_style = 'unicode',
+            graph_style = 'kitty',
             status = {
                 recent_commit_count = 50,
             },
@@ -288,6 +287,19 @@ return {
             },
         },
         ---@type gitlinker.Options
-        opts = {},
+        opts = {
+            router = {
+                browse = {
+                    -- example: https://github.com/linrongbin16/gitlinker.nvim/blob/9679445c7a24783d27063cd65f525f02def5f128/lua/gitlinker.lua#L3-L4
+                    ['^git@github%.com'] = 'https://github.com/'
+                        .. '{_A.ORG}/'
+                        .. '{_A.REPO}/blob/'
+                        .. '{_A.REV}/'
+                        .. '{_A.FILE}?plain=1' -- '?plain=1'
+                        .. '#L{_A.LSTART}'
+                        .. '{(_A.LEND > _A.LSTART and (\'-L\' .. _A.LEND) or \'\')}',
+                },
+            },
+        },
     },
 }
