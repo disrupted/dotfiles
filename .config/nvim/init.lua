@@ -21,7 +21,13 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = ' ' -- set leader to space
 vim.g.maplocalleader = ','
 
-require('lazy').setup 'plugins'
+require('lazy').setup {
+    spec = {
+        { import = 'plugins' },
+    },
+    install = { colorscheme = { 'one' } },
+    checker = { enabled = true },
+}
 vim.o.exrc = true
 -----------------------------------------------------------------------------//
 -- Utils {{{1
