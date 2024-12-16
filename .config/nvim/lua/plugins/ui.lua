@@ -32,6 +32,7 @@ return {
             local augroup =
                 vim.api.nvim_create_augroup('Heirline', { clear = true })
             vim.api.nvim_create_autocmd('ColorScheme', {
+                desc = 'reload colors when colorscheme changes',
                 callback = function()
                     utils.on_colorscheme(require('one.colors').get())
                 end,
@@ -40,6 +41,14 @@ return {
 
             local Align = { provider = '%=' }
             local Space = { provider = ' ' }
+            -- right-pad a statusline component with space if component is visible
+            local function rpad(child)
+                return {
+                    condition = child.condition,
+                    child,
+                    Space,
+                }
+            end
 
             local WorkDir = {
                 static = { icon = '' },
@@ -68,7 +77,7 @@ return {
                 hl = { bold = false },
             }
 
-            local FileIcon = {
+            local FileIcon = rpad {
                 init = function(self)
                     local filename = self.filename
                     local extension = vim.fn.fnamemodify(filename, ':e')
@@ -83,7 +92,7 @@ return {
                     return self.icon
                 end,
                 provider = function(self)
-                    return string.format('%s ', self.icon)
+                    return string.format('%s', self.icon)
                 end,
                 -- hl = function(self)
                 --     return { fg = self.icon_color }
@@ -196,7 +205,7 @@ return {
                         or self.status.changed ~= 0
                 end,
 
-                {
+                rpad {
                     condition = function(self)
                         return self.status.added ~= 0
                     end,
@@ -212,8 +221,7 @@ return {
                         bg = 'syntax_cursor',
                     },
                 },
-                Space,
-                {
+                rpad {
                     condition = function(self)
                         return self.status.changed ~= 0
                     end,
@@ -229,8 +237,7 @@ return {
                         bg = 'syntax_cursor',
                     },
                 },
-                Space,
-                {
+                rpad {
                     condition = function(self)
                         return self.status.removed ~= 0
                     end,
@@ -246,7 +253,6 @@ return {
                         bg = 'syntax_cursor',
                     },
                 },
-                Space,
                 { -- git branch name
                     provider = function(self)
                         return string.format(
@@ -260,20 +266,16 @@ return {
             }
 
             local Diagnostics = {
-
                 condition = function(self)
                     return not vim.tbl_isempty(vim.diagnostic.count(self.bufnr))
                 end,
-
                 hl = { bg = 'syntax_cursor' },
-
                 init = function(self)
                     self.status = vim.diagnostic.count(self.bufnr)
                 end,
-
                 update = { 'DiagnosticChanged', 'BufEnter' },
 
-                {
+                rpad {
                     static = {
                         severity = vim.diagnostic.severity.ERROR,
                         icon = '',
@@ -284,7 +286,7 @@ return {
                     end,
                     provider = function(self)
                         return string.format(
-                            '%s %s ',
+                            '%s %s',
                             self.icon,
                             self.status[self.severity]
                         )
@@ -294,7 +296,7 @@ return {
                         bg = 'syntax_cursor',
                     },
                 },
-                {
+                rpad {
                     static = {
                         severity = vim.diagnostic.severity.WARN,
                         icon = '',
@@ -305,7 +307,7 @@ return {
                     end,
                     provider = function(self)
                         return string.format(
-                            '%s %s ',
+                            '%s %s',
                             self.icon,
                             self.status[self.severity]
                         )
@@ -315,7 +317,7 @@ return {
                         bg = 'syntax_cursor',
                     },
                 },
-                {
+                rpad {
                     static = {
                         severity = vim.diagnostic.severity.INFO,
                         icon = '',
@@ -326,7 +328,7 @@ return {
                     end,
                     provider = function(self)
                         return string.format(
-                            '%s %s ',
+                            '%s %s',
                             self.icon,
                             self.status[self.severity]
                         )
@@ -425,80 +427,77 @@ return {
                     end,
                     hl = { bg = 'syntax_cursor' },
                     {
-                        {
+                        rpad {
                             condition = function(self)
                                 return self.status.total > 0
                             end,
                             provider = function(self)
                                 return string.format(
-                                    '%s %s ',
+                                    '%s %s',
                                     self.icon.total,
                                     self.status.total
                                 )
                             end,
+                            hl = { fg = 'mono_3' },
                         },
-                        {
+                        rpad {
                             condition = function(self)
                                 return self.status.running > 0
                             end,
                             provider = function(self)
                                 return string.format(
-                                    '%s %s ',
+                                    '%s %s',
                                     self.icon.running,
                                     self.status.running
                                 )
                             end,
                             hl = function()
-                                local hl = utils.get_highlight 'NeotestRunning'
-                                return hl
+                                return utils.get_highlight 'NeotestRunning'
                             end,
                         },
-                        {
+                        rpad {
                             condition = function(self)
                                 return self.status.passed > 0
                             end,
                             provider = function(self)
                                 return string.format(
-                                    '%s %s ',
+                                    '%s %s',
                                     self.icon.passed,
                                     self.status.passed
                                 )
                             end,
                             hl = function()
-                                local hl = utils.get_highlight 'NeotestPassed'
-                                return hl
+                                return utils.get_highlight 'NeotestPassed'
                             end,
                         },
-                        {
+                        rpad {
                             condition = function(self)
                                 return self.status.failed > 0
                             end,
                             provider = function(self)
                                 return string.format(
-                                    '%s %s ',
+                                    '%s %s',
                                     self.icon.failed,
                                     self.status.failed
                                 )
                             end,
                             hl = function()
-                                local hl = utils.get_highlight 'NeotestFailed'
-                                return hl
+                                return utils.get_highlight 'NeotestFailed'
                             end,
                         },
-                        {
+                        rpad {
                             condition = function(self)
                                 return self.status.skipped > 0
                             end,
                             provider = function(self)
                                 return string.format(
-                                    '%s %s ',
+                                    '%s %s',
                                     self.icon.skipped,
                                     self.status.skipped
                                 )
                             end,
                             hl = function()
-                                local hl = utils.get_highlight 'NeotestSkipped'
-                                return hl
+                                return utils.get_highlight 'NeotestSkipped'
                             end,
                         },
                     },
@@ -535,6 +534,54 @@ return {
             MacroRecordingBlock =
                 utils.insert(MacroRecordingBlock, MacroRecording)
 
+            local function OverseerTasksForStatus(status)
+                return {
+                    condition = function(self)
+                        return self.tasks[status]
+                    end,
+                    provider = function(self)
+                        return string.format(
+                            '%s %d',
+                            self.icon[status],
+                            #self.tasks[status]
+                        )
+                    end,
+                    hl = function(self)
+                        return {
+                            fg = utils.get_highlight(
+                                string.format('Overseer%s', status)
+                            ).fg,
+                        }
+                    end,
+                }
+            end
+
+            local Overseer = {
+                condition = function()
+                    return package.loaded['overseer']
+                end,
+                init = function(self)
+                    local tasks = require('overseer.task_list').list_tasks {
+                        unique = true,
+                    }
+                    local tasks_by_status =
+                        require('overseer.util').tbl_group_by(tasks, 'status')
+                    self.tasks = tasks_by_status
+                end,
+                static = {
+                    icon = {
+                        CANCELED = '',
+                        FAILURE = '󰅚',
+                        SUCCESS = '󰄴',
+                        RUNNING = '󰑮',
+                    },
+                },
+                rpad(OverseerTasksForStatus 'CANCELED'),
+                rpad(OverseerTasksForStatus 'RUNNING'),
+                rpad(OverseerTasksForStatus 'SUCCESS'),
+                rpad(OverseerTasksForStatus 'FAILURE'),
+            }
+
             return {
                 statusline = {
                     init = function(self)
@@ -547,10 +594,10 @@ return {
                     Align,
                     Align,
                     DAPMessages,
+                    Overseer,
                     NeoTestBlock,
                     Space,
                     Git,
-                    -- lib.component.compiler_state(),
                 },
                 -- NOTE: disabled in favor of dropbar.nvim
                 -- winbar = {
@@ -560,7 +607,6 @@ return {
                 --     Harpoon,
                 --     Space,
                 --     FileNameBlock,
-                --     -- lib.component.breadcrumbs(), -- requires aerial.nvim
                 -- },
                 statuscolumn = {
                     lib.component.foldcolumn(),
