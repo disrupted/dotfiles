@@ -610,9 +610,13 @@ return {
             bar = {
                 ---@type boolean|fun(buf: integer, win: integer, info: table?): boolean
                 enable = function(buf, win, _)
+                    local ignore_filetypes = { 'gitcommit', 'help' }
                     return vim.api.nvim_buf_is_valid(buf)
                         and vim.api.nvim_win_is_valid(win)
-                        and vim.bo[buf].filetype ~= 'gitcommit'
+                        and not vim.tbl_contains(
+                            ignore_filetypes,
+                            vim.bo[buf].filetype
+                        )
                         and vim.wo[win].winbar == ''
                         and (
                             (
