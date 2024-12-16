@@ -32,18 +32,27 @@ local function is_poetry_pyproject()
     return false
 end
 
+---@type overseer.TemplateFileDefinition
 return {
     name = 'Poetry lock',
     builder = function()
+        ---@type overseer.TaskDefinition
         return {
-            cmd = 'poetry lock --no-update && poetry install --sync',
+            cmd = 'Poetry lock',
+            strategy = {
+                'orchestrator',
+                tasks = {
+                    { cmd = 'poetry lock --no-update' },
+                    { cmd = 'poetry install --sync' },
+                },
+            },
             components = {
                 {
                     'open_output',
                     direction = 'float',
                     focus = true,
-                    on_start = 'always',
-                    -- on_complete = 'failure',
+                    on_start = 'never',
+                    on_complete = 'failure',
                 },
                 'default',
             },
