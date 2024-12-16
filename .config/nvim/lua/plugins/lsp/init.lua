@@ -1,6 +1,23 @@
 local au = vim.api.nvim_create_augroup('LspAttach', { clear = true })
 return {
     {
+        'https://git.sr.ht/~whynothugo/lsp_lines.nvim',
+        event = 'DiagnosticChanged',
+        config = function()
+            vim.diagnostic.config {
+                virtual_lines = { only_current_line = true },
+            }
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = 'lazy',
+                desc = 'disable lsp_lines diagnostics for Lazy',
+                callback = function()
+                    local ns = vim.api.nvim_create_namespace 'lazy'
+                    vim.diagnostic.config({ virtual_lines = false }, ns)
+                end,
+            })
+        end,
+    },
+    {
         'williamboman/mason.nvim',
         cmd = 'Mason',
         opts = {

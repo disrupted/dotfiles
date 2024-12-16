@@ -3,6 +3,7 @@ local cmd, fn, opt = vim.cmd, vim.fn, vim.opt
 local command = vim.api.nvim_create_user_command
 
 require 'conf.filetype'
+require 'conf.diagnostics'
 
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.uv.fs_stat(lazypath) then
@@ -21,7 +22,6 @@ vim.g.mapleader = ' ' -- set leader to space
 vim.g.maplocalleader = ','
 
 require('lazy').setup 'plugins'
-require 'conf.diagnostics'
 vim.o.exrc = true
 -----------------------------------------------------------------------------//
 -- Utils {{{1
