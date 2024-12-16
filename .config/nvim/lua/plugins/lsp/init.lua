@@ -88,7 +88,7 @@ return {
                         require('conf.nui_lsp').lsp_rename()
                     end)
                     map('n', 'gr', function()
-                        require('trouble').open { mode = 'lsp_references' }
+                        require('trouble').open { mode = 'lsp', focus = true }
                     end)
                     map('n', '<leader>li', vim.lsp.buf.incoming_calls)
                     map('n', '<leader>lo', vim.lsp.buf.outgoing_calls)
