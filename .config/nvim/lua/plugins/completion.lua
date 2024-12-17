@@ -25,6 +25,14 @@ return {
         ---@module 'blink.cmp'
         ---@type blink.cmp.Config
         opts = {
+            keymap = {
+                preset = 'default',
+                ['<C-c>'] = {
+                    'show',
+                    'show_documentation',
+                    'hide_documentation',
+                },
+            },
             sources = {
                 completion = {
                     enabled_providers = {
