@@ -1,7 +1,7 @@
 vim.api.nvim_create_autocmd('BufWritePost', {
     group = vim.api.nvim_create_augroup(
-        'OverseerTasksOnSave',
-        { clear = false }
+        'OverseerPoetryLockOnSave',
+        { clear = true }
     ),
     pattern = 'pyproject.toml',
     callback = function()
