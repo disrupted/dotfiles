@@ -1,5 +1,90 @@
 return {
     'nvim-lua/plenary.nvim',
+    {
+        'folke/snacks.nvim',
+        priority = 1000,
+        lazy = false,
+        keys = {
+            {
+                '<C-x>',
+                function()
+                    Snacks.bufdelete()
+                end,
+                desc = 'Delete buffer',
+            },
+        },
+        ---@type snacks.Config
+        opts = {
+            bigfile = { enabled = true },
+            indent = {
+                indent = {
+                    char = '▏',
+                    hl = {
+                        'Hidden', -- first one blends with background
+                        'Whitespace',
+                        'Whitespace',
+                        'Whitespace',
+                        'Whitespace',
+                        'Whitespace',
+                        'Whitespace',
+                        'Whitespace',
+                        'Whitespace',
+                        'Whitespace',
+                        'Whitespace',
+                        'Whitespace',
+                        'Whitespace',
+                        'Whitespace',
+                        'Whitespace',
+                        'Whitespace',
+                        'Whitespace',
+                        'Whitespace',
+                        'Whitespace',
+                        'Whitespace',
+                        'Whitespace',
+                    },
+                    filter = function(buf)
+                        return vim.g.snacks_indent ~= false
+                            and vim.b[buf].snacks_indent ~= false
+                            and vim.bo[buf].buftype == ''
+                            and not vim.tbl_contains({
+                                'markdown',
+                                'gitcommit',
+                            }, vim.bo[buf].filetype)
+                    end,
+                },
+                animate = {
+                    duration = {
+                        step = 15,
+                        total = 300,
+                    },
+                },
+                scope = {
+                    enabled = false,
+                    char = '▏',
+                    only_current = true,
+                    hl = 'NonText',
+                },
+                chunk = {
+                    enabled = true,
+                    only_current = true,
+                    hl = 'NonText',
+                    char = {
+                        corner_top = '┌',
+                        corner_bottom = '└',
+                        horizontal = '─',
+                        vertical = '│', --│▕
+                        arrow = '󰁔', --   󰁔  
+                    },
+                },
+            },
+            input = { enabled = true },
+            notifier = {
+                enabled = true,
+                level = vim.log.levels.INFO,
+            },
+            statuscolumn = { enabled = true },
+        },
+    },
     { 'tpope/vim-repeat', event = 'VeryLazy' },
     { 'jghauser/mkdir.nvim', event = 'BufWritePre' },
     {

@@ -238,7 +238,9 @@ return {
                     local url =
                         vim.fn.system 'gh pr view --json url --jq .url 2>/dev/null'
                     if url then
-                        vim.notify(url)
+                        Snacks.notify.info(url, {
+                            title = 'Octo',
+                        })
                         local cmd = string.format('Octo %s', url)
                         vim.cmd(cmd)
                     else

@@ -1,20 +1,5 @@
 return {
     {
-        'rcarriga/nvim-notify',
-        lazy = true,
-        opts = {
-            stages = 'static',
-            render = 'minimal',
-            minimum_width = 10,
-            -- timeout = 5000,
-        },
-        config = function(_, opts)
-            local notify = require 'notify'
-            notify.setup(opts)
-            vim.notify = notify
-        end,
-    },
-    {
         'rebelot/heirline.nvim',
         event = 'UIEnter',
         dependencies = { 'Zeioth/heirline-components.nvim' },
@@ -608,12 +593,12 @@ return {
                 --     Space,
                 --     FileNameBlock,
                 -- },
-                statuscolumn = {
-                    lib.component.foldcolumn(),
-                    lib.component.fill(),
-                    lib.component.numbercolumn(),
-                    lib.component.signcolumn(),
-                },
+                -- statuscolumn = {
+                --     lib.component.foldcolumn(),
+                --     lib.component.fill(),
+                --     lib.component.numbercolumn(),
+                --     lib.component.signcolumn(),
+                -- },
                 -- tabline = {
                 --     lib.component.tabline_conditional_padding(),
                 --     lib.component.tabline_buffers(),
@@ -656,11 +641,11 @@ return {
             bar = {
                 ---@type boolean|fun(buf: integer, win: integer, info: table?): boolean
                 enable = function(buf, win, _)
-                    local ignore_filetypes = { 'gitcommit', 'help' }
                     return vim.api.nvim_buf_is_valid(buf)
                         and vim.api.nvim_win_is_valid(win)
+                        and vim.bo[buf].buftype == ''
                         and not vim.tbl_contains(
-                            ignore_filetypes,
+                            { 'gitcommit' },
                             vim.bo[buf].filetype
                         )
                         and vim.wo[win].winbar == ''
@@ -816,35 +801,6 @@ return {
         },
     },
     { 'kyazdani42/nvim-web-devicons', lazy = true },
-    {
-        'lukas-reineke/indent-blankline.nvim',
-        main = 'ibl',
-        event = 'BufWinEnter',
-        ---@module 'ibl'
-        ---@type ibl.config
-        opts = {
-            indent = { char = '▏' },
-            exclude = {
-                filetypes = {
-                    'help',
-                    'markdown',
-                    'gitcommit',
-                    'packer',
-                },
-                buftypes = { 'terminal', 'nofile' },
-            },
-            scope = { enabled = false },
-        },
-        config = function(_, opts)
-            require('ibl').setup(opts)
-
-            local hooks = require 'ibl.hooks'
-            hooks.register(
-                hooks.type.WHITESPACE,
-                hooks.builtin.hide_first_space_indent_level
-            )
-        end,
-    },
     {
         'kwkarlwang/bufresize.nvim',
         lazy = true,

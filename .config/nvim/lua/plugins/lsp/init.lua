@@ -156,10 +156,10 @@ return {
                         and client.supports_method 'textDocument/inlayHint'
                         and pcall(require, 'vim.lsp.inlay_hint') -- NOTE: check that API exists
                     then
-                        vim.notify(
-                            'register inlay hints',
-                            vim.lsp.log_levels.DEBUG
-                        )
+                        Snacks.notify('registered inlay hints', {
+                            level = vim.log.levels.DEBUG,
+                            title = 'LSP: ' .. client.name,
+                        })
                         vim.api.nvim_create_autocmd({
                             'BufWritePost',
                             'BufEnter',
@@ -232,22 +232,22 @@ return {
                 callback = function(args)
                     local client = vim.lsp.get_client_by_id(args.data.client_id)
                     if client then
-                        vim.notify(
-                            ('%s attached to buffer %s'):format(
-                                client.name,
-                                args.buf
-                            ),
-                            vim.log.levels.DEBUG
+                        Snacks.notify(
+                            ('attached to buffer %i'):format(args.buf),
+                            {
+                                level = vim.log.levels.DEBUG,
+                                title = 'LSP: ' .. client.name,
+                            }
                         )
                     end
                 end,
             })
 
             local function periodic_refresh_semantic_tokens()
-                vim.notify(
-                    'periodic refresh semantic tokens',
-                    vim.log.levels.DEBUG
-                )
+                Snacks.notify('periodic refresh semantic tokens', {
+                    level = vim.log.levels.DEBUG,
+                    title = 'LSP',
+                })
                 if not vim.api.nvim_buf_is_valid(0) then
                     return
                 end
@@ -268,7 +268,10 @@ return {
 
             vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave' }, {
                 callback = debounce(1000, function()
-                    vim.notify('refresh semantic tokens', vim.log.levels.DEBUG)
+                    Snacks.notify('refresh semantic tokens', {
+                        level = vim.log.levels.DEBUG,
+                        title = 'LSP',
+                    })
                     vim.lsp.semantic_tokens.force_refresh(0)
                 end),
             })
@@ -328,9 +331,12 @@ return {
                     },
                     handlers = {
                         function(server_name)
-                            -- vim.notify(
-                            --     'Mason LSP setup ' .. server_name,
-                            --     vim.log.levels.DEBUG
+                            -- Snacks.notify(
+                            --     ('Setup LSP %s'):format(server_name),
+                            --     {
+                            --         level = vim.log.levels.DEBUG,
+                            --         title = 'Mason',
+                            --     }
                             -- )
                             require('lspconfig')[server_name].setup {}
                         end,
@@ -749,7 +755,10 @@ return {
                 -- require_cwd = true,
                 prepend_args = function(self, ctx)
                     if not self:cwd(ctx) then
-                        vim.notify 'falling back to global stylua config'
+                        Snacks.notify('fallback to global stylua config', {
+                            level = vim.log.levels.DEBUG,
+                            title = 'Format',
+                        })
                         return {
                             '--config-path',
                             vim.fs.normalize '~/.config/nvim/stylua.toml',
@@ -769,7 +778,10 @@ return {
             conform.formatters.dprint = {
                 prepend_args = function(self, ctx)
                     if not self:cwd(ctx) then
-                        vim.notify 'falling back to global dprint config'
+                        Snacks.notify('fallback to global dprint config', {
+                            level = vim.log.levels.DEBUG,
+                            title = 'Format',
+                        })
                         return {
                             '--config',
                             vim.fs.normalize '~/.config/dprint.jsonc',
@@ -821,7 +833,10 @@ return {
                 }
 
                 if #clients == 0 then
-                    vim.notify '[LSP] Format request failed, no matching language servers.'
+                    Snacks.notify.error(
+                        'Format request failed, no matching language servers',
+                        { title = 'LSP' }
+                    )
                 end
 
                 for _, client in pairs(clients) do
@@ -914,9 +929,9 @@ return {
                 names = vim.tbl_filter(function(name)
                     local linter = lint.linters[name]
                     if not linter then
-                        vim.notify(
-                            'Linter not found: ' .. name,
-                            vim.log.levels.WARN
+                        Snacks.notify.warn(
+                            ('Linter not found: %s'):format(name),
+                            { title = 'Lint' }
                         )
                     end
                     return linter

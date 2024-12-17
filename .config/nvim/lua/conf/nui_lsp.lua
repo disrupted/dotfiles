@@ -25,20 +25,18 @@ local function nui_lsp_rename()
             'textDocument/rename',
             params,
             function(err, result, ctx, _)
+                local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
+
                 if err or not result then
-                    vim.notify(
-                        ('Error running LSP query \'%s\': %s'):format(
-                            ctx.method,
-                            err
-                        ),
-                        vim.log.levels.ERROR
+                    Snacks.notify.error(
+                        { 'Error requesting rename', err.message },
+                        { title = 'LSP: ' .. client.name }
                     )
                     return
                 end
 
                 -- the `result` contains all the places we need to update the
                 -- name of the identifier. so we apply those edits.
-                local client = vim.lsp.get_client_by_id(ctx.client_id)
                 vim.lsp.util.apply_workspace_edit(
                     result,
                     client and client.offset_encoding or 'utf-16'

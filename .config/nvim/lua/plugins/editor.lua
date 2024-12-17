@@ -234,11 +234,23 @@ return {
         keys = {
             { '<C-e>', '<cmd>Neotree toggle<CR>' },
         },
-        opts = {
-            filesystem = {
-                follow_current_file = { enabled = true },
-            },
-        },
+        opts = function()
+            local function on_move(data)
+                Snacks.rename.on_rename_file(data.source, data.destination)
+            end
+            local events = require 'neo-tree.events'
+
+            return {
+                event_handlers = {
+                    { event = events.FILE_MOVED, handler = on_move },
+                    { event = events.FILE_RENAMED, handler = on_move },
+                },
+                filesystem = {
+                    follow_current_file = { enabled = true },
+                    hijack_netrw_behavior = 'open_current',
+                },
+            }
+        end,
     },
     {
         'nvim-tree/nvim-tree.lua',
@@ -668,11 +680,6 @@ return {
                 migrate = 'SessionMigrate',
             },
         },
-    },
-    {
-        'famiu/bufdelete.nvim',
-        keys = { { '<C-x>', '<cmd>Bdelete<CR>' } },
-        cmd = { 'Bdelete', 'Bwipeout' },
     },
     {
         'ThePrimeagen/harpoon',
