@@ -23,6 +23,7 @@
   "heirline.nvim": { "branch": "master", "commit": "cc359b628266cb9a84b2d71c883f2b99e16473a0" },
   "hererocks": { "branch": "master", "commit": "c9c5444dea1e07e005484014a8231aa667be30b6" },
   "himalaya": { "branch": "master", "commit": "118a3f9779f51331d580002aa8ff5a63e3c21490" },
+  "inlayhint-filler.nvim": { "branch": "main", "commit": "db67ddfa546380912f0b7ccadccffd949a7a2331" },
   "lazy.nvim": { "branch": "main", "commit": "7e6c863bc7563efbdd757a310d17ebc95166cef3" },
   "lazydev.nvim": { "branch": "main", "commit": "f59bd14a852ca43db38e3662395354cb2a9b13e0" },
   "lightbulb.nvim": { "branch": "main", "commit": "89f48c5383a7099df85b99d4beac8ff8d455e4e9" },
