@@ -42,20 +42,35 @@ return {
             strategy = {
                 'orchestrator',
                 tasks = {
-                    { cmd = 'poetry lock --no-update' },
-                    { cmd = 'poetry install --sync' },
+                    {
+                        cmd = 'poetry lock --no-update',
+                        components = {
+                            {
+                                'open_output',
+                                direction = 'dock',
+                                focus = true,
+                                on_start = 'never',
+                                on_complete = 'failure',
+                            },
+                            'default',
+                        },
+                    },
+                    {
+                        cmd = 'poetry install --sync',
+                        components = {
+                            {
+                                'open_output',
+                                direction = 'dock',
+                                focus = true,
+                                on_start = 'never',
+                                on_complete = 'failure',
+                            },
+                            'default',
+                        },
+                    },
                 },
             },
-            components = {
-                {
-                    'open_output',
-                    direction = 'float',
-                    focus = true,
-                    on_start = 'never',
-                    on_complete = 'failure',
-                },
-                'default',
-            },
+            components = { 'default' },
         }
     end,
     condition = {
