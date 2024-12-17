@@ -1,35 +1,51 @@
 return {
     {
         'johmsalas/text-case.nvim',
-        lazy = true,
+        cmd = 'Subs',
+        keys = {
+            {
+                'za<space>',
+                function()
+                    require('telescope').load_extension 'textcase'
+                    require('textcase').open_telescope()
+                end,
+                mode = { 'n', 'v' },
+                desc = 'Pick textcase coercion in Telescope',
+            },
+        },
         init = function()
-            local function textcase_map(char, operation)
+            local function textcase_map(char, operation, desc)
                 vim.keymap.set('n', 'za' .. char, function()
-                    require('textcase').current_word(operation)
-                end)
-                local upper = char:upper()
-                if upper ~= char then
-                    vim.keymap.set('n', 'za' .. upper, function()
+                    local clients_supporting_rename = vim.lsp.get_clients {
+                        method = require('vim.lsp.protocol').Methods.textDocument_rename,
+                    }
+                    if not vim.tbl_isempty(clients_supporting_rename) then
                         require('textcase').lsp_rename(operation)
-                    end)
-                end
+                    else
+                        require('textcase').current_word(operation)
+                    end
+                end, { desc = 'Coerce to ' .. desc })
                 vim.keymap.set('n', 'z' .. char, function()
                     require('textcase').operator(operation)
-                end)
+                end, { desc = 'Coerce to ' .. desc })
                 vim.keymap.set('v', 'z' .. char, function()
                     require('textcase').visual(operation)
-                end)
+                end, { desc = 'Coerce to ' .. desc })
             end
 
-            textcase_map('s', 'to_snake_case')
-            textcase_map('d', 'to_dash_case')
-            textcase_map('c', 'to_camel_case')
-            textcase_map('p', 'to_pascal_case')
-            textcase_map('v', 'to_constant_case') -- environment variable
-            textcase_map('t', 'to_title_case')
-            textcase_map('p', 'to_phrase_case')
-            textcase_map('.', 'to_dot_case')
+            textcase_map('s', 'to_snake_case', 'snake_case')
+            textcase_map('d', 'to_dash_case', 'dash-case')
+            textcase_map('c', 'to_camel_case', 'camelCase')
+            textcase_map('p', 'to_pascal_case', 'PascalCase')
+            textcase_map('v', 'to_constant_case', 'CONSTANT_CASE') -- environment variable
+            textcase_map('t', 'to_title_case', 'Title Case')
+            textcase_map('r', 'to_phrase_case', 'Regular phrase case')
+            textcase_map('.', 'to_dot_case', 'dot.case')
         end,
+        opts = {
+            default_keymappings_enabled = false,
+            -- substitude_command_name = 'S', -- do not overwrite vim-abolish until feature parity
+        },
     },
     {
         'kylechui/nvim-surround',
