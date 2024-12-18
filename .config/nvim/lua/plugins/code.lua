@@ -17,6 +17,7 @@ return {
             local function textcase_map(char, operation, desc)
                 vim.keymap.set('n', 'za' .. char, function()
                     local clients_supporting_rename = vim.lsp.get_clients {
+                        bufnr = 0,
                         method = require('vim.lsp.protocol').Methods.textDocument_rename,
                     }
                     if not vim.tbl_isempty(clients_supporting_rename) then
