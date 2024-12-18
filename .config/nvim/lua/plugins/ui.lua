@@ -650,13 +650,7 @@ return {
                         )
                         and vim.wo[win].winbar == ''
                         and (
-                            (
-                                    pcall(
-                                        vim.treesitter.get_parser,
-                                        buf,
-                                        vim.bo[buf].ft
-                                    )
-                                )
+                            (pcall(vim.treesitter.get_parser, buf))
                                 and true
                             or false
                         )
