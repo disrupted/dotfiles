@@ -2,7 +2,6 @@
 local Input = require 'nui.input'
 local event = require('nui.utils.autocmd').event
 local utils = require 'utils'
-local notify = require 'notify'
 
 local function nui_lsp_rename()
     local curr_name = vim.fn.expand '<cword>'
@@ -57,12 +56,13 @@ local function nui_lsp_rename()
                             )
                         )
                     end
-                    notify(msg, vim.log.levels.INFO, {
-                        title = {
+                    Snacks.notify.info(
+                        {
                             ('Rename: %s -> %s'):format(curr_name, new_name),
-                            '',
+                            msg,
                         },
-                    })
+                        { title = 'LSP' }
+                    )
 
                     -- after the edits are applied, the files are not saved automatically.
                     -- let's remind ourselves to save those...
