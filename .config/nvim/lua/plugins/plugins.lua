@@ -60,9 +60,9 @@ return {
                 },
                 scope = {
                     enabled = false,
-                    char = '▏',
                     only_current = true,
                     hl = 'NonText',
+                    char = '▏',
                 },
                 chunk = {
                     enabled = true,
@@ -81,6 +81,14 @@ return {
             notifier = {
                 enabled = true,
                 level = vim.log.levels.INFO,
+                width = { min = 10, max = 0.4 },
+                icons = {
+                    error = '',
+                    warn = '',
+                    info = '',
+                    debug = '',
+                    trace = '',
+                },
             },
             statuscolumn = { enabled = true },
         },
