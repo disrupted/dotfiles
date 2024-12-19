@@ -28,10 +28,12 @@ return {
                 'gitignore',
                 'go',
                 'graphql',
-                'vimdoc',
+                'gotmpl',
+                'helm',
                 'html',
                 'htmldjango',
                 'http',
+                'hurl',
                 'java',
                 'javascript',
                 'jsdoc',
@@ -161,10 +163,5 @@ return {
             vim.treesitter.language.register('markdown', 'octo')
 
         end,
-    },
-    {
-        'kmoschcau/tree-sitter-go-template', -- Helm -- TODO: ngalaiko/tree-sitter-go-template after https://github.com/ngalaiko/tree-sitter-go-template/pull/13 is merged
-        dependencies = 'nvim-treesitter/nvim-treesitter',
-        config = true,
     },
 }

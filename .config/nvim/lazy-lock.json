@@ -94,7 +94,6 @@
   "tiny-inline-diagnostic.nvim": { "branch": "main", "commit": "ca50af9dc3cd88647077330b4728f4d0a7e754c4" },
   "todo-comments.nvim": { "branch": "main", "commit": "ae0a2afb47cf7395dc400e5dc4e05274bf4fb9e0" },
   "tree-setter": { "branch": "master", "commit": "1f41ef533c66447e2806c5c8dcebe81bae5bb6d6" },
-  "tree-sitter-go-template": { "branch": "master", "commit": "2292c402598428eb490465409b53af2bfb93c390" },
   "treewalker.nvim": { "branch": "main", "commit": "8b7a01e3a4ff0fab66c474788912d546c280f3b6" },
   "trouble.nvim": { "branch": "main", "commit": "46cf952fc115f4c2b98d4e208ed1e2dce08c9bf6" },
   "twilight.nvim": { "branch": "main", "commit": "1584c0b0a979b71fd86b18d302ba84e9aba85b1b" },
