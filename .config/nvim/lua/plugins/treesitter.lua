@@ -1,5 +1,11 @@
 return {
-    { 'filNaj/tree-setter', enabled = true },
+    { 'filNaj/tree-setter', enabled = false },
+    {
+        'windwp/nvim-ts-autotag',
+        enabled = false,
+        event = 'InsertEnter',
+        opts = {},
+    },
     {
         'nvim-treesitter/nvim-treesitter',
         event = { 'BufRead', 'BufNewFile' },
@@ -163,5 +169,19 @@ return {
             vim.treesitter.language.register('markdown', 'octo')
 
         end,
+    },
+    {
+        'nvim-treesitter/nvim-treesitter-context',
+        enabled = false,
+        event = 'VeryLazy',
+        -- keys = {
+        --     {
+        --         '1',
+        --         function()
+        --             require('treesitter-context').go_to_context(vim.v.count1)
+        --         end,
+        --     },
+        -- },
+        opts = {},
     },
 }
