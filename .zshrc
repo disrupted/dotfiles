@@ -311,6 +311,9 @@ export WORDCHARS='~!#$%^&*(){}[]<>?.+;'  # sane moving between words on the prom
 export PROMPT_EOL_MARK=''  # hide % at end of output
 export GPG_TTY=$(tty)
 
+# Python uv
+export UV_PYTHON="3.13"
+
 # Python pipx
 export PATH="$HOME/.local/bin:$PATH"
 
