@@ -591,9 +591,14 @@ return {
         ft = 'python',
     },
     {
-        -- 'disrupted/kpops.nvim',
+        'disrupted/kpops.nvim',
         dir = '~/bakdata/kpops.nvim',
+        dev = vim.uv.fs_stat '~/bakdata/kpops.nvim',
+        dependencies = { 'gregorias/coop.nvim' },
+        cmd = 'KPOps',
         ft = 'yaml.kpops',
+        ---@module 'kpops.config'
+        ---@type kpops.Opts
         opts = {},
     },
     {
