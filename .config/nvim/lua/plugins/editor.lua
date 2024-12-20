@@ -192,12 +192,11 @@ return {
                     },
                 },
             }
-
-            -- telescope.load_extension 'notify'
         end,
         dependencies = {
             {
                 'natecraddock/telescope-zf-native.nvim',
+                lazy = true,
                 config = function()
                     require('telescope').load_extension 'zf-native'
                 end,
