@@ -1,17 +1,21 @@
 vim.api.nvim_create_autocmd('BufWritePost', {
     group = vim.api.nvim_create_augroup(
-        'OverseerPoetryLockOnSave',
+        'OverseerPyprojectLockOnSave',
         { clear = true }
     ),
     pattern = 'pyproject.toml',
     callback = function()
         local overseer = require 'overseer'
-        overseer.run_template({ name = 'Poetry lock' }, function(task)
+        overseer.run_template({ name = 'uv' }, function(task)
             if not task then
-                Snacks.notify.warn(
-                    'Not a valid Poetry pyproject',
-                    { title = 'Overseer' }
-                )
+                overseer.run_template({ name = 'Poetry' }, function(task)
+                    if not task then
+                        Snacks.notify.warn(
+                            'Invalid pyproject',
+                            { title = 'Overseer' }
+                        )
+                    end
+                end)
             end
         end)
     end,

@@ -34,11 +34,11 @@ end
 
 ---@type overseer.TemplateFileDefinition
 return {
-    name = 'Poetry lock',
+    name = 'Poetry',
     builder = function()
         ---@type overseer.TaskDefinition
         return {
-            cmd = 'Poetry lock',
+            cmd = 'Poetry',
             strategy = {
                 'orchestrator',
                 tasks = {
