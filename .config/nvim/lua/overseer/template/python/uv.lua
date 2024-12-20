@@ -3,7 +3,9 @@ local function is_uv_installed()
 end
 
 local function is_uv_pyproject()
-    -- Get the current buffer's tree
+    if vim.uv.fs_stat 'uv.lock' then
+        return true
+    end
     local buf = vim.api.nvim_get_current_buf()
     local parser = assert(vim.treesitter.get_parser(buf))
     local tree = parser:parse()[1]
