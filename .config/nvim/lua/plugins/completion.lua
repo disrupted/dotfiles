@@ -24,7 +24,6 @@ return {
         version = 'v0.*',
         ---@module 'blink.cmp'
         ---@type blink.cmp.Config
-        ---@diagnostic disable: missing-fields
         opts = {
             keymap = {
                 preset = 'default',
@@ -54,25 +53,23 @@ return {
                 end,
             },
             sources = {
-                completion = {
-                    enabled_providers = {
-                        'lsp',
-                        'path',
-                        'luasnip',
-                        'buffer',
-                        'git',
-                        'lazydev',
-                    },
+                default = {
+                    'lazydev',
+                    'lsp',
+                    'path',
+                    'luasnip',
+                    'buffer',
+                    'git',
                 },
                 providers = {
-                    -- dont show LuaLS require statements when lazydev has items
                     lsp = {
                         timeout_ms = 400,
-                        fallback_for = { 'lazydev' },
                     },
                     lazydev = {
                         name = 'LazyDev',
                         module = 'lazydev.integrations.blink',
+                        -- make lazydev completions top priority
+                        score_offset = 100,
                     },
                     git = {
                         name = 'git',
@@ -82,14 +79,7 @@ return {
                     },
                 },
             },
-            trigger = { signature_help = { enabled = true } },
-            highlight = {
-                -- sets the fallback highlight groups to nvim-cmp's highlight groups
-                -- useful for when your theme doesn't support blink.cmp
-                -- will be removed in a future release, assuming themes add support
-                use_nvim_cmp_as_default = true,
-            },
-            accept = { auto_brackets = { enabled = true } },
+            signature = { enabled = true },
             appearance = {
                 kind_icons = {
                     Text = '󰉿', -- 

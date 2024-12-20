@@ -167,7 +167,6 @@ return {
             vim.treesitter.language.register('bash', 'zsh')
             vim.treesitter.language.register('terraform', 'terraform-vars')
             vim.treesitter.language.register('markdown', 'octo')
-
         end,
     },
     {
