@@ -24,6 +24,7 @@ return {
         version = 'v0.*',
         ---@module 'blink.cmp'
         ---@type blink.cmp.Config
+        ---@diagnostic disable: missing-fields
         opts = {
             keymap = {
                 preset = 'default',
@@ -32,13 +33,32 @@ return {
                     'show_documentation',
                     'hide_documentation',
                 },
+                -- ['<C-s>'] = {
+                --     function(cmp)
+                --         cmp.show { providers = { 'luasnip' } }
+                --     end,
+                -- },
+            },
+            snippets = {
+                expand = function(snippet)
+                    require('luasnip').lsp_expand(snippet)
+                end,
+                active = function(filter)
+                    if filter and filter.direction then
+                        return require('luasnip').jumpable(filter.direction)
+                    end
+                    return require('luasnip').in_snippet()
+                end,
+                jump = function(direction)
+                    require('luasnip').jump(direction)
+                end,
             },
             sources = {
                 completion = {
                     enabled_providers = {
                         'lsp',
                         'path',
-                        'snippets',
+                        'luasnip',
                         'buffer',
                         'git',
                         'lazydev',
@@ -46,7 +66,10 @@ return {
                 },
                 providers = {
                     -- dont show LuaLS require statements when lazydev has items
-                    lsp = { fallback_for = { 'lazydev' } },
+                    lsp = {
+                        timeout_ms = 400,
+                        fallback_for = { 'lazydev' },
+                    },
                     lazydev = {
                         name = 'LazyDev',
                         module = 'lazydev.integrations.blink',
