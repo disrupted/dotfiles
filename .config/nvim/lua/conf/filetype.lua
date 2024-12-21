@@ -5,6 +5,7 @@ vim.filetype.add {
     },
     filename = {
         ['poetry.lock'] = 'toml',
+        ['uv.lock'] = 'toml',
         ['.envrc'] = 'bash',
         ['Chart.lock'] = 'yaml',
         ['docker-compose.yaml'] = 'yaml.docker-compose',
@@ -14,8 +15,6 @@ vim.filetype.add {
         ['.*/templates/.*%.yaml'] = 'helm',
         ['.*/templates/.*%.tpl'] = 'helm',
         ['helmfile.*.yaml'] = 'helm',
-        ['.*/%.github[%w/]+.*%.yml'] = 'yaml.gha',
-        ['.*/%.github[%w/]+.*%.yaml'] = 'yaml.gha',
         ['.*%.gitlab%-ci%.yml'] = 'yaml.gitlab',
     },
 }
