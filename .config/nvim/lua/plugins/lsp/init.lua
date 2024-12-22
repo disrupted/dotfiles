@@ -592,8 +592,8 @@ return {
     },
     {
         'disrupted/kpops.nvim',
-        dir = '~/bakdata/kpops.nvim',
-        dev = vim.uv.fs_stat '~/bakdata/kpops.nvim',
+        dir = require('conf.utils').dir '~/bakdata/kpops.nvim',
+        dev = require('conf.utils').dev '~/bakdata/kpops.nvim',
         dependencies = { 'gregorias/coop.nvim' },
         cmd = 'KPOps',
         ft = 'yaml.kpops',
