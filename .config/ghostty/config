@@ -1,0 +1,34 @@
+# vim: ft=conf
+font-family                    = MesloLGS Nerd Font Mono
+font-size                      = 13
+font-thicken                   = true
+window-inherit-font-size       = true
+
+# Look and Feel
+theme                          = dark:disrupted_dark,light:disrupted_light
+macos-icon                     = custom-style
+macos-icon-frame               = plastic
+macos-icon-ghost-color         = "#efefef"
+macos-icon-screen-color        = "#5b6673"
+cursor-style                   = block
+cursor-style-blink             = false
+bold-is-bright                 = true
+link-url                       = true
+macos-titlebar-style           = tabs
+mouse-hide-while-typing        = true
+
+# Other
+clipboard-paste-protection     = true
+clipboard-trim-trailing-spaces = true
+copy-on-select                 = true
+macos-auto-secure-input        = true
+macos-secure-input-indication  = true
+quit-after-last-window-closed  = false
+shell-integration              = zsh
+shell-integration-features     = no-cursor,sudo,title
+
+# Key bindings
+macos-option-as-alt            = true
+keybind                        = cmd+right=text:\x05
+keybind                        = cmd+left=text:\x01
+keybind                        = cmd+backspace=text:\x15
