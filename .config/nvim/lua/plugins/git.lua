@@ -69,6 +69,7 @@ return {
                 _on_attach_pre = function(bufnr, callback)
                     local ignore_filetypes = {
                         'gitcommit', -- YADM commit
+                        'gitrebase', -- YADM rebase
                     }
                     if
                         vim.tbl_contains(
