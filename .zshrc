@@ -88,8 +88,6 @@ zinit light-mode for \
         zsh-users/zsh-completions \
     as'program' atclone'rm -f ^(rgg|agv)' \
         lilydjwg/search-and-view \
-    atclone'dircolors -b LS_COLORS > c.zsh' atpull'%atclone' pick'c.zsh' \
-        trapd00r/LS_COLORS \
     src'etc/git-extras-completion.zsh' \
         tj/git-extras
 zinit wait'1' lucid for \
@@ -97,14 +95,6 @@ zinit wait'1' lucid for \
     OMZ::lib/git.zsh \
     OMZ::plugins/systemd/systemd.plugin.zsh
 
-if whence dircolors >/dev/null; then
-  eval "$(dircolors -b)"
-  zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-  alias ls='ls --color'
-else
-  export CLICOLOR=1
-  zstyle ':completion:*' list-colors ''
-fi
 zstyle ':completion:*' completer _expand _complete _ignored _approximate
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 zstyle ':completion:*' menu select=2
