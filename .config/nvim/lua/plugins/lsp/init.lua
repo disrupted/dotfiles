@@ -312,6 +312,7 @@ return {
                         'bashls',
                         'pylance',
                         'gitlab_ci_ls',
+                        'taplo',
                     },
                     handlers = {
                         function(server_name)
