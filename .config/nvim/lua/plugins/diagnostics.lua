@@ -12,7 +12,7 @@ return {
                 end,
             })
         end,
-        config = function()
+        opts = function()
             vim.diagnostic.config {
                 virtual_lines = { only_current_line = true },
             }
