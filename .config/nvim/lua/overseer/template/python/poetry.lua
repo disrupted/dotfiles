@@ -45,7 +45,7 @@ return {
                 'orchestrator',
                 tasks = {
                     {
-                        cmd = 'poetry lock --no-update',
+                        cmd = 'poetry lock',
                         components = {
                             {
                                 'open_output',
