@@ -438,12 +438,12 @@ return {
     {
         'stevearc/overseer.nvim',
         cmd = {
-            'OverseerRun',
+            'OverseerOpen',
             'OverseerToggle',
-            'CompilerOpen',
-            'CompilerToggleResults',
-            'CompilerRedo',
+            'OverseerRun',
         },
+        ---@module 'overseer.config'
+        ---@type overseer.Config
         opts = {
             templates = {
                 'builtin',
@@ -452,8 +452,12 @@ return {
             },
             task_list = {
                 bindings = {
-                    ['<C-l>'] = false,
+                    ['<C-j>'] = false,
+                    ['<C-k>'] = false,
                     ['<C-h>'] = false,
+                    ['<C-l>'] = false,
+                    ['<C-u>'] = 'ScrollOutputUp',
+                    ['<C-d>'] = 'ScrollOutputDown',
                 },
                 direction = 'bottom',
                 min_height = 25,

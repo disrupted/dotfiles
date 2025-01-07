@@ -3,37 +3,10 @@ local function is_poetry_installed()
 end
 
 local function is_poetry_pyproject()
-    if vim.uv.fs_stat 'poetry.lock' then
-        return true
-    end
-    local buf = vim.api.nvim_get_current_buf()
-    local parser = assert(vim.treesitter.get_parser(buf))
-    local tree = parser:parse()[1]
-
-    -- Define the query to match TOML tables
-    local query = [[
-        (document 
-            (table 
-                (dotted_key) @table
-            )
-        ) 
-    ]]
-
-    local ts_query = vim.treesitter.query.parse(parser:lang(), query)
-
-    for _, matches in ts_query:iter_matches(tree:root(), buf) do
-        for _, match in pairs(matches) do
-            local node = match[1]
-            local contents = vim.treesitter.get_node_text(node, buf)
-            if contents == 'tool.poetry' then
-                return true
-            end
-        end
-    end
-
-    return false
+    return vim.uv.fs_stat 'poetry.lock' ~= nil
 end
 
+---@module 'overseer'
 ---@type overseer.TemplateFileDefinition
 return {
     name = 'Poetry',
@@ -58,7 +31,7 @@ return {
                         },
                     },
                     {
-                        cmd = 'poetry install --sync',
+                        cmd = 'poetry sync',
                         components = {
                             {
                                 'open_output',
