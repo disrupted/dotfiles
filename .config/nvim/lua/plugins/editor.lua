@@ -194,6 +194,7 @@ return {
             }
         end,
         dependencies = {
+            { 'nvim-treesitter/nvim-treesitter' },
             {
                 'natecraddock/telescope-zf-native.nvim',
                 lazy = true,
