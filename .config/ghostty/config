@@ -10,6 +10,7 @@ macos-icon                     = custom-style
 macos-icon-frame               = plastic
 macos-icon-ghost-color         = "#efefef"
 macos-icon-screen-color        = "#5b6673"
+adjust-cursor-thickness        = 2
 cursor-style                   = block
 cursor-style-blink             = false
 bold-is-bright                 = true
