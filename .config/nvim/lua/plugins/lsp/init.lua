@@ -331,7 +331,7 @@ return {
                                 single_file_support = true,
                                 filetypes = {
                                     'yaml',
-                                    'yaml.gha',
+                                    'yaml.github',
                                 },
                                 root_dir = function(filename)
                                     local parent_dir =
@@ -854,7 +854,7 @@ return {
     },
     {
         'mfussenegger/nvim-lint',
-        ft = { 'yaml.gha' },
+        ft = { 'yaml.github' },
         dependencies = {
             {
                 'williamboman/mason.nvim',
@@ -867,7 +867,7 @@ return {
         opts = {
             events = { 'BufWritePost', 'BufReadPost', 'InsertLeave' },
             linters_by_ft = {
-                ['yaml.gha'] = { 'actionlint' },
+                ['yaml.github'] = { 'actionlint' },
             },
             -- from LazyVim: https://github.com/LazyVim/LazyVim/blob/bb36f71b77d8e15788a5b62c82a1c9ec7b209e49/lua/lazyvim/plugins/linting.lua#L16
             -- easily override linter options or add custom linters

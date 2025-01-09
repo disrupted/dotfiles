@@ -309,7 +309,7 @@ return {
         'disrupted/github-actions.nvim',
         dir = require('conf.utils').dir '~/dev/github-actions.nvim',
         dev = require('conf.utils').dev '~/dev/github-actions.nvim',
-        ft = 'yaml.gha',
+        ft = 'yaml.github',
         opts = {},
     },
 }
