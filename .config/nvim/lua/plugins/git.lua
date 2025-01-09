@@ -184,6 +184,7 @@ return {
             status = {
                 recent_commit_count = 50,
             },
+            process_spinner = true,
         },
         config = function(_, opts)
             local neogit = require 'neogit'
@@ -210,14 +211,15 @@ return {
             { '[x', '<Plug>(git-conflict-prev-conflict)' },
             { ']x', '<Plug>(git-conflict-next-conflict)' },
         },
+        ---@module 'git-conflict'
+        ---@type GitConflictUserConfig
         opts = { default_mappings = false },
-        config = function(_, opts)
-            require('git-conflict').setup(opts)
-        end,
     },
     {
         'sindrets/diffview.nvim',
         cmd = { 'DiffviewOpen', 'DiffviewFileHistory' },
+        ---@module 'diffview.config'
+        ---@type DiffviewConfig
         opts = {
             enhanced_diff_hl = true,
             hooks = {
@@ -252,6 +254,9 @@ return {
             { '<leader>oi', '<cmd>Octo issue list<cr>' },
             { '<leader>os', '<cmd>Octo search assignee:disrupted<cr>' },
         },
+        ---@module 'octo.config'
+        ---@type OctoConfig
+        ---@diagnostic disable-next-line: missing-fields
         opts = { date_format = '%Y %b %d %H:%M' },
     },
     {
@@ -289,6 +294,7 @@ return {
                 desc = 'Copy git permlink to clipboard',
             },
         },
+        ---@module 'gitlinker.configs'
         ---@type gitlinker.Options
         opts = {
             router = {
