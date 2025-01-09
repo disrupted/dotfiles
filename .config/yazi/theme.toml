@@ -1,0 +1,26 @@
+[flavor]
+light = "kanagawa"
+dark = "kanagawa"
+
+# [filetype]
+# rules = [
+#   { mime = "image/*", fg = "#e6c384" },
+#   { mime = "{audio,video}/*", fg = "#957fb8" },
+#   { mime = "application/{,g}zip", fg = "#e46876" },
+#   { mime = "application/x-{tar,bzip*,7z-compressed,xz,rar}", fg = "#e46876" },
+#   { mime = "application/{pdf,doc,rtf,vnd.*}", fg = "#6a9589" },
+#   { name = "*", is = "orphan", fg = "#e46876" },
+#   { name = "*", is = "exec", fg = "#957fb8" },
+#   { name = "*/", fg = "#7e9cd8" },
+# ]
+
+[icon]
+prepend_exts = [
+  { name = "mp4", text = "" },
+  { name = "mkv", text = "" },
+  { name = "png", text = "" },
+  { name = "gif", text = "" },
+  { name = "jpg", text = "" },
+  { name = "jpeg", text = "" },
+  { name = "srt", text = "󰨖" },
+]

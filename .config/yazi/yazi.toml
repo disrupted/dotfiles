@@ -1,0 +1,20 @@
+"$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
+
+[manager]
+ratio = [0, 4, 3]
+
+[preview]
+max_width = 4000
+max_height = 3000
+
+[tasks]
+suppress_preload = true
+
+[plugin]
+prepend_fetchers = [
+  { id = "mime", if = "!(mime|dummy)", name = "*", run = "mime-ext", prio = "high" },
+]
+prepend_previewers = [
+  { mime = "{audio,video}/*", run = "mediainfo" },
+  { mime = "application/subrip", run = "code" },
+]

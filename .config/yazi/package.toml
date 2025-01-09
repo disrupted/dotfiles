@@ -1,0 +1,5 @@
+[plugin]
+deps = [{ use = "boydaihungst/mediainfo", rev = "ddfd5ec" }, { use = "yazi-rs/plugins:max-preview", rev = "71c4fc2" }, { use = "yazi-rs/plugins:full-border", rev = "71c4fc2" }, { use = "yazi-rs/plugins:hide-preview", rev = "71c4fc2" }, { use = "yazi-rs/plugins:mime-ext", rev = "71c4fc2" }]
+
+[flavor]
+deps = [{ use = "sanjinso/monokai-vibrant", rev = "8b68223" }, { use = "dangooddd/kanagawa", rev = "240194c" }]

@@ -1,0 +1,49 @@
+"$schema" = "https://yazi-rs.github.io/schemas/keymap.json"
+
+[input]
+prepend_keymap = [
+  { on = "<Esc>", run = "close", desc = "Cancel input" },
+]
+
+[manager]
+prepend_keymap = [
+  # toggle visibility
+  { on = ["z", "h"], run = "hidden toggle", desc = "Toggle hidden files" },
+  { on = ["z", "p"], run = "plugin hide-preview", desc = "Toggle previewer" },
+
+  # rename
+  { on = "i", run = "plugin max-preview", desc = "Maximize or restore preview" },
+  { on = "r", run = "rename --empty=all", desc = "Rename selected file(s)" },
+  { on = "I", run = "rename --cursor=start", desc = "Rename selected file(s)" },
+  { on = "a", run = "rename --cursor=before_ext", desc = "Rename selected file(s)" },
+  { on = "A", run = "rename --cursor=end", desc = "Rename selected file(s)" },
+
+  # yank-cut-paste (use key combination like ranger)
+  { on = ["y", "y"], run = "yank", desc = "Yank selected files" },
+  { on = ["y", "c"], run = "unyank", desc = "Cancel the yank status" },
+  { on = ["y", "p"], run = "copy path", desc = "Copy the file path" },
+  { on = ["y", "d"], run = "copy dirname", desc = "Copy the directory path" },
+  { on = ["y", "f"], run = "copy filename", desc = "Copy the filename" },
+  { on = ["y", "n"], run = "copy name_without_ext", desc = "Copy the filename without extension" },
+  { on = ["d", "d"], run = "yank --cut", desc = "Cut selected files" },
+  { on = ["d", "D"], run = "remove --permanently", desc = "Delete" },
+  { on = ["p", "p"], run = "paste", desc = "Paste" },
+  { on = ["p", "P"], run = "paste --force", desc = "Paste (Overwrite)" },
+  { on = ["p", "l"], run = "link", desc = "Symlink the absolute path of yanked files" },
+  { on = ["p", "L"], run = "link --relative", desc = "Symlink the relative path of yanked files" },
+  { on = ["p", "h"], run = "hardlink", desc = "Hardlink yanked files" },
+
+  # sort
+  { on = ["o", "M"], run = ["sort modified --reverse=no", "linemode mtime"], desc = "Sort by modified time" },
+  { on = ["o", "m"], run = ["sort modified --reverse", "linemode mtime"], desc = "Sort by modified time (reverse)" },
+  { on = ["o", "C"], run = ["sort created --reverse=no", "linemode ctime"], desc = "Sort by created time" },
+  { on = ["o", "c"], run = ["sort created --reverse", "linemode ctime"], desc = "Sort by created time (reverse)" },
+  { on = ["o", "E"], run = "sort extension --reverse=no", desc = "Sort by extension" },
+  { on = ["o", "e"], run = "sort extension --reverse", desc = "Sort by extension (reverse)" },
+  { on = ["o", "a"], run = "sort alphabetical --reverse=no", desc = "Sort alphabetically" },
+  { on = ["o", "A"], run = "sort alphabetical --reverse", desc = "Sort alphabetically (reverse)" },
+  { on = ["o", "n"], run = "sort natural --reverse=no", desc = "Sort naturally" },
+  { on = ["o", "N"], run = "sort natural --reverse", desc = "Sort naturally (reverse)" },
+  { on = ["o", "s"], run = ["sort size --reverse=no", "linemode size"], desc = "Sort by size" },
+  { on = ["o", "S"], run = ["sort size --reverse", "linemode size"], desc = "Sort by size (reverse)" },
+]
