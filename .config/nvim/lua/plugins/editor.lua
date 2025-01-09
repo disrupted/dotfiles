@@ -248,6 +248,21 @@ return {
                 filesystem = {
                     follow_current_file = { enabled = true },
                     hijack_netrw_behavior = 'open_current',
+                    filtered_items = {
+                        always_show = {
+                            '.github',
+                        },
+                        always_show_by_pattern = {
+                            '.env*',
+                        },
+                        never_show = {
+                            '.DS_Store',
+                            '__pycache__',
+                            '.mypy_cache',
+                            '.pytest_cache',
+                            '.ruff_cache',
+                        },
+                    },
                 },
             }
         end,
