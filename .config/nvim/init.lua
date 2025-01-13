@@ -28,6 +28,7 @@ require('lazy').setup {
     install = { colorscheme = { 'one' } },
     checker = { enabled = true },
 }
+require 'conf.lsp'
 vim.o.exrc = true
 -----------------------------------------------------------------------------//
 -- Utils {{{1

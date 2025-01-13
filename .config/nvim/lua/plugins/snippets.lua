@@ -77,7 +77,10 @@ return {
             vim.api.nvim_create_autocmd('User', {
                 pattern = 'LuasnipSnippetsAdded',
                 callback = function()
-                    print 'snippets loaded'
+                    Snacks.notify('snippets loaded', {
+                        level = vim.log.levels.DEBUG,
+                        title = 'Luasnip',
+                    })
                 end,
             })
 

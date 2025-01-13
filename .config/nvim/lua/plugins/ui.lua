@@ -864,7 +864,7 @@ return {
                     local client = vim.lsp.get_client_by_id(args.data.client_id)
                     if
                         client
-                        and client.supports_method 'textDocument/documentSymbol'
+                        and client:supports_method 'textDocument/documentSymbol'
                     then
                         local sources = require 'dropbar.sources'
                         local utils = require 'dropbar.utils'
