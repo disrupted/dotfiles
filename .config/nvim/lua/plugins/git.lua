@@ -4,6 +4,9 @@ return {
         event = { 'BufWinEnter', 'BufNewFile' },
         dependencies = { 'purarue/gitsigns-yadm.nvim' },
         opts = function()
+            ---@module 'gitsigns.config'
+            ---@type Gitsigns.Config
+            ---@diagnostic disable: missing-fields
             return {
                 signs = {
                     add = {
@@ -55,6 +58,7 @@ return {
                 },
                 sign_priority = 9999,
                 update_debounce = 100,
+                ---@diagnostic disable-next-line: assign-type-mismatch
                 status_formatter = nil, -- Use default
                 max_file_length = 40000,
                 preview_config = {
@@ -81,6 +85,7 @@ return {
                     end
                     if vim.uv.fs_stat '.git' then
                         -- disable YADM if inside Git repo
+                        ---@diagnostic disable-next-line: missing-parameter
                         return callback()
                     end
                     require('gitsigns-yadm').yadm_signs(callback)
@@ -267,6 +272,7 @@ return {
         },
         build = 'make',
         dependencies = { 'nvim-lua/plenary.nvim', 'MunifTanjim/nui.nvim' },
+        ---@module 'pipeline.config'
         ---@type pipeline.Config
         opts = {},
     },

@@ -51,6 +51,8 @@ return {
     {
         'kylechui/nvim-surround',
         event = { 'BufWinEnter', 'BufNewFile' },
+        ---@module 'nvim-surround.config'
+        ---@type user_options
         opts = { keymaps = { visual = 's' } },
     },
     {
@@ -82,6 +84,9 @@ return {
     {
         'abecodes/tabout.nvim',
         event = 'InsertEnter',
+        ---@module 'tabout.config'
+        ---@type TaboutOptions
+        ---@diagnostic disable-next-line: missing-fields
         opts = {
             completion = false,
             tabouts = {
@@ -366,9 +371,10 @@ return {
                 },
             },
         },
-        ---@module 'neotest.config'
-        ---@type fun(): neotest.CoreConfig
         opts = function()
+            ---@module 'neotest.config'
+            ---@type neotest.CoreConfig
+            ---@diagnostic disable-next-line: missing-fields
             return {
                 adapters = {
                     require 'neotest-python' {
