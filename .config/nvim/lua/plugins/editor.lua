@@ -234,6 +234,24 @@ return {
         keys = {
             { '<C-e>', '<cmd>Neotree toggle<CR>' },
         },
+        init = function()
+            vim.api.nvim_create_autocmd('BufEnter', {
+                group = vim.api.nvim_create_augroup(
+                    'NeoTreeInit',
+                    { clear = true }
+                ),
+                callback = function()
+                    local path = vim.fn.expand '%:p'
+                    local stat = vim.uv.fs_stat(path)
+                    if stat and stat.type == 'directory' then
+                        vim.cmd('Neotree current dir=' .. path)
+                        -- neo-tree is loaded now, delete the init autocmd
+                        vim.api.nvim_clear_autocmds { group = 'NeoTreeInit' }
+                    end
+                end,
+                desc = 'Open Neotree when launching Neovim with a directory',
+            })
+        end,
         opts = function()
             local function on_move(data)
                 Snacks.rename.on_rename_file(data.source, data.destination)
