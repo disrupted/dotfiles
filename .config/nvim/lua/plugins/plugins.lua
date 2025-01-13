@@ -96,9 +96,10 @@ return {
     { 'tpope/vim-repeat', event = 'VeryLazy' },
     { 'jghauser/mkdir.nvim', event = 'BufWritePre' },
     {
-        'zsugabubus/crazy8.nvim',
-        event = 'BufRead',
-        enabled = false,
+        'NMAC427/guess-indent.nvim',
+        cmd = 'GuessIndent',
+        event = { 'BufReadPre', 'BufNewFile' },
+        opts = {},
     },
     {
         'folke/which-key.nvim',
