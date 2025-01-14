@@ -3,7 +3,6 @@ return {
         'saghen/blink.cmp',
         lazy = false, -- lazy loading handled internally
         dependencies = {
-            -- { 'rafamadriz/friendly-snippets' },
             {
                 'saghen/blink.compat', -- compatibility layer with nvim-cmp sources
                 version = '*',
@@ -32,11 +31,11 @@ return {
                     'show_documentation',
                     'hide_documentation',
                 },
-                -- ['<C-s>'] = {
-                --     function(cmp)
-                --         cmp.show { providers = { 'luasnip' } }
-                --     end,
-                -- },
+                ['<C-s>'] = {
+                    function(cmp)
+                        cmp.show { providers = { 'snippets' } }
+                    end,
+                },
             },
             snippets = { preset = 'luasnip' },
             sources = {
