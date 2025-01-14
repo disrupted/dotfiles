@@ -252,17 +252,7 @@ return {
                 desc = 'Open Neotree when launching Neovim with a directory',
             })
         end,
-        opts = function()
-            local function on_move(data)
-                Snacks.rename.on_rename_file(data.source, data.destination)
-            end
-            local events = require 'neo-tree.events'
-
-            return {
-                event_handlers = {
-                    { event = events.FILE_MOVED, handler = on_move },
-                    { event = events.FILE_RENAMED, handler = on_move },
-                },
+        opts = {
                 filesystem = {
                     follow_current_file = { enabled = true },
                     hijack_netrw_behavior = 'open_current',
@@ -293,8 +283,7 @@ return {
                         },
                     },
                 },
-            }
-        end,
+        },
     },
     {
         'nvim-tree/nvim-tree.lua',
