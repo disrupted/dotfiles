@@ -126,9 +126,10 @@ return {
                 desc = 'Re-run latest request',
             },
         },
-        config = true,
+        ---@module 'rest-nvim.config'
+        ---@type rest.Opts
+        opts = {},
     },
-    { 'soywod/himalaya', cmd = 'Himalaya' },
     { 'ellisonleao/glow.nvim', cmd = 'Glow' },
     {
         'jamestthompson3/nvim-remote-containers',
