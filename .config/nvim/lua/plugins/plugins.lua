@@ -12,6 +12,13 @@ return {
                 end,
                 desc = 'Delete buffer',
             },
+            {
+                '<Tab>',
+                function()
+                    Snacks.notifier.show_history()
+                end,
+                desc = 'Show notification history',
+            },
         },
         ---@type snacks.Config
         opts = {
