@@ -30,6 +30,8 @@ shell-integration-features     = no-cursor,sudo,title
 
 # Key bindings
 macos-option-as-alt            = true
+# distinguish <C-i> from <Tab>
+keybind                        = ctrl+i=text:\x1b[105;5u
 keybind                        = cmd+right=text:\x05
 keybind                        = cmd+left=text:\x01
 keybind                        = cmd+backspace=text:\x15
