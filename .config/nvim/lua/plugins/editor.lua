@@ -229,6 +229,7 @@ return {
             'nvim-lua/plenary.nvim',
             'nvim-tree/nvim-web-devicons',
             'MunifTanjim/nui.nvim',
+            'nvim-lsp-file-operations',
         },
         cmd = 'Neotree',
         keys = {
@@ -288,6 +289,9 @@ return {
     {
         'nvim-tree/nvim-tree.lua',
         -- enabled = false,
+        dependencies = {
+            'nvim-lsp-file-operations',
+        },
         cmd = { 'NvimTreeOpen', 'NvimTreeToggle' },
         -- keys = {
         --     {
