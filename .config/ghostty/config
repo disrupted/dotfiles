@@ -1,4 +1,4 @@
-# vim: ft=conf
+# vim: ft=ghostty
 font-family                    = MesloLGS Nerd Font Mono
 font-size                      = 13
 font-thicken                   = true
@@ -6,10 +6,14 @@ window-inherit-font-size       = true
 
 # Look and Feel
 theme                          = dark:disrupted_dark,light:disrupted_light
+window-padding-x               = 1
+window-padding-y               = 1
+window-padding-color           = extend
+window-step-resize             = false
 macos-icon                     = custom-style
 macos-icon-frame               = plastic
-macos-icon-ghost-color         = "#efefef"
-macos-icon-screen-color        = "#5b6673"
+macos-icon-ghost-color         = #efefef
+macos-icon-screen-color        = #5b6673
 adjust-cursor-thickness        = 2
 cursor-style                   = block
 cursor-style-blink             = false
@@ -30,8 +34,72 @@ shell-integration-features     = no-cursor,sudo,title
 
 # Key bindings
 macos-option-as-alt            = true
-# distinguish <C-i> from <Tab>
-keybind                        = ctrl+i=text:\x1b[105;5u
 keybind                        = cmd+right=text:\x05
 keybind                        = cmd+left=text:\x01
 keybind                        = cmd+backspace=text:\x15
+
+# Ctrl 0 - 9
+keybind                        = ctrl+0=text:\x1b[48;5u
+keybind                        = ctrl+1=text:\x1b[49;5u
+keybind                        = ctrl+2=text:\x1b[50;5u
+keybind                        = ctrl+3=text:\x1b[51;5u
+keybind                        = ctrl+4=text:\x1b[52;5u
+keybind                        = ctrl+5=text:\x1b[53;5u
+keybind                        = ctrl+6=text:\x1b[54;5u
+keybind                        = ctrl+7=text:\x1b[55;5u
+keybind                        = ctrl+8=text:\x1b[56;5u
+keybind                        = ctrl+9=text:\x1b[57;5u
+
+# Ctrl + . , ; /
+keybind                        = ctrl+.=text:\x1b[46;5u
+keybind                        = ctrl+,=text:\x1b[44;5u
+keybind                        = ctrl+;=text:\x1b[59;5u
+keybind                        = ctrl+/=text:\x1f
+
+# Shift + Enter
+keybind                        = shift+enter=text:\x1b[13;2u
+
+# Ctrl + I & Ctrl + M
+keybind                        = ctrl+i=text:\x1b[105;5u
+keybind                        = ctrl+m=text:\x1b[109;5u
+
+# Ctrl + Shift
+keybind                        = ctrl+shift+h=text:\x1b[72;6u
+keybind                        = ctrl+shift+j=text:\x1b[74;6u
+keybind                        = ctrl+shift+k=text:\x1b[75;6u
+keybind                        = ctrl+shift+l=text:\x1b[76;6u
+
+keybind                        = ctrl+shift+u=text:\x1b[117;6u
+keybind                        = ctrl+shift+o=text:\x1b[111;6u
+keybind                        = ctrl+shift+p=text:\x1b[112;6u
+
+keybind                        = ctrl+shift+s=text:\x1b[108;6u
+
+# replicate tmux
+# tab
+keybind = ctrl+q>c=new_tab
+keybind = ctrl+q>n=next_tab
+keybind = ctrl+q>p=previous_tab
+keybind = ctrl+q>1=goto_tab:1
+keybind = ctrl+q>2=goto_tab:2
+keybind = ctrl+q>3=goto_tab:3
+keybind = ctrl+q>4=goto_tab:4
+keybind = ctrl+q>5=goto_tab:5
+keybind = ctrl+q>6=goto_tab:6
+keybind = ctrl+q>7=goto_tab:7
+keybind = ctrl+q>8=goto_tab:8
+keybind = ctrl+q>9=goto_tab:9
+
+# split
+keybind = ctrl+q>s=new_split:down
+keybind = ctrl+q>v=new_split:right
+keybind = ctrl+q>h=goto_split:left
+keybind = ctrl+q>j=goto_split:bottom
+keybind = ctrl+q>k=goto_split:top
+keybind = ctrl+q>l=goto_split:right
+keybind = ctrl+q>shift+h=resize_split:left,100
+keybind = ctrl+q>shift+j=resize_split:down,100
+keybind = ctrl+q>shift+k=resize_split:up,100
+keybind = ctrl+q>shift+l=resize_split:right,100
+keybind = ctrl+q>x=close_surface
+keybind = ctrl+q>enter=toggle_split_zoom

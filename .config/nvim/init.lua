@@ -138,6 +138,7 @@ vim.api.nvim_create_autocmd({ 'InsertEnter', 'WinLeave' }, {
 opt.wrap = true
 opt.linebreak = true -- wrap, but on words, not randomly
 -- opt.textwidth = 80
+-- vim.cmd.syntax 'off' -- disable legacy syntax highlighting
 opt.synmaxcol = 1024 -- don't syntax highlight long lines
 vim.g.vimsyn_embed = 'lPr' -- allow embedded syntax highlighting for lua, python, ruby
 vim.g.no_plugin_maps = 1
