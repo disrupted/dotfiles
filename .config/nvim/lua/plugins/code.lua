@@ -3,15 +3,13 @@ return {
         'johmsalas/text-case.nvim',
         cmd = 'Subs',
         keys = {
-            {
-                'za<space>',
-                function()
-                    require('telescope').load_extension 'textcase'
-                    require('textcase').open_telescope()
-                end,
-                mode = { 'n', 'v' },
-                desc = 'Pick textcase coercion in Telescope',
-            },
+            -- FIXME: Snacks.picker
+            -- {
+            --     'za<space>',
+            --     function() end,
+            --     mode = { 'n', 'v' },
+            --     desc = 'Pick textcase coercion in Telescope',
+            -- },
         },
         init = function()
             local function textcase_map(char, operation, desc)
@@ -475,15 +473,12 @@ return {
     {
         'Zeioth/compiler.nvim',
         cmd = { 'CompilerOpen', 'CompilerToggleResults', 'CompilerRedo' },
-        dependencies = {
-            'stevearc/overseer.nvim',
-            'nvim-telescope/telescope.nvim',
-        },
+        dependencies = { 'stevearc/overseer.nvim' },
         opts = {},
     },
     {
         'folke/todo-comments.nvim',
-        cmd = { 'TodoQuickFix', 'TodoTrouble', 'TodoTelescope' },
+        cmd = { 'TodoQuickFix', 'TodoTrouble' },
         keys = {
             {
                 ']t',

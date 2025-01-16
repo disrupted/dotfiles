@@ -1,228 +1,5 @@
 return {
     {
-        'nvim-telescope/telescope.nvim',
-        enabled = false,
-        cmd = 'Telescope',
-        keys = {
-            {
-                '<leader><leader>',
-                function()
-                    require('telescope.builtin').buffers(
-                        require('telescope.themes').get_dropdown {
-                            previewer = false,
-                            only_cwd = vim.fn.haslocaldir() == 1,
-                            show_all_buffers = false,
-                            sort_mru = true,
-                            ignore_current_buffer = true,
-                            sorter = require('telescope.sorters').get_substr_matcher(),
-                            selection_strategy = 'closest',
-                            path_display = { 'shorten' },
-                            layout_strategy = 'center',
-                            winblend = 0,
-                            layout_config = { width = 70 },
-                            color_devicons = true,
-                        }
-                    )
-                end,
-            },
-            {
-                '<C-f>',
-                function()
-                    -- Launch file search using Telescope
-                    if vim.uv.fs_stat '.git' then
-                        -- if in a git project, use :Telescope git_files
-                        require('telescope.builtin').git_files()
-                    else
-                        -- otherwise, use :Telescope find_files
-                        require('telescope.builtin').find_files()
-                    end
-                end,
-            },
-            {
-                '<C-g>',
-                function()
-                    require('telescope.builtin').git_status()
-                end,
-            },
-            {
-                '<leader>/',
-                function()
-                    require('telescope.builtin').live_grep()
-                end,
-            },
-            -- {
-            --     '<leader>/',
-            --     function()
-            --         require('telescope.builtin').grep_string {
-            --             search = vim.fn.expand '<cword>',
-            --         }
-            --     end,
-            --     desc = 'grep for word under the cursor',
-            -- },
-            {
-                '<leader>s',
-                function()
-                    require('telescope.builtin').lsp_dynamic_workspace_symbols()
-                end,
-            },
-            {
-                ',h',
-                function()
-                    require('telescope.builtin').help_tags()
-                end,
-            },
-            {
-                ',pr',
-                function()
-                    require('telescope.builtin').extensions.pull_request()
-                end,
-            },
-        },
-        config = function()
-            local telescope = require 'telescope'
-            local actions = require 'telescope.actions'
-            local sorters = require 'telescope.sorters'
-            local previewers = require 'telescope.previewers'
-            local custom_pickers = require 'conf.telescope_custom_pickers'
-            local action_state = require 'telescope.actions.state'
-
-            local custom_actions = {}
-            function custom_actions.qflist_multi_select(prompt_bufnr)
-                local picker = action_state.get_current_picker(prompt_bufnr)
-                local num_selections = #picker:get_multi_selection()
-
-                if num_selections > 1 then
-                    actions.send_selected_to_qflist(prompt_bufnr)
-                else
-                    actions.send_to_qflist(prompt_bufnr)
-                end
-                actions.open_qflist()
-            end
-
-            local default_options = {
-                layout_strategy = 'horizontal',
-                layout_config = { preview_width = 0.65 },
-                sorter = telescope.extensions['zf-native'].native_zf_scorer(), -- HACK: override for lsp_dynamic_workspace_symbols because not set automatically
-            }
-
-            telescope.setup {
-                defaults = {
-                    prompt_prefix = ' ❯ ',
-                    mappings = {
-                        i = {
-                            ['<ESC>'] = actions.close,
-                            ['<C-j>'] = actions.move_selection_next,
-                            ['<C-k>'] = actions.move_selection_previous,
-                            ['<C-p>'] = require('telescope.actions.layout').toggle_preview,
-                            ['<C-q>'] = custom_actions.qflist_multi_select,
-                            ['<tab>'] = actions.toggle_selection
-                                + actions.move_selection_next,
-                            ['<s-tab>'] = actions.toggle_selection
-                                + actions.move_selection_previous,
-                        },
-                        n = { ['<ESC>'] = actions.close },
-                    },
-                    file_ignore_patterns = {
-                        '%.jpg',
-                        '%.jpeg',
-                        '%.png',
-                        '%.svg',
-                        '%.otf',
-                        '%.ttf',
-                    },
-                    vimgrep_arguments = {
-                        'rg',
-                        '--color=never',
-                        '--no-heading',
-                        '--with-filename',
-                        '--line-number',
-                        '--column',
-                        '--smart-case',
-                        '--hidden',
-                        '-g',
-                        '!.git/',
-                    },
-                    file_sorter = sorters.get_fzy_sorter,
-                    generic_sorter = sorters.get_fzy_sorter,
-                    file_previewer = previewers.vim_buffer_cat.new,
-                    grep_previewer = previewers.vim_buffer_vimgrep.new,
-                    qflist_previewer = previewers.vim_buffer_qflist.new,
-                    layout_strategy = 'flex',
-                    winblend = 7,
-                    set_env = { COLORTERM = 'truecolor' },
-                    color_devicons = true,
-                    scroll_strategy = 'limit',
-                },
-                pickers = {
-                    live_grep = {
-                        only_sort_text = true,
-                        path_display = { 'shorten' },
-                        mappings = {
-                            i = {
-                                ['<C-f>'] = custom_pickers.actions.set_folders,
-                                ['<C-e>'] = custom_pickers.actions.set_extension,
-                            },
-                        },
-                        layout_strategy = 'horizontal',
-                        layout_config = { preview_width = 0.4 },
-                    },
-                    git_files = {
-                        path_display = {},
-                        hidden = true,
-                        show_untracked = true,
-                        layout_strategy = 'horizontal',
-                        layout_config = { preview_width = 0.65 },
-                    },
-                    find_files = default_options,
-                    git_status = default_options,
-                    lsp_dynamic_workspace_symbols = default_options,
-                    help_tags = default_options,
-                },
-                extensions = {
-                    fzf = {
-                        fuzzy = true,
-                        override_generic_sorter = true,
-                        override_file_sorter = true,
-                        case_mode = 'smart_case',
-                    },
-                    ['ui-select'] = {
-                        require('telescope.themes').get_cursor { -- or get_dropdown
-                            winblend = 0,
-                            initial_mode = 'normal',
-                        },
-                    },
-                },
-            }
-        end,
-        dependencies = {
-            {
-                'natecraddock/telescope-zf-native.nvim',
-                lazy = true,
-                config = function()
-                    require('telescope').load_extension 'zf-native'
-                end,
-            },
-            {
-                'nvim-telescope/telescope-ui-select.nvim',
-                config = function()
-                    require('telescope').load_extension 'ui-select'
-                end,
-            },
-            {
-                'nvim-telescope/telescope-github.nvim',
-                config = function()
-                    require('telescope').load_extension 'gh'
-                end,
-            },
-            {
-                'Marskey/telescope-sg',
-                config = function()
-                    require('telescope').load_extension 'ast_grep'
-                end,
-            },
-        },
-    },
-    {
         'nvim-neo-tree/neo-tree.nvim',
         branch = 'v3.x',
         dependencies = {
@@ -254,36 +31,36 @@ return {
             })
         end,
         opts = {
-                filesystem = {
-                    follow_current_file = { enabled = true },
-                    hijack_netrw_behavior = 'open_current',
-                    filtered_items = {
-                        always_show = {
-                            '.github',
-                        },
-                        always_show_by_pattern = {
-                            '.env*',
-                        },
-                        never_show = {
-                            '.DS_Store',
-                            '__pycache__',
-                            '.mypy_cache',
-                            '.pytest_cache',
-                            '.ruff_cache',
-                        },
+            filesystem = {
+                follow_current_file = { enabled = true },
+                hijack_netrw_behavior = 'open_current',
+                filtered_items = {
+                    always_show = {
+                        '.github',
+                    },
+                    always_show_by_pattern = {
+                        '.env*',
+                    },
+                    never_show = {
+                        '.DS_Store',
+                        '__pycache__',
+                        '.mypy_cache',
+                        '.pytest_cache',
+                        '.ruff_cache',
                     },
                 },
-                default_component_configs = {
-                    git_status = {
-                        symbols = {
-                            untracked = '*',
-                            ignored = '',
-                            unstaged = '󰄱',
-                            staged = '',
-                            conflict = '',
-                        },
+            },
+            default_component_configs = {
+                git_status = {
+                    symbols = {
+                        untracked = '*',
+                        ignored = '',
+                        unstaged = '󰄱',
+                        staged = '',
+                        conflict = '',
                     },
                 },
+            },
         },
     },
     {
@@ -684,7 +461,7 @@ return {
                 '\'',
                 function()
                     require 'neoclip'
-                    require('telescope').extensions.neoclip.default()
+                    -- FIXME: open Snacks.picker
                 end,
             },
         },

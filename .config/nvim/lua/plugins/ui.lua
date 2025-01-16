@@ -927,7 +927,7 @@ return {
             vim.api.nvim_set_hl(
                 0,
                 'NoiceCmdlinePopupBorder',
-                { link = 'TelescopePromptBorder' }
+                { link = 'NormalFloat' }
             )
             vim.keymap.set('n', '<M-Enter>', function() -- Alt-Enter
                 require('noice').redirect 'Inspect'
