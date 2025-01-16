@@ -1,6 +1,7 @@
 return {
     {
         'nvim-telescope/telescope.nvim',
+        enabled = false,
         cmd = 'Telescope',
         keys = {
             {
@@ -194,7 +195,6 @@ return {
             }
         end,
         dependencies = {
-            { 'nvim-treesitter/nvim-treesitter' },
             {
                 'natecraddock/telescope-zf-native.nvim',
                 lazy = true,

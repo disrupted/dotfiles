@@ -8,7 +8,7 @@ return {
     },
     {
         'nvim-treesitter/nvim-treesitter',
-        event = { 'BufRead', 'BufNewFile' },
+        event = { 'BufRead', 'BufNewFile', 'FileType' },
         dependencies = {
             'nvim-treesitter/nvim-treesitter-refactor',
             'nvim-treesitter/nvim-treesitter-textobjects',
