@@ -897,6 +897,15 @@ return {
     {
         'folke/noice.nvim',
         event = 'VeryLazy',
+        keys = {
+            {
+                '<M-Enter>', -- Alt-Enter
+                function()
+                    require('noice').redirect 'Inspect'
+                end,
+                desc = 'Show inspect in popup',
+            },
+        },
         opts = {
             cmdline = {
                 format = {
@@ -921,18 +930,6 @@ return {
                 lsp_doc_border = true, -- add a border to hover docs and signature help
             },
         },
-        config = function(_, opts)
-            require('noice').setup(opts)
-            vim.api.nvim_set_hl(0, 'NoiceVirtualText', { link = 'NormalFloat' })
-            vim.api.nvim_set_hl(
-                0,
-                'NoiceCmdlinePopupBorder',
-                { link = 'NormalFloat' }
-            )
-            vim.keymap.set('n', '<M-Enter>', function() -- Alt-Enter
-                require('noice').redirect 'Inspect'
-            end, { desc = 'Show inspect in popup' })
-        end,
     },
     {
         'folke/zen-mode.nvim',
