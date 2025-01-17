@@ -27,6 +27,7 @@ return {
                             vim.uv.fs_stat '.git' and 'git_files' or 'files',
                         },
                         format = 'file',
+                        matcher = { sort_empty = true },
                         filter = {
                             cwd = true,
                         },
@@ -56,7 +57,7 @@ return {
                             win = {
                                 input = {
                                     keys = {
-                                        ['<C-e>'] = {
+                                        ['<c-e>'] = {
                                             ---@param self snacks.win
                                             ---@diagnostic disable-next-line: assign-type-mismatch
                                             function(self)
@@ -83,7 +84,7 @@ return {
                                             mode = { 'i', 'n' },
                                             desc = 'Filter grep extension',
                                         },
-                                        ['<C-d>'] = {
+                                        ['<c-d>'] = {
                                             ---@param self snacks.win
                                             ---@diagnostic disable-next-line: assign-type-mismatch
                                             function(self)
