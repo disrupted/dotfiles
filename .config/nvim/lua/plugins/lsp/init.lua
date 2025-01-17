@@ -63,7 +63,6 @@ return {
                 'helm_ls',
                 'bashls',
                 'basedpyright',
-                'pylance',
                 'gitlab_ci_ls',
                 'taplo',
             },
@@ -107,6 +106,17 @@ return {
     },
     {
         'disrupted/pylance.nvim',
+        dependencies = {
+            {
+                'williamboman/mason-lspconfig.nvim',
+                opts = function(_, opts)
+                    opts.ensure_installed = opts.ensure_installed or {}
+                    vim.list_extend(opts.ensure_installed, {
+                        'pylance',
+                    })
+                end,
+            },
+        },
         ft = 'python',
         ---@type vim.lsp.Config
         opts = {},

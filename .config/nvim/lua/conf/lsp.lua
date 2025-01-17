@@ -1,7 +1,7 @@
 local au = vim.api.nvim_create_augroup('LspAttach', { clear = true })
 
 -- client log level
-vim.lsp.set_log_level(vim.lsp.log_levels.WARN)
+vim.lsp.set_log_level(vim.log.levels.WARN)
 
 vim.api.nvim_create_user_command('LspFormat', function()
     vim.lsp.buf.format { async = false }
