@@ -174,6 +174,12 @@ return {
                 end,
                 desc = 'Show notification history',
             },
+            {
+                '\\',
+                function()
+                    Snacks.terminal()
+                end,
+            },
         },
         ---@type snacks.Config
         opts = {
