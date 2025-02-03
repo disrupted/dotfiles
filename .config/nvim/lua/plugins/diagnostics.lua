@@ -1,24 +1,5 @@
 return {
     {
-        'https://git.sr.ht/~whynothugo/lsp_lines.nvim',
-        event = 'DiagnosticChanged',
-        init = function()
-            vim.api.nvim_create_autocmd('FileType', {
-                pattern = 'lazy',
-                desc = 'disable lsp_lines diagnostics for Lazy',
-                callback = function()
-                    local ns = vim.api.nvim_create_namespace 'lazy'
-                    vim.diagnostic.config({ virtual_lines = false }, ns)
-                end,
-            })
-        end,
-        opts = function()
-            vim.diagnostic.config {
-                virtual_lines = { only_current_line = true },
-            }
-        end,
-    },
-    {
         'rachartier/tiny-inline-diagnostic.nvim',
         enabled = false,
         event = 'DiagnosticChanged',

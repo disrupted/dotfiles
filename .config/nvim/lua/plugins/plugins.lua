@@ -20,7 +20,6 @@ return {
                 '<C-f>',
                 function()
                     Snacks.picker.smart {
-                        finder = 'smart',
                         finders = {
                             'buffers',
                             'recent',
@@ -168,7 +167,7 @@ return {
                 desc = 'Delete buffer',
             },
             {
-                '<Tab>',
+                '<Esc>',
                 function()
                     Snacks.notifier.show_history()
                 end,
