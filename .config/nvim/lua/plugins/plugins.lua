@@ -330,4 +330,5 @@ return {
         cmd = { 'AttachToContainer', 'BuildImage', 'StartImage' },
         enabled = false,
     },
+    { 'mrjones2014/op.nvim', build = 'make install', lazy = true },
 }
