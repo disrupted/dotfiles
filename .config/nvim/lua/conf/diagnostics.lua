@@ -34,7 +34,6 @@ vim.diagnostic.config {
     update_in_insert = true,
     severity_sort = true,
 }
-vim.diagnostic.config({ virtual_lines = false }, require('lazy.core.config').ns)
 
 vim.keymap.set('n', '[d', function()
     vim.diagnostic.jump { count = -1, float = false }

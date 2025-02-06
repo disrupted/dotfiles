@@ -2,6 +2,9 @@
 local cmd, fn, opt = vim.cmd, vim.fn, vim.opt
 local command = vim.api.nvim_create_user_command
 
+require 'conf.filetype'
+require 'conf.diagnostics'
+
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.uv.fs_stat(lazypath) then
     vim.system({
@@ -25,8 +28,6 @@ require('lazy').setup {
     install = { colorscheme = { 'one' } },
     checker = { enabled = true },
 }
-require 'conf.filetype'
-require 'conf.diagnostics'
 require 'conf.lsp'
 vim.o.exrc = true
 -----------------------------------------------------------------------------//
