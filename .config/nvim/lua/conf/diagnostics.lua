@@ -1,5 +1,5 @@
 vim.diagnostic.config {
-    underline = true,
+    underline = { severity = { min = vim.diagnostic.severity.ERROR } },
     signs = {
         text = {
             [vim.diagnostic.severity.ERROR] = '', -- ◉
