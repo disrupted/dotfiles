@@ -121,20 +121,67 @@ return {
                     end, { expr = true })
 
                     -- Actions
-                    map({ 'n', 'v' }, '<leader>hs', gs.stage_hunk)
-                    map({ 'n', 'v' }, '<leader>hr', gs.reset_hunk)
-                    map('n', '<leader>hS', gs.stage_buffer)
-                    map('n', '<leader>hu', gs.undo_stage_hunk)
-                    map('n', '<leader>hR', gs.reset_buffer)
-                    map('n', '<leader>hp', gs.preview_hunk)
-                    map('n', '<leader>hb', gs.toggle_current_line_blame)
-                    map('n', '<leader>hd', gs.diffthis)
+                    map(
+                        { 'n', 'v' },
+                        '<leader>hs',
+                        gs.stage_hunk,
+                        { desc = 'Git stage hunk' }
+                    )
+                    map(
+                        { 'n', 'v' },
+                        '<leader>hr',
+                        gs.reset_hunk,
+                        { desc = 'Git reset hunk' }
+                    )
+                    map(
+                        'n',
+                        '<leader>hS',
+                        gs.stage_buffer,
+                        { desc = 'Git stage buffer' }
+                    )
+                    map(
+                        'n',
+                        '<leader>hu',
+                        gs.stage_hunk,
+                        { desc = 'Git undo stage hunk' }
+                    )
+                    map(
+                        'n',
+                        '<leader>hR',
+                        gs.reset_buffer,
+                        { desc = 'Git reset buffer' }
+                    )
+                    map(
+                        'n',
+                        '<leader>hp',
+                        gs.preview_hunk,
+                        { desc = 'Git preview hunk' }
+                    )
+                    map(
+                        'n',
+                        '<leader>hb',
+                        gs.toggle_current_line_blame,
+                        { desc = 'Git toggle current line blame' }
+                    )
+                    map(
+                        'n',
+                        '<leader>hd',
+                        gs.diffthis,
+                        { desc = 'Git diff against index' }
+                    )
                     map('n', '<leader>hD', function()
                         gs.diffthis '~'
-                    end)
+                    end, {
+                        desc = 'Git diff against last commit',
+                    })
 
                     -- Text object
-                    map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+                    map(
+                        { 'o', 'x' },
+                        'ih',
+                        ':<C-U>Gitsigns select_hunk<CR>',
+                        { desc = 'Git select hunk' }
+                    )
                 end,
                 -- _signs_staged_enable = true,
                 -- _signs_staged = {
@@ -195,13 +242,55 @@ return {
             local neogit = require 'neogit'
             neogit.setup(opts)
 
+            local augroup =
+                vim.api.nvim_create_augroup('NeogitEvents', { clear = true })
+
             vim.api.nvim_create_autocmd('User', {
                 pattern = 'NeogitPushComplete',
-                group = vim.api.nvim_create_augroup(
-                    'NeogitEvents',
-                    { clear = true }
-                ),
+                group = augroup,
                 callback = neogit.close,
+                desc = 'Close Neogit after pushing',
+            })
+
+            vim.api.nvim_create_autocmd('User', {
+                pattern = {
+                    -- 'NeogitStatusRefreshed',
+                    'NeogitCommitComplete',
+                    'NeogitBranchReset',
+                    'NeogitRebase',
+                    'NeogitReset',
+                },
+                group = augroup,
+                callback = function()
+                    require('gitsigns').refresh()
+                end,
+                desc = 'Update gitsigns on Neogit event',
+            })
+
+            vim.api.nvim_create_autocmd('User', {
+                pattern = {
+                    -- 'NeogitStatusRefreshed',
+                    'NeogitCommitComplete',
+                    'NeogitBranchReset',
+                    'NeogitRebase',
+                    'NeogitReset',
+                },
+                group = augroup,
+                callback = function()
+                    if package.loaded['neo-tree'] then
+                        require('neo-tree.sources.git_status').refresh()
+                    end
+                end,
+                desc = 'Update neo-tree on Neogit event',
+            })
+
+            vim.api.nvim_create_autocmd('User', {
+                pattern = 'GitSignsChanged',
+                group = augroup,
+                callback = function()
+                    neogit.refresh()
+                end,
+                desc = 'Update Neogit on gitsigns action',
             })
         end,
     },
