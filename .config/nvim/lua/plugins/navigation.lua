@@ -151,52 +151,6 @@ return {
         },
     },
     {
-        'SmiteshP/nvim-navbuddy',
-        keys = {
-            {
-                '<leader>n',
-                function()
-                    require('nvim-navbuddy').open()
-                end,
-            },
-        },
-        dependencies = {
-            'SmiteshP/nvim-navic',
-            'MunifTanjim/nui.nvim',
-        },
-        opts = {
-            lsp = { auto_attach = true },
-            icons = {
-                Array = '󰅪 ',
-                Boolean = '◩ ',
-                Class = '󰙅 ',
-                Constructor = ' ',
-                Constant = '󰏿 ',
-                Enum = ' ',
-                EnumMember = ' ',
-                Event = ' ',
-                Field = '󰜢 ',
-                File = '󰈙 ',
-                Function = '󰊕 ',
-                Interface = '󰕘 ',
-                Key = '󰌋 ',
-                Method = ' ',
-                Module = ' ',
-                Namespace = '󰌗 ',
-                Null = '󰢤 ',
-                Object = '󰅩 ',
-                Operator = '󰆕 ',
-                Package = '󰆦 ',
-                Property = ' ',
-                String = '󰉾 ',
-                Struct = '󱡠 ',
-                TypeParameter = '󰊄 ',
-                Variable = '󰀫 ',
-                Number = '󰎠 ',
-            },
-        },
-    },
-    {
         'aaronik/treewalker.nvim',
         cmd = 'Treewalker',
         keys = {

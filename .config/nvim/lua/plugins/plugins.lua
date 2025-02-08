@@ -145,6 +145,30 @@ return {
                 desc = 'Grep',
             },
             {
+                '<C-s>',
+                function()
+                    Snacks.picker.lsp_symbols {
+                        layout = {
+                            preset = 'dropdown',
+                            preview = 'main',
+                        },
+                    }
+                end,
+                desc = 'LSP symbols',
+            },
+            {
+                '<leader>s',
+                function()
+                    Snacks.picker.lsp_workspace_symbols {
+                        layout = {
+                            preset = 'dropdown',
+                            layout = { width = 0.5 },
+                        },
+                    }
+                end,
+                desc = 'LSP workspace symbols',
+            },
+            {
                 '<C-g>',
                 function()
                     Snacks.picker.git_status()
@@ -284,6 +308,51 @@ return {
                         },
                     },
                 },
+                icons = {
+                    kinds = {
+                        Array = '󰅪',
+                        Boolean = '◩',
+                        Class = '󰙅',
+                        Color = '󰏘',
+                        Control = '',
+                        Collapsed = '',
+                        Constant = '󰏿',
+                        Constructor = '',
+                        Copilot = '',
+                        Enum = '',
+                        EnumMember = '',
+                        Event = '',
+                        Field = '󰜢',
+                        File = '󰈙',
+                        Folder = '󰉋',
+                        Function = '󰊕',
+                        Interface = '󰕘',
+                        Key = '󰌋',
+                        Keyword = '󰌋',
+                        Method = '',
+                        Module = '',
+                        Namespace = '󰌗',
+                        Null = '󰢤',
+                        Number = '󰎠',
+                        Object = '',
+                        Operator = '󰆕',
+                        Package = '󰆦',
+                        Property = '',
+                        Reference = '󰋺',
+                        Snippet = '󰩫',
+                        String = '󰉾',
+                        Struct = '󱡠',
+                        Text = '',
+                        TypeParameter = '󰊄',
+                        Unit = '',
+                        Unknown = '',
+                        Value = '󰦨',
+                        Variable = '󰀫',
+                    },
+                },
+            },
+            terminal = {
+                keys = { ['\\'] = 'hide' },
             },
         },
     },
