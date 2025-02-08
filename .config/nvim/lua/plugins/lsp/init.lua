@@ -440,6 +440,13 @@ return {
             end
 
             function M.lint()
+                -- Only run the linter in buffers that you can modify in order to
+                -- avoid superfluous noise, notably within the handy LSP pop-ups that
+                -- describe the hovered symbol using Markdown.
+                if not vim.opt_local.modifiable:get() then
+                    return
+                end
+
                 -- Use nvim-lint's logic first:
                 -- * checks if linters exist for the full filetype first
                 -- * otherwise will split filetype by "." and add all those linters
