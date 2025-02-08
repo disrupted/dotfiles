@@ -167,6 +167,7 @@ return {
                     return require('dial.map').inc_normal()
                 end,
                 expr = true,
+                desc = 'Increment value',
             },
             {
                 '<leader>k',
@@ -174,6 +175,7 @@ return {
                     return require('dial.map').dec_normal()
                 end,
                 expr = true,
+                desc = 'Decrement value',
             },
             {
                 '<leader>j',
@@ -182,6 +184,7 @@ return {
                 end,
                 mode = 'v',
                 expr = true,
+                desc = 'Increment value',
             },
             {
                 '<leader>k',
@@ -190,6 +193,7 @@ return {
                 end,
                 mode = 'v',
                 expr = true,
+                desc = 'Decrement value',
             },
         },
         config = function()
