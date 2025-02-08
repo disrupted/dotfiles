@@ -61,7 +61,7 @@ return {
                                             ---@diagnostic disable-next-line: assign-type-mismatch
                                             function(self)
                                                 local default = '*.'
-                                                vim.ui.input({
+                                                Snacks.input.input({
                                                     prompt = 'Grep glob',
                                                     default = default,
                                                 }, function(
@@ -76,8 +76,8 @@ return {
                                                     end
                                                     grep_glob = input
                                                     grep_search = self:text()
-                                                    self:close()
-                                                    grep()
+                                                    Snacks.picker.grep() -- close current picker
+                                                    grep() -- launch new picker with values
                                                 end)
                                             end,
                                             mode = { 'i', 'n' },
