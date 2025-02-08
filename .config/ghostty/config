@@ -74,32 +74,3 @@ keybind                        = ctrl+shift+o=text:\x1b[111;6u
 keybind                        = ctrl+shift+p=text:\x1b[112;6u
 
 keybind                        = ctrl+shift+s=text:\x1b[108;6u
-
-# replicate tmux
-# tab
-keybind = ctrl+q>c=new_tab
-keybind = ctrl+q>n=next_tab
-keybind = ctrl+q>p=previous_tab
-keybind = ctrl+q>1=goto_tab:1
-keybind = ctrl+q>2=goto_tab:2
-keybind = ctrl+q>3=goto_tab:3
-keybind = ctrl+q>4=goto_tab:4
-keybind = ctrl+q>5=goto_tab:5
-keybind = ctrl+q>6=goto_tab:6
-keybind = ctrl+q>7=goto_tab:7
-keybind = ctrl+q>8=goto_tab:8
-keybind = ctrl+q>9=goto_tab:9
-
-# split
-keybind = ctrl+q>s=new_split:down
-keybind = ctrl+q>v=new_split:right
-keybind = ctrl+q>h=goto_split:left
-keybind = ctrl+q>j=goto_split:bottom
-keybind = ctrl+q>k=goto_split:top
-keybind = ctrl+q>l=goto_split:right
-keybind = ctrl+q>shift+h=resize_split:left,100
-keybind = ctrl+q>shift+j=resize_split:down,100
-keybind = ctrl+q>shift+k=resize_split:up,100
-keybind = ctrl+q>shift+l=resize_split:right,100
-keybind = ctrl+q>x=close_surface
-keybind = ctrl+q>enter=toggle_split_zoom
