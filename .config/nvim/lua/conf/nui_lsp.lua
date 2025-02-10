@@ -6,7 +6,7 @@ local utils = require 'utils'
 local function nui_lsp_rename()
     local curr_name = vim.fn.expand '<cword>'
 
-    local params = vim.lsp.util.make_position_params()
+    local params = vim.lsp.util.make_position_params(0, 'utf-16')
 
     local function on_submit(new_name)
         if not new_name or #new_name == 0 or curr_name == new_name then
@@ -56,13 +56,10 @@ local function nui_lsp_rename()
                             )
                         )
                     end
-                    Snacks.notify.info(
-                        {
-                            ('Rename: %s -> %s'):format(curr_name, new_name),
-                            msg,
-                        },
-                        { title = 'LSP' }
-                    )
+                    Snacks.notify.info({
+                        ('Rename: %s -> %s'):format(curr_name, new_name),
+                        msg,
+                    }, { title = 'LSP' })
 
                     -- after the edits are applied, the files are not saved automatically.
                     -- let's remind ourselves to save those...
@@ -102,8 +99,8 @@ local function nui_lsp_rename()
         },
         -- position the popup window on the line below identifier
         position = {
-            row = 1,
-            col = 0,
+            row = 2,
+            col = 1,
         },
         size = {
             width = math.max(#curr_name + 10, 25),
