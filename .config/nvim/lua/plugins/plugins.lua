@@ -203,6 +203,20 @@ return {
                     Snacks.terminal()
                 end,
             },
+            {
+                '<C-n>',
+                function()
+                    Snacks.words.jump(vim.v.count1)
+                end,
+                desc = 'Next reference',
+            },
+            {
+                '<C-p>',
+                function()
+                    Snacks.words.jump(-vim.v.count1)
+                end,
+                desc = 'Prev reference',
+            },
         },
         ---@type snacks.Config
         opts = {
@@ -268,6 +282,7 @@ return {
                     },
                 },
             },
+            image = { enabled = true },
             input = { enabled = true },
             notifier = {
                 enabled = true,
@@ -354,6 +369,7 @@ return {
             terminal = {
                 keys = { ['\\'] = 'hide' },
             },
+            words = { enabled = true },
         },
     },
     { 'tpope/vim-repeat', event = 'VeryLazy' },

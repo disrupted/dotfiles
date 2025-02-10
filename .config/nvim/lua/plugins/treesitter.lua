@@ -92,7 +92,7 @@ return {
                 },
             },
             refactor = {
-                highlight_definitions = { enable = true },
+                highlight_definitions = { enable = false },
                 highlight_current_scope = { enable = false },
                 smart_rename = {
                     enable = true,
@@ -101,7 +101,7 @@ return {
                     },
                 },
                 navigation = {
-                    enable = true,
+                    enable = false,
                     keymaps = {
                         goto_definition = 'gnd', -- mapping to go to definition of symbol under cursor
                         list_definitions = 'gnD', -- mapping to list all definitions in current file

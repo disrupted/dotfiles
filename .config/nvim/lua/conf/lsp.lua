@@ -52,7 +52,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end,
 })
 
-vim.api.nvim_create_autocmd('LspAttach', {
+-- NOTE: disabled in favor of Snacks.words
+--[[ vim.api.nvim_create_autocmd('LspAttach', {
     group = au,
     desc = 'LSP highlight',
     callback = function(args)
@@ -79,7 +80,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
             })
         end
     end,
-})
+}) ]]
 
 vim.api.nvim_create_autocmd('LspAttach', {
     group = au,
