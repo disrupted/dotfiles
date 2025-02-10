@@ -150,11 +150,6 @@ return {
             local aupair = require 'ultimate-autopair'
             aupair.init {
                 aupair.extend_default(opts),
-                {
-                    profile = require(
-                        'ultimate-autopair.experimental.matchpair'
-                    ).init,
-                },
             }
         end,
     },
