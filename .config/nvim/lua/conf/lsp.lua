@@ -25,29 +25,77 @@ vim.api.nvim_create_autocmd('LspAttach', {
     desc = 'LSP keymaps',
     callback = function(args)
         local bufnr = args.buf
-        local function map(mode, lhs, rhs)
-            vim.keymap.set(mode, lhs, rhs, { buffer = bufnr })
+        local function map(mode, lhs, rhs, opts)
+            opts = vim.tbl_extend('force', opts or {}, { buffer = bufnr })
+            vim.keymap.set(mode, lhs, rhs, opts)
         end
 
-        map('n', 'gD', vim.lsp.buf.declaration)
-        map('n', 'gd', vim.lsp.buf.definition)
-        map('n', 'K', vim.lsp.buf.hover)
-        map('n', 'gi', vim.lsp.buf.implementation)
-        -- map('n', '<C-s>', vim.lsp.buf.signature_help)
-        map('n', '<leader>wa', vim.lsp.buf.add_workspace_folder)
-        map('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder)
+        -- map(
+        --     'n',
+        --     'gD',
+        --     vim.lsp.buf.declaration,
+        --     { desc = 'LSP: go to declaration' }
+        -- )
+        map('n', 'gd', function()
+            require('trouble').open { mode = 'lsp_definitions', focus = true }
+        end, { desc = 'LSP: go to definition' })
+        map('n', 'K', vim.lsp.buf.hover, { desc = 'LSP: Hover' })
+        -- map(
+        --     'n',
+        --     'gi',
+        --     vim.lsp.buf.implementation,
+        --     { desc = 'LSP: go to implementation' }
+        -- )
+        -- map(
+        --     'n',
+        --     '<C-s>',
+        --     vim.lsp.buf.signature_help,
+        --     { desc = 'LSP: signature help' }
+        -- )
+        map(
+            'n',
+            '<leader>wa',
+            vim.lsp.buf.add_workspace_folder,
+            { desc = 'LSP: add workspace folder' }
+        )
+        map(
+            'n',
+            '<leader>wr',
+            vim.lsp.buf.remove_workspace_folder,
+            { desc = 'LSP: remove workspace folder' }
+        )
         map('n', '<leader>wl', function()
-            print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-        end)
-        map('n', '<leader>D', vim.lsp.buf.type_definition)
+            Snacks.notify.info(
+                vim.lsp.buf.list_workspace_folders(),
+                { title = 'LSP workspace folders' }
+            )
+        end, { desc = 'LSP: list workspace folders' })
+        -- map(
+        --     'n',
+        --     '<leader>D',
+        --     vim.lsp.buf.type_definition,
+        --     { desc = 'LSP: type definition' }
+        -- )
         map('n', '<leader>r', function()
             require('conf.nui_lsp').lsp_rename()
-        end)
+        end, { desc = 'LSP: rename symbol' })
         map('n', 'gr', function()
             require('trouble').open { mode = 'lsp', focus = true }
-        end)
-        map('n', '<leader>li', vim.lsp.buf.incoming_calls)
-        map('n', '<leader>lo', vim.lsp.buf.outgoing_calls)
+        end, {
+            desc = 'LSP: list definitions, references, implementations, type definitions, and declarations',
+        })
+        map(
+            'n',
+            '<leader>li',
+            vim.lsp.buf.incoming_calls,
+            { desc = 'LSP: list incoming calls (call sites)' }
+        )
+        map(
+            'n',
+            '<leader>lo',
+            vim.lsp.buf.outgoing_calls,
+            { desc = 'LSP: list outgoing calls (called functions)' }
+        )
         vim.opt.shortmess:append 'c'
     end,
 })

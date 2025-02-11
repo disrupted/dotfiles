@@ -524,43 +524,59 @@ return {
             {
                 '<leader>xx',
                 function()
-                    require('trouble').toggle()
+                    require('trouble').toggle {
+                        mode = 'diagnostics',
+                        auto_refresh = true,
+                        -- only errors
+                        -- filter = { severity = vim.diagnostic.severity.ERROR },
+                        -- only the most severe diagnostics
+                        filter = function(items)
+                            local severity = vim.diagnostic.severity.HINT
+                            for _, item in ipairs(items) do
+                                severity = math.min(severity, item.severity)
+                            end
+                            return vim.tbl_filter(function(item)
+                                return item.severity == severity
+                            end, items)
+                        end,
+                    }
                 end,
+                desc = 'Trouble: List most severe diagnostics for workspace',
             },
             {
                 '<leader>xw',
                 function()
-                    require('trouble').toggle { mode = 'diagnostics' }
+                    require('trouble').toggle {
+                        mode = 'diagnostics',
+                        auto_refresh = true,
+                    }
                 end,
+                desc = 'Trouble: List diagnostics for workspace',
             },
             {
                 '<leader>xb',
                 function()
                     require('trouble').toggle {
                         mode = 'diagnostics',
+                        auto_refresh = true,
                         filter = { buf = 0 },
                     }
                 end,
+                desc = 'Trouble: List diagnostics for buffer',
             },
             {
                 '<leader>xq',
                 function()
                     require('trouble').toggle { mode = 'quickfix' }
                 end,
+                desc = 'Trouble: QuickFix',
             },
         },
         opts = {
-            fold_open = '', -- ▾
-            fold_closed = '', -- ▸
+            fold_open = '',
+            fold_closed = '',
             indent_lines = false,
             padding = false,
-            signs = {
-                error = '',
-                warning = '',
-                hint = '',
-                information = '',
-                other = '', -- 
-            },
             action_keys = { jump = { '<cr>' }, toggle_fold = { '<tab>' } },
             auto_refresh = false,
         },

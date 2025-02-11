@@ -5,7 +5,7 @@ vim.diagnostic.config {
             [vim.diagnostic.severity.ERROR] = '', -- ◉
             [vim.diagnostic.severity.WARN] = '', -- ●
             [vim.diagnostic.severity.INFO] = '', -- •
-            [vim.diagnostic.severity.HINT] = '', -- ·
+            [vim.diagnostic.severity.HINT] = '', -- ·
         },
         linehl = {
             [vim.diagnostic.severity.ERROR] = '',
