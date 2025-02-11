@@ -17,6 +17,35 @@ return {
                 desc = 'Buffers',
             },
             {
+                '<C-e>',
+                function()
+                    Snacks.picker.explorer {
+                        include = { '.github', '.env*' },
+                        win = {
+                            input = {
+                                keys = {
+                                    ['<Esc>'] = {
+                                        'toggle_focus',
+                                        mode = { 'i', 'n' },
+                                    },
+                                    ['<CR>'] = {
+                                        { 'pick_win', 'jump' },
+                                        mode = { 'n', 'i' },
+                                    },
+                                },
+                            },
+                            list = {
+                                keys = {
+                                    ['<Esc>'] = 'toggle_focus',
+                                    -- ['<CR>'] = { { 'pick_win', 'jump' } }, -- FIXME: cannot open/close directories anymore
+                                },
+                            },
+                        },
+                    }
+                end,
+                desc = 'Explorer',
+            },
+            {
                 '<C-f>',
                 function()
                     Snacks.picker.smart {
@@ -299,6 +328,7 @@ return {
         ---@type snacks.Config
         opts = {
             bigfile = { enabled = true },
+            explorer = {},
             gitbrowse = {},
             indent = {
                 indent = {
