@@ -153,6 +153,11 @@ return {
                             preset = 'dropdown',
                             preview = 'main',
                         },
+                        win = {
+                            preview = {
+                                wo = { number = true },
+                            },
+                        },
                     }
 
                     ---source: dropbar.nvim
@@ -187,6 +192,7 @@ return {
                             for _, symbol in ipairs(picker:items()) do
                                 if cursor_in_range(cursor, symbol.range) then
                                     picker.list.cursor = symbol.idx
+                                    return
                                 end
                             end
                         end)
@@ -388,13 +394,7 @@ return {
                             ['<Esc>'] = { 'close', mode = { 'i', 'n' } },
                         },
                     },
-                    preview = {
-                        minimal = true,
-                        wo = {
-                            relativenumber = false,
-                            number = false,
-                        },
-                    },
+                    preview = { minimal = true },
                 },
                 icons = {
                     kinds = {
