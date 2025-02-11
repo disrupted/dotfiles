@@ -379,34 +379,6 @@ return {
         config = true,
     },
     {
-        'linrongbin16/gitlinker.nvim',
-        cmd = 'GitLink',
-        keys = {
-            {
-                '<leader>hl',
-                '<cmd>GitLink<cr>',
-                mode = { 'n', 'v' },
-                desc = 'Copy git permlink to clipboard',
-            },
-        },
-        ---@module 'gitlinker.configs'
-        ---@type gitlinker.Options
-        opts = {
-            router = {
-                browse = {
-                    -- example: https://github.com/linrongbin16/gitlinker.nvim/blob/9679445c7a24783d27063cd65f525f02def5f128/lua/gitlinker.lua#L3-L4
-                    ['^git@github%.com'] = 'https://github.com/'
-                        .. '{_A.ORG}/'
-                        .. '{_A.REPO}/blob/'
-                        .. '{_A.REV}/'
-                        .. '{_A.FILE}?plain=1' -- '?plain=1'
-                        .. '#L{_A.LSTART}'
-                        .. '{(_A.LEND > _A.LSTART and (\'-L\' .. _A.LEND) or \'\')}',
-                },
-            },
-        },
-    },
-    {
         'disrupted/github-actions.nvim',
         dir = require('conf.utils').dir '~/dev/github-actions.nvim',
         dev = require('conf.utils').dev '~/dev/github-actions.nvim',

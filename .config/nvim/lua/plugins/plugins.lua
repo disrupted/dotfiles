@@ -275,10 +275,25 @@ return {
                 end,
                 desc = 'Prev reference',
             },
+            {
+                '<leader>hl',
+                function()
+                    Snacks.gitbrowse.open {
+                        notify = false,
+                        open = function(url)
+                            vim.fn.setreg('+', url)
+                            Snacks.notify { 'Yanked permlink to clipboard', url }
+                        end,
+                    }
+                end,
+                mode = { 'n', 'v' },
+                desc = 'Yank permlink for Git remote',
+            },
         },
         ---@type snacks.Config
         opts = {
             bigfile = { enabled = true },
+            gitbrowse = {},
             indent = {
                 indent = {
                     char = '▏',
