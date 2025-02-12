@@ -1,12 +1,13 @@
 local M = {}
 
 ---@type snacks.picker.finder
-M.fd_dirs = function(opts)
+M.fd_dirs = function(opts, ctx)
     local cwd = vim.fs.normalize(opts and opts.cwd or vim.uv.cwd() or '.')
         or nil
 
-    return require('snacks.picker.source.proc').proc(
-        vim.tbl_deep_extend('force', {
+    return require('snacks.picker.source.proc').proc({
+        opts,
+        {
             cmd = 'fd',
             args = {
                 '--type',
@@ -22,17 +23,18 @@ M.fd_dirs = function(opts)
                 item.file = item.text
                 item.dir = true
             end,
-        }, opts or {})
-    )
+        },
+    }, ctx)
 end
 
 ---@type snacks.picker.finder
-M.git_dirs = function(opts)
+M.git_dirs = function(opts, ctx)
     local cwd = vim.fs.normalize(opts and opts.cwd or vim.uv.cwd() or '.')
         or nil
 
-    return require('snacks.picker.source.proc').proc(
-        vim.tbl_deep_extend('force', {
+    return require('snacks.picker.source.proc').proc({
+        opts,
+        {
             cmd = 'git',
             args = {
                 '-c',
@@ -48,8 +50,8 @@ M.git_dirs = function(opts)
                 item.file = item.text
                 item.dir = true
             end,
-        }, opts or {})
-    )
+        },
+    }, ctx)
 end
 
 return M
