@@ -580,7 +580,10 @@ return {
                 desc = 'Trouble: QuickFix',
             },
         },
+        ---@type trouble.Config
+        ---@diagnostic disable-next-line: missing-fields
         opts = {
+            focus = true,
             fold_open = '',
             fold_closed = '',
             indent_lines = false,
