@@ -30,27 +30,20 @@ return {
                 '<C-e>',
                 function()
                     Snacks.picker.explorer {
-                        include = { '.github', '.env*' },
-                        win = {
-                            input = {
-                                keys = {
-                                    ['<Esc>'] = {
-                                        'toggle_focus',
-                                        mode = { 'i', 'n' },
-                                    },
-                                    ['<CR>'] = {
-                                        { 'pick_win', 'jump' },
-                                        mode = { 'n', 'i' },
-                                    },
-                                },
-                            },
-                            list = {
-                                keys = {
-                                    ['<Esc>'] = 'toggle_focus',
-                                    -- ['<CR>'] = { { 'pick_win', 'jump' } }, -- FIXME: cannot open/close directories anymore
-                                },
-                            },
+                        layout = {
+                            preset = 'sidebar',
+                            preview = false,
+                            fullscreen = false,
                         },
+                        jump = { close = false },
+                        include = { '.github', '.env*' },
+                        -- win = {
+                        --     list = {
+                        --         keys = {
+                        --             ['<CR>'] = { { 'pick_win', 'jump' } }, -- FIXME: cannot open/close directories anymore
+                        --         },
+                        --     },
+                        -- },
                     }
                 end,
                 desc = 'Explorer',
@@ -428,6 +421,34 @@ return {
             statuscolumn = { enabled = true },
             picker = {
                 ui_select = true,
+                sources = {
+                    explorer = {
+                        layout = {
+                            fullscreen = true,
+                            layout = { backdrop = false, relative = 'win' },
+                        },
+                        jump = { close = true },
+                        win = {
+                            input = {
+                                keys = {
+                                    ['<Esc>'] = {
+                                        'toggle_focus',
+                                        mode = { 'i', 'n' },
+                                    },
+                                    ['<CR>'] = {
+                                        { 'pick_win', 'jump' },
+                                        mode = { 'n', 'i' },
+                                    },
+                                },
+                            },
+                            list = {
+                                keys = {
+                                    ['<Esc>'] = 'toggle_focus',
+                                },
+                            },
+                        },
+                    },
+                },
                 layouts = {
                     select = {
                         layout = {
