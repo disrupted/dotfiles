@@ -188,6 +188,7 @@ return {
                 function()
                     local cursor = vim.api.nvim_win_get_cursor(0)
                     local picker = Snacks.picker.lsp_symbols {
+                        title = 'LSP Document Symbols',
                         layout = {
                             preset = 'dropdown',
                             preview = 'main',
@@ -263,6 +264,7 @@ return {
                 '<leader>s',
                 function()
                     Snacks.picker.lsp_workspace_symbols {
+                        title = 'LSP Workspace Symbols',
                         layout = {
                             preset = 'dropdown',
                             layout = { width = 0.5 },
@@ -274,9 +276,17 @@ return {
             {
                 '<C-g>',
                 function()
-                    Snacks.picker.git_status()
+                    if vim.uv.fs_stat '.git' then
+                        Snacks.picker.git_status()
+                    else
+                        Snacks.picker.git_status {
+                            title = 'YADM status',
+                            finder = require('conf.snacks.finder').yadm_status,
+                            preview = require('conf.snacks.preview').yadm_status,
+                        }
+                    end
                 end,
-                desc = 'Git status',
+                desc = 'Git/YADM status',
             },
             {
                 ',h',
