@@ -3,6 +3,12 @@ return {
     {
         'williamboman/mason.nvim',
         cmd = 'Mason',
+        init = function()
+            -- add Mason packages to $PATH; allows lazy-loading
+            vim.env.PATH = vim.fn.stdpath 'data'
+                .. '/mason/bin:'
+                .. vim.env.PATH
+        end,
         opts = {
             ensure_installed = {},
             registries = {
@@ -42,6 +48,7 @@ return {
     },
     {
         'williamboman/mason-lspconfig.nvim',
+        lazy = true,
         opts = {
             ensure_installed = {
                 'lua_ls',
