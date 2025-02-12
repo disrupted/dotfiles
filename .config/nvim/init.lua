@@ -27,6 +27,45 @@ require('lazy').setup {
     },
     install = { colorscheme = { 'one' } },
     checker = { enabled = true },
+    diff = {
+        cmd = 'diffview.nvim',
+    },
+    performance = {
+        rtp = {
+            disabled_plugins = {
+                '2html_plugin',
+                'tohtml',
+                'getscript',
+                'getscriptPlugin',
+                'gzip',
+                'logipat',
+                'netrw',
+                'netrwPlugin',
+                'netrwSettings',
+                'netrwFileHandlers',
+                'matchit',
+                'matchparen',
+                'tar',
+                'tarPlugin',
+                'rrhelper',
+                'spellfile_plugin',
+                'vimball',
+                'vimballPlugin',
+                'zip',
+                'zipPlugin',
+                'tutor',
+                'rplugin',
+                'syntax',
+                'synmenu',
+                'optwin',
+                'compiler',
+                'bugreport',
+                'python_provider',
+                'ruby_provider',
+                'perl_provider',
+            },
+        },
+    },
 }
 require 'conf.lsp'
 vim.o.exrc = true
@@ -317,30 +356,6 @@ vim.g.netrw_banner = 0
 -- Colorscheme {{{1
 -----------------------------------------------------------------------------//
 opt.termguicolors = true
-
------------------------------------------------------------------------------//
--- Providers {{{1
------------------------------------------------------------------------------//
--- disable some builtin providers we don't use
-vim.tbl_map(function(p)
-    vim.g['loaded_' .. p] = vim.endswith(p, 'provider') and 0 or 1
-end, {
-    '2html_plugin',
-    'gzip',
-    'matchit',
-    'matchparen',
-    'netrw',
-    'netrwPlugin',
-    'python_provider',
-    'ruby_provider',
-    'perl_provider',
-    'tar',
-    'tarPlugin',
-    'vimball',
-    'vimballPlugin',
-    'zip',
-    'zipPlugin',
-})
 
 -----------------------------------------------------------------------------//
 -- Mappings {{{1
