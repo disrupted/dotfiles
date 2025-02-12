@@ -259,7 +259,7 @@ return {
                 init = function(self)
                     self.status = vim.diagnostic.count(self.bufnr)
                 end,
-                update = { 'DiagnosticChanged', 'BufEnter' },
+                update = { 'DiagnosticChanged', 'BufWinEnter' },
 
                 rpad {
                     static = {
@@ -267,7 +267,7 @@ return {
                         icon = '',
                     },
                     condition = function(self)
-                        local count = self.status[self.severity]
+                        local count = self.status[vim.diagnostic.severity.ERROR] -- FIXME: self.severity is nil; https://github.com/rebelot/heirline.nvim/issues/223
                         return count and count > 0
                     end,
                     provider = function(self)
@@ -288,7 +288,7 @@ return {
                         icon = '',
                     },
                     condition = function(self)
-                        local count = self.status[self.severity]
+                        local count = self.status[vim.diagnostic.severity.WARN] -- FIXME
                         return count and count > 0
                     end,
                     provider = function(self)
@@ -309,7 +309,7 @@ return {
                         icon = '',
                     },
                     condition = function(self)
-                        local count = self.status[self.severity]
+                        local count = self.status[vim.diagnostic.severity.INFO] -- FIXME
                         return count and count > 0
                     end,
                     provider = function(self)
