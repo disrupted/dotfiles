@@ -31,7 +31,7 @@ vim.diagnostic.config {
     float = { header = '', source = true },
     virtual_text = false,
     virtual_lines = { current_line = true },
-    update_in_insert = true,
+    update_in_insert = false,
     severity_sort = true,
 }
 

@@ -1,4 +1,23 @@
----@diagnostic disable: undefined-global
+local ls = require 'luasnip'
+local s = ls.snippet
+local sn = ls.snippet_node
+local t = ls.text_node
+local i = ls.insert_node
+local f = ls.function_node
+local c = ls.choice_node
+local d = ls.dynamic_node
+local r = ls.restore_node
+local l = require('luasnip.extras').lambda
+local rep = require('luasnip.extras').rep
+local p = require('luasnip.extras').partial
+local m = require('luasnip.extras').match
+local n = require('luasnip.extras').nonempty
+local dl = require('luasnip.extras').dynamic_lambda
+local fmt = require('luasnip.extras.fmt').fmt
+local fmta = require('luasnip.extras.fmt').fmta
+local types = require 'luasnip.util.types'
+local conds = require 'luasnip.extras.conditions'
+local conds_expand = require 'luasnip.extras.conditions.expand'
 
 local function copy(args)
     return args[1]
@@ -43,10 +62,13 @@ return {
         -- linebreak
         t { ':', '\t' },
         i(0, 'pass'),
+    }, {
+        show_condition = function(line_to_cursor)
+            return #vim.trim(line_to_cursor) == 0
+        end,
     }),
-    -- property
     s({
-        trig = '@property',
+        trig = 'property', -- FIXME: blink.cmp doesn't match @property
         name = 'property',
         dscr = {
             'New property: get and set via decorator',
@@ -82,6 +104,22 @@ return {
         f(copy, 1),
         t ' = ',
         f(copy, 1),
+    }, {
+        show_condition = function(line_to_cursor)
+            local function is_inside_class()
+                local node = vim.treesitter.get_node()
+
+                while node do
+                    if node:type() == 'class_definition' then
+                        return true
+                    end
+                    node = node:parent()
+                end
+                return false
+            end
+
+            return #vim.trim(line_to_cursor) == 0 and is_inside_class()
+        end,
     }),
     -- class
     s('class', {
@@ -116,19 +154,32 @@ return {
         f(copy, 3),
         t { '', '\t\t' },
         i(0),
+    }, {
+        show_condition = function(line_to_cursor)
+            return #vim.trim(line_to_cursor) == 0
+        end,
     }),
     s('main', {
         t { 'if __name__ == "__main__":', '\t' },
         i(0, 'main()'),
+    }, {
+        show_condition = function(line_to_cursor)
+            local bufname = vim.api.nvim_buf_get_name(0)
+            return bufname:match 'main%.py' and line_to_cursor == ''
+        end,
     }),
     s({
         trig = 'env',
         name = 'shebang',
         dscr = {
-            'python shebang',
+            'Python shebang',
         },
     }, {
         t { '#!/usr/bin/env python3' },
+    }, {
+        show_condition = function(line_to_cursor)
+            return line_to_cursor == ''
+        end,
     }),
     s({
         trig = 'from',
@@ -141,6 +192,10 @@ return {
         i(1, ''),
         t { ' import ' },
         i(0, ''),
+    }, {
+        show_condition = function(line_to_cursor)
+            return #vim.trim(line_to_cursor) == 0
+        end,
     }),
     s({
         trig = 'if',
@@ -153,6 +208,10 @@ return {
         i(1, ''),
         t { ':', '\t' },
         i(0, 'pass'),
+    }, {
+        show_condition = function(line_to_cursor)
+            return #vim.trim(line_to_cursor) == 0
+        end,
     }),
     s({
         trig = 'for',
@@ -174,6 +233,10 @@ return {
         }),
         t { ':', '\t' },
         i(0, 'pass'),
+    }, {
+        show_condition = function(line_to_cursor)
+            return #vim.trim(line_to_cursor) == 0
+        end,
     }),
     s({
         trig = 'try',
@@ -197,5 +260,9 @@ return {
             i(nil, 'pass'),
         }),
         i(0),
+    }, {
+        show_condition = function(line_to_cursor)
+            return #vim.trim(line_to_cursor) == 0
+        end,
     }),
 }
