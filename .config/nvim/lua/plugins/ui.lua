@@ -98,9 +98,9 @@ return {
             end
 
             local function is_file(bufnr)
-                local bt =
-                    vim.api.nvim_get_option_value('buftype', { buf = bufnr })
-                return bt ~= 'nofile' and bt ~= 'terminal'
+                return not conditions.buffer_matches({
+                    buftype = { 'nofile', 'help', 'terminal' },
+                }, bufnr)
             end
 
             local FilePath = {
@@ -170,7 +170,9 @@ return {
             )
 
             local Git = {
-                condition = conditions.is_git_repo,
+                condition = function(self)
+                    return conditions.is_git_repo() and is_file(self.bufnr)
+                end,
 
                 hl = { bg = 'syntax_cursor' },
                 static = {
