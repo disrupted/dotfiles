@@ -1,3 +1,4 @@
+---@type LazySpec[]
 return {
     {
         'disrupted/one.nvim', -- personal tweaked colorscheme

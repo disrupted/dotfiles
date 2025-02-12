@@ -1,5 +1,5 @@
 local skeletons = {
-    lua = '~/.config/nvim/skeletons/nvim-conf-module.lua',
+    lua = '~/.config/nvim/skeletons/nvim-lazy-spec.lua',
     tsx = '~/.config/nvim/skeletons/typescript-react.tsx',
     python = '~/.config/nvim/skeletons/python-pytest.py',
 }

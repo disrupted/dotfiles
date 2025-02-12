@@ -1,3 +1,4 @@
+---@type LazySpec[]
 return {
     {
         'https://gitlab.com/yorickpeterse/nvim-pqf',

@@ -1,3 +1,4 @@
+---@type LazySpec[]
 return {
     {
         'rachartier/tiny-inline-diagnostic.nvim',
