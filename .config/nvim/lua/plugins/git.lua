@@ -324,6 +324,24 @@ return {
                     vim.wo[winid].culopt = 'number'
                 end,
             },
+            keymaps = {
+                view = {
+                    {
+                        'n',
+                        'q',
+                        vim.cmd.tabclose,
+                        { desc = 'Close diffview' },
+                    },
+                },
+                file_panel = {
+                    {
+                        'n',
+                        'q',
+                        vim.cmd.tabclose,
+                        { desc = 'Close diffview' },
+                    },
+                },
+            },
         },
     },
     {
