@@ -124,7 +124,6 @@ vim.api.nvim_create_autocmd('BufReadPost', {
     end,
 })
 
--- highlight yanked text briefly
 vim.api.nvim_create_autocmd('TextYankPost', {
     callback = function()
         vim.highlight.on_yank {
@@ -133,13 +132,37 @@ vim.api.nvim_create_autocmd('TextYankPost', {
             on_visual = true,
         }
     end,
+    desc = 'highlight yanked text briefly',
 })
 
--- resize splits when Vim is resized
-vim.api.nvim_create_autocmd(
-    'VimResized',
-    { command = 'tabdo horizontal wincmd =' }
-)
+vim.api.nvim_create_autocmd('VimResized', {
+    command = 'tabdo horizontal wincmd =',
+    desc = 'resize splits when Vim is resized',
+})
+
+vim.api.nvim_create_autocmd('QuitPre', {
+    callback = function()
+        local invalid_wins = {}
+        local wins = vim.api.nvim_list_wins()
+        for _, w in ipairs(wins) do
+            local buf = vim.api.nvim_win_get_buf(w)
+
+            if
+                vim.tbl_contains({ 'nofile', 'quickfix' }, vim.bo[buf].buftype)
+                or vim.api.nvim_win_get_config(w).relative ~= '' -- floating window
+            then
+                table.insert(invalid_wins, w)
+            end
+        end
+        if #invalid_wins == #wins - 1 then
+            -- Should quit, so we close all invalid windows.
+            for _, w in ipairs(invalid_wins) do
+                vim.api.nvim_win_close(w, true)
+            end
+        end
+    end,
+    desc = 'Close accessory windows on quit',
+})
 
 -----------------------------------------------------------------------------//
 -- Indentation {{{1
@@ -311,8 +334,11 @@ opt.diffopt:prepend {
 -----------------------------------------------------------------------------//
 -- Terminal {{{1
 -----------------------------------------------------------------------------//
--- Open a terminal pane on the right using :Term
-command('Term', 'botright vsplit term://$SHELL', {})
+command(
+    'Term',
+    'botright vsplit term://$SHELL',
+    { desc = 'Open a terminal split on the right' }
+)
 
 vim.api.nvim_create_autocmd('TermOpen', {
     callback = function()

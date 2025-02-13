@@ -594,31 +594,6 @@ return {
         config = function(_, opts)
             require('trouble').setup(opts)
             vim.api.nvim_set_hl(0, 'TroubleText', { link = 'CursorLineNr' })
-
-            vim.api.nvim_create_autocmd('QuitPre', {
-                callback = function()
-                    local invalid_wins = {}
-                    local wins = vim.api.nvim_list_wins()
-                    for _, w in ipairs(wins) do
-                        local bufname = vim.api.nvim_buf_get_name(
-                            vim.api.nvim_win_get_buf(w)
-                        )
-                        if
-                            bufname:match 'Trouble' ~= nil
-                            or vim.api.nvim_win_get_config(w).relative ~= '' -- floating window
-                        then
-                            table.insert(invalid_wins, w)
-                        end
-                    end
-                    if #invalid_wins == #wins - 1 then
-                        -- Should quit, so we close all invalid windows.
-                        for _, w in ipairs(invalid_wins) do
-                            vim.api.nvim_win_close(w, true)
-                        end
-                    end
-                end,
-                desc = 'Close Trouble if last window',
-            })
         end,
     },
     {
