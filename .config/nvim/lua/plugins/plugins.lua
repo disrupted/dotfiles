@@ -203,7 +203,7 @@ return {
                                         symbol.range
                                     )
                                 then
-                                    picker.list.cursor = symbol.idx
+                                    picker.list:move(symbol.idx, true)
                                     return
                                 end
                             end
