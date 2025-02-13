@@ -181,6 +181,7 @@ return {
     {
         'stevearc/conform.nvim',
         event = { 'BufWritePre' },
+        cmd = 'ConformInfo',
         dependencies = {
             {
                 'williamboman/mason.nvim',
@@ -198,59 +199,99 @@ return {
                 end,
             },
         },
-        opts = {
-            formatters_by_ft = {
-                lua = { 'stylua' },
-                python = function(bufnr)
-                    if
-                        require('conform').get_formatter_info(
-                            'ruff_format',
-                            bufnr
-                        ).available
-                    then
-                        return { 'ruff_fix', 'ruff_format' }
-                    else
-                        return { 'isort', 'black' }
-                    end
-                end,
-                json = { 'dprint' },
-                jsonc = { 'dprint' },
-                markdown = { 'dprint', 'injected' },
-                javascript = { 'dprint' },
-                javascriptreact = { 'dprint' },
-                typescript = { 'dprint' },
-                typescriptreact = { 'dprint' },
-                toml = { 'dprint' },
-                dockerfile = { 'dprint' },
-                css = { 'dprint' },
-                html = { 'dprint' },
-                htmldjango = { 'dprint' },
-                yaml = { 'dprint' },
-                graphql = { { 'prettierd', 'prettier' } },
-                sh = { 'shfmt' },
-                sql = { 'sleek' }, -- or dprint
-                http = {
-                    'injected',
-                    -- 'trim_newlines', -- FIXME: breaks injected
-                    'trim_whitespace',
-                },
-                ['_'] = { 'trim_newlines', 'trim_whitespace' },
-            },
-            format_on_save = function(bufnr)
-                -- Disable with a global or buffer-local variable
+        opts = function()
+            local check_dprint = function(bufnr)
                 if
-                    vim.g.disable_autoformat
-                    or vim.b[bufnr].disable_autoformat
+                    require('conform').get_formatter_info('dprint', bufnr).cwd
                 then
-                    return
+                    Snacks.notify('dprint', {
+                        level = vim.log.levels.DEBUG,
+                        title = 'Format',
+                    })
+                    return { 'dprint' }
                 end
-                return {
-                    timeout_ms = 5000, -- HACK: high because dprint needs to download WASM plugins on first run
-                    lsp_fallback = true,
-                }
-            end,
-            log_level = vim.log.levels.WARN,
-        },
+            end
+
+            local check_prettier = function(bufnr)
+                local prettierd =
+                    require('conform').get_formatter_info('prettierd', bufnr)
+                if prettierd.cwd then
+                    if prettierd.available then
+                        Snacks.notify('prettierd', {
+                            level = vim.log.levels.DEBUG,
+                            title = 'Format',
+                        })
+                        return { 'prettierd' }
+                    else
+                        Snacks.notify('prettier', {
+                            level = vim.log.levels.DEBUG,
+                            title = 'Format',
+                        })
+                        return { 'prettier' }
+                    end
+                end
+            end
+
+            local dprint_prettier_none = function(bufnr)
+                return check_dprint(bufnr) or check_prettier(bufnr) or {}
+            end
+
+            ---@module 'conform.types'
+            ---@type conform.setupOpts
+            return {
+                formatters_by_ft = {
+                    lua = { 'stylua' },
+                    python = function(bufnr)
+                        if
+                            require('conform').get_formatter_info(
+                                'ruff_format',
+                                bufnr
+                            ).available
+                        then
+                            return { 'ruff_fix', 'ruff_format' }
+                        else
+                            return { 'isort', 'black' }
+                        end
+                    end,
+                    json = { 'dprint' },
+                    jsonc = { 'dprint' },
+                    markdown = { 'dprint', 'injected' },
+                    javascript = dprint_prettier_none,
+                    javascriptreact = dprint_prettier_none,
+                    typescript = dprint_prettier_none,
+                    typescriptreact = dprint_prettier_none,
+                    toml = { 'dprint' },
+                    dockerfile = { 'dprint' },
+                    css = { 'dprint' },
+                    html = { 'dprint' },
+                    htmldjango = { 'dprint' },
+                    yaml = { 'dprint' },
+                    graphql = { 'dprint' },
+                    sh = { 'shfmt' },
+                    sql = { 'sleek' }, -- or dprint
+                    http = {
+                        'injected',
+                        -- 'trim_newlines', -- FIXME: breaks injected
+                        'trim_whitespace',
+                    },
+                    ['_'] = { 'trim_newlines', 'trim_whitespace' },
+                },
+                format_on_save = function(bufnr)
+                    -- Disable with a global or buffer-local variable
+                    if
+                        vim.g.disable_autoformat
+                        or vim.b[bufnr].disable_autoformat
+                    then
+                        return
+                    end
+                    return {
+                        timeout_ms = 5000, -- HACK: high because dprint needs to download WASM plugins on first run
+                        lsp_fallback = true,
+                    }
+                end,
+                log_level = vim.log.levels.WARN,
+            }
+        end,
         init = function()
             vim.api.nvim_create_user_command('Format', function()
                 require('conform').format()
