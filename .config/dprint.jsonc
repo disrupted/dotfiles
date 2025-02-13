@@ -33,8 +33,9 @@
       "**/*.jinja2",
     ],
   },
+  "graphql": {},
   "includes": [
-    "**/*.{ts,tsx,js,jsx,cjs,mjs,json,jsonc,avsc,md,toml,css,html,vue,svelte,jinja2,yaml,yml}",
+    "**/*.{ts,tsx,js,jsx,cjs,mjs,json,jsonc,avsc,md,toml,css,html,vue,svelte,jinja2,yaml,yml,graphql,gql}",
     "dockerfile",
   ],
   "excludes": [
@@ -51,5 +52,6 @@
     "https://plugins.dprint.dev/g-plane/malva-v0.11.1.wasm",
     "https://plugins.dprint.dev/g-plane/markup_fmt-v0.18.0.wasm",
     "https://plugins.dprint.dev/g-plane/pretty_yaml-v0.5.0.wasm",
+    "https://plugins.dprint.dev/g-plane/pretty_graphql-v0.2.1.wasm",
   ],
 }
