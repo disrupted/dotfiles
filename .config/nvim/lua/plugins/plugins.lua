@@ -193,63 +193,22 @@ return {
                         },
                     }
 
-                    ---source: dropbar.nvim
-                    ---Check if cursor is in range
-                    ---@param cursor integer[] cursor position (line, character); (1, 0)-based
-                    ---@param range lsp_range_t 0-based range
-                    ---@return boolean
-                    local function cursor_in_range(cursor, range)
-                        local cursor0 = { cursor[1] - 1, cursor[2] }
-                        return (
-                            cursor0[1] > range.start.line
-                            or (
-                                cursor0[1] == range.start.line
-                                and cursor0[2] >= range.start.character
-                            )
-                        )
-                            and (
-                                cursor0[1] < range['end'].line
-                                or (
-                                    cursor0[1] == range['end'].line
-                                    and cursor0[2] <= range['end'].character
-                                )
-                            )
-                    end
-
-                    picker.matcher.task:on('done', function()
-                        vim.schedule(function()
-                            if picker.list:count() == 0 then
-                                return
-                            end
-
-                            for _, symbol in ipairs(picker:items()) do
-                                if cursor_in_range(cursor, symbol.range) then
+                    picker.matcher.task:on(
+                        'done',
+                        vim.schedule_wrap(function()
+                            for symbol in vim.iter(picker:items()):rev() do
+                                if
+                                    require('conf.snacks.lsp_symbols').cursor_in_range(
+                                        cursor,
+                                        symbol.range
+                                    )
+                                then
                                     picker.list.cursor = symbol.idx
                                     return
                                 end
                             end
                         end)
-                    end)
-
-                    --[[ -- alternative: name-based matching using dropbar context
-                    local buf = vim.api.nvim_get_current_buf()
-                    local win = vim.api.nvim_get_current_win()
-                    local symbol = require('dropbar.sources.lsp').get_symbols(
-                        buf,
-                        win,
-                        cursor
                     )
-                    vim.print(symbol)
-                    picker:find {
-                        on_done = function()
-                            local current_symbol_context = symbol[1].name
-                            for _, symbol in ipairs(picker:items()) do
-                                if symbol.name == current_symbol_context then
-                                    picker.list.cursor = symbol.idx
-                                end
-                            end
-                        end,
-                    } ]]
                 end,
                 desc = 'LSP symbols',
             },
