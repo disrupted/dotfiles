@@ -1,7 +1,6 @@
 -- https://gist.github.com/MunifTanjim/8d9498c096719bdf4234321230fe3dc7
 local Input = require 'nui.input'
 local event = require('nui.utils.autocmd').event
-local utils = require 'utils'
 
 local function nui_lsp_rename()
     local curr_name = vim.fn.expand '<cword>'
@@ -42,35 +41,47 @@ local function nui_lsp_rename()
                 )
 
                 -- display notification with the changed files
-                -- https://github.com/mattleong/CosmicNvim/blob/85fea07d98a340813898c35ea8266efdd826fe88/lua/cosmic/core/theme/ui.lua
-                if result.documentChanges then
-                    local msg = {}
+                if
+                    result.documentChanges
+                    and not vim.tbl_isempty(result.documentChanges)
+                then
+                    local msg = {
+                        ('**Renamed `%s` -> `%s`**'):format(
+                            curr_name,
+                            new_name
+                        ),
+                    }
+
+                    local total_files = vim.tbl_count(result.documentChanges)
+                    table.insert(msg, '') -- empty line
+                    table.insert(
+                        msg,
+                        string.format(
+                            'Changed %s file%s. %s',
+                            total_files,
+                            total_files > 1 and 's' or '',
+                            -- after the edits are applied, the files are not saved automatically.
+                            -- let's remind ourselves to save those...
+                            total_files > 1 and 'To save them run `:wa`'
+                                or 'To save it run `:w`'
+                        )
+                    )
+
+                    -- list changed files
                     for _, changes in pairs(result.documentChanges) do
                         table.insert(
                             msg,
-                            ('%d changes: %s'):format(
-                                #changes.edits,
-                                utils.get_relative_path(
-                                    changes.textDocument.uri
-                                )
+                            ('- [%s] (%d changes)'):format(
+                                vim.fs.relpath(
+                                    assert(vim.uv.cwd()),
+                                    vim.uri_to_fname(changes.textDocument.uri)
+                                ),
+                                #changes.edits
                             )
                         )
                     end
-                    Snacks.notify.info({
-                        ('Rename: %s -> %s'):format(curr_name, new_name),
-                        msg,
-                    }, { title = 'LSP' })
 
-                    -- after the edits are applied, the files are not saved automatically.
-                    -- let's remind ourselves to save those...
-                    local total_files = vim.tbl_count(result.documentChanges)
-                    print(
-                        string.format(
-                            'Changed %s file%s. To save them run \':wa\'',
-                            total_files,
-                            total_files > 1 and 's' or ''
-                        )
-                    )
+                    Snacks.notify.info(msg, { title = 'LSP' })
                 end
             end
         )
