@@ -37,7 +37,10 @@ vim.api.nvim_create_autocmd('LspAttach', {
         --     { desc = 'LSP: go to declaration' }
         -- )
         map('n', 'gd', function()
-            require('trouble').open { mode = 'lsp_definitions', focus = true }
+            require('trouble').open {
+                mode = 'lsp_definitions',
+                auto_jump = true,
+            }
         end, { desc = 'LSP: go to definition' })
         map('n', 'K', vim.lsp.buf.hover, { desc = 'LSP: Hover' })
         -- map(
@@ -80,7 +83,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
             require('conf.nui_lsp').lsp_rename()
         end, { desc = 'LSP: rename symbol' })
         map('n', 'gr', function()
-            require('trouble').open { mode = 'lsp', focus = true }
+            require('trouble').open { mode = 'lsp' }
         end, {
             desc = 'LSP: list definitions, references, implementations, type definitions, and declarations',
         })
