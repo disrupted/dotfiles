@@ -84,12 +84,10 @@ return {
                     then
                         return -- do not attach to buffers of this filetype
                     end
-                    if vim.uv.fs_stat '.git' then
-                        -- disable YADM if inside Git repo
-                        ---@diagnostic disable-next-line: missing-parameter
-                        return callback()
-                    end
-                    require('gitsigns-yadm').yadm_signs(callback)
+                    require('gitsigns-yadm').yadm_signs(
+                        callback,
+                        { bufnr = bufnr }
+                    )
                 end,
                 on_attach = function(bufnr)
                     local function map(mode, l, r, opts)
@@ -257,6 +255,7 @@ return {
                 pattern = {
                     -- 'NeogitStatusRefreshed',
                     'NeogitCommitComplete',
+                    'NeogitBranchCheckout',
                     'NeogitBranchReset',
                     'NeogitRebase',
                     'NeogitReset',
