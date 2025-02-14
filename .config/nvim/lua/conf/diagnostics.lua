@@ -1,5 +1,10 @@
 vim.diagnostic.config {
-    underline = { severity = { min = vim.diagnostic.severity.ERROR } },
+    underline = {
+        severity = {
+            vim.diagnostic.severity.ERROR,
+            vim.diagnostic.severity.HINT, -- DiagnosticDeprecated
+        },
+    },
     signs = {
         text = {
             [vim.diagnostic.severity.ERROR] = '', -- ◉
