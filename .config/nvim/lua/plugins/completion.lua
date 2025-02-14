@@ -44,6 +44,15 @@ return {
                         cmp.show { providers = { 'snippets' } }
                     end,
                 },
+                ['<a-d>'] = {
+                    -- inspect the current completion item for debugging
+                    function()
+                        local item =
+                            require('blink.cmp.completion.list').get_selected_item()
+                        vim.print(item)
+                        return true
+                    end,
+                },
             },
             snippets = { preset = 'luasnip' },
             completion = {
@@ -57,19 +66,29 @@ return {
                 },
                 menu = {
                     draw = {
-                        treesitter = { 'lsp' },
                         columns = function(ctx)
                             if ctx.mode == 'cmdline' then
                                 return { { 'label' } }
                             else
                                 return {
                                     { 'kind_icon' },
-                                    { 'label', 'label_description', gap = 1 },
-                                    { 'source_icon' },
+                                    {
+                                        'label',
+                                        'label_description',
+                                        'source_icon',
+                                        gap = 1,
+                                    },
                                 }
                             end
                         end,
                         components = {
+                            label_description = {
+                                width = {
+                                    -- make component after it in the same group right-aligned
+                                    -- FIXME: does not seem to work reliably
+                                    fill = true,
+                                },
+                            },
                             source_icon = {
                                 width = { fixed = 1 },
                                 ellipsis = false,
