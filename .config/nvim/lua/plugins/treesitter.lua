@@ -1,3 +1,4 @@
+---@module 'lazy.types'
 ---@type LazySpec[]
 return {
     { 'filNaj/tree-setter', enabled = false },

@@ -1,3 +1,4 @@
+---@module 'lazy.types'
 ---@type LazySpec[]
 return {
     'nvim-lua/plenary.nvim',
