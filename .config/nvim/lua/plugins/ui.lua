@@ -28,14 +28,6 @@ return {
 
             local Align = { provider = '%=' }
             local Space = { provider = ' ' }
-            -- right-pad a statusline component with space if component is visible
-            local function rpad(child)
-                return {
-                    condition = child.condition,
-                    child,
-                    Space,
-                }
-            end
 
             local WorkDir = {
                 static = { icon = '' },
@@ -64,7 +56,7 @@ return {
                 hl = { bold = false },
             }
 
-            local FileIcon = rpad {
+            local FileIcon = {
                 init = function(self)
                     local filename = self.filename
                     local extension = vim.fn.fnamemodify(filename, ':e')
@@ -79,7 +71,7 @@ return {
                     return self.icon
                 end,
                 provider = function(self)
-                    return string.format('%s', self.icon)
+                    return string.format('%s ', self.icon)
                 end,
                 -- hl = function(self)
                 --     return { fg = self.icon_color }
@@ -194,13 +186,13 @@ return {
                         or self.status.changed ~= 0
                 end,
 
-                rpad {
+                {
                     condition = function(self)
                         return self.status.added ~= 0
                     end,
                     provider = function(self)
                         return string.format(
-                            '%s%s',
+                            '%s%s ',
                             self.icons.added,
                             self.status.added
                         )
@@ -210,13 +202,13 @@ return {
                         bg = 'syntax_cursor',
                     },
                 },
-                rpad {
+                {
                     condition = function(self)
                         return self.status.changed ~= 0
                     end,
                     provider = function(self)
                         return string.format(
-                            '%s%s',
+                            '%s%s ',
                             self.icons.changed,
                             self.status.changed
                         )
@@ -226,13 +218,13 @@ return {
                         bg = 'syntax_cursor',
                     },
                 },
-                rpad {
+                {
                     condition = function(self)
                         return self.status.removed ~= 0
                     end,
                     provider = function(self)
                         return string.format(
-                            '%s%s',
+                            '%s%s ',
                             self.icons.removed,
                             self.status.removed
                         )
@@ -264,18 +256,18 @@ return {
                 end,
                 update = { 'DiagnosticChanged', 'BufWinEnter' },
 
-                rpad {
+                {
                     static = {
                         severity = vim.diagnostic.severity.ERROR,
                         icon = '',
                     },
                     condition = function(self)
-                        local count = self.status[vim.diagnostic.severity.ERROR] -- FIXME: self.severity is nil; https://github.com/rebelot/heirline.nvim/issues/223
+                        local count = self.status[self.severity]
                         return count and count > 0
                     end,
                     provider = function(self)
                         return string.format(
-                            '%s %s',
+                            '%s %s ',
                             self.icon,
                             self.status[self.severity]
                         )
@@ -285,18 +277,18 @@ return {
                         bg = 'syntax_cursor',
                     },
                 },
-                rpad {
+                {
                     static = {
                         severity = vim.diagnostic.severity.WARN,
                         icon = '',
                     },
                     condition = function(self)
-                        local count = self.status[vim.diagnostic.severity.WARN] -- FIXME
+                        local count = self.status[self.severity]
                         return count and count > 0
                     end,
                     provider = function(self)
                         return string.format(
-                            '%s %s',
+                            '%s %s ',
                             self.icon,
                             self.status[self.severity]
                         )
@@ -306,18 +298,18 @@ return {
                         bg = 'syntax_cursor',
                     },
                 },
-                rpad {
+                {
                     static = {
                         severity = vim.diagnostic.severity.INFO,
                         icon = '',
                     },
                     condition = function(self)
-                        local count = self.status[vim.diagnostic.severity.INFO] -- FIXME
+                        local count = self.status[self.severity]
                         return count and count > 0
                     end,
                     provider = function(self)
                         return string.format(
-                            '%s %s',
+                            '%s %s ',
                             self.icon,
                             self.status[self.severity]
                         )
@@ -416,26 +408,26 @@ return {
                     end,
                     hl = { bg = 'syntax_cursor' },
                     {
-                        rpad {
+                        {
                             condition = function(self)
                                 return self.status.total > 0
                             end,
                             provider = function(self)
                                 return string.format(
-                                    '%s %s',
+                                    '%s %s ',
                                     self.icon.total,
                                     self.status.total
                                 )
                             end,
                             hl = { fg = 'mono_3' },
                         },
-                        rpad {
+                        {
                             condition = function(self)
                                 return self.status.running > 0
                             end,
                             provider = function(self)
                                 return string.format(
-                                    '%s %s',
+                                    '%s %s ',
                                     self.icon.running,
                                     self.status.running
                                 )
@@ -444,13 +436,13 @@ return {
                                 return utils.get_highlight 'NeotestRunning'
                             end,
                         },
-                        rpad {
+                        {
                             condition = function(self)
                                 return self.status.passed > 0
                             end,
                             provider = function(self)
                                 return string.format(
-                                    '%s %s',
+                                    '%s %s ',
                                     self.icon.passed,
                                     self.status.passed
                                 )
@@ -459,13 +451,13 @@ return {
                                 return utils.get_highlight 'NeotestPassed'
                             end,
                         },
-                        rpad {
+                        {
                             condition = function(self)
                                 return self.status.failed > 0
                             end,
                             provider = function(self)
                                 return string.format(
-                                    '%s %s',
+                                    '%s %s ',
                                     self.icon.failed,
                                     self.status.failed
                                 )
@@ -474,13 +466,13 @@ return {
                                 return utils.get_highlight 'NeotestFailed'
                             end,
                         },
-                        rpad {
+                        {
                             condition = function(self)
                                 return self.status.skipped > 0
                             end,
                             provider = function(self)
                                 return string.format(
-                                    '%s %s',
+                                    '%s %s ',
                                     self.icon.skipped,
                                     self.status.skipped
                                 )
@@ -530,7 +522,7 @@ return {
                     end,
                     provider = function(self)
                         return string.format(
-                            '%s %d',
+                            '%s %d ',
                             self.icon[status],
                             #self.tasks[status]
                         )
@@ -565,10 +557,10 @@ return {
                         RUNNING = '󰑮',
                     },
                 },
-                rpad(OverseerTasksForStatus 'CANCELED'),
-                rpad(OverseerTasksForStatus 'RUNNING'),
-                rpad(OverseerTasksForStatus 'SUCCESS'),
-                rpad(OverseerTasksForStatus 'FAILURE'),
+                OverseerTasksForStatus 'CANCELED',
+                OverseerTasksForStatus 'RUNNING',
+                OverseerTasksForStatus 'SUCCESS',
+                OverseerTasksForStatus 'FAILURE',
             }
 
             return {
