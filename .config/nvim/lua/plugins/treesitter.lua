@@ -40,7 +40,6 @@ return {
                 'helm',
                 'html',
                 'htmldjango',
-                'http',
                 'hurl',
                 'java',
                 'javascript',
