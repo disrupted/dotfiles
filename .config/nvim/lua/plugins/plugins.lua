@@ -93,19 +93,16 @@ return {
                             end,
                         },
                         win = {
-                            input = {
-                                keys = {
-                                    ['<a-p>'] = {
-                                        {
-                                            'toggle_preview',
-                                            'calculate_file_truncate_width',
-                                        },
-                                        mode = { 'i', 'n' },
-                                    },
-                                },
-                            },
                             list = {
                                 on_buf = function(self)
+                                    self:execute 'calculate_file_truncate_width'
+                                end,
+                            },
+                            preview = {
+                                on_buf = function(self)
+                                    self:execute 'calculate_file_truncate_width'
+                                end,
+                                on_close = function(self)
                                     self:execute 'calculate_file_truncate_width'
                                 end,
                             },
