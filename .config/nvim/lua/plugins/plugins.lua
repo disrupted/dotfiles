@@ -46,6 +46,10 @@ return {
                         -- },
                     }
 
+                    if not picker then
+                        return -- abort if picker was closed
+                    end
+
                     picker.list.win:on('BufEnter', function()
                         local hl = vim.api.nvim_get_hl(
                             0,
