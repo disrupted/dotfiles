@@ -3,7 +3,6 @@
 return {
     {
         'saghen/blink.cmp',
-        -- lazy = false, -- lazy loading handled internally
         event = { 'InsertEnter', 'CmdlineEnter' },
         dependencies = {
             {
@@ -23,22 +22,14 @@ return {
                 },
             },
         },
-        -- HACK: use main temporarily because of Luasnip duplicate snippets fix https://github.com/Saghen/blink.cmp/commit/f0f34c318af019b44fc8ea347895dcf92b682122
-        -- version = '*',
-        build = 'cargo build --release',
+        version = '*',
         ---@module 'blink.cmp'
         ---@type blink.cmp.Config
         opts = {
             keymap = {
                 preset = 'default',
-                ['<C-c>'] = {
-                    'show',
-                    'cancel',
-                },
-                ['<C-d>'] = {
-                    'show_documentation',
-                    'hide_documentation',
-                },
+                ['<C-c>'] = { 'show', 'cancel' },
+                ['<C-d>'] = { 'show_documentation', 'hide_documentation' },
                 ['<C-e>'] = {}, -- disable default because mapped to LuaSnip
                 ['<C-s>'] = {
                     function(cmp)
@@ -63,9 +54,23 @@ return {
                 },
                 ghost_text = {
                     enabled = true,
-                    show_without_selection = true,
+                    show_without_selection = false,
+                },
+                list = {
+                    selection = {
+                        preselect = function(ctx)
+                            return ctx.mode ~= 'cmdline'
+                        end,
+                    },
                 },
                 menu = {
+                    auto_show = function(ctx)
+                        return ctx.mode ~= 'cmdline'
+                            or not vim.tbl_contains(
+                                { '/', '?' },
+                                vim.fn.getcmdtype()
+                            )
+                    end,
                     draw = {
                         columns = function(ctx)
                             if ctx.mode == 'cmdline' then
@@ -76,6 +81,7 @@ return {
                                     {
                                         'label',
                                         'label_description',
+                                        'space', -- HACK: try to right-align source_icon
                                         'source_icon',
                                         gap = 1,
                                     },
@@ -98,19 +104,41 @@ return {
                                 end,
                                 highlight = 'BlinkCmpSource',
                             },
+                            space = {
+                                width = { fixed = 1, fill = true },
+                                text = function()
+                                    return ' '
+                                end,
+                            },
                         },
                     },
                 },
             },
             sources = {
-                default = {
-                    'lazydev',
-                    'lsp',
-                    'path',
-                    'snippets',
-                    'buffer',
-                    'git',
-                },
+                default = function()
+                    local success, node = pcall(vim.treesitter.get_node)
+                    if
+                        success
+                        and node
+                        and vim.tbl_contains(
+                            { 'comment', 'line_comment', 'block_comment' },
+                            node:type()
+                        )
+                    then
+                        return { 'buffer' }
+                    end
+                    local sources = {
+                        'lsp',
+                        'path',
+                        'snippets',
+                        'buffer',
+                        'git',
+                    }
+                    if vim.bo.filetype == 'lua' then
+                        table.insert(sources, 'lazydev')
+                    end
+                    return sources
+                end,
                 providers = {
                     lazydev = {
                         name = 'LazyDev',
@@ -127,13 +155,16 @@ return {
                     snippets = {
                         min_keyword_length = 2,
                         score_offset = 6,
+                        should_show_items = function(ctx)
+                            return ctx.trigger.initial_kind
+                                ~= 'trigger_character' -- hide snippets after trigger character
+                        end,
                     },
                     lsp = {
                         score_offset = 5,
                         timeout_ms = 400,
                     },
                     path = {
-                        min_keyword_length = 3,
                         opts = {
                             get_cwd = function(_)
                                 return vim.uv.cwd()
@@ -141,11 +172,17 @@ return {
                         },
                     },
                     buffer = {
-                        min_keyword_length = 5,
+                        min_keyword_length = 3,
                     },
                 },
             },
             signature = { enabled = true },
+            cmdline = {
+                keymap = {
+                    preset = 'enter',
+                    ['<CR>'] = { 'accept_and_enter', 'fallback' },
+                },
+            },
             appearance = {
                 kind_icons = {
                     Text = '󰉿', -- 
