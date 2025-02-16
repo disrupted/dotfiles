@@ -80,7 +80,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         --     { desc = 'LSP: type definition' }
         -- )
         map('n', '<leader>r', function()
-            require('conf.nui_lsp').lsp_rename()
+            require('conf.lsp.nui').rename()
         end, { desc = 'LSP: rename symbol' })
         map('n', 'gr', function()
             require('trouble').open { mode = 'lsp' }
@@ -232,6 +232,7 @@ local function periodic_refresh_semantic_tokens()
     vim.defer_fn(periodic_refresh_semantic_tokens, 30000)
 end
 
+-- TODO: refactor using Snacks.util.throttle
 local function debounce(ms, fn)
     local timer = assert(vim.uv.new_timer())
     return function(...)
@@ -255,22 +256,23 @@ vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave' }, {
 
 vim.lsp.config('*', {
     root_markers = { '.git' },
+    capabilities = require('conf.lsp.protocol').capabilties,
 })
 
 vim.lsp.enable {
     -- 'basedpyright',
     'bash_ls',
     'css_ls',
-    'docker_ls',
     'docker_compose_ls',
+    'docker_ls',
+    'gitlab_ci_ls',
+    'helm_ls',
     'html_ls',
     'json_ls',
     'lua_ls',
-    'gitlab_ci_ls',
-    'helm_ls',
+    -- 'pylyzer',
     'taplo',
     'terraform_ls',
     'vts_ls',
     'yaml_ls',
-    -- 'pylyzer'
 }

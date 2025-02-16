@@ -146,5 +146,5 @@ local function nui_lsp_rename()
 end
 
 return {
-    lsp_rename = nui_lsp_rename,
+    rename = nui_lsp_rename,
 }
