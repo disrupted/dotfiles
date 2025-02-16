@@ -439,6 +439,8 @@ vim.keymap.set('t', '<C-[><C-[>', '<C-\\><C-N>') -- double ESC to escape termina
 -- )
 
 -- command mode
+vim.keymap.set('c', '<C-j>', '<Down>')
+vim.keymap.set('c', '<C-k>', '<Up>')
 vim.keymap.set('c', '<C-a>', '<Home>')
 vim.keymap.set('c', '<C-e>', '<End>')
 

@@ -6,20 +6,8 @@ return {
         event = { 'InsertEnter', 'CmdlineEnter' },
         dependencies = {
             {
-                'saghen/blink.compat', -- compatibility layer with nvim-cmp sources
-                version = '*',
-                lazy = true,
-                opts = {},
-            },
-            {
-                'petertriho/cmp-git',
-                opts = {
-                    filetypes = {
-                        'gitcommit',
-                        'octo',
-                        'markdown', -- for gh & glab CLI
-                    },
-                },
+                'Kaiser-Yang/blink-cmp-git',
+                dependencies = { 'nvim-lua/plenary.nvim' },
             },
         },
         version = '*',
@@ -147,9 +135,17 @@ return {
                         score_offset = 100,
                     },
                     git = {
-                        name = 'git',
-                        module = 'blink.compat.source',
+                        module = 'blink-cmp-git',
+                        name = 'Git',
                         score_offset = 10,
+                        enabled = function()
+                            return vim.tbl_contains(
+                                { 'octo', 'gitcommit', 'markdown' },
+                                vim.bo.filetype
+                            )
+                        end,
+                        --- @module 'blink-cmp-git'
+                        --- @type blink-cmp-git.Options
                         opts = {},
                     },
                     snippets = {
@@ -181,6 +177,10 @@ return {
                 keymap = {
                     preset = 'enter',
                     ['<CR>'] = { 'accept_and_enter', 'fallback' },
+                    ['<Up>'] = {},
+                    ['<Down>'] = {},
+                    ['<C-j>'] = {},
+                    ['<C-k>'] = {},
                 },
             },
             appearance = {
