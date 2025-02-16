@@ -19,7 +19,6 @@ return {
             {
                 '<leader><leader>',
                 function()
-                    ---@diagnostic disable-next-line: missing-fields
                     Snacks.picker.buffers {
                         layout = { preset = 'dropdown' },
                         current = false,
@@ -58,7 +57,6 @@ return {
                             'recent',
                             vim.uv.fs_stat '.git' and 'git_files' or 'files',
                         },
-                        format = 'file',
                         matcher = { sort_empty = true },
                         filter = {
                             cwd = true,
@@ -71,109 +69,8 @@ return {
             {
                 '<leader>/',
                 function()
-                    local grep_search = ''
-                    local grep_glob = ''
-                    local grep_dirs = {}
-
-                    local function grep()
-                        ---@diagnostic disable-next-line: missing-fields
-                        Snacks.picker.grep {
-                            layout = {
-                                preset = 'telescope',
-                                reverse = true,
-                            },
-                            hidden = true,
-                            search = grep_search,
-                            glob = grep_glob,
-                            dirs = grep_dirs,
-                            win = {
-                                input = {
-                                    keys = {
-                                        ['<c-e>'] = {
-                                            ---@param self snacks.win
-                                            ---@diagnostic disable-next-line: assign-type-mismatch
-                                            function(self)
-                                                local default = '*.'
-                                                Snacks.input.input({
-                                                    prompt = 'Grep glob',
-                                                    default = default,
-                                                }, function(
-                                                    input
-                                                )
-                                                    if
-                                                        not input
-                                                        or input == ''
-                                                        or input == default
-                                                    then
-                                                        return
-                                                    end
-                                                    grep_glob = input
-                                                    grep_search = self:text()
-                                                    Snacks.picker.grep() -- close current picker
-                                                    grep() -- launch new picker with values
-                                                end)
-                                            end,
-                                            mode = { 'i', 'n' },
-                                            desc = 'Filter grep extension',
-                                        },
-                                        ['<c-d>'] = {
-                                            ---@param self snacks.win
-                                            ---@diagnostic disable-next-line: assign-type-mismatch
-                                            function(self)
-                                                grep_search = self:text()
-                                                self:close()
-
-                                                local finder =
-                                                    require 'conf.snacks.finder'
-                                                vim.schedule(function()
-                                                    Snacks.picker.files {
-                                                        finder = vim.uv.fs_stat '.git'
-                                                                and finder.git_dirs
-                                                            or finder.fd_dirs,
-                                                        -- source = 'Grep folders',
-                                                        format = 'filename',
-                                                        supports_live = false,
-                                                        layout = {
-                                                            preset = 'telescope',
-                                                            reverse = true,
-                                                            preview = false,
-                                                        },
-                                                        actions = {
-                                                            confirm = function(
-                                                                picker,
-                                                                item
-                                                            )
-                                                                vim.schedule(
-                                                                    function()
-                                                                        picker.input.win:action 'close'
-                                                                    end
-                                                                )
-
-                                                                table.insert(
-                                                                    grep_dirs,
-                                                                    item.file
-                                                                )
-
-                                                                vim.schedule(
-                                                                    function()
-                                                                        grep()
-                                                                    end
-                                                                )
-                                                            end,
-                                                        },
-                                                    }
-                                                end)
-                                            end,
-                                            mode = { 'i', 'n' },
-                                            desc = 'Filter grep directory',
-                                        },
-                                    },
-                                },
-                            },
-                        }
-                    end
-
-                    grep()
+                    ---@diagnostic disable-next-line: undefined-field
+                    Snacks.picker.grep_interactive()
                 end,
                 desc = 'Grep',
             },
@@ -244,7 +141,6 @@ return {
             {
                 ',h',
                 function()
-                    ---@diagnostic disable-next-line: missing-fields
                     Snacks.picker.help { layout = { preset = 'dropdown' } }
                 end,
                 desc = 'Help',
@@ -364,7 +260,10 @@ return {
                     },
                 },
             },
-            image = { enabled = true },
+            image = {
+                enabled = true,
+                markdown = { inline = false, float = true },
+            },
             input = { enabled = true },
             notifier = {
                 enabled = true,
@@ -406,6 +305,116 @@ return {
                                     ['<Esc>'] = 'toggle_focus',
                                 },
                             },
+                        },
+                    },
+                    dirs = {
+                        finder = function(opts, ctx)
+                            local finder = require 'conf.snacks.finder'
+                            return vim.uv.fs_stat '.git'
+                                    and finder.git_dirs(opts, ctx)
+                                or finder.fd_dirs(opts, ctx)
+                        end,
+                        format = 'file',
+                        show_empty = true,
+                        hidden = false,
+                        ignored = false,
+                        follow = false,
+                        supports_live = true,
+                    },
+                    grep_interactive = {
+                        multi = { 'grep', 'dirs' },
+                        glob = {},
+                        dirs = {},
+                        filter = {
+                            ---@param picker snacks.Picker
+                            ---@param filter snacks.picker.Filter
+                            transform = function(picker, filter)
+                                local source_id = filter.meta.source_id or 1
+                                filter.source_id = source_id
+                                if source_id == 1 then
+                                    picker.title = 'Grep'
+                                    picker.opts.show_empty = true
+                                    picker.opts.live = true
+                                else
+                                    picker.title = 'Grep dirs'
+                                    picker.opts.show_empty = false
+                                    picker.opts.live = false
+                                end
+                            end,
+                        },
+                        actions = {
+                            pick_glob = function(self, _)
+                                local default = '*.'
+                                Snacks.input.input({
+                                    prompt = 'Grep glob',
+                                    default = default,
+                                    keys = {
+                                        i_esc = {
+                                            '<esc>',
+                                            { 'cmp_close', 'cancel' },
+                                            mode = 'i',
+                                            expr = true,
+                                        },
+                                    },
+                                }, function(
+                                    input
+                                )
+                                    if
+                                        not input
+                                        or input == ''
+                                        or input == default
+                                    then
+                                        return
+                                    end
+                                    table.insert(self.opts['glob'], input)
+                                    self:find()
+                                end)
+                            end,
+                            pick_dirs = function(self, _, _)
+                                self.input.filter.meta.source_id = 2
+                                -- FIXME: reset input search
+                                -- self.input.filter.search = ''
+                                self:find()
+                            end,
+                            confirm_custom = function(self, item, _)
+                                if not item then
+                                    return
+                                end
+                                if item.source_id == 2 then
+                                    table.insert(self.opts['dirs'], item.file)
+                                    self.input.filter.meta.source_id = 1
+                                    -- FIXME: reset input search
+                                    -- self.input.filter.search = ''
+                                    self:find()
+                                else
+                                    self:action 'confirm'
+                                end
+                            end,
+                        },
+                        win = {
+                            input = {
+                                keys = {
+                                    ['<c-e>'] = {
+                                        'pick_glob',
+                                        mode = { 'i', 'n' },
+                                        desc = 'Filter grep extension',
+                                    },
+                                    ['<c-d>'] = {
+                                        'pick_dirs',
+                                        mode = { 'i', 'n' },
+                                        desc = 'Filter grep directory',
+                                    },
+                                    ['<CR>'] = {
+                                        'confirm_custom',
+                                        mode = { 'i', 'n' },
+                                        desc = 'Confirm',
+                                    },
+                                },
+                            },
+                        },
+                        layout = {
+                            preset = 'telescope',
+                            reverse = true,
                         },
                     },
                 },
