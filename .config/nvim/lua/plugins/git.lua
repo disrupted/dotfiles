@@ -404,19 +404,6 @@ return {
         ft = 'yaml.github',
         ---@module 'github-actions.config'
         ---@type github_actions.Opts
-        opts = {
-            token_provider = function()
-                local cb_to_co = require('coop.coroutine-utils').cb_to_co
-
-                local co = cb_to_co(function(cb)
-                    require('op').get_secret_async(
-                        'jjo3wbo4qje4olvisp6lcqci3u',
-                        'uutpi5dmo2j3let5hvwjtbnf4u',
-                        cb
-                    )
-                end)
-                return co()
-            end,
-        },
+        opts = {},
     },
 }
