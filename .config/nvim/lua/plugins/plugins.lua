@@ -29,7 +29,7 @@ return {
             {
                 '<C-e>',
                 function()
-                    Snacks.picker.explorer {
+                    local picker = Snacks.picker.explorer {
                         layout = {
                             preset = 'sidebar',
                             preview = false,
@@ -45,6 +45,26 @@ return {
                         --     },
                         -- },
                     }
+
+                    picker.list.win:on('BufEnter', function()
+                        local hl = vim.api.nvim_get_hl(
+                            0,
+                            { name = 'Cursor', create = true }
+                        )
+                        hl.blend = 100
+                        vim.api.nvim_set_hl(0, 'Cursor', hl)
+                        vim.opt.guicursor:append 'a:Cursor/lCursor'
+                    end, { buf = true, desc = 'Hide cursor' })
+
+                    picker.list.win:on('BufLeave', function()
+                        local hl = vim.api.nvim_get_hl(
+                            0,
+                            { name = 'Cursor', create = true }
+                        )
+                        hl.blend = 0
+                        vim.api.nvim_set_hl(0, 'Cursor', hl)
+                        vim.opt.guicursor:remove 'a:Cursor/lCursor'
+                    end, { buf = true, desc = 'Show cursor' })
                 end,
                 desc = 'Explorer',
             },
