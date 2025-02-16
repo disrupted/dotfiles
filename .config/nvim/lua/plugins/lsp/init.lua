@@ -115,14 +115,13 @@ return {
     },
     {
         'disrupted/pylance.nvim',
+        enabled = false,
         dependencies = {
             {
                 'williamboman/mason-lspconfig.nvim',
                 opts = function(_, opts)
                     opts.ensure_installed = opts.ensure_installed or {}
-                    vim.list_extend(opts.ensure_installed, {
-                        'pylance',
-                    })
+                    table.insert(opts.ensure_installed, 'pylance')
                 end,
             },
         },

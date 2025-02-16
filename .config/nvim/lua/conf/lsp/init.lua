@@ -225,7 +225,7 @@ local function periodic_refresh_semantic_tokens()
         level = vim.log.levels.DEBUG,
         title = 'LSP',
     })
-    if not vim.api.nvim_buf_is_valid(0) then
+    if not vim.api.nvim_buf_is_loaded(0) then
         return
     end
     vim.lsp.semantic_tokens.force_refresh(0)
@@ -260,7 +260,7 @@ vim.lsp.config('*', {
 })
 
 vim.lsp.enable {
-    -- 'basedpyright',
+    'basedpyright',
     'bash_ls',
     'css_ls',
     'docker_compose_ls',

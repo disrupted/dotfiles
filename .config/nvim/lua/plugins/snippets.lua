@@ -90,12 +90,5 @@ return {
                 paths = { './snippets' },
             }
         end,
-        dependencies = {
-            'rafamadriz/friendly-snippets',
-            config = function()
-                require('luasnip.loaders.from_vscode').lazy_load()
-            end,
-            enabled = false,
-        },
     },
 }

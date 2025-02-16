@@ -877,18 +877,6 @@ return {
         end,
     },
     { 'kyazdani42/nvim-web-devicons', lazy = true },
-    {
-        'kwkarlwang/bufresize.nvim',
-        lazy = true,
-        init = function()
-            vim.api.nvim_create_autocmd('VimResized', {
-                callback = function()
-                    require('bufresize').resize()
-                end,
-            })
-        end,
-        enabled = false,
-    },
     { 'MunifTanjim/nui.nvim', lazy = true },
     {
         'folke/noice.nvim',

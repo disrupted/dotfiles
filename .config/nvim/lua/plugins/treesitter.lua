@@ -171,20 +171,6 @@ return {
         end,
     },
     {
-        'nvim-treesitter/nvim-treesitter-context',
-        enabled = false,
-        event = 'VeryLazy',
-        -- keys = {
-        --     {
-        --         '1',
-        --         function()
-        --             require('treesitter-context').go_to_context(vim.v.count1)
-        --         end,
-        --     },
-        -- },
-        opts = {},
-    },
-    {
         'bezhermoso/tree-sitter-ghostty',
         ft = 'ghostty',
         build = 'make nvim_install',

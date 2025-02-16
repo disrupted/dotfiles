@@ -582,11 +582,5 @@ return {
         ---@type rest.Opts
         opts = {},
     },
-    { 'ellisonleao/glow.nvim', cmd = 'Glow' },
-    {
-        'jamestthompson3/nvim-remote-containers',
-        cmd = { 'AttachToContainer', 'BuildImage', 'StartImage' },
-        enabled = false,
-    },
     { 'mrjones2014/op.nvim', build = 'make install', lazy = true },
 }
