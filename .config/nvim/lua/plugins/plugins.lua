@@ -80,21 +80,17 @@ return {
                                     },
                                 },
                             },
+                            list = {
+                                on_buf = function(self)
+                                    self:execute 'calculate_file_truncate_width'
+                                end,
+                            },
                         },
                     }
 
                     picker.list.win:on('VimResized', function()
                         picker:action 'calculate_file_truncate_width'
                     end)
-
-                    -- set initial width
-                    -- preview window doesn't exist yet so we have to calculate it manually
-                    local preview_opts = picker.layout.box_wins[1].opts[2]
-                    assert(preview_opts.win == 'preview')
-                    local initial_width = math.floor(
-                        picker.list.win:size().width * (1 - preview_opts.width)
-                    ) - 12
-                    picker.opts.formatters.file.truncate = initial_width
                 end,
                 desc = 'Files',
             },
