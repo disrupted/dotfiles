@@ -232,26 +232,14 @@ local function periodic_refresh_semantic_tokens()
     vim.defer_fn(periodic_refresh_semantic_tokens, 30000)
 end
 
--- TODO: refactor using Snacks.util.throttle
-local function debounce(ms, fn)
-    local timer = assert(vim.uv.new_timer())
-    return function(...)
-        local argv = { ... }
-        timer:start(ms, 0, function()
-            timer:stop()
-            vim.schedule_wrap(fn)(unpack(argv))
-        end)
-    end
-end
-
 vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave' }, {
-    callback = debounce(1000, function()
+    callback = Snacks.util.throttle(function()
         Snacks.notify('refresh semantic tokens', {
             level = vim.log.levels.DEBUG,
             title = 'LSP',
         })
         vim.lsp.semantic_tokens.force_refresh(0)
-    end),
+    end, { ms = 1000 }),
 })
 
 vim.lsp.config('*', {

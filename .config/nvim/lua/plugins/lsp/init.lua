@@ -477,17 +477,6 @@ return {
             lint.linters_by_ft = opts.linters_by_ft
 
             local M = {}
-            function M.debounce(ms, fn)
-                local timer = assert(vim.uv.new_timer())
-                return function(...)
-                    local argv = { ... }
-                    timer:start(ms, 0, function()
-                        timer:stop()
-                        vim.schedule_wrap(fn)(unpack(argv))
-                    end)
-                end
-            end
-
             function M.lint()
                 -- Only run the linter in buffers that you can modify in order to
                 -- avoid superfluous noise, notably within the handy LSP pop-ups that
@@ -543,7 +532,7 @@ return {
                     'nvim-lint',
                     { clear = true }
                 ),
-                callback = M.debounce(100, M.lint),
+                callback = Snacks.util.throttle(M.lint, { ms = 100 }),
             })
         end,
     },
