@@ -556,43 +556,21 @@ return {
             {
                 '<leader>xx',
                 function()
-                    require('trouble').toggle {
-                        mode = 'diagnostics',
-                        auto_refresh = true,
-                        -- only errors
-                        -- filter = { severity = vim.diagnostic.severity.ERROR },
-                        -- only the most severe diagnostics
-                        filter = function(items)
-                            local severity = vim.diagnostic.severity.HINT
-                            for _, item in ipairs(items) do
-                                severity = math.min(severity, item.severity)
-                            end
-                            return vim.tbl_filter(function(item)
-                                return item.severity == severity
-                            end, items)
-                        end,
-                    }
+                    require('conf.trouble').diagnostics.toggle 'workspace_diagnostics_severe'
                 end,
                 desc = 'Trouble: List most severe diagnostics for workspace',
             },
             {
                 '<leader>xw',
                 function()
-                    require('trouble').toggle {
-                        mode = 'diagnostics',
-                        auto_refresh = true,
-                    }
+                    require('conf.trouble').diagnostics.toggle 'workspace_diagnostics'
                 end,
                 desc = 'Trouble: List diagnostics for workspace',
             },
             {
                 '<leader>xb',
                 function()
-                    require('trouble').toggle {
-                        mode = 'diagnostics',
-                        auto_refresh = true,
-                        filter = { buf = 0 },
-                    }
+                    require('conf.trouble').diagnostics.toggle 'buffer_diagnostics'
                 end,
                 desc = 'Trouble: List diagnostics for buffer',
             },
@@ -608,12 +586,45 @@ return {
         ---@diagnostic disable-next-line: missing-fields
         opts = {
             focus = true,
+            auto_refresh = false,
             fold_open = '',
             fold_closed = '',
             indent_lines = false,
             padding = false,
             action_keys = { jump = { '<cr>' }, toggle_fold = { '<tab>' } },
-            auto_refresh = false,
+            modes = {
+                buffer_diagnostics = {
+                    mode = 'diagnostics',
+                    title = 'Buffer Diagnostics',
+                    auto_refresh = true,
+                    filter = { buf = 0 },
+                },
+                workspace_diagnostics = {
+                    mode = 'diagnostics',
+                    title = 'Workspace Diagnostics',
+                    auto_refresh = true,
+                    auto_close = true,
+                    filter = {
+                        severity = { min = vim.diagnostic.severity.WARN },
+                    },
+                },
+                workspace_diagnostics_severe = {
+                    mode = 'diagnostics',
+                    title = 'Workspace Diagnostics (most severe)',
+                    auto_refresh = true,
+                    auto_close = true,
+                    -- only the most severe diagnostics, min severity.WARN
+                    filter = function(items)
+                        local severity = vim.diagnostic.severity.WARN
+                        for _, item in ipairs(items) do
+                            severity = math.min(severity, item.severity)
+                        end
+                        return vim.tbl_filter(function(item)
+                            return item.severity == severity
+                        end, items)
+                    end,
+                },
+            },
         },
         config = function(_, opts)
             require('trouble').setup(opts)
