@@ -5,204 +5,196 @@ return {
         'lewis6991/gitsigns.nvim',
         event = { 'BufWinEnter', 'BufNewFile' },
         dependencies = { 'purarue/gitsigns-yadm.nvim' },
-        opts = function()
-            ---@module 'gitsigns.config'
-            ---@type Gitsigns.Config
-            ---@diagnostic disable: missing-fields
-            return {
-                signs = {
-                    add = {
-                        text = '▎', -- ▍
-                    },
-                    change = {
-                        text = '▎',
-                    },
-                    delete = {
-                        text = '▎',
-                        show_count = true,
-                    },
-                    topdelete = {
-                        text = '‾',
-                        show_count = true,
-                    },
-                    changedelete = {
-                        text = '▎',
-                        show_count = true,
-                    },
-                    untracked = {
-                        text = '▍', -- ▋▎┊┆╷
-                    },
+        ---@module 'gitsigns.config'
+        ---@type Gitsigns.Config
+        ---@diagnostic disable: missing-fields
+        opts = {
+            signs = {
+                add = {
+                    text = '▎', -- ▍
                 },
-                count_chars = {
-                    [1] = '',
-                    [2] = '₂',
-                    [3] = '₃',
-                    [4] = '₄',
-                    [5] = '₅',
-                    [6] = '₆',
-                    [7] = '₇',
-                    [8] = '₈',
-                    [9] = '₉',
-                    ['+'] = '₊',
+                change = {
+                    text = '▎',
                 },
-                signcolumn = true,
-                numhl = false,
-                linehl = false,
-                word_diff = false,
-                watch_gitdir = { interval = 1000, follow_files = true },
-                attach_to_untracked = true,
-                current_line_blame = false,
-                current_line_blame_opts = {
-                    virt_text = true,
-                    virt_text_pos = 'right_align', -- 'eol' | 'overlay' | 'right_align'
-                    delay = 1000,
-                    ignore_whitespace = true,
+                delete = {
+                    text = '▎',
+                    show_count = true,
                 },
-                sign_priority = 9999,
-                update_debounce = 100,
-                ---@diagnostic disable-next-line: assign-type-mismatch
-                status_formatter = nil, -- Use default
-                max_file_length = 40000,
-                preview_config = {
-                    -- Options passed to nvim_open_win
-                    border = 'single',
-                    style = 'minimal',
-                    relative = 'cursor',
-                    row = 0,
-                    col = 1,
+                topdelete = {
+                    text = '‾',
+                    show_count = true,
                 },
-                trouble = false,
-                _on_attach_pre = function(bufnr, callback)
-                    local ignore_filetypes = {
-                        'gitcommit', -- YADM commit
-                        'gitrebase', -- YADM rebase
-                    }
-                    if
-                        vim.tbl_contains(
-                            ignore_filetypes,
-                            vim.bo[bufnr].filetype
-                        )
-                    then
-                        return -- do not attach to buffers of this filetype
+                changedelete = {
+                    text = '▎',
+                    show_count = true,
+                },
+                untracked = {
+                    text = '▍', -- ▋▎┊┆╷
+                },
+            },
+            count_chars = {
+                [1] = '',
+                [2] = '₂',
+                [3] = '₃',
+                [4] = '₄',
+                [5] = '₅',
+                [6] = '₆',
+                [7] = '₇',
+                [8] = '₈',
+                [9] = '₉',
+                ['+'] = '₊',
+            },
+            signcolumn = true,
+            numhl = false,
+            linehl = false,
+            word_diff = false,
+            watch_gitdir = { interval = 1000, follow_files = true },
+            attach_to_untracked = true,
+            current_line_blame = false,
+            current_line_blame_opts = {
+                virt_text = true,
+                virt_text_pos = 'right_align', -- 'eol' | 'overlay' | 'right_align'
+                delay = 1000,
+                ignore_whitespace = true,
+            },
+            sign_priority = 9999,
+            update_debounce = 100,
+            ---@diagnostic disable-next-line: assign-type-mismatch
+            status_formatter = nil, -- Use default
+            max_file_length = 40000,
+            preview_config = {
+                -- Options passed to nvim_open_win
+                border = 'single',
+                style = 'minimal',
+                relative = 'cursor',
+                row = 0,
+                col = 1,
+            },
+            trouble = false,
+            _on_attach_pre = function(bufnr, callback)
+                local ignore_filetypes = {
+                    'gitcommit', -- YADM commit
+                    'gitrebase', -- YADM rebase
+                }
+                if
+                    vim.tbl_contains(ignore_filetypes, vim.bo[bufnr].filetype)
+                then
+                    return -- do not attach to buffers of this filetype
+                end
+                require('gitsigns-yadm').yadm_signs(callback, { bufnr = bufnr })
+            end,
+            on_attach = function(bufnr)
+                local function map(mode, l, r, opts)
+                    opts = opts or {}
+                    opts.buffer = bufnr
+                    vim.keymap.set(mode, l, r, opts)
+                end
+
+                local gs = package.loaded.gitsigns
+
+                -- Navigation
+                map('n', ']c', function()
+                    if vim.wo.diff then
+                        return ']c'
                     end
-                    require('gitsigns-yadm').yadm_signs(
-                        callback,
-                        { bufnr = bufnr }
-                    )
-                end,
-                on_attach = function(bufnr)
-                    local function map(mode, l, r, opts)
-                        opts = opts or {}
-                        opts.buffer = bufnr
-                        vim.keymap.set(mode, l, r, opts)
+                    vim.schedule(function()
+                        gs.next_hunk()
+                    end)
+                    return '<Ignore>'
+                end, { expr = true })
+
+                map('n', '[c', function()
+                    if vim.wo.diff then
+                        return '[c'
                     end
+                    vim.schedule(function()
+                        gs.prev_hunk()
+                    end)
+                    return '<Ignore>'
+                end, { expr = true })
 
-                    local gs = package.loaded.gitsigns
+                -- Actions
+                map(
+                    { 'n', 'v' },
+                    '<leader>hs',
+                    gs.stage_hunk,
+                    { desc = 'Git stage hunk' }
+                )
+                map(
+                    { 'n', 'v' },
+                    '<leader>hr',
+                    gs.reset_hunk,
+                    { desc = 'Git reset hunk' }
+                )
+                map(
+                    'n',
+                    '<leader>hS',
+                    gs.stage_buffer,
+                    { desc = 'Git stage buffer' }
+                )
+                map(
+                    'n',
+                    '<leader>hu',
+                    gs.stage_hunk,
+                    { desc = 'Git undo stage hunk' }
+                )
+                map(
+                    'n',
+                    '<leader>hR',
+                    gs.reset_buffer,
+                    { desc = 'Git reset buffer' }
+                )
+                map(
+                    'n',
+                    '<leader>hp',
+                    gs.preview_hunk,
+                    { desc = 'Git preview hunk' }
+                )
+                map(
+                    'n',
+                    '<leader>hb',
+                    gs.toggle_current_line_blame,
+                    { desc = 'Git toggle current line blame' }
+                )
+                map(
+                    'n',
+                    '<leader>hd',
+                    gs.diffthis,
+                    { desc = 'Git diff against index' }
+                )
+                map('n', '<leader>hD', function()
+                    gs.diffthis '~'
+                end, {
+                    desc = 'Git diff against last commit',
+                })
 
-                    -- Navigation
-                    map('n', ']c', function()
-                        if vim.wo.diff then
-                            return ']c'
-                        end
-                        vim.schedule(function()
-                            gs.next_hunk()
-                        end)
-                        return '<Ignore>'
-                    end, { expr = true })
-
-                    map('n', '[c', function()
-                        if vim.wo.diff then
-                            return '[c'
-                        end
-                        vim.schedule(function()
-                            gs.prev_hunk()
-                        end)
-                        return '<Ignore>'
-                    end, { expr = true })
-
-                    -- Actions
-                    map(
-                        { 'n', 'v' },
-                        '<leader>hs',
-                        gs.stage_hunk,
-                        { desc = 'Git stage hunk' }
-                    )
-                    map(
-                        { 'n', 'v' },
-                        '<leader>hr',
-                        gs.reset_hunk,
-                        { desc = 'Git reset hunk' }
-                    )
-                    map(
-                        'n',
-                        '<leader>hS',
-                        gs.stage_buffer,
-                        { desc = 'Git stage buffer' }
-                    )
-                    map(
-                        'n',
-                        '<leader>hu',
-                        gs.stage_hunk,
-                        { desc = 'Git undo stage hunk' }
-                    )
-                    map(
-                        'n',
-                        '<leader>hR',
-                        gs.reset_buffer,
-                        { desc = 'Git reset buffer' }
-                    )
-                    map(
-                        'n',
-                        '<leader>hp',
-                        gs.preview_hunk,
-                        { desc = 'Git preview hunk' }
-                    )
-                    map(
-                        'n',
-                        '<leader>hb',
-                        gs.toggle_current_line_blame,
-                        { desc = 'Git toggle current line blame' }
-                    )
-                    map(
-                        'n',
-                        '<leader>hd',
-                        gs.diffthis,
-                        { desc = 'Git diff against index' }
-                    )
-                    map('n', '<leader>hD', function()
-                        gs.diffthis '~'
-                    end, {
-                        desc = 'Git diff against last commit',
-                    })
-
-                    -- Text object
-                    map(
-                        { 'o', 'x' },
-                        'ih',
-                        ':<C-U>Gitsigns select_hunk<CR>',
-                        { desc = 'Git select hunk' }
-                    )
-                end,
-                -- _signs_staged_enable = true,
-                -- _signs_staged = {
-                --     add = {
-                --         text = '┃',
-                --     },
-                --     change = {
-                --         text = '┃',
-                --     },
-                --     delete = {
-                --         text = '▁',
-                --     },
-                --     topdelete = {
-                --         text = '▔',
-                --     },
-                --     changedelete = {
-                --         text = '~',
-                --     },
-                -- },
-            }
-        end,
+                -- Text object
+                map(
+                    { 'o', 'x' },
+                    'ih',
+                    ':<C-U>Gitsigns select_hunk<CR>',
+                    { desc = 'Git select hunk' }
+                )
+            end,
+            -- _signs_staged_enable = true,
+            -- _signs_staged = {
+            --     add = {
+            --         text = '┃',
+            --     },
+            --     change = {
+            --         text = '┃',
+            --     },
+            --     delete = {
+            --         text = '▁',
+            --     },
+            --     topdelete = {
+            --         text = '▔',
+            --     },
+            --     changedelete = {
+            --         text = '~',
+            --     },
+            -- },
+        },
     },
     {
         'NeogitOrg/neogit',
