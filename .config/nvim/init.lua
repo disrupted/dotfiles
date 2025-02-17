@@ -77,17 +77,11 @@ opt.sessionoptions = {
     'buffers',
     'curdir',
     'folds',
-    'help',
-    'options',
     'tabpages',
-    'winsize',
-    'resize',
-    'winpos',
     'terminal',
+    'winsize',
+    'winpos',
 }
-opt.complete:prepend { 'kspell' }
--- opt.spell = true
--- vim.opt.spelllang = { 'en_us' }
 opt.completeopt = { 'menu', 'menuone', 'noselect' } -- Completion options
 opt.clipboard = 'unnamedplus'
 opt.inccommand = 'nosplit'

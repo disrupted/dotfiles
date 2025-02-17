@@ -68,6 +68,7 @@ return {
     },
     {
         'AckslD/nvim-neoclip.lua',
+        enabled = false,
         event = 'TextYankPost',
         keys = {
             {
@@ -80,32 +81,34 @@ return {
         },
         config = true,
     },
-    { 'tversteeg/registers.nvim', lazy = true },
     {
-        'olimorris/persisted.nvim',
-        enabled = false,
-        lazy = false,
-        opts = { autoload = true },
-    },
-    {
-        'jedrzejboczar/possession.nvim',
-        enabled = true,
-        event = 'UIEnter',
-        opts = {
-            -- autoload = true,
-            commands = {
-                save = 'SessionSave',
-                load = 'SessionLoad',
-                save_cwd = 'SessionSaveCwd',
-                load_cwd = 'SessionLoadCwd',
-                rename = 'SessionRename',
-                close = 'SessionClose',
-                delete = 'SessionDelete',
-                show = 'SessionShow',
-                list = 'SessionList',
-                list_cwd = 'SessionListCwd',
-                migrate = 'SessionMigrate',
+        -- 'rmagatti/auto-session',
+        'cameronr/auto-session',
+        event = 'VimLeavePre',
+        cmd = {
+            'SessionSave',
+            'SessionRestore',
+            'SessionDelete',
+            'SessionDisableAutoSave',
+            'SessionToggleAutoSave',
+        },
+        keys = {
+            {
+                '<leader>z',
+                '<cmd>SessionRestore<CR>',
+                desc = 'Restore session',
             },
+        },
+        branch = 'shada',
+        ---@module 'auto-session'
+        ---@type AutoSession.Config
+        opts = {
+            auto_restore = false,
+            use_git_branch = true,
+            save_and_restore_shada = true, -- in development
+            suppressed_dirs = { '/', '~/', '~/Downloads' },
+            args_allow_single_directory = false, -- disable restore when launching Neovim with directory argument, e.g. nvim .
+            args_allow_files_auto_save = false, -- disable restore when launching Neovim with file argument, e.g. nvim /foo/bar.txt
         },
     },
     {
