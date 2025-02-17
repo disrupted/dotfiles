@@ -1,10 +1,5 @@
 vim.diagnostic.config {
-    underline = {
-        severity = {
-            vim.diagnostic.severity.ERROR,
-            vim.diagnostic.severity.HINT, -- DiagnosticDeprecated
-        },
-    },
+    underline = true, -- use custom diagnostic handler instead to filter for which diagnostics to show an underline
     signs = {
         text = {
             [vim.diagnostic.severity.ERROR] = '', -- ◉
@@ -39,6 +34,31 @@ vim.diagnostic.config {
     update_in_insert = false,
     severity_sort = true,
 }
+
+---@param diagnostic vim.Diagnostic
+---@return boolean
+local is_deprecated = function(diagnostic)
+    return diagnostic._tags and diagnostic._tags.deprecated or false
+end
+
+---@param orig_handler vim.diagnostic.Handler
+---@return vim.diagnostic.Handler
+local function underline_handler(orig_handler)
+    return {
+        show = function(namespace, bufnr, diagnostics, opts)
+            diagnostics = vim.tbl_filter(function(diagnostic)
+                -- only show underline for DiagnosticError (severity.Error) and DiagnosticDeprecated (for all severities)
+                return diagnostic.severity == vim.diagnostic.severity.ERROR
+                    or is_deprecated(diagnostic)
+            end, diagnostics)
+            orig_handler.show(namespace, bufnr, diagnostics, opts)
+        end,
+        hide = orig_handler.hide,
+    }
+end
+
+vim.diagnostic.handlers.underline =
+    underline_handler(vim.diagnostic.handlers.underline)
 
 vim.keymap.set('n', '[d', function()
     vim.diagnostic.jump { count = -1, float = false }

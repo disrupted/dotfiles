@@ -154,7 +154,10 @@ return {
     },
     {
         'zbirenbaum/neodim',
-        event = { 'BufReadPost', 'BufNewFile' },
+        enabled = false, -- no longer needed because of DiagnosticUnnecessary
+        event = 'LspAttach',
+        ---@module 'neodim.config'
+        ---@type neodim.SetupOptions
         opts = {
             alpha = 0.70,
             blend_color = '#000000',
@@ -168,15 +171,6 @@ return {
                 underline = true,
             },
         },
-        config = function(_, opts)
-            vim.api.nvim_create_autocmd('LspAttach', {
-                group = au,
-                desc = 'LSP dim unused',
-                callback = function()
-                    require('neodim').setup(opts)
-                end,
-            })
-        end,
     },
     {
         'stevearc/conform.nvim',
