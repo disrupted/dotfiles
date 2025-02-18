@@ -3,6 +3,9 @@
 return {
     {
         'mfussenegger/nvim-dap',
+        init = function()
+            require('which-key').add { { '<leader>d', group = 'Debug' } }
+        end,
         keys = {
             {
                 '<leader>dc',
@@ -11,7 +14,7 @@ return {
                     require('dap').continue()
                     vim.opt.signcolumn = 'yes:2'
                 end,
-                desc = 'continue/start debugger',
+                desc = 'Continue/start debugger',
             },
             {
                 '<leader>dq',
@@ -22,42 +25,42 @@ return {
                     require('dapui').close {}
                     vim.opt.signcolumn = 'yes:1'
                 end,
-                desc = 'close debugger',
+                desc = 'Close debugger',
             },
             {
                 '<leader>do',
                 function()
                     require('dap').step_over()
                 end,
-                desc = 'step over',
+                desc = 'Step over',
             },
             {
                 '<leader>d>',
                 function()
                     require('dap').step_into()
                 end,
-                desc = 'step into',
+                desc = 'Step into',
             },
             {
                 '<leader>d<',
                 function()
                     require('dap').step_out()
                 end,
-                desc = 'step out',
+                desc = 'Step out',
             },
             {
                 '<leader>dp',
                 function()
                     require('dap').step_back() -- previous
                 end,
-                desc = 'step back',
+                desc = 'Step back',
             },
             {
                 '<leader>db',
                 function()
                     require('dap').toggle_breakpoint()
                 end,
-                desc = 'toggle breakpoint',
+                desc = 'Toggle breakpoint',
             },
             {
                 '<leader>dB',
@@ -66,21 +69,21 @@ return {
                         vim.fn.input 'Breakpoint condition: '
                     )
                 end,
-                desc = 'toggle conditional breakpoint',
+                desc = 'Toggle conditional breakpoint',
             },
             {
                 '<leader>de',
                 function()
                     require('dap').set_exception_breakpoints()
                 end,
-                desc = 'set exception breakpoints',
+                desc = 'Set exception breakpoints',
             },
             {
                 '<leader>dl',
                 function()
                     require('dap').list_breakpoints()
                 end,
-                desc = 'list breakpoints',
+                desc = 'List breakpoints',
             },
             {
                 '<leader>dr',
@@ -223,16 +226,6 @@ return {
                     end
                 end,
             },
-            -- TODO
-            -- {
-            --     'folke/which-key.nvim',
-            --     optional = true,
-            --     opts = {
-            --         defaults = {
-            --             ['<leader>d'] = { name = '+debug' },
-            --         },
-            --     },
-            -- },
             {
                 'jay-babu/mason-nvim-dap.nvim',
                 dependencies = 'mason.nvim',

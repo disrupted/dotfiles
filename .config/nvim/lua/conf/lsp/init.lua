@@ -183,7 +183,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
                 { 'n', 'v' },
                 '<leader>a',
                 vim.lsp.buf.code_action,
-                { buffer = bufnr }
+                { buffer = bufnr, desc = 'LSP: code action' }
             )
         end
     end,

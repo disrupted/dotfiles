@@ -139,12 +139,24 @@ return {
                     enable = true,
                     set_jumps = false,
                     goto_next_start = {
-                        [']f'] = '@function.outer',
-                        [']C'] = '@class.outer',
+                        [']f'] = {
+                            query = '@function.outer',
+                            desc = 'Next function',
+                        },
+                        [']C'] = {
+                            query = '@class.outer',
+                            desc = 'Next class',
+                        },
                     },
                     goto_previous_start = {
-                        ['[f'] = '@function.outer',
-                        ['[C'] = '@class.outer',
+                        ['[f'] = {
+                            query = '@function.outer',
+                            desc = 'Prev function',
+                        },
+                        ['[C'] = {
+                            query = '@class.outer',
+                            desc = 'Prev class',
+                        },
                     },
                 },
                 swap = {

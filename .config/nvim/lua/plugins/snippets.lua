@@ -16,7 +16,7 @@ return {
                     end
                 end,
                 mode = { 'i', 's' },
-                desc = 'jump to next snippet',
+                desc = 'Snippet: Next node',
             },
             {
                 '<C-k>',
@@ -27,7 +27,7 @@ return {
                     end
                 end,
                 mode = { 'i', 's' },
-                desc = 'jump to previous snippet',
+                desc = 'Snippet: Prev node',
             },
             {
                 '<C-e>',
@@ -38,7 +38,7 @@ return {
                     end
                 end,
                 mode = { 'i', 's' },
-                desc = 'cycle through snippet choice node',
+                desc = 'Snippet: cycle choice node',
             },
         },
         opts = {},

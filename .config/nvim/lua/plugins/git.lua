@@ -5,6 +5,9 @@ return {
         'lewis6991/gitsigns.nvim',
         event = { 'BufWinEnter', 'BufNewFile' },
         dependencies = { 'purarue/gitsigns-yadm.nvim' },
+        init = function()
+            require('which-key').add { { '<leader>h', group = 'Git' } }
+        end,
         ---@module 'gitsigns.config'
         ---@type Gitsigns.Config
         ---@diagnostic disable: missing-fields
@@ -211,13 +214,6 @@ return {
                 end,
                 desc = 'Neogit',
             },
-            {
-                '<leader>c',
-                function()
-                    require('neogit').open { 'commit' }
-                end,
-                desc = 'Commit',
-            },
         },
         opts = {
             disable_hint = true,
@@ -296,12 +292,36 @@ return {
         'akinsho/git-conflict.nvim',
         event = 'VeryLazy',
         keys = {
-            { '<leader>co', '<Plug>(git-conflict-ours)' },
-            { '<leader>ct', '<Plug>(git-conflict-theirs)' },
-            { '<leader>cb', '<Plug>(git-conflict-both)' },
-            { '<leader>c0', '<Plug>(git-conflict-none)' },
-            { '[x', '<Plug>(git-conflict-prev-conflict)' },
-            { ']x', '<Plug>(git-conflict-next-conflict)' },
+            {
+                '<leader>co',
+                '<Plug>(git-conflict-ours)',
+                desc = 'Git conflict pick ours',
+            },
+            {
+                '<leader>ct',
+                '<Plug>(git-conflict-theirs)',
+                desc = 'Git conflict pick theirs',
+            },
+            {
+                '<leader>cb',
+                '<Plug>(git-conflict-both)',
+                desc = 'Git conflict pick both',
+            },
+            {
+                '<leader>c0',
+                '<Plug>(git-conflict-none)',
+                desc = 'Git conflict pick none',
+            },
+            {
+                '[x',
+                '<Plug>(git-conflict-prev-conflict)',
+                desc = 'Prev conflict',
+            },
+            {
+                ']x',
+                '<Plug>(git-conflict-next-conflict)',
+                desc = 'Next conflict',
+            },
         },
         ---@module 'git-conflict'
         ---@type GitConflictUserConfig

@@ -488,18 +488,18 @@ return {
         cmd = { 'TodoQuickFix', 'TodoTrouble' },
         keys = {
             {
-                ']t',
-                function()
-                    require('todo-comments').jump_next()
-                end,
-                desc = 'jump to next todo',
-            },
-            {
                 '[t',
                 function()
                     require('todo-comments').jump_prev()
                 end,
-                desc = 'jump to previous todo',
+                desc = 'Prev todo',
+            },
+            {
+                ']t',
+                function()
+                    require('todo-comments').jump_next()
+                end,
+                desc = 'Next todo',
             },
         },
         init = function()
