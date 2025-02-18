@@ -37,8 +37,10 @@ vim.diagnostic.config {
 
 ---@param diagnostic vim.Diagnostic
 ---@return boolean
-local is_deprecated = function(diagnostic)
-    return diagnostic._tags and diagnostic._tags.deprecated or false
+local has_tags = function(diagnostic)
+    return diagnostic._tags
+            and (diagnostic._tags.deprecated or diagnostic._tags.unnecessary)
+        or false
 end
 
 ---@param orig_handler vim.diagnostic.Handler
@@ -47,9 +49,10 @@ local function underline_handler(orig_handler)
     return {
         show = function(namespace, bufnr, diagnostics, opts)
             diagnostics = vim.tbl_filter(function(diagnostic)
-                -- only show underline for DiagnosticError (severity.Error) and DiagnosticDeprecated (for all severities)
+                -- only show underline or other decorations for DiagnosticError (severity.Error)
+                -- and DiagnosticDeprecated/DiagnosticUnnecessary (for all severities)
                 return diagnostic.severity == vim.diagnostic.severity.ERROR
-                    or is_deprecated(diagnostic)
+                    or has_tags(diagnostic)
             end, diagnostics)
             orig_handler.show(namespace, bufnr, diagnostics, opts)
         end,
