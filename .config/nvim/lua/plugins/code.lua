@@ -56,9 +56,15 @@ return {
         opts = { keymaps = { visual = 's' } },
     },
     {
-        'monkoose/matchparen.nvim',
+        'tar80/matchwith.nvim',
         event = { 'BufWinEnter', 'BufNewFile' },
-        config = true,
+        ---@module 'matchwith.config'
+        ---@type Options
+        ---@diagnostic disable-next-line: missing-fields
+        opts = {
+            jump_key = '%',
+            ignore_filetypes = {},
+        },
     },
     {
         'numToStr/Comment.nvim',
