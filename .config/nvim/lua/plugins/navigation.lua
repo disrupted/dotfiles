@@ -36,15 +36,27 @@ return {
         'folke/flash.nvim',
         ---@module 'flash.config'
         ---@type Flash.Config
-        opts = {},
+        opts = {
+            modes = {
+                char = {
+                    keys = { 'f', 'F', 't', 'T', [';'] = 'L', [','] = 'H' },
+                },
+            },
+        },
         keys = {
+            'f',
+            'F',
+            't',
+            'T',
+            'L',
+            'H',
             {
                 's',
                 mode = { 'n', 'o' },
                 function()
                     require('flash').jump()
                 end,
-                desc = 'Flash',
+                desc = 'Flash jump',
             },
             {
                 'S',
@@ -60,7 +72,7 @@ return {
                 function()
                     require('flash').remote()
                 end,
-                desc = 'Remote Flash',
+                desc = 'Flash remote',
             },
             {
                 'R',
@@ -68,7 +80,7 @@ return {
                 function()
                     require('flash').treesitter_search()
                 end,
-                desc = 'Treesitter Search',
+                desc = 'Treesitter search',
             },
             {
                 '<c-s>',
@@ -76,7 +88,7 @@ return {
                 function()
                     require('flash').toggle()
                 end,
-                desc = 'Toggle Flash Search',
+                desc = 'Toggle Flash search',
             },
         },
     },
