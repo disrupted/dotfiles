@@ -9,6 +9,7 @@ return {
                 'Kaiser-Yang/blink-cmp-git',
                 dependencies = { 'nvim-lua/plenary.nvim' },
             },
+            { 'disrupted/blink-cmp-conventional-commits' },
         },
         version = '*',
         ---@module 'blink.cmp'
@@ -104,6 +105,14 @@ return {
             },
             sources = {
                 default = function()
+                    if vim.bo.filetype == 'gitcommit' then
+                        return {
+                            'conventional_commits',
+                            -- 'git', -- FIXME: typing lag when entering insert mode first time
+                            'path',
+                            'buffer',
+                        }
+                    end
                     local success, node = pcall(vim.treesitter.get_node)
                     if
                         success
@@ -113,7 +122,7 @@ return {
                             node:type()
                         )
                     then
-                        return { 'buffer' }
+                        return { 'buffer', 'path' }
                     end
                     local sources = {
                         'lsp',
@@ -135,8 +144,8 @@ return {
                         score_offset = 100,
                     },
                     git = {
-                        module = 'blink-cmp-git',
                         name = 'Git',
+                        module = 'blink-cmp-git',
                         score_offset = 10,
                         enabled = function()
                             return vim.tbl_contains(
@@ -144,8 +153,8 @@ return {
                                 vim.bo.filetype
                             )
                         end,
-                        --- @module 'blink-cmp-git'
-                        --- @type blink-cmp-git.Options
+                        ---@module 'blink-cmp-git'
+                        ---@type blink-cmp-git.Options
                         opts = {},
                     },
                     snippets = {
@@ -169,6 +178,13 @@ return {
                     },
                     buffer = {
                         min_keyword_length = 3,
+                    },
+                    conventional_commits = {
+                        name = 'Conventional Commits',
+                        module = 'blink-cmp-conventional-commits',
+                        ---@module 'blink-cmp-conventional-commits'
+                        ---@type blink-cmp-conventional-commits.Options
+                        opts = {},
                     },
                 },
             },
