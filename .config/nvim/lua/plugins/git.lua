@@ -113,19 +113,24 @@ return {
                     return '<Ignore>'
                 end, { expr = true })
 
-                -- Actions
                 map(
-                    { 'n', 'v' },
+                    'n',
                     '<leader>hs',
                     gs.stage_hunk,
                     { desc = 'Git stage hunk' }
                 )
+                map('v', '<leader>hs', function()
+                    gs.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
+                end, { desc = 'Git stage hunk' })
                 map(
-                    { 'n', 'v' },
+                    'n',
                     '<leader>hr',
                     gs.reset_hunk,
                     { desc = 'Git reset hunk' }
                 )
+                map('v', '<leader>hr', function()
+                    gs.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
+                end, { desc = 'Git reset hunk' })
                 map(
                     'n',
                     '<leader>hS',
