@@ -364,36 +364,42 @@ return {
     {
         'pwntester/octo.nvim',
         cmd = 'Octo',
+        init = function()
+            require('which-key').add { { '<leader>o', group = 'Octo' } }
+        end,
         keys = {
             {
                 '<leader>op',
                 function()
-                    local url =
-                        vim.fn.system 'gh pr view --json url --jq .url 2>/dev/null'
-                    if url then
-                        Snacks.notify.info(url, {
-                            title = 'Octo',
-                        })
-                        local cmd = string.format('Octo %s', url)
-                        vim.cmd(cmd)
-                    else
-                        vim.cmd 'Octo pr list'
-                    end
+                    require('conf.octo').pr.open_or_create()
                 end,
+                desc = 'Open or create PR for current branch',
             },
-            { '<leader>oi', '<cmd>Octo issue list<cr>' },
-            { '<leader>os', '<cmd>Octo search assignee:disrupted<cr>' },
+            { '<leader>oi', '<cmd>Octo issue list<cr>', desc = 'List issues' },
+            {
+                '<leader>os',
+                '<cmd>Octo search assignee:disrupted<cr>',
+                desc = 'Search assigned issues & PRs',
+            },
         },
         ---@module 'octo.config'
         ---@type OctoConfig
-        ---@diagnostic disable-next-line: missing-fields
-        opts = { date_format = '%Y %b %d %H:%M' },
+        opts = {
+            picker = 'snacks',
+            default_merge_method = 'squash',
+            default_delete_branch = true,
+            date_format = '%Y %b %d %H:%M',
+        },
     },
     {
         'topaxi/pipeline.nvim',
         cmd = 'Pipeline',
         keys = {
-            { '<leader>ci', '<cmd>Pipeline<cr>', desc = 'Open pipeline.nvim' },
+            {
+                '<leader>ci',
+                '<cmd>Pipeline<CR>',
+                desc = 'Watch CI pipeline run',
+            },
         },
         build = 'make',
         dependencies = { 'nvim-lua/plenary.nvim', 'MunifTanjim/nui.nvim' },
