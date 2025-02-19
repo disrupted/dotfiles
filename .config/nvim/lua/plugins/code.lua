@@ -250,6 +250,9 @@ return {
     },
     {
         'nvim-neotest/neotest',
+        init = function()
+            require('which-key').add { { '<leader>t', group = 'Test' } }
+        end,
         keys = {
             {
                 '<leader>tf',
@@ -259,7 +262,7 @@ return {
                         env = { REUSE_CONTAINERS = '1' },
                     }
                 end,
-                desc = 'test nearest function',
+                desc = 'nearest function',
             },
             {
                 '<leader>tb',
@@ -270,7 +273,7 @@ return {
                         env = { REUSE_CONTAINERS = '1' },
                     }
                 end,
-                desc = 'test entire file/buffer',
+                desc = 'entire file/buffer',
             },
             {
                 '<leader>tu',
@@ -310,21 +313,21 @@ return {
                         }
                     end
                 end,
-                desc = 'test entire project',
+                desc = 'entire project',
             },
             {
                 '<leader>tl',
                 function()
                     require('neotest').run.run_last()
                 end,
-                desc = 're-run the last test',
+                desc = 're-run last',
             },
             {
                 '<leader>to',
                 function()
                     require('neotest').output.open { last_run = true }
                 end,
-                desc = 'open output of last test run',
+                desc = 'open output of last run',
             },
             {
                 '<leader>ts',
@@ -336,6 +339,7 @@ return {
             {
                 '<leader>td',
                 function()
+                    _ = require('conf.dap.adapters')[vim.bo.filetype]
                     require('neotest').run.run {
                         strategy = 'dap',
                         suite = false,

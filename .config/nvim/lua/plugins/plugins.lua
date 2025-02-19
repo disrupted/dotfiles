@@ -29,6 +29,13 @@ return {
             {
                 '<C-e>',
                 function()
+                    if
+                        package.loaded.dapui
+                        and require('dapui.windows').layouts[1]:is_open()
+                    then
+                        require('dapui').close()
+                    end
+
                     local picker = Snacks.picker.explorer {
                         layout = {
                             preset = 'sidebar',
@@ -37,6 +44,11 @@ return {
                         },
                         jump = { close = false },
                         include = { '.github', '.env*' },
+                        -- on_close = function(_)
+                        --     if require('dapui.windows').layouts[1]:is_open() then
+                        --         require('dapui').open { reset = true }
+                        --     end
+                        -- end,
                         -- win = {
                         --     list = {
                         --         keys = {
@@ -526,7 +538,7 @@ return {
                         Text = '',
                         TypeParameter = '󰊄',
                         Unit = '',
-                        Unknown = '',
+                        Unknown = '?', -- 
                         Value = '󰦨',
                         Variable = '󰀫',
                     },
