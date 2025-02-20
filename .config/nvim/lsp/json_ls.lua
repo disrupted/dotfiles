@@ -2,7 +2,9 @@
 return {
     cmd = { 'vscode-json-language-server', '--stdio' },
     filetypes = { 'json', 'jsonc' },
+    ---@type table<vim.lsp.protocol.Methods, lsp.Handler>
     handlers = {
+        ---@type lsp.Handler
         ['textDocument/publishDiagnostics'] = function(err, result, ctx)
             result.diagnostics = vim.tbl_filter(function(diagnostic)
                 -- disable diagnostics for trailing comma in JSONC

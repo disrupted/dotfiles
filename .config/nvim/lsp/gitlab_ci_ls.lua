@@ -1,4 +1,4 @@
-local cache_dir = vim.loop.os_homedir() .. '/.cache/gitlab-ci-ls/'
+local cache_dir = assert(vim.uv.os_homedir()) .. '/.cache/gitlab-ci-ls/'
 ---@type vim.lsp.Config
 return {
     cmd = { 'gitlab-ci-ls' },
