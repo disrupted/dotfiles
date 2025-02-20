@@ -67,7 +67,7 @@ return {
                         'BufEnter',
                         require('conf.ui').cursor.hide,
                         { buf = true, desc = 'Hide cursor' }
-                        )
+                    )
 
                     picker.list.win:on(
                         'BufLeave',
@@ -402,14 +402,6 @@ return {
                                 Snacks.input.input({
                                     prompt = 'Grep glob',
                                     default = default,
-                                    keys = {
-                                        i_esc = {
-                                            '<esc>',
-                                            { 'cmp_close', 'cancel' },
-                                            mode = 'i',
-                                            expr = true,
-                                        },
-                                    },
                                 }, function(
                                     input
                                 )
@@ -495,6 +487,7 @@ return {
                     preview = { minimal = true },
                 },
                 icons = {
+                    diagnostics = { Hint = '' },
                     kinds = {
                         Array = '󰅪',
                         Boolean = '◩',
