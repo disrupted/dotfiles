@@ -371,7 +371,14 @@ return {
             {
                 '<leader>op',
                 function()
-                    require('conf.octo').pr.open_or_create()
+                    local pr = require('conf.octo').pr
+                    require('coop').spawn(function()
+                        if pr.exists() then
+                            pr.open()
+                        else
+                            pr.create()
+                        end
+                    end)
                 end,
                 desc = 'Open or create PR for current branch',
             },

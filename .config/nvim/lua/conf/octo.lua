@@ -1,8 +1,74 @@
-local gh = require 'octo.gh'
-
 local M = {}
 
 M.pr = {}
+
+local gh = {
+    ---@async
+    ---@param opts table
+    ---@return string? out
+    run = function(opts)
+        local cb_to_co = require('coop.coroutine-utils').cb_to_co
+        ---@param cb fun(out: string?)
+        return cb_to_co(function(cb)
+            opts.cb = cb
+            require('octo.gh').run(opts)
+        end)()
+    end,
+    pr = {
+        ---@async
+        ---@param opts table
+        ---@return string? out
+        ---@return string? stderr
+        create = function(opts)
+            local cb_to_co = require('coop.coroutine-utils').cb_to_co
+            ---@param cb fun(out: string?)
+            return cb_to_co(function(cb)
+                opts = vim.tbl_deep_extend('keep', opts, { opts = { cb = cb } })
+                require('octo.gh').pr.create(opts)
+            end)()
+        end,
+    },
+}
+
+-- TODO: upstream into coop.nvim
+local coop = {
+    ui = {
+        ---@async
+        ---@param opts? snacks.input.Opts
+        ---@return string? user input value
+        input = function(opts)
+            local cb_to_tf = require('coop.task-utils').cb_to_tf
+            local shift_parameters =
+                require('coop.functional-utils').shift_parameters
+            return cb_to_tf(shift_parameters(vim.ui.input))(opts)
+        end,
+    },
+}
+
+---@async
+---@param json_field string
+---@return string?
+M.pr.meta = function(json_field)
+    local out = gh.run {
+        args = {
+            'pr',
+            'view',
+            '--json',
+            json_field,
+            '-q',
+            '.' .. json_field,
+        },
+    }
+    if out and out ~= '' then
+        return out
+    end
+end
+
+---@async
+---@return boolean
+M.pr.exists = function()
+    return M.pr.meta 'number' and true or false
+end
 
 ---@param opts? octo.pr.open.Opts
 M.pr.open = function(opts)
@@ -22,75 +88,48 @@ M.pr.open = function(opts)
     end
 end
 
+---@async
 ---@param opts? octo.pr.open.Opts
 M.pr.create = function(opts)
-    vim.ui.input({
+    -- FIXME: doesn't open input afterwards if this is enabled
+    -- local last_commit_title = require('conf.git').last_commit_title()
+
+    local title = coop.ui.input {
         prompt = 'PR title',
-        default = require('conf.git').last_commit_msg(),
+        -- default = last_commit_title,
         win = { ft = 'gitcommit' },
-    }, function(title)
-        if not title or title == '' then
+    }
+    if not title or title == '' then
+        return
+    end
+
+    local body = coop.ui.input {
+        prompt = 'PR body',
+        win = { ft = 'markdown' },
+    }
+    if not body then
+        return
+    end
+
+    local _, stderr = gh.pr.create {
+        title = title,
+        body = body,
+        assignee = 'disrupted',
+        draft = true,
+    }
+    if stderr and stderr ~= '' then
+        Snacks.notify.error(stderr)
+        if
+            not stderr:match 'Warning: ' -- e.g. 'Warning: 2 uncommitted changes'
+        then
+            -- abort if not just a warning
             return
         end
+    end
 
-        vim.ui.input({
-            prompt = 'PR body',
-            win = { ft = 'markdown' },
-        }, function(body)
-            if not body then
-                return
-            end
-
-            gh.pr.create {
-                title = title,
-                body = body,
-                assignee = 'disrupted',
-                draft = true,
-                opts = {
-                    ---@param out string?
-                    ---@param stderr string?
-                    cb = function(out, stderr)
-                        if stderr and stderr ~= '' then
-                            Snacks.notify.error(stderr)
-                            if
-                                not stderr:match 'Warning: ' -- e.g. 'Warning: 2 uncommitted changes'
-                            then
-                                -- abort if not just a warning
-                                return
-                            end
-                        end
-
-                        Snacks.notify 'created PR'
-                        vim.defer_fn(function()
-                            M.pr.open(opts)
-                        end, 2000)
-                    end,
-                },
-            }
-        end)
-    end)
-end
-
----@param opts? octo.pr.open.Opts
-M.pr.open_or_create = function(opts)
-    gh.run {
-        args = {
-            'pr',
-            'view',
-            '--json',
-            'number',
-            '-q',
-            '.number',
-        },
-        ---@param out string?
-        cb = function(out)
-            if out ~= '' then
-                M.pr.open(opts)
-                return
-            end
-            M.pr.create(opts)
-        end,
-    }
+    Snacks.notify 'created PR'
+    require('coop.uv-utils').sleep(2000)
+    M.pr.open(opts)
 end
 
 return M

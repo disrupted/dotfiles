@@ -2,6 +2,7 @@
 ---@type LazySpec[]
 return {
     'nvim-lua/plenary.nvim',
+    { 'gregorias/coop.nvim', lazy = true }, -- concurrency with coroutines
     {
         'folke/snacks.nvim',
         priority = 1000,
