@@ -24,17 +24,9 @@ end
 
 ---@param opts? octo.pr.open.Opts
 M.pr.create = function(opts)
-    local git_result = vim.system(
-        { 'git', 'log', '-1', '--pretty=%s' },
-        { text = true, stderr = false }
-    ):wait()
-    local last_commit_msg = git_result.code == 0
-            and vim.trim(assert(git_result.stdout))
-        or nil
-
     vim.ui.input({
         prompt = 'PR title',
-        default = last_commit_msg,
+        default = require('conf.git').last_commit_msg(),
         win = { ft = 'gitcommit' },
     }, function(title)
         if not title or title == '' then
