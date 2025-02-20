@@ -86,6 +86,7 @@ return {
                             'recent',
                             vim.uv.fs_stat '.git' and 'git_files' or 'files',
                         },
+                        hidden = true,
                         matcher = { sort_empty = true },
                         filter = {
                             cwd = true,
