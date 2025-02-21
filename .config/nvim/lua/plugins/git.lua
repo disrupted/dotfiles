@@ -330,15 +330,58 @@ return {
     {
         'sindrets/diffview.nvim',
         cmd = { 'DiffviewOpen', 'DiffviewFileHistory' },
+        keys = {
+            {
+                '<leader>hd',
+                function()
+                    vim.ui.input(
+                        { prompt = 'Diffview Revision' },
+                        function(revision)
+                            local cmd = 'DiffviewOpen'
+                            if revision then
+                                cmd = cmd .. ' ' .. revision
+                            end
+                            vim.cmd(cmd)
+                        end
+                    )
+                end,
+                desc = 'Diffview',
+            },
+            {
+                '<leader>hf',
+                '<cmd>DiffviewFileHistory %<CR>',
+                desc = 'Diffview file history',
+            },
+            {
+                '<leader>hB',
+                '<cmd>DiffviewOpen origin/HEAD...HEAD<CR>',
+                desc = 'Diffview review branch changes',
+            },
+        },
         ---@module 'diffview.config'
         ---@type DiffviewConfig
         opts = {
             enhanced_diff_hl = true,
+            default_args = {
+                DiffviewOpen = { '--untracked-files=no', '--imply-local' },
+                DiffviewFileHistory = { '--base=LOCAL', '--no-merges' },
+            },
+
+            view = {
+                default = { winbar_info = true },
+                file_history = { winbar_info = true },
+                merge_tool = {
+                    -- layout = 'diff4_mixed',
+                    disable_diagnostics = true,
+                    winbar_info = true,
+                },
+            },
             hooks = {
                 diff_buf_win_enter = function(bufnr, winid, ctx)
                     -- Turn off cursor line for diffview windows because of bg conflict
                     -- https://github.com/neovim/neovim/issues/9800
                     vim.wo[winid].culopt = 'number'
+                    vim.wo[winid].wrap = false
                 end,
             },
             keymaps = {
@@ -351,6 +394,14 @@ return {
                     },
                 },
                 file_panel = {
+                    {
+                        'n',
+                        'q',
+                        vim.cmd.tabclose,
+                        { desc = 'Close diffview' },
+                    },
+                },
+                file_history_panel = {
                     {
                         'n',
                         'q',
