@@ -58,11 +58,10 @@ return {
 
             local FileIcon = {
                 init = function(self)
-                    local filename = self.filename
-                    local extension = vim.fn.fnamemodify(filename, ':e')
+                    local extension = vim.fn.fnamemodify(self.filename, ':e')
                     self.icon, self.icon_color =
                         require('nvim-web-devicons').get_icon_color(
-                            filename,
+                            self.filename,
                             extension,
                             { default = true }
                         )
@@ -563,6 +562,39 @@ return {
                 OverseerTasksForStatus 'FAILURE',
             }
 
+            local Tab = {
+                init = function(self)
+                    local win = vim.api.nvim_tabpage_get_win(self.tabnr)
+                    local buf = vim.api.nvim_win_get_buf(win)
+                    self.filename = vim.api.nvim_buf_get_name(buf)
+                end,
+                hl = function(self)
+                    if self.is_active then
+                        return 'TabLineSel'
+                    else
+                        return 'TabLine'
+                    end
+                end,
+                {
+                    provider = function(self)
+                        return '%'
+                            .. self.tabnr
+                            .. 'T '
+                            .. self.tabpage
+                            .. ' %T'
+                    end,
+                },
+                {
+                    provider = function(self)
+                        if self.filename == '' then
+                            return '[No Name]'
+                        else
+                            return vim.fn.fnamemodify(self.filename, ':t')
+                        end
+                    end,
+                },
+            }
+
             return {
                 statusline = {
                     init = function(self)
@@ -595,11 +627,13 @@ return {
                 --     lib.component.numbercolumn(),
                 --     lib.component.signcolumn(),
                 -- },
-                -- tabline = {
-                --     lib.component.tabline_conditional_padding(),
-                --     lib.component.tabline_buffers(),
-                --     lib.component.tabline_tabpages(),
-                -- },
+                tabline = {
+                    condition = function()
+                        return #vim.api.nvim_list_tabpages() > 1
+                    end,
+                    utils.make_tablist(Tab),
+                    { hl = 'TabLineFill' },
+                },
                 opts = {
                     disable_winbar_cb = function(args)
                         return conditions.buffer_matches({
