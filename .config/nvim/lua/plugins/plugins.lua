@@ -208,7 +208,7 @@ return {
                 desc = 'Delete buffer',
             },
             {
-                '<Esc>',
+                '<leader>n',
                 function()
                     Snacks.notifier.show_history()
                 end,
@@ -535,6 +535,12 @@ return {
                 keys = { ['\\'] = 'hide' },
             },
             words = { enabled = true },
+            styles = {
+                ---@diagnostic disable-next-line: missing-fields
+                notification_history = {
+                    keys = { ['<Esc>'] = 'close' },
+                },
+            },
         },
     },
     { 'tpope/vim-repeat', event = 'VeryLazy' },
