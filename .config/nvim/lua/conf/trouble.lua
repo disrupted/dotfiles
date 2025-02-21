@@ -10,14 +10,20 @@ local function toggle(modes, mode)
         trouble.close(mode)
         return
     end
-    -- close all open windows of related mode
-    vim.iter(modes):each(function(m)
-        if m ~= mode and trouble.is_open(m) then
-            trouble.close(m)
+    -- open selected mode
+    local view = trouble.open(mode)
+    if not view then
+        return
+    end
+    view:wait(function()
+        -- if new view has no results this will never be called
+        -- close all open windows of related mode
+        for _, m in ipairs(modes) do
+            if m ~= mode and trouble.is_open(m) then
+                trouble.close(m)
+            end
         end
     end)
-    -- open selected mode
-    trouble.open(mode)
 end
 
 M.diagnostics = {
