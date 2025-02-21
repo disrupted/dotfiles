@@ -4,26 +4,17 @@ return {
     {
         'rebelot/heirline.nvim',
         event = 'UIEnter',
-        dependencies = { 'Zeioth/heirline-components.nvim' },
         opts = function()
-            local heirline = require 'heirline'
-            local lib = require 'heirline-components.all'
-            lib.init.subscribe_to_events()
             local conditions = require 'heirline.conditions'
             local utils = require 'heirline.utils'
-
-            local colors = require('one.colors').get()
-            heirline.load_colors(colors)
             local lazy_require = require('utils').lazy_require
 
-            local augroup =
-                vim.api.nvim_create_augroup('Heirline', { clear = true })
             vim.api.nvim_create_autocmd('ColorScheme', {
-                desc = 'reload colors when colorscheme changes',
+                group = vim.api.nvim_create_augroup('Heirline', {}),
                 callback = function()
                     utils.on_colorscheme(require('one.colors').get())
                 end,
-                group = augroup,
+                desc = 'reload colors when colorscheme changes',
             })
 
             local Align = { provider = '%=' }
@@ -500,7 +491,7 @@ return {
                     provider = function(self)
                         return string.format(' %s ', self.icon)
                     end,
-                    hl = { fg = colors.hue_5 },
+                    hl = { fg = 'hue_5' },
                 },
                 {
                     provider = function(self)
@@ -508,7 +499,7 @@ return {
                     end,
                     hl = { bold = true },
                 },
-                hl = { bg = colors.yellow },
+                hl = { bg = 'yellow' },
                 update = { 'RecordingEnter', 'RecordingLeave' },
             }
             MacroRecordingBlock =
@@ -526,7 +517,7 @@ return {
                             #self.tasks[status]
                         )
                     end,
-                    hl = function(self)
+                    hl = function()
                         return {
                             fg = utils.get_highlight(
                                 string.format('Overseer%s', status)
@@ -612,21 +603,6 @@ return {
                     Space,
                     Git,
                 },
-                -- NOTE: disabled in favor of dropbar.nvim
-                -- winbar = {
-                --     init = function(self)
-                --         self.bufnr = vim.api.nvim_get_current_buf()
-                --     end,
-                --     Harpoon,
-                --     Space,
-                --     FileNameBlock,
-                -- },
-                -- statuscolumn = {
-                --     lib.component.foldcolumn(),
-                --     lib.component.fill(),
-                --     lib.component.numbercolumn(),
-                --     lib.component.signcolumn(),
-                -- },
                 tabline = {
                     condition = function()
                         return #vim.api.nvim_list_tabpages() > 1
@@ -635,6 +611,7 @@ return {
                     { hl = 'TabLineFill' },
                 },
                 opts = {
+                    colors = require('one.colors').get(),
                     disable_winbar_cb = function(args)
                         return conditions.buffer_matches({
                             buftype = { 'nofile', 'prompt', 'help', 'quickfix' },
