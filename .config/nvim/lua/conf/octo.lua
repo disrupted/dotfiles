@@ -1,5 +1,7 @@
 local M = {}
 
+local nio = require 'nio'
+
 M.pr = {}
 
 local gh = {
@@ -7,12 +9,10 @@ local gh = {
     ---@param opts table
     ---@return string? out
     run = function(opts)
-        local cb_to_co = require('coop.coroutine-utils').cb_to_co
-        ---@param cb fun(out: string?)
-        return cb_to_co(function(cb)
+        return nio.wrap(function(cb)
             opts.cb = cb
             require('octo.gh').run(opts)
-        end)()
+        end, 1)()
     end,
     pr = {
         ---@async
@@ -20,27 +20,10 @@ local gh = {
         ---@return string? out
         ---@return string? stderr
         create = function(opts)
-            local cb_to_co = require('coop.coroutine-utils').cb_to_co
-            ---@param cb fun(out: string?)
-            return cb_to_co(function(cb)
+            return nio.wrap(function(cb)
                 opts = vim.tbl_deep_extend('keep', opts, { opts = { cb = cb } })
                 require('octo.gh').pr.create(opts)
-            end)()
-        end,
-    },
-}
-
--- TODO: upstream into coop.nvim
-local coop = {
-    ui = {
-        ---@async
-        ---@param opts? snacks.input.Opts
-        ---@return string? user input value
-        input = function(opts)
-            local cb_to_tf = require('coop.task-utils').cb_to_tf
-            local shift_parameters =
-                require('coop.functional-utils').shift_parameters
-            return cb_to_tf(shift_parameters(vim.ui.input))(opts)
+            end, 1)()
         end,
     },
 }
@@ -94,7 +77,7 @@ M.pr.create = function(opts)
     -- FIXME: doesn't open input afterwards if this is enabled
     -- local last_commit_title = require('conf.git').last_commit_title()
 
-    local title = coop.ui.input {
+    local title = nio.ui.input {
         prompt = 'PR title',
         -- default = last_commit_title,
         win = { ft = 'gitcommit' },
@@ -103,7 +86,7 @@ M.pr.create = function(opts)
         return
     end
 
-    local body = coop.ui.input {
+    local body = nio.ui.input {
         prompt = 'PR body',
         win = { ft = 'markdown' },
     }
@@ -128,7 +111,7 @@ M.pr.create = function(opts)
     end
 
     Snacks.notify 'created PR'
-    require('coop.uv-utils').sleep(2000)
+    nio.sleep(2000)
     M.pr.open(opts)
 end
 

@@ -371,8 +371,13 @@ return {
             {
                 '<leader>op',
                 function()
+                    require('nio').run(function()
+                        local git = require 'conf.git'
+                        if git.current_branch() == git.default_branch() then
+                            Snacks.notify.error 'PR is not possible on default branch'
+                            return
+                        end
                     local pr = require('conf.octo').pr
-                    require('coop').spawn(function()
                         if pr.exists() then
                             pr.open()
                         else
@@ -380,7 +385,7 @@ return {
                         end
                     end)
                 end,
-                desc = 'Open or create PR for current branch',
+                desc = 'View or create PR for current branch',
             },
             { '<leader>oi', '<cmd>Octo issue list<cr>', desc = 'List issues' },
             {
