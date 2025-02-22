@@ -1,6 +1,7 @@
-local M = {}
+local cb_to_tf = require('coop').cb_to_tf
+local ui = require 'coop.ui'
 
-local nio = require 'nio'
+local M = {}
 
 M.pr = {}
 
@@ -9,10 +10,10 @@ local gh = {
     ---@param opts table
     ---@return string? out
     run = function(opts)
-        return nio.wrap(function(cb)
+        return cb_to_tf(function(cb)
             opts.cb = cb
             require('octo.gh').run(opts)
-        end, 1)()
+        end)()
     end,
     pr = {
         ---@async
@@ -20,10 +21,10 @@ local gh = {
         ---@return string? out
         ---@return string? stderr
         create = function(opts)
-            return nio.wrap(function(cb)
+            return cb_to_tf(function(cb)
                 opts = vim.tbl_deep_extend('keep', opts, { opts = { cb = cb } })
                 require('octo.gh').pr.create(opts)
-            end, 1)()
+            end)()
         end,
     },
 }
@@ -72,21 +73,20 @@ M.pr.open = function(opts)
 end
 
 ---@async
----@param opts? octo.pr.open.Opts
-M.pr.create = function(opts)
-    -- FIXME: doesn't open input afterwards if this is enabled
-    -- local last_commit_title = require('git').last_commit_title()
+---@return string?
+M.pr.create = function()
+    local last_commit_title = require('git').last_commit_title()
 
-    local title = nio.ui.input {
+    local title = ui.input {
         prompt = 'PR title',
-        -- default = last_commit_title,
+        default = last_commit_title,
         win = { ft = 'gitcommit' },
     }
     if not title or title == '' then
         return
     end
 
-    local body = nio.ui.input {
+    local body = ui.input {
         prompt = 'PR body',
         win = { ft = 'markdown' },
     }
@@ -94,7 +94,7 @@ M.pr.create = function(opts)
         return
     end
 
-    local _, stderr = gh.pr.create {
+    local out, stderr = gh.pr.create {
         title = title,
         body = body,
         assignee = 'disrupted',
@@ -109,10 +109,7 @@ M.pr.create = function(opts)
             return
         end
     end
-
-    Snacks.notify 'created PR'
-    nio.sleep(2000)
-    M.pr.open(opts)
+    return out
 end
 
 return M

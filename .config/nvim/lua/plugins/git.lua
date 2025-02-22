@@ -422,18 +422,26 @@ return {
             {
                 '<leader>op',
                 function()
-                    require('nio').run(function()
+                    require('coop').spawn(function()
                         local git = require 'git'
-                        if git.current_branch() == git.default_branch() then
+                        local branch = git.current_branch()
+                        if branch == '' then
+                            Snacks.notify.error 'Current ref is not a valid branch'
+                            return
+                        end
+                        if branch == git.default_branch() then
                             Snacks.notify.error 'PR is not possible on default branch'
                             return
                         end
                         local pr = require('conf.octo').pr
-                        if pr.exists() then
-                            pr.open()
-                        else
-                            pr.create()
+                        if not pr.exists() then
+                            if not pr.create() then
+                                return
+                            end
+                            Snacks.notify 'created PR'
+                            require('coop.uv-utils').sleep(2000)
                         end
+                        pr.open()
                     end)
                 end,
                 desc = 'View or create PR for current branch',

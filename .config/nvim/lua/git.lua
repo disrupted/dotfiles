@@ -4,18 +4,12 @@ local M = {}
 ---@param args string[]
 ---@return string stdout
 local git = function(args)
-    local process = require('nio').process.run {
-        cmd = 'git',
-        args = args,
-    }
-    assert(process)
-    if process.result(false) ~= 0 then
-        local stderr = assert(process.stderr.read())
-        error(stderr)
+    table.insert(args, 1, 'git')
+    local out = require('coop.vim').system(args)
+    if out.code ~= 0 then
+        error(assert(out.stderr))
     end
-    local stdout = assert(process.stdout.read())
-    process.close()
-    return vim.trim(stdout)
+    return vim.trim(assert(out.stdout))
 end
 
 ---@return boolean

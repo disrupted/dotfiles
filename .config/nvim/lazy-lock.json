@@ -9,7 +9,7 @@
   "catppuccin": { "branch": "main", "commit": "0b2437bcc12b4021614dc41fcea9d0f136d94063" },
   "compiler.nvim": { "branch": "main", "commit": "eb7f82bb8f9e722dd194f638e67ec53c12ce5ac5" },
   "conform.nvim": { "branch": "master", "commit": "a6f5bdb78caa305496357d17e962bbc4c0b392e2" },
-  "coop.nvim": { "branch": "main", "commit": "071088208520de35a9dde7926984da3cb012250d" },
+  "coop.nvim": { "branch": "main", "commit": "a324947cabf5200445214a6105dee7a2264ddee4" },
   "dial.nvim": { "branch": "master", "commit": "34bbd9c387c358190e61ce71017faad3dffa7a74" },
   "diffview.nvim": { "branch": "main", "commit": "4516612fe98ff56ae0415a259ff6361a89419b0a" },
   "dropbar.nvim": { "branch": "master", "commit": "70431765f36f768d1d93b5e4f5d428bc6d3e9a65" },
