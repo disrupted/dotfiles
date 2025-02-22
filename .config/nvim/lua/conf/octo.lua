@@ -75,7 +75,7 @@ end
 ---@param opts? octo.pr.open.Opts
 M.pr.create = function(opts)
     -- FIXME: doesn't open input afterwards if this is enabled
-    -- local last_commit_title = require('conf.git').last_commit_title()
+    -- local last_commit_title = require('git').last_commit_title()
 
     local title = nio.ui.input {
         prompt = 'PR title',

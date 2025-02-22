@@ -84,7 +84,7 @@ return {
                         finders = {
                             'buffers',
                             'recent',
-                            vim.uv.fs_stat '.git' and 'git_files' or 'files',
+                            require('git').is_repo() and 'git_files' or 'files',
                         },
                         hidden = true,
                         matcher = { sort_empty = true },
@@ -181,7 +181,7 @@ return {
             {
                 '<C-g>',
                 function()
-                    if vim.uv.fs_stat '.git' then
+                    if require('git').is_repo() then
                         Snacks.picker.git_status()
                     else
                         Snacks.picker.git_status {
@@ -365,7 +365,7 @@ return {
                     dirs = {
                         finder = function(opts, ctx)
                             local finder = require 'conf.snacks.finder'
-                            return vim.uv.fs_stat '.git'
+                            return require('git').is_repo()
                                     and finder.git_dirs(opts, ctx)
                                 or finder.fd_dirs(opts, ctx)
                         end,

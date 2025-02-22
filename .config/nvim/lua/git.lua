@@ -18,6 +18,11 @@ local git = function(args)
     return vim.trim(stdout)
 end
 
+---@return boolean
+M.is_repo = function()
+    return vim.uv.fs_stat '.git' and true or false
+end
+
 ---@async
 ---@return string name of the current branch
 M.current_branch = function()

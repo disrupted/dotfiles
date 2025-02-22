@@ -423,12 +423,12 @@ return {
                 '<leader>op',
                 function()
                     require('nio').run(function()
-                        local git = require 'conf.git'
+                        local git = require 'git'
                         if git.current_branch() == git.default_branch() then
                             Snacks.notify.error 'PR is not possible on default branch'
                             return
                         end
-                    local pr = require('conf.octo').pr
+                        local pr = require('conf.octo').pr
                         if pr.exists() then
                             pr.open()
                         else
