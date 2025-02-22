@@ -177,7 +177,7 @@ return {
     },
     {
         'stevearc/conform.nvim',
-        event = { 'BufWritePre' },
+        event = 'BufWritePre',
         cmd = 'ConformInfo',
         dependencies = {
             {
@@ -267,9 +267,8 @@ return {
                     sh = { 'shfmt' },
                     sql = { 'sleek' }, -- or dprint
                     http = {
-                        'injected',
-                        -- 'trim_newlines', -- FIXME: breaks injected
-                        'trim_whitespace',
+                        'kulala',
+                        -- 'injected', -- FIXME: error: vim/shared.lua:0: src: expected table, got nil
                     },
                     ['_'] = { 'trim_newlines', 'trim_whitespace' },
                 },
@@ -397,6 +396,12 @@ return {
             -- TODO: custom formatters
             conform.formatters.blackd = {
                 command = 'blackd-client',
+            }
+
+            conform.formatters.kulala = {
+                command = 'kulala-fmt',
+                args = { 'format', '$FILENAME' },
+                stdin = false,
             }
         end,
     },
