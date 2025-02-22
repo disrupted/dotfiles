@@ -129,7 +129,7 @@ return {
                         'path',
                         'snippets',
                         'buffer',
-                        'git',
+                        -- 'git', -- FIXME: typing lag when entering insert mode first time
                     }
                     if vim.bo.filetype == 'lua' then
                         table.insert(sources, 'lazydev')

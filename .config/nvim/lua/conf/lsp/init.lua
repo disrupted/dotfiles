@@ -253,6 +253,7 @@ vim.lsp.enable {
     'css_ls',
     'docker_compose_ls',
     'docker_ls',
+    -- 'emmylua_ls',
     'gitlab_ci_ls',
     'helm_ls',
     'html_ls',

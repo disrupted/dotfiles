@@ -147,7 +147,7 @@ return {
             sign = { enabled = false, priority = 99 },
             virtual_text = {
                 enabled = true,
-                text = '',
+                text = '', -- 
                 hl_mode = 'combine',
             },
         },
@@ -406,7 +406,7 @@ return {
                 local bufnr = vim.api.nvim_get_current_buf()
                 local clients = vim.lsp.get_clients {
                     bufnr = bufnr,
-                    method = require('vim.lsp.protocol').Methods.textDocument_rangeFormatting,
+                    method = 'textDocument/rangeFormatting',
                 }
 
                 if #clients == 0 then

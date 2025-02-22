@@ -692,7 +692,7 @@ return {
 
                     local clients = vim.lsp.get_clients {
                         bufnr = buf,
-                        method = require('vim.lsp.protocol').Methods.textDocument_documentSymbol,
+                        method = 'textDocument/documentSymbol',
                     }
                     if not vim.tbl_isempty(clients) then
                         return {

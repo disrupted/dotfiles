@@ -101,18 +101,18 @@ return {
         },
         branch = 'shada',
         opts = function()
-        ---@module 'auto-session'
-        ---@type AutoSession.Config
+            ---@module 'auto-session'
+            ---@type AutoSession.Config
             return {
-            auto_restore = false,
-            use_git_branch = true,
-            save_and_restore_shada = true, -- in development
-            suppressed_dirs = { '/', '~/', '~/Downloads' },
-            args_allow_single_directory = false, -- disable restore when launching Neovim with directory argument, e.g. nvim .
-            args_allow_files_auto_save = false, -- disable restore when launching Neovim with file argument, e.g. nvim /foo/bar.txt
+                auto_restore = false,
+                use_git_branch = true,
+                save_and_restore_shada = true, -- in development
+                suppressed_dirs = { '/', '~/', '~/Downloads' },
+                args_allow_single_directory = false, -- disable restore when launching Neovim with directory argument, e.g. nvim .
+                args_allow_files_auto_save = false, -- disable restore when launching Neovim with file argument, e.g. nvim /foo/bar.txt
                 post_save_cmds = {
                     require('conf.dap.session_breakpoints').save,
-        },
+                },
                 post_restore_cmds = {
                     require('conf.dap.session_breakpoints').restore,
                 },

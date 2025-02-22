@@ -258,9 +258,7 @@ return {
                 '<leader>tf',
                 function()
                     _ = require('conf.neotest.adapters')[vim.bo.filetype]
-                    require('neotest').run.run {
-                        suite = false,
-                    }
+                    require('neotest').run.run { suite = false }
                 end,
                 desc = 'nearest function',
             },
