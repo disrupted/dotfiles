@@ -82,6 +82,7 @@ opt.sessionoptions = {
     'winsize',
     'winpos',
 }
+opt.shadafile = '.vim.shada' -- disable global shada; make jumplist local to project
 opt.completeopt = { 'menu', 'menuone', 'noselect' } -- Completion options
 opt.clipboard = 'unnamedplus'
 opt.inccommand = 'nosplit'
