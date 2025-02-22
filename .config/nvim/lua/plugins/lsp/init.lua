@@ -10,10 +10,13 @@ return {
                 .. '/mason/bin:'
                 .. vim.env.PATH
         end,
+        ---@module 'mason.settings'
+        ---@type MasonSettings
         opts = {
             ensure_installed = {},
             registries = {
                 'github:mason-org/mason-registry',
+                'github:mistweaverco/zana-registry',
                 'lua:plugins.lsp.custom',
             },
         },
