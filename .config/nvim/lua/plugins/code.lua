@@ -332,25 +332,23 @@ return {
             },
         },
         dependencies = { { 'nvim-neotest/nvim-nio', lazy = true } },
-        opts = function()
-            ---@module 'neotest.config'
-            ---@type neotest.CoreConfig
-            ---@diagnostic disable-next-line: missing-fields
-            return {
-                adapters = {},
-                quickfix = {
-                    enabled = false,
-                    open = true,
+        ---@module 'neotest.config'
+        ---@type neotest.CoreConfig
+        ---@diagnostic disable-next-line: missing-fields
+        opts = {
+            adapters = {},
+            quickfix = {
+                enabled = false,
+                open = true,
+            },
+            summary = {
+                mappings = {
+                    expand = { '<right>', '<left>', '<2-LeftMouse>' },
+                    expand_all = 'e',
+                    jumpto = '<CR>',
                 },
-                summary = {
-                    mappings = {
-                        expand = { '<right>', '<left>', '<2-LeftMouse>' },
-                        expand_all = 'e',
-                        jumpto = '<CR>',
-                    },
-                },
-            }
-        end,
+            },
+        },
     },
     {
         'nvim-neotest/neotest-python',
