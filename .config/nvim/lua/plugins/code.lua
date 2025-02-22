@@ -18,7 +18,7 @@ return {
                 vim.keymap.set('n', 'za' .. char, function()
                     local clients_supporting_rename = vim.lsp.get_clients {
                         bufnr = 0,
-                        method = require('vim.lsp.protocol').Methods.textDocument_rename,
+                        method = 'textDocument/rename',
                     }
                     if not vim.tbl_isempty(clients_supporting_rename) then
                         require('textcase').lsp_rename(operation)
@@ -139,7 +139,7 @@ return {
             },
             space2 = { enable = true },
             tabout = {
-                enable = true,
+                enable = false,
                 map = '<Tab>',
                 hopout = true,
                 do_nothing_if_fail = false,
@@ -257,9 +257,9 @@ return {
             {
                 '<leader>tf',
                 function()
+                    _ = require('conf.neotest.adapters')[vim.bo.filetype]
                     require('neotest').run.run {
                         suite = false,
-                        env = { REUSE_CONTAINERS = '1' },
                     }
                 end,
                 desc = 'nearest function',
@@ -267,53 +267,40 @@ return {
             {
                 '<leader>tb',
                 function()
+                    _ = require('conf.neotest.adapters')[vim.bo.filetype]
                     require('neotest').run.run {
                         vim.api.nvim_buf_get_name(0),
                         suite = false,
-                        env = { REUSE_CONTAINERS = '1' },
                     }
                 end,
                 desc = 'entire file/buffer',
             },
             {
-                '<leader>tu',
-                function()
-                    require('neotest').run.run {
-                        suite = false,
-                        env = { REUSE_CONTAINERS = '1' },
-                        extra_args = { '--snapshot-update' },
-                    }
-                end,
-                ft = 'python',
-                desc = 'update snapshot for nearest function',
-            },
-            {
-                '<leader>tU',
-                function()
-                    require('neotest').run.run {
-                        vim.api.nvim_buf_get_name(0),
-                        suite = false,
-                        env = { REUSE_CONTAINERS = '1' },
-                        extra_args = { '--snapshot-update' },
-                    }
-                end,
-                ft = 'python',
-                desc = 'update snapshot for entire file/buffer',
-            },
-            {
                 '<leader>ta',
                 function()
+                    _ = require('conf.neotest.adapters')[vim.bo.filetype]
                     for _, adapter_id in
                         ipairs(require('neotest').state.adapter_ids())
                     do
                         require('neotest').run.run {
                             suite = true,
-                            env = { REUSE_CONTAINERS = '1' },
                             adapter_id = adapter_id,
                         }
                     end
                 end,
                 desc = 'entire project',
+            },
+            {
+                '<leader>td',
+                function()
+                    _ = require('conf.neotest.adapters')[vim.bo.filetype]
+                    _ = require('conf.dap.adapters')[vim.bo.filetype]
+                    require('neotest').run.run {
+                        strategy = 'dap',
+                        suite = false,
+                    }
+                end,
+                desc = 'debug nearest function',
             },
             {
                 '<leader>tl',
@@ -337,18 +324,6 @@ return {
                 desc = 'toggle summary',
             },
             {
-                '<leader>td',
-                function()
-                    _ = require('conf.dap.adapters')[vim.bo.filetype]
-                    require('neotest').run.run {
-                        strategy = 'dap',
-                        suite = false,
-                        env = { REUSE_CONTAINERS = '1' },
-                    }
-                end,
-                desc = 'debug nearest function',
-            },
-            {
                 '<leader>tq',
                 function()
                     require('neotest').run.stop()
@@ -356,57 +331,13 @@ return {
                 desc = 'abort test run',
             },
         },
-        dependencies = {
-            { 'nvim-neotest/nvim-nio', lazy = true },
-            { 'nvim-neotest/neotest-python', lazy = true },
-            { 'rouge8/neotest-rust', lazy = true },
-            { 'haydenmeade/neotest-jest', lazy = true },
-            {
-                'andythigpen/nvim-coverage',
-                opts = {
-                    commands = true,
-                    -- TODO: link existing hl groups
-                    highlights = {
-                        covered = { fg = '#C3E88D' },
-                        uncovered = { fg = '#F07178' },
-                    },
-                    signs = {
-                        covered = { hl = 'CoverageCovered', text = '▎' },
-                        uncovered = { hl = 'CoverageUncovered', text = '▎' },
-                    },
-                    summary = {
-                        min_coverage = 80.0,
-                    },
-                },
-            },
-        },
+        dependencies = { { 'nvim-neotest/nvim-nio', lazy = true } },
         opts = function()
             ---@module 'neotest.config'
             ---@type neotest.CoreConfig
             ---@diagnostic disable-next-line: missing-fields
             return {
-                adapters = {
-                    require 'neotest-python' {
-                        dap = { justMyCode = true },
-                        runner = 'pytest',
-                        args = {
-                            '-s', -- don't capture console output
-                            '--log-level',
-                            'DEBUG',
-                            '-vv',
-                            -- '--color=no',
-                        },
-                        -- pytest_discover_instances = true, -- experimental, support parametrized test cases
-                    },
-                    require 'neotest-rust',
-                    require 'neotest-jest' {
-                        jestCommand = 'npm test --',
-                        env = { CI = true },
-                        cwd = function()
-                            return vim.uv.cwd()
-                        end,
-                    },
-                },
+                adapters = {},
                 quickfix = {
                     enabled = false,
                     open = true,
@@ -420,6 +351,129 @@ return {
                 },
             }
         end,
+    },
+    {
+        'nvim-neotest/neotest-python',
+        lazy = true,
+        keys = {
+            {
+                '<leader>tu',
+                function()
+                    require('neotest').run.run {
+                        suite = false,
+                        extra_args = { '--snapshot-update' },
+                    }
+                end,
+                ft = 'python',
+                desc = 'update snapshot for nearest function',
+            },
+            {
+                '<leader>tU',
+                function()
+                    require('neotest').run.run {
+                        vim.api.nvim_buf_get_name(0),
+                        suite = false,
+                        extra_args = { '--snapshot-update' },
+                    }
+                end,
+                ft = 'python',
+                desc = 'update snapshot for entire file/buffer',
+            },
+        },
+        dependencies = { 'nvim-neotest/neotest' },
+        init = function()
+            require('conf.neotest.adapters').python = 'neotest-python'
+        end,
+        ---@module 'neotest-python.adapter'
+        ---@type neotest-python._AdapterConfig
+        ---@diagnostic disable-next-line: missing-fields
+        opts = {
+            dap = { justMyCode = true },
+            runner = 'pytest',
+            args = {
+                '-s', -- don't capture console output
+                '--log-level',
+                'DEBUG',
+                '-vv',
+                -- '--color=no',
+            },
+            env = { REUSE_CONTAINERS = '1' },
+            -- pytest_discover_instances = true, -- experimental, support parametrized test cases
+        },
+        config = function(_, opts)
+            local adapter = require 'neotest-python'(opts)
+            local adapters = require('neotest.config').adapters
+            table.insert(adapters, adapter)
+        end,
+    },
+    {
+        'haydenmeade/neotest-jest',
+        lazy = true,
+        dependencies = { 'nvim-neotest/neotest' },
+        init = function()
+            for _, filetype in ipairs {
+                'javascript',
+                'typescript',
+                'javascriptreact',
+                'typescriptreact',
+            } do
+                require('conf.neotest.adapters')[filetype] = 'neotest-jest'
+            end
+        end,
+        opts = {
+            jestCommand = 'npm test --',
+            env = { CI = true },
+            cwd = function()
+                return vim.uv.cwd()
+            end,
+        },
+        config = function(_, opts)
+            local adapter = require 'neotest-jest'(opts)
+            local adapters = require('neotest.config').adapters
+            table.insert(adapters, adapter)
+        end,
+    },
+    {
+        'rouge8/neotest-rust', -- TODO: switch to rustaceanvim
+        lazy = true,
+        dependencies = { 'nvim-neotest/neotest' },
+        init = function()
+            require('conf.neotest.adapters').rust = 'neotest-rust'
+        end,
+        opts = {},
+        config = function(_, opts)
+            local adapter = require 'neotest-rust'(opts)
+            local adapters = require('neotest.config').adapters
+            table.insert(adapters, adapter)
+        end,
+    },
+    {
+        'andythigpen/nvim-coverage',
+        cmd = {
+            'Coverage',
+            'CoverageLoad',
+            'CoverageLoadLcov',
+            'CoverageShow',
+            'CoverageHide',
+            'CoverageToggle',
+            'CoverageClear',
+            'CoverageSummary',
+        },
+        opts = {
+            commands = true,
+            -- TODO: link existing hl groups
+            highlights = {
+                covered = { fg = '#C3E88D' },
+                uncovered = { fg = '#F07178' },
+            },
+            signs = {
+                covered = { hl = 'CoverageCovered', text = '▎' },
+                uncovered = { hl = 'CoverageUncovered', text = '▎' },
+            },
+            summary = {
+                min_coverage = 80.0,
+            },
+        },
     },
     {
         'danymat/neogen',
