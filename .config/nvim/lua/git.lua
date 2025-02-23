@@ -14,7 +14,7 @@ end
 
 ---@return boolean
 M.is_repo = function()
-    return vim.uv.fs_stat '.git' and true or false
+    return vim.uv.fs_stat '.git' ~= nil
 end
 
 ---@async

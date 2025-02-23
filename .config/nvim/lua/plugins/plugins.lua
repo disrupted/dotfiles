@@ -255,6 +255,15 @@ return {
             explorer = {},
             gitbrowse = {},
             indent = {
+                filter = function(buf)
+                    return vim.g.snacks_indent ~= false
+                        and vim.b[buf].snacks_indent ~= false
+                        and vim.bo[buf].buftype == ''
+                        and not vim.tbl_contains({
+                            'markdown',
+                            'gitcommit',
+                        }, vim.bo[buf].filetype)
+                end,
                 indent = {
                     char = '▏',
                     hl = {
@@ -280,15 +289,6 @@ return {
                         'Whitespace',
                         'Whitespace',
                     },
-                    filter = function(buf)
-                        return vim.g.snacks_indent ~= false
-                            and vim.b[buf].snacks_indent ~= false
-                            and vim.bo[buf].buftype == ''
-                            and not vim.tbl_contains({
-                                'markdown',
-                                'gitcommit',
-                            }, vim.bo[buf].filetype)
-                    end,
                 },
                 animate = {
                     duration = {

@@ -7,7 +7,12 @@ return {
         dependencies = { 'purarue/gitsigns-yadm.nvim' },
         init = function()
             require('which-key').add {
-                { '<leader>g', mode = { 'n', 'v' }, group = 'Git', icon = '' },
+                {
+                    '<leader>g',
+                    mode = { 'n', 'v' },
+                    group = 'Git',
+                    icon = '',
+                },
             }
         end,
         ---@module 'gitsigns.config'
@@ -98,26 +103,18 @@ return {
                 local gs = package.loaded.gitsigns
 
                 -- Navigation
-                map('n', ']g', function()
-                    if vim.wo.diff then
-                        return ']g'
-                    end
-                    vim.schedule(function()
-                        gs.next_hunk()
-                    end)
-                    return '<Ignore>'
-                end, { expr = true, desc = 'Next Git hunk' })
-
-                map('n', '[g', function()
-                    if vim.wo.diff then
-                        return '[g'
-                    end
-                    vim.schedule(function()
-                        gs.prev_hunk()
-                    end)
-                    return '<Ignore>'
-                end, { expr = true, desc = 'Prev Git hunk' })
-
+                map(
+                    'n',
+                    ']g',
+                    vim.schedule_wrap(gs.next_hunk),
+                    { desc = 'Next Git hunk' }
+                )
+                map(
+                    'n',
+                    '[g',
+                    vim.schedule_wrap(gs.prev_hunk),
+                    { desc = 'Prev Git hunk' }
+                )
                 map('n', '<leader>gs', gs.stage_hunk, { desc = 'Stage hunk' })
                 map('v', '<leader>gs', function()
                     gs.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
@@ -337,7 +334,10 @@ return {
             },
             {
                 '<leader>gdb',
-                '<cmd>DiffviewOpen origin/HEAD...HEAD<CR>',
+                function()
+                    vim.cmd.DiffviewOpen 'origin/HEAD...HEAD'
+                    require('gitsigns').change_base('origin/HEAD', true)
+                end,
                 desc = 'Review branch changes',
             },
         },
@@ -349,7 +349,6 @@ return {
                 DiffviewOpen = { '--untracked-files=no', '--imply-local' },
                 DiffviewFileHistory = { '--base=LOCAL', '--no-merges' },
             },
-
             view = {
                 default = { winbar_info = true },
                 file_history = { winbar_info = true },
@@ -365,6 +364,7 @@ return {
                     -- https://github.com/neovim/neovim/issues/9800
                     vim.wo[winid].culopt = 'number'
                     vim.wo[winid].wrap = false
+                    vim.wo[winid].statuscolumn = ''
                 end,
             },
             keymaps = {

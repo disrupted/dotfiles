@@ -1,5 +1,5 @@
 -- vim: foldmethod=marker
-local cmd, fn, opt = vim.cmd, vim.fn, vim.opt
+local fn, opt = vim.fn, vim.opt
 local command = vim.api.nvim_create_user_command
 
 require 'conf.filetype'
