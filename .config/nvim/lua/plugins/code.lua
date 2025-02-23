@@ -228,6 +228,11 @@ return {
     },
     {
         'ThePrimeagen/refactoring.nvim',
+        init = function()
+            require('which-key').add {
+                { '<leader>r', mode = 'v', group = 'Refactor' },
+            }
+        end,
         keys = {
             {
                 '<leader>rr',
@@ -237,6 +242,7 @@ return {
                         show_success_message = true,
                     }
                 end,
+                desc = 'Select refactor',
             },
             {
                 '<leader>re',
@@ -244,6 +250,7 @@ return {
                 function()
                     require('refactoring').refactor 'Extract Function'
                 end,
+                desc = 'Extract function',
             },
         },
         config = true,
@@ -251,7 +258,9 @@ return {
     {
         'nvim-neotest/neotest',
         init = function()
-            require('which-key').add { { '<leader>t', group = 'Test' } }
+            require('which-key').add {
+                { '<leader>t', group = 'Test', icon = '' },
+            }
         end,
         keys = {
             {
@@ -260,7 +269,7 @@ return {
                     _ = require('conf.neotest.adapters')[vim.bo.filetype]
                     require('neotest').run.run { suite = false }
                 end,
-                desc = 'nearest function',
+                desc = 'Nearest function',
             },
             {
                 '<leader>tb',
@@ -271,7 +280,7 @@ return {
                         suite = false,
                     }
                 end,
-                desc = 'entire file/buffer',
+                desc = 'Entire file/buffer',
             },
             {
                 '<leader>ta',
@@ -286,7 +295,7 @@ return {
                         }
                     end
                 end,
-                desc = 'entire project',
+                desc = 'Entire project',
             },
             {
                 '<leader>td',
@@ -298,35 +307,49 @@ return {
                         suite = false,
                     }
                 end,
-                desc = 'debug nearest function',
+                desc = 'Debug nearest function',
             },
             {
                 '<leader>tl',
                 function()
                     require('neotest').run.run_last()
                 end,
-                desc = 're-run last',
+                desc = 'Re-run last',
             },
             {
                 '<leader>to',
                 function()
                     require('neotest').output.open { last_run = true }
                 end,
-                desc = 'open output of last run',
+                desc = 'Open output of last run',
             },
             {
                 '<leader>ts',
                 function()
                     require('neotest').summary.toggle()
                 end,
-                desc = 'toggle summary',
+                desc = 'Toggle summary',
             },
             {
                 '<leader>tq',
                 function()
                     require('neotest').run.stop()
                 end,
-                desc = 'abort test run',
+                desc = 'Abort test run',
+            },
+            {
+                ']t',
+                function()
+                    require('neotest').jump.next { status = 'failed' }
+                end,
+                desc = 'Next failed test',
+            },
+            {
+                '[t',
+                function()
+                    require('neotest').jump.prev { status = 'failed' }
+                end,
+                desc = 'Prev failed test',
             },
         },
         dependencies = { { 'nvim-neotest/nvim-nio', lazy = true } },
@@ -346,6 +369,20 @@ return {
                     jumpto = '<CR>',
                 },
             },
+            icons = {
+                running_animated = {
+                    '⠋',
+                    '⠙',
+                    '⠹',
+                    '⠸',
+                    '⠼',
+                    '⠴',
+                    '⠦',
+                    '⠧',
+                    '⠇',
+                    '⠏',
+                },
+            },
         },
     },
     {
@@ -361,7 +398,7 @@ return {
                     }
                 end,
                 ft = 'python',
-                desc = 'update snapshot for nearest function',
+                desc = 'Update snapshot for nearest function',
             },
             {
                 '<leader>tU',
@@ -373,7 +410,7 @@ return {
                     }
                 end,
                 ft = 'python',
-                desc = 'update snapshot for entire file/buffer',
+                desc = 'Update snapshot for entire file/buffer',
             },
         },
         dependencies = { 'nvim-neotest/neotest' },
@@ -474,13 +511,25 @@ return {
     {
         'danymat/neogen',
         cmd = 'Neogen',
+        init = function()
+            require('which-key').add {
+                { '<leader>D', group = 'Generate docs', icon = '󰦨' },
+            }
+        end,
         keys = {
             {
-                '<leader>fd',
+                '<leader>Df',
                 function()
                     require('neogen').generate {}
                 end,
-                desc = 'generate docs for function',
+                desc = 'Function',
+            },
+            {
+                '<leader>DC',
+                function()
+                    require('neogen').generate { type = 'class' }
+                end,
+                desc = 'Class',
             },
         },
         opts = {
@@ -489,6 +538,11 @@ return {
                 python = {
                     template = {
                         annotation_convention = 'reST',
+                    },
+                },
+                lua = {
+                    template = {
+                        annotation_convention = 'emmylua',
                     },
                 },
             },
@@ -542,18 +596,18 @@ return {
         cmd = { 'TodoQuickFix', 'TodoTrouble' },
         keys = {
             {
-                '[t',
+                '[c',
                 function()
                     require('todo-comments').jump_prev()
                 end,
-                desc = 'Prev todo',
+                desc = 'Prev todo comment',
             },
             {
-                ']t',
+                ']c',
                 function()
                     require('todo-comments').jump_next()
                 end,
-                desc = 'Next todo',
+                desc = 'Next todo comment',
             },
         },
         init = function()
@@ -564,6 +618,5 @@ return {
                 pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
             },
         },
-        config = true,
     },
 }

@@ -4,7 +4,13 @@ return {
     {
         'mfussenegger/nvim-dap',
         init = function()
-            require('which-key').add { { '<leader>d', group = 'Debug' } }
+            require('which-key').add {
+                {
+                    '<leader>d',
+                    group = 'Debug',
+                    icon = { icon = '󰃤', hl = 'DiagnosticError' },
+                },
+            }
         end,
         keys = {
             {

@@ -111,7 +111,7 @@ return {
                 function()
                     require('inlayhint-filler').fill()
                 end,
-                desc = 'Insert the inlay-hint under cursor into the buffer.',
+                desc = 'Insert inlay-hint under cursor',
                 mode = { 'n', 'v' },
             },
         },
@@ -560,34 +560,43 @@ return {
     {
         'folke/trouble.nvim',
         cmd = 'Trouble',
+        init = function()
+            require('which-key').add {
+                {
+                    '<leader>x',
+                    group = 'Trouble',
+                    icon = { icon = '', hl = 'DiagnosticWarn' },
+                },
+            }
+        end,
         keys = {
             {
                 '<leader>xx',
                 function()
                     require('conf.trouble').diagnostics.toggle 'workspace_diagnostics_severe'
                 end,
-                desc = 'Trouble: List most severe diagnostics for workspace',
+                desc = 'Workspace diagnostics (most severe)',
             },
             {
                 '<leader>xw',
                 function()
                     require('conf.trouble').diagnostics.toggle 'workspace_diagnostics'
                 end,
-                desc = 'Trouble: List diagnostics for workspace',
+                desc = 'Workspace diagnostics',
             },
             {
                 '<leader>xb',
                 function()
                     require('conf.trouble').diagnostics.toggle 'buffer_diagnostics'
                 end,
-                desc = 'Trouble: List diagnostics for buffer',
+                desc = 'Buffer diagnostics',
             },
             {
                 '<leader>xq',
                 function()
                     require('trouble').toggle { mode = 'quickfix' }
                 end,
-                desc = 'Trouble: QuickFix',
+                desc = 'QuickFix',
             },
         },
         ---@type trouble.Config
