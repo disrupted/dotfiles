@@ -235,7 +235,7 @@ return {
                 desc = 'Prev reference',
             },
             {
-                '<leader>hl',
+                '<leader>gl',
                 function()
                     Snacks.gitbrowse.open {
                         notify = false,
@@ -246,7 +246,7 @@ return {
                     }
                 end,
                 mode = { 'n', 'v' },
-                desc = 'Yank permlink for Git remote',
+                desc = 'Yank permalink for Git remote',
             },
         },
         ---@type snacks.Config

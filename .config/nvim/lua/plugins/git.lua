@@ -6,7 +6,9 @@ return {
         event = { 'BufWinEnter', 'BufNewFile' },
         dependencies = { 'purarue/gitsigns-yadm.nvim' },
         init = function()
-            require('which-key').add { { '<leader>h', group = 'Git' } }
+            require('which-key').add {
+                { '<leader>g', mode = { 'n', 'v' }, group = 'Git', icon = '' },
+            }
         end,
         ---@module 'gitsigns.config'
         ---@type Gitsigns.Config
@@ -96,119 +98,88 @@ return {
                 local gs = package.loaded.gitsigns
 
                 -- Navigation
-                map('n', ']c', function()
+                map('n', ']g', function()
                     if vim.wo.diff then
-                        return ']c'
+                        return ']g'
                     end
                     vim.schedule(function()
                         gs.next_hunk()
                     end)
                     return '<Ignore>'
-                end, { expr = true })
+                end, { expr = true, desc = 'Next Git hunk' })
 
-                map('n', '[c', function()
+                map('n', '[g', function()
                     if vim.wo.diff then
-                        return '[c'
+                        return '[g'
                     end
                     vim.schedule(function()
                         gs.prev_hunk()
                     end)
                     return '<Ignore>'
-                end, { expr = true })
+                end, { expr = true, desc = 'Prev Git hunk' })
 
-                map(
-                    'n',
-                    '<leader>hs',
-                    gs.stage_hunk,
-                    { desc = 'Git stage hunk' }
-                )
-                map('v', '<leader>hs', function()
+                map('n', '<leader>gs', gs.stage_hunk, { desc = 'Stage hunk' })
+                map('v', '<leader>gs', function()
                     gs.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
-                end, { desc = 'Git stage hunk' })
-                map(
-                    'n',
-                    '<leader>hr',
-                    gs.reset_hunk,
-                    { desc = 'Git reset hunk' }
-                )
-                map('v', '<leader>hr', function()
+                end, { desc = 'Stage hunk' })
+                map('n', '<leader>gr', gs.reset_hunk, { desc = 'Reset hunk' })
+                map('v', '<leader>gr', function()
                     gs.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
-                end, { desc = 'Git reset hunk' })
+                end, { desc = 'Reset hunk' })
                 map(
                     'n',
-                    '<leader>hS',
+                    '<leader>gS',
                     gs.stage_buffer,
-                    { desc = 'Git stage buffer' }
+                    { desc = 'Stage buffer' }
                 )
                 map(
                     'n',
-                    '<leader>hu',
-                    gs.stage_hunk,
-                    { desc = 'Git undo stage hunk' }
-                )
-                map(
-                    'n',
-                    '<leader>hR',
+                    '<leader>gR',
                     gs.reset_buffer,
-                    { desc = 'Git reset buffer' }
+                    { desc = 'Reset buffer' }
                 )
                 map(
                     'n',
-                    '<leader>hp',
+                    '<leader>gp',
                     gs.preview_hunk,
-                    { desc = 'Git preview hunk' }
+                    { desc = 'Preview hunk' }
                 )
                 map(
                     'n',
-                    '<leader>hb',
+                    '<leader>gb',
                     gs.toggle_current_line_blame,
-                    { desc = 'Git toggle current line blame' }
+                    { desc = 'Blame' }
                 )
-                map(
-                    'n',
-                    '<leader>hd',
-                    gs.diffthis,
-                    { desc = 'Git diff against index' }
-                )
-                map('n', '<leader>hD', function()
-                    gs.diffthis '~'
-                end, {
-                    desc = 'Git diff against last commit',
-                })
+                -- map(
+                --     'n',
+                --     '<leader>gd',
+                --     gs.diffthis,
+                --     { desc = 'Diff against index' }
+                -- )
+                -- map('n', '<leader>gD', function()
+                --     gs.diffthis '~'
+                -- end, {
+                --     desc = 'Diff against last commit',
+                -- })
 
                 -- Text object
                 map(
                     { 'o', 'x' },
                     'ih',
                     ':<C-U>Gitsigns select_hunk<CR>',
-                    { desc = 'Git select hunk' }
+                    { desc = 'Select Git hunk' }
                 )
+
+                -- lazy-load git-conflict
+                require 'git-conflict'
             end,
-            -- _signs_staged_enable = true,
-            -- _signs_staged = {
-            --     add = {
-            --         text = '┃',
-            --     },
-            --     change = {
-            --         text = '┃',
-            --     },
-            --     delete = {
-            --         text = '▁',
-            --     },
-            --     topdelete = {
-            --         text = '▔',
-            --     },
-            --     changedelete = {
-            --         text = '~',
-            --     },
-            -- },
         },
     },
     {
         'NeogitOrg/neogit',
         keys = {
             {
-                '<leader>g',
+                '<leader>gg',
                 function()
                     require('neogit').open()
                 end,
@@ -290,27 +261,30 @@ return {
     },
     {
         'akinsho/git-conflict.nvim',
-        event = 'VeryLazy',
+        lazy = true, -- lazy-loaded on gitsigns attach
+        init = function()
+            require('which-key').add { { '<leader>gx', group = 'Conflict' } }
+        end,
         keys = {
             {
-                '<leader>co',
+                '<leader>gxo',
                 '<Plug>(git-conflict-ours)',
-                desc = 'Git conflict pick ours',
+                desc = 'Pick ours',
             },
             {
-                '<leader>ct',
+                '<leader>gxt',
                 '<Plug>(git-conflict-theirs)',
-                desc = 'Git conflict pick theirs',
+                desc = 'Pick theirs',
             },
             {
-                '<leader>cb',
+                '<leader>gxb',
                 '<Plug>(git-conflict-both)',
-                desc = 'Git conflict pick both',
+                desc = 'Pick both',
             },
             {
-                '<leader>c0',
+                '<leader>gx0',
                 '<Plug>(git-conflict-none)',
-                desc = 'Git conflict pick none',
+                desc = 'Pick none',
             },
             {
                 '[x',
@@ -330,9 +304,18 @@ return {
     {
         'sindrets/diffview.nvim',
         cmd = { 'DiffviewOpen', 'DiffviewFileHistory' },
+        init = function()
+            require('which-key').add {
+                {
+                    '<leader>gd',
+                    group = 'Diffview',
+                    icon = '',
+                },
+            }
+        end,
         keys = {
             {
-                '<leader>hd',
+                '<leader>gdr',
                 function()
                     vim.ui.input(
                         { prompt = 'Diffview Revision' },
@@ -345,17 +328,17 @@ return {
                         end
                     )
                 end,
-                desc = 'Diffview',
+                desc = 'Revision',
             },
             {
-                '<leader>hf',
+                '<leader>gdf',
                 '<cmd>DiffviewFileHistory %<CR>',
-                desc = 'Diffview file history',
+                desc = 'File history',
             },
             {
-                '<leader>hB',
+                '<leader>gdb',
                 '<cmd>DiffviewOpen origin/HEAD...HEAD<CR>',
-                desc = 'Diffview review branch changes',
+                desc = 'Review branch changes',
             },
         },
         ---@module 'diffview.config'
@@ -416,11 +399,13 @@ return {
         'pwntester/octo.nvim',
         cmd = 'Octo',
         init = function()
-            require('which-key').add { { '<leader>o', group = 'Octo' } }
+            require('which-key').add {
+                { '<leader>go', group = 'Octo', icon = '' },
+            }
         end,
         keys = {
             {
-                '<leader>op',
+                '<leader>gop',
                 function()
                     require('coop').spawn(function()
                         local git = require 'git'
@@ -446,12 +431,12 @@ return {
                 end,
                 desc = 'View or create PR for current branch',
             },
-            { '<leader>oi', '<cmd>Octo issue list<cr>', desc = 'List issues' },
-            {
-                '<leader>os',
-                '<cmd>Octo search assignee:disrupted<cr>',
-                desc = 'Search assigned issues & PRs',
-            },
+            { '<leader>goi', '<cmd>Octo issue list<cr>', desc = 'List issues' },
+            -- {
+            --     '<leader>gos',
+            --     '<cmd>Octo search assignee:disrupted<cr>', -- TODO: not implemented yet
+            --     desc = 'Search assigned issues & PRs',
+            -- },
         },
         ---@module 'octo.config'
         ---@type OctoConfig
@@ -465,11 +450,14 @@ return {
     {
         'topaxi/pipeline.nvim',
         cmd = 'Pipeline',
+        init = function()
+            require('which-key').add { { '<leader>gc', group = 'CI' } }
+        end,
         keys = {
             {
-                '<leader>ci',
+                '<leader>gci',
                 '<cmd>Pipeline<CR>',
-                desc = 'Watch CI pipeline run',
+                desc = 'Watch pipeline run',
             },
         },
         build = 'make',
