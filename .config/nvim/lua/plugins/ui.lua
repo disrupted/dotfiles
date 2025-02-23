@@ -378,6 +378,13 @@ return {
                         running = '',
                     },
                 },
+                update = {
+                    'User',
+                    pattern = { 'NeotestRun', 'NeotestResult' },
+                    callback = vim.schedule_wrap(function()
+                        vim.cmd.redrawstatus()
+                    end),
+                },
                 {
                     condition = function(self)
                         return self.status.total > 0

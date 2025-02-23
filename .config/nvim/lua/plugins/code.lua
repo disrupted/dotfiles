@@ -358,6 +358,48 @@ return {
         ---@diagnostic disable-next-line: missing-fields
         opts = {
             adapters = {},
+            consumers = {
+                notify = function(client)
+                    client.listeners.results = function(_, _, partial)
+                        if partial then
+                            return
+                        end
+                        require('neotest.lib').notify 'Tests completed'
+                    end
+                    return {}
+                end,
+                autocmd_run = function(client)
+                    client.listeners.run = function()
+                        vim.schedule(function()
+                            vim.api.nvim_exec_autocmds('User', {
+                                pattern = 'NeotestRun',
+                                modeline = false,
+                            })
+                        end)
+                    end
+                    return {}
+                end,
+                autocmd_results = function(client)
+                    client.listeners.results = function(
+                        adapter_id,
+                        results,
+                        partial
+                    )
+                        vim.schedule(function()
+                            vim.api.nvim_exec_autocmds('User', {
+                                pattern = 'NeotestResult',
+                                modeline = false,
+                                data = {
+                                    adapter_id = adapter_id,
+                                    results = results,
+                                    partial = partial,
+                                },
+                            })
+                        end)
+                    end
+                    return {}
+                end,
+            },
             quickfix = {
                 enabled = false,
                 open = true,
