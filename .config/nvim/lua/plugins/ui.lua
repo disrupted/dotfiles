@@ -839,7 +839,7 @@ return {
                         Regex = ' ',
                         Repeat = '󰑖 ',
                         Scope = '󰅩 ',
-                        Snippet = '󰩫 ',
+                        Snippet = '󱡄 ',
                         Specifier = '󰦪 ',
                         Statement = '󰅩 ',
                         String = '󰉾 ',
