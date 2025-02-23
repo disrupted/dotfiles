@@ -1,9 +1,6 @@
 # macOS
 *.DS_Store
 
-# Neovim
-.vim.shada
-
 ### Python
 # Byte-compiled / optimized / DLL files
 __pycache__/
