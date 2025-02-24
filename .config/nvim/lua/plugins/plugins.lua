@@ -168,6 +168,13 @@ return {
             {
                 '<leader>s',
                 function()
+                    local clients =
+                        vim.lsp.get_clients { method = 'workspace/symbol' }
+                    if vim.tbl_isempty(clients) then
+                        Snacks.notify.warn 'No client supporting workspace symbols'
+                        return
+                    end
+
                     Snacks.picker.lsp_workspace_symbols {
                         title = 'LSP Workspace Symbols',
                         layout = {
@@ -194,7 +201,7 @@ return {
                 desc = 'Git/YADM status',
             },
             {
-                ',h',
+                '<leader>h',
                 function()
                     Snacks.picker.help { layout = { preset = 'dropdown' } }
                 end,
@@ -316,7 +323,7 @@ return {
                 },
             },
             image = {
-                enabled = true,
+                enabled = false,
                 markdown = { inline = false, float = true },
             },
             input = { enabled = true },
@@ -475,6 +482,13 @@ return {
                         },
                     },
                 },
+                layout = {
+                    cycle = true,
+                    preset = function()
+                        return vim.o.columns >= 120 and 'telescope'
+                            or 'dropdown'
+                    end,
+                },
                 win = {
                     input = {
                         keys = {
@@ -516,6 +530,15 @@ return {
     {
         'folke/which-key.nvim',
         event = 'VeryLazy',
+        keys = {
+            {
+                '<leader>?',
+                function()
+                    require('which-key').show { global = false }
+                end,
+                desc = 'Buffer-local keymaps (which-key)',
+            },
+        },
         init = function()
             vim.o.timeout = true
             vim.o.timeoutlen = 500
@@ -532,17 +555,25 @@ return {
             end,
         },
         main = 'rest-nvim',
-        ft = 'http',
+        cmd = 'Rest',
         keys = {
             {
-                '<localleader>rr',
-                '<cmd>Rest run<cr>',
-                desc = 'Run request under the cursor',
+                '<LocalLeader>r',
+                nil,
+                ft = 'http',
+                desc = 'Request (rest.nvim)',
             },
             {
-                '<localleader>rl',
+                '<LocalLeader>rr',
+                '<cmd>Rest run<cr>',
+                ft = 'http',
+                desc = 'Run',
+            },
+            {
+                '<LocalLeader>rl',
                 '<cmd>Rest run last<cr>',
-                desc = 'Re-run latest request',
+                ft = 'http',
+                desc = 'Re-run last',
             },
         },
         ---@module 'rest-nvim.config'
