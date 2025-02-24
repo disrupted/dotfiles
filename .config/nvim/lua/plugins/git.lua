@@ -408,7 +408,7 @@ return {
                 '<leader>gop',
                 function()
                     require('coop').spawn(function()
-                        local git = require 'git'
+                        local git = require('git').async
                         local branch = git.current_branch()
                         if branch == '' then
                             Snacks.notify.error 'Current ref is not a valid branch'

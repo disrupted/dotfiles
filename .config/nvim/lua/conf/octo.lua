@@ -75,7 +75,7 @@ end
 ---@async
 ---@return string?
 M.pr.create = function()
-    local last_commit_title = require('git').last_commit_title()
+    local last_commit_title = require('git').async.last_commit_title()
 
     local title = ui.input {
         prompt = 'PR title',

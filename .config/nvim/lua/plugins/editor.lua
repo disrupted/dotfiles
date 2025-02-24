@@ -82,42 +82,29 @@ return {
         config = true,
     },
     {
-        'rmagatti/auto-session',
-        event = 'VimLeavePre',
-        cmd = {
-            'SessionSave',
-            'SessionRestore',
-            'SessionDelete',
-            'SessionDisableAutoSave',
-            'SessionToggleAutoSave',
-        },
+        'stevearc/resession.nvim',
         keys = {
             {
                 '<leader>z',
-                '<cmd>SessionRestore<CR>',
+                function()
+                    require('conf.resession').load()
+                end,
                 desc = 'Restore session',
             },
         },
-        opts = function()
-            ---@module 'auto-session'
-            ---@type AutoSession.Config
-            return {
-                auto_restore = false,
-                use_git_branch = true,
-                suppressed_dirs = { '/', '~/', '~/Downloads' },
-                args_allow_single_directory = false, -- disable restore when launching Neovim with directory argument, e.g. nvim .
-                args_allow_files_auto_save = false, -- disable restore when launching Neovim with file argument, e.g. nvim /foo/bar.txt
-                post_save_cmds = {
-                    require('conf.auto-session.dap_breakpoints').save,
-                },
-                post_restore_cmds = {
-                    require('conf.auto-session.dap_breakpoints').restore,
-                },
-                pre_delete_cmds = {
-                    require('conf.auto-session.dap_breakpoints').delete,
-                },
-            }
+        init = function()
+            vim.api.nvim_create_autocmd('VimLeavePre', {
+                callback = function()
+                    require('conf.resession').save()
+                end,
+                desc = 'Save session on quit',
+            })
         end,
+        opts = {
+            extensions = {
+                dap = {},
+            },
+        },
     },
     {
         'ThePrimeagen/harpoon',
