@@ -64,7 +64,7 @@ M.pr.open = function(opts)
         browser = false,
     })
     if opts.octo then
-        Snacks.notify 'Opening PR...'
+        Snacks.notify('Opening PR...', { title = 'Octo' })
         vim.cmd 'Octo pr'
     end
     if opts.browser then

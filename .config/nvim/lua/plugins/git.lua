@@ -378,6 +378,10 @@ return {
         init = function()
             require('which-key').add {
                 { '<leader>go', group = 'Octo', icon = '' },
+                { '<leader>gop', icon = '' },
+                { '<leader>goi', icon = '' },
+                { '<leader>gor', icon = '' },
+                { '<leader>gos', icon = '' },
             }
         end,
         keys = {
@@ -406,14 +410,15 @@ return {
                         pr.open()
                     end)
                 end,
-                desc = 'View or create PR for current branch',
+                desc = 'View or create PR',
             },
             { '<leader>goi', '<cmd>Octo issue list<cr>', desc = 'List issues' },
-            -- {
-            --     '<leader>gos',
-            --     '<cmd>Octo search assignee:disrupted<cr>', -- TODO: not implemented yet
-            --     desc = 'Search assigned issues & PRs',
-            -- },
+            { '<leader>gor', '<cmd>Octo review<cr>', desc = 'Review PR' },
+            {
+                '<leader>gos',
+                '<cmd>Octo search assignee:disrupted<cr>', -- TODO: not implemented yet
+                desc = 'Search assigned issues & PRs',
+            },
         },
         ---@module 'octo.config'
         ---@type OctoConfig
@@ -422,7 +427,221 @@ return {
             default_merge_method = 'squash',
             default_delete_branch = true,
             date_format = '%Y %b %d %H:%M',
+            mappings = {
+                pull_request = {
+                    resolve_thread = {
+                        lhs = '<LocalLeader>cu',
+                        desc = 'Unresolve thread',
+                    },
+                    unresolve_thread = {
+                        lhs = '<LocalLeader>cr',
+                        desc = 'Unresolve thread',
+                    },
+                    -- wrong naming
+                    close_issue = { lhs = '', desc = 'close PR' },
+                    reopen_issue = { lhs = '', desc = 'reopen PR' },
+                    -- always squash & merge
+                    merge_pr = { lhs = '' },
+                    rebase_and_merge_pr = { lhs = '' },
+                },
+                review_diff = {
+                    next_thread = {
+                        lhs = ']t', -- TODO: use same ]c mapping as pull_request?
+                        desc = 'Next thread',
+                        remap = true,
+                    },
+                    prev_thread = {
+                        lhs = '[t',
+                        desc = 'Prev thread',
+                        remap = true,
+                    },
+                    select_next_entry = {
+                        lhs = ']q',
+                        desc = 'Next file',
+                        remap = true,
+                    },
+                    select_prev_entry = {
+                        lhs = '[q',
+                        desc = 'Prev file',
+                        remap = true,
+                    },
+                    focus_files = {
+                        lhs = '<C-e>',
+                        desc = 'Focus file panel',
+                        remap = true,
+                    },
+                    toggle_files = { lhs = '' },
+                },
+                file_panel = {
+                    focus_files = { lhs = '' },
+                    toggle_files = {
+                        lhs = '<C-e>',
+                        desc = 'Toggle files panel',
+                        remap = true,
+                    },
+                },
+                submit_win = {
+                    approve_review = {
+                        lhs = '<C-a>',
+                        desc = 'Approve',
+                        mode = { 'n', 'i' },
+                    },
+                    comment_review = {
+                        lhs = '<C-m>',
+                        desc = 'Comment',
+                        mode = { 'n', 'i' },
+                    },
+                    request_changes = {
+                        lhs = '<C-r>',
+                        desc = 'Request changes',
+                        mode = { 'n', 'i' },
+                    },
+                    close_review_tab = {
+                        lhs = '<C-c>',
+                        desc = 'Close',
+                        mode = { 'n', 'i' },
+                    },
+                },
+            },
         },
+        config = function(_, opts)
+            require('octo').setup(opts)
+
+            local wk = require 'which-key'
+            -- shared keymaps for pull_request & issue
+            local function attach_octo(buf)
+                wk.add {
+                    buffer = buf,
+                    { '<LocalLeader>a', group = 'Assignee', icon = '' },
+                    { '<LocalLeader>aa', desc = 'Add', icon = '' },
+                    { '<LocalLeader>ad', desc = 'Remove', icon = '' },
+                    {
+                        '<LocalLeader>c',
+                        group = 'Comment/Thread', -- TODO: makes sense to split?
+                        icon = '',
+                    },
+                    { '<LocalLeader>ca', desc = 'Add', icon = '󰆃' },
+                    { '<LocalLeader>cd', desc = 'Delete', icon = '󱗠' },
+                    { '<LocalLeader>l', group = 'Label', icon = '󰓹' },
+                    { '<LocalLeader>la', desc = 'Add', icon = '󰜢' },
+                    { '<LocalLeader>ld', desc = 'Remove', icon = '󰤐' },
+                    { '<LocalLeader>lc', desc = 'Create', icon = '󰜢' },
+                    { '<LocalLeader>i', group = 'Issue', icon = '' },
+                    { '<LocalLeader>il', group = 'List open issues' },
+                    { '<LocalLeader>r', group = 'React', icon = '👀' },
+                    { '<LocalLeader>rp', desc = '', icon = '🎉' },
+                    { '<LocalLeader>rh', desc = '', icon = '💛' }, -- FIXME: ❤️ is broken
+                    { '<LocalLeader>re', desc = '', icon = '👀' },
+                    { '<LocalLeader>r+', desc = '', icon = '👍' },
+                    { '<LocalLeader>r-', desc = '', icon = '👎' },
+                    { '<LocalLeader>rr', desc = '', icon = '🚀' },
+                    { '<LocalLeader>rl', desc = '', icon = '😄' },
+                    { '<LocalLeader>rc', desc = '', icon = '😕' },
+                    { '<LocalLeader>g', desc = 'Go to', icon = '' },
+                    { '<LocalLeader>gi', desc = 'Issue', icon = '' },
+                }
+            end
+            local function attach_pull_request(buf)
+                wk.add {
+                    buffer = buf,
+                    {
+                        '<LocalLeader>cr',
+                        desc = 'Resolve thread',
+                        icon = '',
+                    },
+                    {
+                        '<LocalLeader>cu',
+                        desc = 'Unresolve thread',
+                        icon = '',
+                    },
+                    { '<LocalLeader>p', group = 'PR', icon = '' },
+                    { '<LocalLeader>pc', desc = 'Commits', icon = '󰜘' },
+                    { '<LocalLeader>pd', desc = 'Diff', icon = '' },
+                    { '<LocalLeader>pf', desc = 'Files', icon = '󰈙' },
+                    { '<LocalLeader>po', desc = 'Checkout', icon = '󰇚' },
+                    { '<LocalLeader>ps', desc = 'Squash', icon = '󰃸' },
+                    { '<LocalLeader>psm', desc = 'Squash & merge' },
+                    { '<LocalLeader>v', group = 'Review', icon = '' },
+                    { '<LocalLeader>va', desc = 'Add reviewer', icon = '' },
+                    {
+                        '<LocalLeader>vd',
+                        desc = 'Remove reviewer request',
+                        icon = ' ',
+                    },
+                    {
+                        '<LocalLeader>vr',
+                        desc = 'Resume pending review',
+                        icon = '󰔟 ',
+                    },
+                    { '<LocalLeader>vs', desc = 'Start review' },
+                }
+            end
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = 'octo',
+                callback = function(args)
+                    attach_octo(args.buf)
+                    if args.file:match '^octo://.*/pull/' then
+                        attach_pull_request(args.buf)
+                    end
+                end,
+            })
+
+            local function attach_review(buf)
+                wk.add {
+                    buffer = buf,
+                    { '<LocalLeader>c', desc = 'Comment', icon = '' },
+                    {
+                        '<LocalLeader>ca',
+                        desc = 'Add',
+                        icon = '󰆃 ',
+                        mode = { 'n', 'x' },
+                    },
+                    { '<LocalLeader>cd', desc = 'Delete', icon = '󱗠' },
+                    { '<LocalLeader>s', desc = 'Suggestion', icon = '󰦒' },
+                    { '<LocalLeader>sa', desc = 'Add', mode = { 'n', 'x' } },
+                    { '<LocalLeader>v', desc = 'Review', icon = '' },
+                    { '<LocalLeader>vs', desc = 'Submit', icon = '' },
+                    { '<LocalLeader>vd', desc = 'Discard', icon = '' },
+                    {
+                        '<LocalLeader><Space>',
+                        desc = 'Mark viewed',
+                        icon = ' ',
+                    },
+                    {
+                        '<LocalLeader>q',
+                        '<cmd>Octo review close<CR>',
+                        desc = 'Close review',
+                        icon = ' ',
+                    },
+                }
+            end
+            vim.api.nvim_create_autocmd('BufEnter', {
+                pattern = 'octo://*/review/*', -- review buffer
+                callback = function(args)
+                    attach_review(args.buf)
+                end,
+            })
+
+            local function attach_file_panel(buf)
+                wk.add {
+                    buffer = buf,
+                    { '<LocalLeader>v', desc = 'Review', icon = '' },
+                    { '<LocalLeader>vs', desc = 'Submit', icon = '' },
+                    { '<LocalLeader>vd', desc = 'Discard', icon = '' },
+                    {
+                        '<LocalLeader><Space>',
+                        desc = 'Mark viewed',
+                        icon = ' ',
+                    },
+                }
+            end
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = 'octo_panel',
+                callback = function(args)
+                    attach_file_panel(args.buf)
+                end,
+            })
+        end,
     },
     {
         'topaxi/pipeline.nvim',
