@@ -326,6 +326,16 @@ return {
             {
                 '<leader>ts',
                 function()
+                    if
+                        not package.loaded.neotest
+                        or vim.tbl_isempty(require('neotest.config').adapters)
+                    then
+                        local filetypes =
+                            require('conf.workspace').project_filetypes()
+                        for _, filetype in ipairs(filetypes) do
+                            _ = require('conf.neotest.adapters')[filetype]
+                        end
+                    end
                     require('neotest').summary.toggle()
                 end,
                 desc = 'Toggle summary',
