@@ -4,13 +4,6 @@ return {
     {
         'saghen/blink.cmp',
         event = { 'InsertEnter', 'CmdlineEnter' },
-        dependencies = {
-            {
-                'Kaiser-Yang/blink-cmp-git',
-                dependencies = { 'nvim-lua/plenary.nvim' },
-            },
-            { 'disrupted/blink-cmp-conventional-commits' },
-        },
         version = '*',
         ---@module 'blink.cmp'
         ---@type blink.cmp.Config
@@ -204,4 +197,10 @@ return {
             },
         },
     },
+    {
+        'Kaiser-Yang/blink-cmp-git',
+        dependencies = { 'nvim-lua/plenary.nvim' },
+        lazy = true,
+    },
+    { 'disrupted/blink-cmp-conventional-commits', lazy = true },
 }
