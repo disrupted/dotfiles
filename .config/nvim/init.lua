@@ -508,14 +508,31 @@ vim.keymap.set('x', 'P', [['Pgv"'.v:register.'y`>']], expr)
 -- select last inserted text
 vim.keymap.set('n', 'gV', [['`[' . strpart(getregtype(), 0, 1) . '`]']], expr)
 
--- edit & source init.lua
--- vim.keymap.set('n', '<leader>v', ':e $MYVIMRC<CR>')
--- vim.keymap.set('n', '<leader>s', ':luafile $MYVIMRC<CR>')
-
--- Vimdiff as mergetool
-vim.keymap.set('n', '<leader>1', ':diffget //1<CR>')
-vim.keymap.set('n', '<leader>2', ':diffget //2<CR>')
-vim.keymap.set('n', '<leader>3', ':diffget //3<CR>')
+-- TODO: only enable when nvim is launched as difftool
+--[[ vim.api.nvim_create_autocmd('OptionSet', {
+    pattern = 'diff',
+    callback = function(args)
+        vim.keymap.set(
+            'n',
+            '<LocalLeader>1',
+            ':diffget //1<CR>',
+            { buffer = args.buf, desc = 'Choose LOCAL' }
+        )
+        vim.keymap.set(
+            'n',
+            '<LocalLeader>2',
+            ':diffLocalLeaderget //2<CR>',
+            { buffer = args.buf, desc = 'Choose OURS' }
+        )
+        vim.keymap.set(
+            'n',
+            '<LocalLeader>3',
+            ':diffLocalLeaderget //3<CR>',
+            { buffer = args.buf, desc = 'Choose THEIRS' }
+        )
+    end,
+    desc = 'Configure vimdiff as mergetool',
+}) ]]
 
 -- quickfix navigation
 vim.keymap.set('n', ']q', ':cnext<CR>')

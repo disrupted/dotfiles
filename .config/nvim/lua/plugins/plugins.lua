@@ -543,7 +543,16 @@ return {
             vim.o.timeout = true
             vim.o.timeoutlen = 500
         end,
-        opts = {},
+        ---@module 'which-key.config'
+        ---@type wk.Opts
+        ---@diagnostic disable-next-line: missing-fields
+        opts = {
+            spec = {
+                -- override motions preset
+                { ',', desc = '' },
+                { ';', desc = '' },
+            },
+        },
     },
     {
         'rest-nvim/rest.nvim',
