@@ -488,6 +488,7 @@ return {
                     preview = { minimal = true },
                 },
                 icons = {
+                    git = require('conf.icons').git,
                     diagnostics = { Hint = '' },
                     kinds = require('conf.icons').kinds,
                 },

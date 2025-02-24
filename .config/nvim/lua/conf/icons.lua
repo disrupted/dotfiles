@@ -6,10 +6,20 @@ return {
         Path = '󰉋',
         cmdline = '',
     }, {
-        __index = function(table, key)
+        __index = function()
             return ''
         end,
     }),
+    git = {
+        staged = '',
+        modified = '󰄱', -- aka unstaged
+        ignored = '',
+        added = '',
+        deleted = '',
+        renamed = '',
+        unmerged = '',
+        untracked = '*',
+    },
     kinds = {
         Array = '󰅪',
         Boolean = '◩',
