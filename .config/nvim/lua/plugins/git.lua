@@ -321,7 +321,7 @@ return {
                             if revision then
                                 cmd = cmd .. ' ' .. revision
                             end
-                            vim.cmd(cmd)
+                            vim.cmd(cmd .. ' -- .')
                         end
                     )
                 end,
@@ -335,65 +335,42 @@ return {
             {
                 '<leader>gdb',
                 function()
-                    vim.cmd.DiffviewOpen 'origin/HEAD...HEAD'
+                    vim.cmd.DiffviewOpen 'origin/HEAD...HEAD -- .'
                     require('gitsigns').change_base('origin/HEAD', true)
                 end,
                 desc = 'Review branch changes',
             },
         },
-        ---@module 'diffview.config'
-        ---@type DiffviewConfig
-        opts = {
-            enhanced_diff_hl = true,
-            default_args = {
-                DiffviewOpen = { '--untracked-files=no', '--imply-local' },
-                DiffviewFileHistory = { '--base=LOCAL', '--no-merges' },
-            },
-            view = {
-                default = { winbar_info = true },
-                file_history = { winbar_info = true },
-                merge_tool = {
-                    -- layout = 'diff4_mixed',
-                    disable_diagnostics = true,
-                    winbar_info = true,
+        opts = function()
+            ---@module 'diffview.config'
+            ---@type DiffviewConfig
+            return {
+                enhanced_diff_hl = true,
+                default_args = {
+                    DiffviewOpen = { '--untracked-files=no', '--imply-local' },
+                    DiffviewFileHistory = { '--base=LOCAL', '--no-merges' },
                 },
-            },
-            hooks = {
-                diff_buf_win_enter = function(bufnr, winid, ctx)
-                    -- Turn off cursor line for diffview windows because of bg conflict
-                    -- https://github.com/neovim/neovim/issues/9800
-                    vim.wo[winid].culopt = 'number'
-                    vim.wo[winid].wrap = false
-                    vim.wo[winid].statuscolumn = ''
-                end,
-            },
-            keymaps = {
                 view = {
-                    {
-                        'n',
-                        'q',
-                        vim.cmd.tabclose,
-                        { desc = 'Close diffview' },
+                    default = { winbar_info = true },
+                    file_history = { winbar_info = true },
+                    merge_tool = {
+                        -- layout = 'diff4_mixed',
+                        disable_diagnostics = true,
+                        winbar_info = true,
                     },
                 },
-                file_panel = {
-                    {
-                        'n',
-                        'q',
-                        vim.cmd.tabclose,
-                        { desc = 'Close diffview' },
-                    },
+                hooks = {
+                    diff_buf_win_enter = function(bufnr, winid, ctx)
+                        -- Turn off cursor line for diffview windows because of bg conflict
+                        -- https://github.com/neovim/neovim/issues/9800
+                        vim.wo[winid].cursorlineopt = 'number'
+                        vim.wo[winid].wrap = false
+                        vim.wo[winid].statuscolumn = ''
+                    end,
                 },
-                file_history_panel = {
-                    {
-                        'n',
-                        'q',
-                        vim.cmd.tabclose,
-                        { desc = 'Close diffview' },
-                    },
-                },
-            },
-        },
+                keymaps = require('conf.diffview').keymaps,
+            }
+        end,
     },
     {
         'pwntester/octo.nvim',
