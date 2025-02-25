@@ -519,20 +519,6 @@ return {
         end,
     },
     {
-        'rouge8/neotest-rust', -- TODO: switch to rustaceanvim
-        lazy = true,
-        dependencies = { 'nvim-neotest/neotest' },
-        init = function()
-            require('conf.neotest.adapters').rust = 'neotest-rust'
-        end,
-        opts = {},
-        config = function(_, opts)
-            local adapter = require 'neotest-rust'(opts)
-            local adapters = require('neotest.config').adapters
-            table.insert(adapters, adapter)
-        end,
-    },
-    {
         'andythigpen/nvim-coverage',
         cmd = {
             'Coverage',

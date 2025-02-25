@@ -541,20 +541,18 @@ return {
     {
         'mrcjkb/rustaceanvim',
         ft = 'rust',
-        opts = function()
-            vim.g.rustaceanvim = {
-                server = {
-                    cmd = function()
-                        local mason_registry = require 'mason-registry'
-                        local ra_binary = mason_registry.is_installed 'rust-analyzer'
-                                and mason_registry
-                                    .get_package('rust-analyzer')
-                                    :get_install_path() .. '/rust-analyzer'
-                            or 'rust-analyzer'
-                        return { ra_binary }
-                    end,
-                },
-            }
+        init = function()
+            require('conf.neotest.adapters').rust = 'rustaceanvim.neotest'
+        end,
+        ---@module 'rustaceanvim.config'
+        ---@type rustaceanvim.Opts
+        opts = {},
+        config = function(_, opts)
+            vim.g.rustaceanvim = opts
+
+            local adapter = require 'rustaceanvim.neotest'()
+            local adapters = require('neotest.config').adapters
+            table.insert(adapters, adapter)
         end,
     },
     {
