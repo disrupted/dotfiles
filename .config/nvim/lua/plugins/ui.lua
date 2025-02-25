@@ -244,7 +244,13 @@ return {
                 init = function(self)
                     self.status = vim.diagnostic.count(self.bufnr)
                 end,
-                update = { 'DiagnosticChanged', 'BufWinEnter' },
+                update = {
+                    'DiagnosticChanged',
+                    'BufWinEnter',
+                    callback = vim.schedule_wrap(function()
+                        vim.cmd.redrawstatus()
+                    end),
+                },
 
                 {
                     static = {
