@@ -450,9 +450,10 @@ return {
                                 end)
                             end,
                             pick_dirs = function(self, _, _)
+                                self.input.filter.meta.grep_search =
+                                    self.input:get()
+                                self.input:set(nil, '')
                                 self.input.filter.meta.source_id = 2
-                                -- FIXME: reset input search
-                                -- self.input.filter.search = ''
                                 self:find()
                             end,
                             confirm_custom = function(self, item, _)
@@ -462,9 +463,11 @@ return {
                                 if item.source_id == 2 then
                                     table.insert(self.opts['dirs'], item.file)
                                     self.input.filter.meta.source_id = 1
-                                    -- FIXME: reset input search
-                                    -- self.input.filter.search = ''
                                     self:find()
+                                    self.input:set(
+                                        '',
+                                        self.input.filter.meta.grep_search
+                                    )
                                 else
                                     self:action 'confirm'
                                 end
