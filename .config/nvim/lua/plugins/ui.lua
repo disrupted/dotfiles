@@ -12,9 +12,9 @@ return {
             vim.api.nvim_create_autocmd('ColorScheme', {
                 group = vim.api.nvim_create_augroup('Heirline', {}),
                 callback = function()
-                    utils.on_colorscheme(require('one.colors').get())
+                    require('heirline').reset_highlights()
                 end,
-                desc = 'reload colors when colorscheme changes',
+                desc = 'Reload highlights on colorscheme or background change',
             })
 
             local Align = { provider = '%=' }
@@ -33,18 +33,18 @@ return {
                     return string.format(' %s %s', self.icon, cwd)
                 end,
                 update = { 'DirChanged' },
-                hl = {
-                    fg = 'mono_1',
-                    bg = 'syntax_cursor',
-                    bold = true,
-                },
+                hl = vim.tbl_extend(
+                    'force',
+                    utils.get_highlight 'StatusLine',
+                    { bold = true }
+                ),
             }
 
             local FileNameBlock = {
                 init = function(self)
                     self.filename = vim.api.nvim_buf_get_name(self.bufnr)
                 end,
-                hl = { bold = false },
+                hl = 'StatusLine',
             }
 
             local FileIcon = {
@@ -124,7 +124,6 @@ return {
 
                     return filename
                 end,
-                -- hl = { fg = utils.get_highlight('Directory').fg },
             }
 
             local FileFlags = {
@@ -156,8 +155,7 @@ return {
                 condition = function(self)
                     return conditions.is_git_repo() and is_file(self.bufnr)
                 end,
-
-                hl = { bg = 'syntax_cursor' },
+                hl = 'StatusLine',
                 static = {
                     icons = {
                         added = '+',
@@ -187,10 +185,7 @@ return {
                             self.status.added
                         )
                     end,
-                    hl = {
-                        fg = 'hue_4',
-                        bg = 'syntax_cursor',
-                    },
+                    hl = 'GitSignsAdd',
                 },
                 {
                     condition = function(self)
@@ -203,10 +198,7 @@ return {
                             self.status.changed
                         )
                     end,
-                    hl = {
-                        fg = 'hue_6_2',
-                        bg = 'syntax_cursor',
-                    },
+                    hl = 'GitSignsChange',
                 },
                 {
                     condition = function(self)
@@ -219,10 +211,7 @@ return {
                             self.status.removed
                         )
                     end,
-                    hl = {
-                        fg = 'hue_5',
-                        bg = 'syntax_cursor',
-                    },
+                    hl = 'GitSignsDelete',
                 },
                 { -- git branch name
                     provider = function(self)
@@ -232,7 +221,6 @@ return {
                             self.status.head
                         )
                     end,
-                    hl = { bold = false },
                 },
             }
 
@@ -240,7 +228,6 @@ return {
                 condition = function(self)
                     return not vim.tbl_isempty(vim.diagnostic.count(self.bufnr))
                 end,
-                hl = { bg = 'syntax_cursor' },
                 init = function(self)
                     self.status = vim.diagnostic.count(self.bufnr)
                 end,
@@ -268,10 +255,7 @@ return {
                             self.status[self.severity]
                         )
                     end,
-                    hl = {
-                        fg = 'hue_5',
-                        bg = 'syntax_cursor',
-                    },
+                    hl = 'DiagnosticSignError',
                 },
                 {
                     static = {
@@ -289,10 +273,7 @@ return {
                             self.status[self.severity]
                         )
                     end,
-                    hl = {
-                        fg = 'hue_6_2',
-                        bg = 'syntax_cursor',
-                    },
+                    hl = 'DiagnosticSignWarn',
                 },
                 {
                     static = {
@@ -310,10 +291,7 @@ return {
                             self.status[self.severity]
                         )
                     end,
-                    hl = {
-                        fg = 'hue_2',
-                        bg = 'syntax_cursor',
-                    },
+                    hl = 'DiagnosticSignInfo',
                 },
             }
 
@@ -395,26 +373,24 @@ return {
                     condition = function(self)
                         return self.status.total > 0
                     end,
-                    init = function(self)
-                        self.adapter = vim.split(
-                            vim.split(
-                                self.adapter_ids[1],
-                                ':',
-                                { plain = true }
-                            )[1],
-                            'neotest-',
-                            { plain = true }
-                        )[2]
-                    end,
-                    provider = function(self)
-                        -- return string.format('%s ', self.adapter)
-                    end,
-                    hl = { bg = 'syntax_cursor' },
                     {
-                        {
-                            condition = function(self)
-                                return self.status.total > 0
-                            end,
+                        -- {
+                        --     init = function(self)
+                        --         self.adapter = vim.split(
+                        --             vim.split(
+                        --                 self.adapter_ids[1],
+                        --                 ':',
+                        --                 { plain = true }
+                        --             )[1],
+                        --             'neotest-',
+                        --             { plain = true }
+                        --         )[2]
+                        --     end,
+                        --     provider = function(self)
+                        -- return string.format('%s ', self.adapter)
+                        --     end,
+                        -- },
+                    {
                             provider = function(self)
                                 return string.format(
                                     '%s %s ',
@@ -422,7 +398,7 @@ return {
                                     self.status.total
                                 )
                             end,
-                            hl = { fg = 'mono_3' },
+                            hl = 'StatusLineNC',
                         },
                         {
                             condition = function(self)
@@ -435,9 +411,7 @@ return {
                                     self.status.running
                                 )
                             end,
-                            hl = function()
-                                return utils.get_highlight 'NeotestRunning'
-                            end,
+                            hl = 'NeotestRunning',
                         },
                         {
                             condition = function(self)
@@ -450,9 +424,7 @@ return {
                                     self.status.passed
                                 )
                             end,
-                            hl = function()
-                                return utils.get_highlight 'NeotestPassed'
-                            end,
+                            hl = 'NeotestPassed',
                         },
                         {
                             condition = function(self)
@@ -465,9 +437,7 @@ return {
                                     self.status.failed
                                 )
                             end,
-                            hl = function()
-                                return utils.get_highlight 'NeotestFailed'
-                            end,
+                            hl = 'NeotestFailed',
                         },
                         {
                             condition = function(self)
@@ -480,9 +450,7 @@ return {
                                     self.status.skipped
                                 )
                             end,
-                            hl = function()
-                                return utils.get_highlight 'NeotestSkipped'
-                            end,
+                            hl = 'NeotestSkipped',
                         },
                     },
                 },
@@ -504,7 +472,7 @@ return {
                     provider = function(self)
                         return string.format(' %s ', self.icon)
                     end,
-                    hl = { fg = 'hue_5' },
+                    hl = 'DiagnosticSignError',
                 },
                 {
                     provider = function(self)
@@ -512,7 +480,7 @@ return {
                     end,
                     hl = { bold = true },
                 },
-                hl = { bg = 'yellow' },
+                hl = { bg = utils.get_highlight('SpecialKey').fg },
                 update = { 'RecordingEnter', 'RecordingLeave' },
             }
             MacroRecordingBlock =
@@ -531,11 +499,7 @@ return {
                         )
                     end,
                     hl = function()
-                        return {
-                            fg = utils.get_highlight(
-                                string.format('Overseer%s', status)
-                            ).fg,
-                        }
+                        return string.format('Overseer%s', status)
                     end,
                 }
             end
@@ -624,7 +588,6 @@ return {
                     { hl = 'TabLineFill' },
                 },
                 opts = {
-                    colors = require('one.colors').get(),
                     disable_winbar_cb = function(args)
                         return conditions.buffer_matches({
                             buftype = { 'nofile', 'prompt', 'help', 'quickfix' },
