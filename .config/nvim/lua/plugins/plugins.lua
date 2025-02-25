@@ -168,20 +168,44 @@ return {
             {
                 '<leader>s',
                 function()
-                    local clients =
-                        vim.lsp.get_clients { method = 'workspace/symbol' }
-                    if vim.tbl_isempty(clients) then
-                        Snacks.notify.warn 'No client supporting workspace symbols'
-                        return
+                    ---@return boolean
+                    local function has_workspace_symbol_client()
+                        return not vim.tbl_isempty(
+                            vim.lsp.get_clients { method = 'workspace/symbol' }
+                        )
                     end
 
-                    Snacks.picker.lsp_workspace_symbols {
+                    local function start_workspace_clients()
+                        local workspace = require 'conf.workspace'
+                        local filetypes =
+                            workspace.project_filetypes { buffers = false }
+                        for _, filetype in ipairs(filetypes) do
+                            require('conf.workspace.lsp').start(filetype)
+                        end
+                    end
+
+                    if not has_workspace_symbol_client() then
+                        start_workspace_clients()
+                    end
+
+                    local picker = Snacks.picker.lsp_workspace_symbols {
                         title = 'LSP Workspace Symbols',
                         layout = {
                             preset = 'dropdown',
                             layout = { width = 0.5 },
                         },
                     }
+
+                    if not picker then
+                        return -- abort if picker was closed
+                    end
+
+                    -- give LSP some time to start
+                    vim.defer_fn(function()
+                        if not has_workspace_symbol_client() then
+                            Snacks.notify.warn 'No client supporting workspace symbols'
+                        end
+                    end, 1000)
                 end,
                 desc = 'LSP workspace symbols',
             },

@@ -5,17 +5,20 @@ local M = {}
 ---@type detect_project.Opts.FileTypeMarkers
 local default_project_markers = {
     python = { 'pyproject.toml' },
+    lua = { '.luarc.json', '.luarc.jsonc', '.stylua.toml', 'stylua.toml' },
     rust = { 'Cargo.toml' },
     javascript = { 'package.json' },
 }
 
 ---@class detect_project.Opts
 ---@field markers? detect_project.Opts.FileTypeMarkers
+---@field buffers? boolean check open buffers
 ---@field all? boolean include all filetypes
 
 ---@type detect_project.Opts
 local default_opts = {
     markers = default_project_markers,
+    buffers = true,
     all = false,
 }
 
@@ -26,17 +29,21 @@ M.project_filetypes = function(opts)
     ---@type detect_project.Opts
     opts = vim.tbl_extend('keep', opts or {}, default_opts)
 
+    local project_filetypes = {}
+
     -- check open buffers
-    local project_filetypes = vim.iter(vim.api.nvim_list_bufs())
-        :filter(vim.api.nvim_buf_is_loaded)
-        :filter(function(buf)
-            return vim.bo[buf].buftype ~= 'nofile'
-                and vim.bo[buf].filetype ~= ''
-        end)
-        :map(function(buf)
-            return vim.bo[buf].filetype
-        end)
-        :totable()
+    if opts.buffers then
+        project_filetypes = vim.iter(vim.api.nvim_list_bufs())
+            :filter(vim.api.nvim_buf_is_loaded)
+            :filter(function(buf)
+                return vim.bo[buf].buftype ~= 'nofile'
+                    and vim.bo[buf].filetype ~= ''
+            end)
+            :map(function(buf)
+                return vim.bo[buf].filetype
+            end)
+            :totable()
+    end
 
     -- check marker files
     for filetype, files in pairs(opts.markers) do
@@ -54,6 +61,7 @@ M.project_filetypes = function(opts)
         return project_filetypes
     end
 
+    -- include only requested filetypes
     return vim.iter(project_filetypes)
         :filter(function(ft)
             return opts.markers[ft] ~= nil
