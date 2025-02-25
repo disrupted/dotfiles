@@ -566,12 +566,12 @@ return {
                     {
                         '<LocalLeader>vd',
                         desc = 'Remove reviewer request',
-                        icon = ' ',
+                        icon = '',
                     },
                     {
                         '<LocalLeader>vr',
                         desc = 'Resume pending review',
-                        icon = '󰔟 ',
+                        icon = '󰔟',
                     },
                     { '<LocalLeader>vs', desc = 'Start review' },
                 }
@@ -586,43 +586,8 @@ return {
                 end,
             })
 
-            local function attach_review(buf)
-                wk.add {
-                    buffer = buf,
-                    { '<LocalLeader>c', desc = 'Comment', icon = '' },
-                    {
-                        '<LocalLeader>ca',
-                        desc = 'Add',
-                        icon = '󰆃 ',
-                        mode = { 'n', 'x' },
-                    },
-                    { '<LocalLeader>cd', desc = 'Delete', icon = '󱗠' },
-                    { '<LocalLeader>s', desc = 'Suggestion', icon = '󰦒' },
-                    { '<LocalLeader>sa', desc = 'Add', mode = { 'n', 'x' } },
-                    { '<LocalLeader>v', desc = 'Review', icon = '' },
-                    { '<LocalLeader>vs', desc = 'Submit', icon = '' },
-                    { '<LocalLeader>vd', desc = 'Discard', icon = '' },
-                    {
-                        '<LocalLeader><Space>',
-                        desc = 'Mark viewed',
-                        icon = ' ',
-                    },
-                    {
-                        '<LocalLeader>q',
-                        '<cmd>Octo review close<CR>',
-                        desc = 'Close review',
-                        icon = ' ',
-                    },
-                }
-            end
-            vim.api.nvim_create_autocmd('BufEnter', {
-                pattern = 'octo://*/review/*', -- review buffer
-                callback = function(args)
-                    attach_review(args.buf)
-                end,
-            })
-
-            local function attach_file_panel(buf)
+            -- shared keymaps for review_diff and file_panel
+            local function attach_shared_review_diff_file_panel(buf)
                 wk.add {
                     buffer = buf,
                     { '<LocalLeader>v', desc = 'Review', icon = '' },
@@ -631,14 +596,43 @@ return {
                     {
                         '<LocalLeader><Space>',
                         desc = 'Mark viewed',
-                        icon = ' ',
+                        icon = '',
                     },
                 }
             end
             vim.api.nvim_create_autocmd('FileType', {
                 pattern = 'octo_panel',
                 callback = function(args)
-                    attach_file_panel(args.buf)
+                    attach_shared_review_diff_file_panel(args.buf)
+                end,
+            })
+
+            local function attach_review_diff(buf)
+                wk.add {
+                    buffer = buf,
+                    { '<LocalLeader>c', desc = 'Comment', icon = '' },
+                    {
+                        '<LocalLeader>ca',
+                        desc = 'Add',
+                        icon = '󰆃',
+                        mode = { 'n', 'x' },
+                    },
+                    { '<LocalLeader>cd', desc = 'Delete', icon = '󱗠' },
+                    { '<LocalLeader>s', desc = 'Suggestion', icon = '󰦒' },
+                    { '<LocalLeader>sa', desc = 'Add', mode = { 'n', 'x' } },
+                    {
+                        '<LocalLeader>q',
+                        '<cmd>Octo review close<CR>',
+                        desc = 'Close review',
+                        icon = '',
+                    },
+                }
+            end
+            vim.api.nvim_create_autocmd('BufEnter', {
+                pattern = 'octo://*/review/*', -- review buffer
+                callback = function(args)
+                    attach_review_diff(args.buf)
+                    attach_shared_review_diff_file_panel(args.buf)
                 end,
             })
         end,
