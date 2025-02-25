@@ -245,6 +245,7 @@ return {
                 '<leader>gl',
                 function()
                     Snacks.gitbrowse.open {
+                        what = 'permalink',
                         notify = false,
                         open = function(url)
                             vim.fn.setreg('+', url)
