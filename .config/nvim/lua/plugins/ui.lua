@@ -12,7 +12,7 @@ return {
             vim.api.nvim_create_autocmd('ColorScheme', {
                 group = vim.api.nvim_create_augroup('Heirline', {}),
                 callback = function()
-                    require('heirline').reset_highlights()
+                    utils.on_colorscheme {}
                 end,
                 desc = 'Reload highlights on colorscheme or background change',
             })
@@ -33,11 +33,10 @@ return {
                     return string.format(' %s %s', self.icon, cwd)
                 end,
                 update = { 'DirChanged' },
-                hl = vim.tbl_extend(
-                    'force',
-                    utils.get_highlight 'StatusLine',
-                    { bold = true }
-                ),
+                hl = function()
+                    local hl = utils.get_highlight 'StatusLine'
+                    return { fg = hl.fg, bg = hl.bg, bold = true }
+                end,
             }
 
             local FileNameBlock = {
@@ -480,7 +479,9 @@ return {
                     end,
                     hl = { bold = true },
                 },
-                hl = { bg = utils.get_highlight('SpecialKey').fg },
+                hl = function()
+                    return { bg = utils.get_highlight('SpecialKey').fg }
+                end,
                 update = { 'RecordingEnter', 'RecordingLeave' },
             }
             MacroRecordingBlock =
