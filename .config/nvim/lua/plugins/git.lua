@@ -390,6 +390,14 @@ return {
                 function()
                     require('coop').spawn(function()
                         local git = require('git').async
+                        local remote_url = git.remote_url()
+                        if
+                            require('git').match_remote_type(remote_url)
+                            ~= 'github'
+                        then
+                            Snacks.notify.error 'Octo only supports GitHub'
+                            return
+                        end
                         local branch = git.current_branch()
                         if branch == '' then
                             Snacks.notify.error 'Current ref is not a valid branch'

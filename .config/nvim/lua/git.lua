@@ -11,6 +11,12 @@ local git = function(args)
     return vim.trim(assert(out.stdout))
 end
 
+---@param remote? string
+---@return string
+M.remote_url = function(remote)
+    return git { 'remote', 'get-url', remote or 'origin' }
+end
+
 ---@return string name of the current branch
 M.current_branch = function()
     return git { 'branch', '--show-current' }
@@ -19,6 +25,16 @@ end
 ---@return boolean
 M.is_repo = function()
     return vim.uv.fs_stat '.git' ~= nil
+end
+
+---@param remote_url string
+---@return 'github' | 'gitlab'
+M.match_remote_type = function(remote_url)
+    if remote_url:match 'github%.com' then
+        return 'github'
+    end
+    -- others are usually self-hosted GitLab instances in my use case
+    return 'gitlab'
 end
 
 ---@async
@@ -34,6 +50,13 @@ local git_async = function(args)
 end
 
 M.async = {}
+
+---@async
+---@param remote? string
+---@return string
+M.async.remote_url = function(remote)
+    return git_async { 'remote', 'get-url', remote or 'origin' }
+end
 
 ---@async
 ---@return string name of the current branch
