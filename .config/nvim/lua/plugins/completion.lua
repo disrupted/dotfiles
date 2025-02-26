@@ -40,19 +40,11 @@ return {
                 },
                 list = {
                     selection = {
-                        preselect = function(ctx)
-                            return ctx.mode ~= 'cmdline'
-                        end,
+                        preselect = true,
                     },
                 },
                 menu = {
-                    auto_show = function(ctx)
-                        return ctx.mode ~= 'cmdline'
-                            or not vim.tbl_contains(
-                                { '/', '?' },
-                                vim.fn.getcmdtype()
-                            )
-                    end,
+                    auto_show = true,
                     draw = {
                         columns = function(ctx)
                             if ctx.mode == 'cmdline' then
@@ -183,6 +175,18 @@ return {
             },
             signature = { enabled = true },
             cmdline = {
+                completion = {
+                    ghost_text = { enabled = false },
+                    menu = {
+                        auto_show = function()
+                            return not vim.tbl_contains(
+                                { '/', '?' },
+                                vim.fn.getcmdtype()
+                            )
+                        end,
+                    },
+                    list = { selection = { preselect = false } },
+                },
                 keymap = {
                     preset = 'enter',
                     ['<CR>'] = { 'accept_and_enter', 'fallback' },
