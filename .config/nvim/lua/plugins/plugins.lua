@@ -190,15 +190,56 @@ return {
 
                     local picker = Snacks.picker.lsp_workspace_symbols {
                         title = 'LSP Workspace Symbols',
+                        matcher = {
+                            fuzzy = true,
+                            ignorecase = false,
+                            smartcase = true,
+                        },
                         layout = {
                             preset = 'dropdown',
                             layout = { width = 0.5 },
+                        },
+                        actions = {
+                            toggle_live_match = function(self, _)
+                                if self.opts.live then
+                                    -- apply search as pattern
+                                    local search = self.input:get()
+                                    self.input:set(search)
+                                end
+                                self:action 'toggle_live'
+                            end,
+                        },
+                        win = {
+                            input = {
+                                keys = {
+                                    ['<C-g>'] = {
+                                        'toggle_live_match',
+                                        mode = { 'i', 'n' },
+                                        desc = 'Toggle live, apply live search as match pattern',
+                                    },
+                                },
+                            },
                         },
                     }
 
                     if not picker then
                         return -- abort if picker was closed
                     end
+
+                    picker.input.win:on(
+                        { 'TextChangedI', 'TextChanged' },
+                        function(win)
+                            if not win:valid() then
+                                return
+                            end
+                            if picker.opts.live then
+                                -- apply search as pattern
+                                picker.input.filter.pattern =
+                                    picker.input.filter.search
+                            end
+                        end,
+                        { buf = true }
+                    )
 
                     -- give LSP some time to start
                     vim.defer_fn(function()
