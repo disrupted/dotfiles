@@ -482,7 +482,6 @@ return {
                 '-vv',
                 -- '--color=no',
             },
-            env = { REUSE_CONTAINERS = '1' },
             -- pytest_discover_instances = true, -- experimental, support parametrized test cases
         },
         config = function(_, opts)

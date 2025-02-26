@@ -220,7 +220,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end,
 })
 
-local function periodic_refresh_semantic_tokens()
+-- TODO: still needed? without it Pylance was messing up buffer highlights at some point
+--[[ local function periodic_refresh_semantic_tokens()
     Snacks.notify('periodic refresh semantic tokens', {
         level = vim.log.levels.DEBUG,
         title = 'LSP',
@@ -240,7 +241,7 @@ vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave' }, {
         })
         vim.lsp.semantic_tokens.force_refresh(0)
     end, { ms = 1000 }),
-})
+}) ]]
 
 vim.lsp.config('*', {
     root_markers = { '.git' },

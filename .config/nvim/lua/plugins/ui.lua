@@ -386,10 +386,10 @@ return {
                         --         )[2]
                         --     end,
                         --     provider = function(self)
-                        -- return string.format('%s ', self.adapter)
+                        --         return string.format('%s ', self.adapter)
                         --     end,
                         -- },
-                    {
+                        {
                             provider = function(self)
                                 return string.format(
                                     '%s %s ',

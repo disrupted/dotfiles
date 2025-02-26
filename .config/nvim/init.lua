@@ -494,8 +494,7 @@ vim.keymap.set(
     silent
 )
 
--- alternate file
-vim.keymap.set('n', '<C-6>', '<C-^>')
+vim.keymap.set('n', '<C-6>', '<C-^>', { desc = 'Alternate buffer' })
 
 -- sensible defaults
 vim.keymap.set('', 'Q', '') -- disable
@@ -535,15 +534,15 @@ vim.keymap.set('n', 'gV', [['`[' . strpart(getregtype(), 0, 1) . '`]']], expr)
 }) ]]
 
 -- quickfix navigation
-vim.keymap.set('n', ']q', ':cnext<CR>')
-vim.keymap.set('n', '[q', ':cprevious<CR>')
+vim.keymap.set('n', ']q', ':cnext<CR>', { desc = 'Next QuickFix entry' })
+vim.keymap.set('n', '[q', ':cprevious<CR>', { desc = 'Prev QuickFix entry' })
 
 --  ctrl + / nohighlight
 vim.keymap.set('n', '<C-_>', ':noh<CR>')
 
 -- cycle tabs
-vim.keymap.set('n', ']]', '<cmd>tabnext<CR>')
-vim.keymap.set('n', '[[', '<cmd>tabprevious<CR>')
+vim.keymap.set('n', ']]', '<cmd>tabnext<CR>', { desc = 'Next tabpage' })
+vim.keymap.set('n', '[[', '<cmd>tabprevious<CR>', { desc = 'Prev tabpage' })
 
 -----------------------------------------------------------------------------//
 -- Commands {{{1

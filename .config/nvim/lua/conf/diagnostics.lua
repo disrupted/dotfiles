@@ -2,10 +2,10 @@ vim.diagnostic.config {
     underline = true, -- use custom diagnostic handler instead to filter for which diagnostics to show an underline
     signs = {
         text = {
-            [vim.diagnostic.severity.ERROR] = '', -- ◉
-            [vim.diagnostic.severity.WARN] = '', -- ●
-            [vim.diagnostic.severity.INFO] = '', -- •
-            [vim.diagnostic.severity.HINT] = '', -- ·
+            [vim.diagnostic.severity.ERROR] = '', -- ◉✘
+            [vim.diagnostic.severity.WARN] = '', -- ●▲
+            [vim.diagnostic.severity.INFO] = '', -- •
+            [vim.diagnostic.severity.HINT] = '', -- ·⚑
         },
         linehl = {
             [vim.diagnostic.severity.ERROR] = '',

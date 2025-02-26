@@ -77,6 +77,7 @@ return {
                     require 'neoclip'
                     -- FIXME: open Snacks.picker
                 end,
+                desc = 'Neoclip',
             },
         },
         config = true,
@@ -110,6 +111,9 @@ return {
         'ThePrimeagen/harpoon',
         branch = 'harpoon2',
         dependencies = { 'nvim-lua/plenary.nvim' },
+        init = function()
+            require('which-key').add { { ';', group = 'Harpoon', icon = '󰤱' } }
+        end,
         keys = {
             {
                 ';;',
@@ -117,6 +121,7 @@ return {
                     local harpoon = require 'harpoon'
                     harpoon.ui:toggle_quick_menu(harpoon:list())
                 end,
+                desc = 'Menu',
             },
             {
                 'M',
@@ -131,37 +136,42 @@ return {
                         list:remove(item)
                     end
                 end,
-                desc = 'Toggle file',
+                desc = 'Toggle Harpoon mark',
             },
             {
                 ';a',
                 function()
                     require('harpoon'):list():select(1)
                 end,
+                desc = 'Select 1',
             },
             {
                 ';s',
                 function()
                     require('harpoon'):list():select(2)
                 end,
+                desc = 'Select 2',
             },
             {
                 ';d',
                 function()
                     require('harpoon'):list():select(3)
                 end,
+                desc = 'Select 3',
             },
             {
                 ';f',
                 function()
                     require('harpoon'):list():select(4)
                 end,
+                desc = 'Select 4',
             },
             {
                 ';g',
                 function()
                     require('harpoon'):list():select(5)
                 end,
+                desc = 'Select 5',
             },
         },
         config = true,

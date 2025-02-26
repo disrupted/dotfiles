@@ -34,22 +34,11 @@ return {
     },
     {
         'folke/flash.nvim',
-        ---@module 'flash.config'
-        ---@type Flash.Config
-        opts = {
-            modes = {
-                char = {
-                    keys = { 'f', 'F', 't', 'T', [';'] = 'L', [','] = 'H' },
-                },
-            },
-        },
         keys = {
             'f',
             'F',
             't',
             'T',
-            'L',
-            'H',
             {
                 's',
                 mode = { 'n', 'o' },
@@ -89,6 +78,15 @@ return {
                     require('flash').toggle()
                 end,
                 desc = 'Toggle Flash search',
+            },
+        },
+        ---@module 'flash.config'
+        ---@type Flash.Config
+        opts = {
+            modes = {
+                char = {
+                    keys = { 'f', 'F', 't', 'T', [';'] = 'L', [','] = 'H' },
+                },
             },
         },
     },
