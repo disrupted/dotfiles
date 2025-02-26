@@ -20,9 +20,24 @@ return {
             {
                 '<leader><leader>',
                 function()
-                    Snacks.picker.buffers {
-                        layout = { preset = 'dropdown' },
+                    -- smart picker is recommended over buffers picker
+                    Snacks.picker.smart {
+                        title = 'Buffers',
+                        multi = false,
+                        finder = 'buffers',
                         current = false,
+                        layout = { preset = 'dropdown' },
+                        win = {
+                            input = {
+                                keys = {
+                                    ['<c-x>'] = {
+                                        'bufdelete',
+                                        mode = { 'n', 'i' },
+                                    },
+                                },
+                            },
+                            list = { keys = { ['dd'] = 'bufdelete' } },
+                        },
                     }
                 end,
                 desc = 'Buffers',
