@@ -179,7 +179,6 @@ return {
             -- the filetype on the RHS will use the parser and queries on the LHS
             vim.treesitter.language.register('bash', 'zsh')
             vim.treesitter.language.register('terraform', 'terraform-vars')
-            vim.treesitter.language.register('markdown', 'octo')
         end,
     },
     {

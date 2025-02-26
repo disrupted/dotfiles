@@ -506,6 +506,7 @@ return {
         },
         config = function(_, opts)
             require('octo').setup(opts)
+            vim.treesitter.language.register('markdown', 'octo')
 
             local wk = require 'which-key'
             -- shared keymaps for pull_request & issue
