@@ -75,11 +75,11 @@ end
 ---@async
 ---@return string?
 M.pr.create = function()
-    local last_commit_title = require('git').async.last_commit_title()
+    local git = require('git').async
 
     local title = ui.input {
         prompt = 'PR title',
-        default = last_commit_title,
+        default = git.last_commit_title(),
         win = { ft = 'gitcommit' },
     }
     if not title or title == '' then
@@ -94,12 +94,21 @@ M.pr.create = function()
         return
     end
 
-    local out, stderr = gh.pr.create {
+    local pr_opts = {
         title = title,
         body = body,
         assignee = 'disrupted',
         draft = true,
     }
+
+    -- if upstream tracking branch was changed we want to
+    -- create the PR against that branch instead of main
+    local tracking_branch = git.tracking_branch():gsub('^origin/', '')
+    if git.current_branch() ~= tracking_branch then
+        pr_opts.base = tracking_branch
+    end
+
+    local out, stderr = gh.pr.create(pr_opts)
     if stderr and stderr ~= '' then
         Snacks.notify.error(stderr)
         if

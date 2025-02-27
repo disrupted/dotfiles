@@ -65,6 +65,17 @@ M.async.current_branch = function()
 end
 
 ---@async
+---@return string name of the upstream tracking branch 'origin/...'
+M.async.tracking_branch = function()
+    return git_async {
+        'rev-parse',
+        '--abbrev-ref',
+        '--symbolic-full-name',
+        '@{u}',
+    }
+end
+
+---@async
 ---@return string name of the default branch
 M.async.default_branch = function()
     local ref = git_async { 'symbolic-ref', 'refs/remotes/origin/HEAD' }
