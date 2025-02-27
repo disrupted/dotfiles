@@ -533,9 +533,8 @@ return {
 
             local Tab = {
                 init = function(self)
-                    local win = vim.api.nvim_tabpage_get_win(self.tabnr)
-                    local buf = vim.api.nvim_win_get_buf(win)
-                    self.filename = vim.api.nvim_buf_get_name(buf)
+                    local win = vim.api.nvim_tabpage_get_win(self.tabpage)
+                    self.buf = vim.api.nvim_win_get_buf(win)
                 end,
                 hl = function(self)
                     if self.is_active then
@@ -544,21 +543,26 @@ return {
                         return 'TabLine'
                     end
                 end,
+                Space,
                 {
                     provider = function(self)
-                        return '%'
-                            .. self.tabnr
-                            .. 'T '
-                            .. self.tabpage
-                            .. ' %T'
+                        return self.tabnr
                     end,
                 },
+                Space,
                 {
+                    init = function(self)
+                        self.filename = vim.api.nvim_buf_get_name(self.buf)
+                    end,
                     provider = function(self)
                         if self.filename == '' then
                             return '[No Name]'
                         else
-                            return vim.fn.fnamemodify(self.filename, ':t')
+                            local name = vim.fn.fnamemodify(self.filename, ':t')
+                            if #name >= 17 then
+                                name = name:sub(1, 15) .. '…'
+                            end
+                            return name
                         end
                     end,
                 },
