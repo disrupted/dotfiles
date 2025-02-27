@@ -165,18 +165,6 @@ return {
         opts = {},
     },
     {
-        'neovim-plugin/lightbulb.nvim',
-        event = 'LspAttach',
-        opts = {
-            sign = { enabled = false, priority = 99 },
-            virtual_text = {
-                enabled = true,
-                text = '', -- 
-                hl_mode = 'combine',
-            },
-        },
-    },
-    {
         'stevearc/conform.nvim',
         event = 'BufWritePre',
         cmd = 'ConformInfo',
@@ -315,7 +303,6 @@ return {
             })
 
             vim.api.nvim_create_autocmd('LspAttach', {
-                group = au,
                 desc = 'LSP formatexpr',
                 callback = function(args)
                     local bufnr = args.buf
