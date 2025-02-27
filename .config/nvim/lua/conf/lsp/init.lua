@@ -24,81 +24,76 @@ vim.api.nvim_create_autocmd('LspAttach', {
     group = au,
     desc = 'LSP keymaps',
     callback = function(args)
-        local bufnr = args.buf
-        local function map(mode, lhs, rhs, opts)
-            opts = vim.tbl_extend('force', opts or {}, { buffer = bufnr })
-            vim.keymap.set(mode, lhs, rhs, opts)
-        end
-
-        -- map(
-        --     'n',
-        --     'gD',
-        --     vim.lsp.buf.declaration,
-        --     { desc = 'LSP: go to declaration' }
-        -- )
-        map('n', 'gd', function()
-            require('trouble').open {
-                mode = 'lsp_definitions',
-                auto_jump = true,
-            }
-        end, { desc = 'LSP: go to definition' })
-        map('n', 'K', vim.lsp.buf.hover, { desc = 'LSP: Hover' })
-        -- map(
-        --     'n',
-        --     'gi',
-        --     vim.lsp.buf.implementation,
-        --     { desc = 'LSP: go to implementation' }
-        -- )
-        -- map(
-        --     'n',
-        --     '<C-s>',
-        --     vim.lsp.buf.signature_help,
-        --     { desc = 'LSP: signature help' }
-        -- )
-        map(
-            'n',
-            '<leader>wa',
-            vim.lsp.buf.add_workspace_folder,
-            { desc = 'LSP: add workspace folder' }
-        )
-        map(
-            'n',
-            '<leader>wr',
-            vim.lsp.buf.remove_workspace_folder,
-            { desc = 'LSP: remove workspace folder' }
-        )
-        map('n', '<leader>wl', function()
-            Snacks.notify.info(
-                vim.lsp.buf.list_workspace_folders(),
-                { title = 'LSP workspace folders' }
-            )
-        end, { desc = 'LSP: list workspace folders' })
-        -- map(
-        --     'n',
-        --     '<leader>D',
-        --     vim.lsp.buf.type_definition,
-        --     { desc = 'LSP: type definition' }
-        -- )
-        map('n', '<leader>r', function()
-            require('conf.lsp.nui').rename()
-        end, { desc = 'LSP: rename symbol' })
-        map('n', 'gr', function()
-            require('trouble').open { mode = 'lsp' }
-        end, {
-            desc = 'LSP: list definitions, references, implementations, type definitions, and declarations',
-        })
-        map(
-            'n',
-            '<leader>li',
-            vim.lsp.buf.incoming_calls,
-            { desc = 'LSP: list incoming calls (call sites)' }
-        )
-        map(
-            'n',
-            '<leader>lo',
-            vim.lsp.buf.outgoing_calls,
-            { desc = 'LSP: list outgoing calls (called functions)' }
-        )
+        require('which-key').add {
+            buffer = args.buf,
+            {
+                '<Leader>r',
+                function()
+                    require('conf.lsp.nui').rename()
+                end,
+                desc = 'LSP: Rename symbol',
+                icon = '󰏫',
+            },
+            {
+                'gd',
+                function()
+                    require('trouble').open {
+                        mode = 'lsp_definitions',
+                        auto_jump = true,
+                    }
+                end,
+                desc = 'LSP: Go to definition',
+            },
+            {
+                'gr',
+                function()
+                    require('trouble').open { mode = 'lsp' }
+                end,
+                desc = 'LSP: References, definition,…',
+            },
+            { 'K', vim.lsp.buf.hover, desc = 'LSP: Hover' },
+            { '<Leader>w', group = 'LSP workspace', icon = '' },
+            {
+                '<Leader>wa',
+                vim.lsp.buf.add_workspace_folder,
+                desc = 'Add folder',
+            },
+            {
+                '<Leader>wr',
+                vim.lsp.buf.remove_workspace_folder,
+                desc = 'Remove folder',
+            },
+            {
+                '<Leader>wl',
+                function()
+                    Snacks.notify.info(
+                        vim.lsp.buf.list_workspace_folders(),
+                        { title = 'LSP workspace folders' }
+                    )
+                end,
+                desc = 'List folders',
+            },
+            -- TODO: current Trouble-based solution only goes one layer deep
+            -- replace with something like https://github.com/jmacadie/telescope-hierarchy.nvim
+            -- hopefully for Snacks or Trouble
+            { '<Leader>l', group = 'LSP: List calls', icon = '󰅲' },
+            {
+                '<Leader>li',
+                function()
+                    require('trouble').open { mode = 'lsp_incoming_calls' }
+                end,
+                desc = 'Incoming (call sites)',
+                icon = '󰃺',
+            },
+            {
+                '<Leader>lo',
+                function()
+                    require('trouble').open { mode = 'lsp_outgoing_calls' }
+                end,
+                desc = 'Outgoing (called functions)',
+                icon = '󰃷',
+            },
+        }
         vim.opt.shortmess:append 'c'
     end,
 })
@@ -139,11 +134,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     callback = function(args)
         local bufnr = args.buf
         local client = vim.lsp.get_client_by_id(args.data.client_id)
-        if
-            client
-            and client:supports_method 'textDocument/inlayHint'
-            and pcall(require, 'vim.lsp.inlay_hint') -- NOTE: check that API exists
-        then
+        if client and client:supports_method 'textDocument/inlayHint' then
             Snacks.notify('registered inlay hints', {
                 level = vim.log.levels.DEBUG,
                 title = 'LSP: ' .. client.name,
@@ -179,12 +170,16 @@ vim.api.nvim_create_autocmd('LspAttach', {
         local bufnr = args.buf
         local client = vim.lsp.get_client_by_id(args.data.client_id)
         if client and client:supports_method 'textDocument/codeAction' then
-            vim.keymap.set(
-                { 'n', 'v' },
-                '<leader>a',
-                vim.lsp.buf.code_action,
-                { buffer = bufnr, desc = 'LSP: code action' }
-            )
+            require('which-key').add {
+                {
+                    '<Leader>a',
+                    vim.lsp.buf.code_action,
+                    buffer = bufnr,
+                    mode = { 'n', 'v' },
+                    desc = 'LSP: Code action',
+                    icon = { icon = '', hl = 'LightBulb' },
+                },
+            }
         end
     end,
 })

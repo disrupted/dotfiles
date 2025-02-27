@@ -105,16 +105,37 @@ return {
     },
     {
         'Davidyz/inlayhint-filler.nvim',
-        keys = {
-            {
-                '<leader>I',
-                function()
-                    require('inlayhint-filler').fill()
+        lazy = true,
+        init = function()
+            vim.api.nvim_create_autocmd('LspAttach', {
+                desc = 'LSP inlayhint-filler',
+                callback = function(args)
+                    if
+                        vim.tbl_contains({ 'lua' }, vim.bo[args.buf].filetype)
+                    then
+                        return
+                    end
+                    local client = vim.lsp.get_client_by_id(args.data.client_id)
+                    if
+                        client
+                        and client:supports_method 'textDocument/inlayHint'
+                    then
+                        require('which-key').add {
+                            {
+                                '<Leader>I',
+                                function()
+                                    require('inlayhint-filler').fill()
+                                end,
+                                mode = { 'n', 'v' },
+                                buffer = args.buf,
+                                desc = 'Insert inlay hint under cursor',
+                                icon = '',
+                            },
+                        }
+                    end
                 end,
-                desc = 'Insert inlay-hint under cursor',
-                mode = { 'n', 'v' },
-            },
-        },
+            })
+        end,
     },
     {
         'disrupted/pylance.nvim',
@@ -561,7 +582,7 @@ return {
         init = function()
             require('which-key').add {
                 {
-                    '<leader>x',
+                    '<Leader>x',
                     group = 'Trouble',
                     icon = { icon = '', hl = 'DiagnosticWarn' },
                 },
@@ -569,28 +590,28 @@ return {
         end,
         keys = {
             {
-                '<leader>xx',
+                '<Leader>xx',
                 function()
                     require('conf.trouble').diagnostics.toggle 'workspace_diagnostics_severe'
                 end,
                 desc = 'Workspace diagnostics (most severe)',
             },
             {
-                '<leader>xw',
+                '<Leader>xw',
                 function()
                     require('conf.trouble').diagnostics.toggle 'workspace_diagnostics'
                 end,
                 desc = 'Workspace diagnostics',
             },
             {
-                '<leader>xb',
+                '<Leader>xb',
                 function()
                     require('conf.trouble').diagnostics.toggle 'buffer_diagnostics'
                 end,
                 desc = 'Buffer diagnostics',
             },
             {
-                '<leader>xq',
+                '<Leader>xq',
                 function()
                     require('trouble').toggle { mode = 'quickfix' }
                 end,
@@ -652,7 +673,7 @@ return {
         cmd = 'IncRename',
         keys = {
             {
-                '<leader>r',
+                '<Leader>r',
                 function()
                     return ':IncRename ' .. vim.fn.expand '<cword>'
                 end,

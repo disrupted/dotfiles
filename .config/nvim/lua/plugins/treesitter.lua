@@ -98,7 +98,7 @@ return {
                 smart_rename = {
                     enable = true,
                     keymaps = {
-                        smart_rename = '<leader>R', -- mapping to rename reference under cursor
+                        smart_rename = '<Leader>R', -- mapping to rename reference under cursor
                     },
                 },
                 navigation = {
@@ -162,12 +162,12 @@ return {
                 swap = {
                     enable = true,
                     swap_next = {
-                        ['<leader>>'] = '@parameter.inner',
-                        ['<leader>f>'] = '@function.outer',
+                        ['zsp>'] = '@parameter.inner',
+                        ['zsf>'] = '@function.outer',
                     },
                     swap_previous = {
-                        ['<leader><'] = '@parameter.inner',
-                        ['<leader>f<'] = '@function.outer',
+                        ['zsp<'] = '@parameter.inner',
+                        ['zsf<'] = '@function.outer',
                     },
                 },
             },
@@ -175,6 +175,17 @@ return {
         },
         config = function(_, opts)
             require('nvim-treesitter.configs').setup(opts)
+            local icons = require 'conf.icons'
+            require('which-key').add {
+                { '<Leader>R', desc = 'TS: Rename symbol', icon = '󰏫' },
+                { 'zs', group = 'Swap', icon = '󰓡' },
+                { 'zsp', desc = 'Parameter', icon = icons.kinds.Variable },
+                { 'zsp>', desc = 'Next', icon = icons.arrows.right },
+                { 'zsp<', desc = 'Prev', icon = icons.arrows.left },
+                { 'zsf', desc = 'Function', icon = icons.kinds.Function },
+                { 'zsf>', desc = 'Next', icon = icons.arrows.right },
+                { 'zsf<', desc = 'Prev', icon = icons.arrows.left },
+            }
 
             -- the filetype on the RHS will use the parser and queries on the LHS
             vim.treesitter.language.register('bash', 'zsh')

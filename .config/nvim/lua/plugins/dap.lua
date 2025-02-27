@@ -6,7 +6,7 @@ return {
         init = function()
             require('which-key').add {
                 {
-                    '<leader>d',
+                    '<Leader>d',
                     group = 'Debug',
                     icon = { icon = '󰃤', hl = 'DiagnosticError' },
                 },
@@ -14,7 +14,7 @@ return {
         end,
         keys = {
             {
-                '<leader>dc',
+                '<Leader>dc',
                 function()
                     _ = require('conf.dap.adapters')[vim.bo.filetype]
                     require 'nvim-dap-virtual-text'
@@ -26,7 +26,7 @@ return {
                 desc = 'Continue/start debugger',
             },
             {
-                '<leader>dq',
+                '<Leader>dq',
                 function()
                     require('dap').terminate()
                     require('dap').close()
@@ -35,7 +35,7 @@ return {
                 desc = 'Close debugger',
             },
             {
-                '<leader>dQ',
+                '<Leader>dQ',
                 function()
                     require('dap.breakpoints').clear()
                     vim.opt.signcolumn = 'yes:1'
@@ -43,42 +43,42 @@ return {
                 desc = 'Clear breakpoints',
             },
             {
-                '<leader>do',
+                '<Leader>do',
                 function()
                     require('dap').step_over()
                 end,
                 desc = 'Step over',
             },
             {
-                '<leader>d>',
+                '<Leader>d>',
                 function()
                     require('dap').step_into()
                 end,
                 desc = 'Step into',
             },
             {
-                '<leader>d<',
+                '<Leader>d<',
                 function()
                     require('dap').step_out()
                 end,
                 desc = 'Step out',
             },
             {
-                '<leader>dp', -- previous
+                '<Leader>dp', -- previous
                 function()
                     require('dap').step_back()
                 end,
                 desc = 'Step back',
             },
             {
-                '<leader>db',
+                '<Leader>db',
                 function()
                     require('dap').toggle_breakpoint()
                 end,
                 desc = 'Toggle breakpoint',
             },
             {
-                '<leader>dB',
+                '<Leader>dB',
                 function()
                     require('dap').set_breakpoint(
                         vim.fn.input 'Breakpoint condition: '
@@ -87,21 +87,21 @@ return {
                 desc = 'Toggle conditional breakpoint',
             },
             {
-                '<leader>de',
+                '<Leader>de',
                 function()
                     require('dap').set_exception_breakpoints()
                 end,
                 desc = 'Set exception breakpoints',
             },
             {
-                '<leader>dl',
+                '<Leader>dl',
                 function()
                     require('dap').list_breakpoints()
                 end,
                 desc = 'List breakpoints',
             },
             {
-                '<leader>dr',
+                '<Leader>dr',
                 function()
                     require('dap').repl.open()
                 end,
@@ -147,14 +147,14 @@ return {
         'rcarriga/nvim-dap-ui',
         keys = {
             {
-                '<leader>du',
+                '<Leader>du',
                 function()
                     require('dapui').toggle {}
                 end,
                 desc = 'Toggle DAP UI',
             },
             {
-                '<leader>ds',
+                '<Leader>ds',
                 function()
                     ---@diagnostic disable-next-line: missing-fields
                     require('dapui').float_element('scopes', { enter = true })
@@ -162,7 +162,7 @@ return {
                 desc = 'Float DAP UI',
             },
             {
-                '<leader>de',
+                '<Leader>de',
                 function()
                     require('dapui').eval()
                 end,

@@ -14,6 +14,10 @@ return {
             -- },
         },
         init = function()
+            require('which-key').add {
+                { 'zc', mode = { 'n', 'v' }, group = 'Coerce', icon = '󰬴' },
+            }
+
             local function textcase_map(char, operation, desc)
                 vim.keymap.set('n', 'za' .. char, function()
                     local clients_supporting_rename = vim.lsp.get_clients {
@@ -25,13 +29,13 @@ return {
                     else
                         require('textcase').current_word(operation)
                     end
-                end, { desc = 'Coerce to ' .. desc })
-                vim.keymap.set('n', 'z' .. char, function()
+                end, { desc = 'to ' .. desc })
+                vim.keymap.set('n', 'zc' .. char, function()
                     require('textcase').operator(operation)
-                end, { desc = 'Coerce to ' .. desc })
-                vim.keymap.set('v', 'z' .. char, function()
+                end, { desc = 'to ' .. desc })
+                vim.keymap.set('v', 'zc' .. char, function()
                     require('textcase').visual(operation)
-                end, { desc = 'Coerce to ' .. desc })
+                end, { desc = 'to ' .. desc })
             end
 
             textcase_map('s', 'to_snake_case', 'snake_case')
@@ -163,40 +167,43 @@ return {
     },
     {
         'monaqa/dial.nvim',
+        init = function()
+            require('which-key').add {
+                mode = { 'n', 'v' },
+                { '<Leader>j', desc = 'Increment value', icon = '' },
+                { '<Leader>k', desc = 'Decrement value', icon = '' },
+            }
+        end,
         keys = {
             {
-                '<leader>j',
+                '<Leader>j',
                 function()
                     return require('dial.map').inc_normal()
                 end,
                 expr = true,
-                desc = 'Increment value',
             },
             {
-                '<leader>k',
+                '<Leader>k',
                 function()
                     return require('dial.map').dec_normal()
                 end,
                 expr = true,
-                desc = 'Decrement value',
             },
             {
-                '<leader>j',
+                '<Leader>j',
                 function()
                     return require('dial.map').inc_visual()
                 end,
                 mode = 'v',
                 expr = true,
-                desc = 'Increment value',
             },
             {
-                '<leader>k',
+                '<Leader>k',
                 function()
                     return require('dial.map').dec_visual()
                 end,
                 mode = 'v',
                 expr = true,
-                desc = 'Decrement value',
             },
         },
         config = function()
@@ -230,12 +237,12 @@ return {
         'ThePrimeagen/refactoring.nvim',
         init = function()
             require('which-key').add {
-                { '<leader>r', mode = 'v', group = 'Refactor' },
+                { '<Leader>r', mode = 'v', group = 'Refactor' },
             }
         end,
         keys = {
             {
-                '<leader>rr',
+                '<Leader>rr',
                 mode = 'v',
                 function()
                     require('refactoring').select_refactor {
@@ -245,7 +252,7 @@ return {
                 desc = 'Select refactor',
             },
             {
-                '<leader>re',
+                '<Leader>re',
                 mode = 'v',
                 function()
                     require('refactoring').refactor 'Extract Function'
@@ -259,12 +266,12 @@ return {
         'nvim-neotest/neotest',
         init = function()
             require('which-key').add {
-                { '<leader>t', group = 'Test', icon = '' },
+                { '<Leader>t', group = 'Test', icon = '' },
             }
         end,
         keys = {
             {
-                '<leader>tf',
+                '<Leader>tf',
                 function()
                     _ = require('conf.neotest.adapters')[vim.bo.filetype]
                     require('neotest').run.run { suite = false }
@@ -272,7 +279,7 @@ return {
                 desc = 'Nearest function',
             },
             {
-                '<leader>tb',
+                '<Leader>tb',
                 function()
                     _ = require('conf.neotest.adapters')[vim.bo.filetype]
                     require('neotest').run.run {
@@ -283,7 +290,7 @@ return {
                 desc = 'Entire file/buffer',
             },
             {
-                '<leader>ta',
+                '<Leader>ta',
                 function()
                     _ = require('conf.neotest.adapters')[vim.bo.filetype]
                     for _, adapter_id in
@@ -298,7 +305,7 @@ return {
                 desc = 'Entire project',
             },
             {
-                '<leader>td',
+                '<Leader>td',
                 function()
                     _ = require('conf.neotest.adapters')[vim.bo.filetype]
                     _ = require('conf.dap.adapters')[vim.bo.filetype]
@@ -310,21 +317,21 @@ return {
                 desc = 'Debug nearest function',
             },
             {
-                '<leader>tl',
+                '<Leader>tl',
                 function()
                     require('neotest').run.run_last()
                 end,
                 desc = 'Re-run last',
             },
             {
-                '<leader>to',
+                '<Leader>to',
                 function()
                     require('neotest').output.open { last_run = true }
                 end,
                 desc = 'Open output of last run',
             },
             {
-                '<leader>ts',
+                '<Leader>ts',
                 function()
                     if
                         not package.loaded.neotest
@@ -341,7 +348,7 @@ return {
                 desc = 'Toggle summary',
             },
             {
-                '<leader>tq',
+                '<Leader>tq',
                 function()
                     require('neotest').run.stop()
                 end,
@@ -442,7 +449,7 @@ return {
         lazy = true,
         keys = {
             {
-                '<leader>tu',
+                '<Leader>tu',
                 function()
                     require('neotest').run.run {
                         suite = false,
@@ -453,7 +460,7 @@ return {
                 desc = 'Update snapshot for nearest function',
             },
             {
-                '<leader>tU',
+                '<Leader>tU',
                 function()
                     require('neotest').run.run {
                         vim.api.nvim_buf_get_name(0),
@@ -550,19 +557,19 @@ return {
         cmd = 'Neogen',
         init = function()
             require('which-key').add {
-                { '<leader>D', group = 'Generate docs', icon = '󰦨' },
+                { '<Leader>D', group = 'Generate docs', icon = '󰦨' },
             }
         end,
         keys = {
             {
-                '<leader>Df',
+                '<Leader>Df',
                 function()
                     require('neogen').generate {}
                 end,
                 desc = 'Function',
             },
             {
-                '<leader>DC',
+                '<Leader>DC',
                 function()
                     require('neogen').generate { type = 'class' }
                 end,

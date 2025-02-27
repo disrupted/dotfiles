@@ -1,5 +1,5 @@
 require('which-key').add {
-    { '<leader>c', group = 'Conflict', icon = '' },
+    { '<Leader>c', group = 'Conflict', icon = '' },
 }
 
 local actions = require 'diffview.actions'
@@ -52,25 +52,25 @@ local keymaps = {
         },
         {
             'n',
-            '<leader>co',
+            '<Leader>co',
             actions.conflict_choose 'ours',
             { desc = 'Choose OURS' },
         },
         {
             'n',
-            '<leader>ct',
+            '<Leader>ct',
             actions.conflict_choose 'theirs',
             { desc = 'Choose THEIRS' },
         },
         {
             'n',
-            '<leader>cb',
+            '<Leader>cb',
             actions.conflict_choose 'base',
             { desc = 'Choose BASE' },
         },
         {
             'n',
-            '<leader>ca',
+            '<Leader>ca',
             actions.conflict_choose 'all',
             { desc = 'Choose all' },
         },
@@ -156,7 +156,7 @@ local keymaps = {
         },
         {
             'n',
-            '<leader>co',
+            '<Leader>co',
             actions.conflict_choose_all 'ours',
             {
                 desc = 'Choose OURS for whole file',
@@ -164,19 +164,19 @@ local keymaps = {
         },
         {
             'n',
-            '<leader>ct',
+            '<Leader>ct',
             actions.conflict_choose_all 'theirs',
             { desc = 'Choose THEIRS for whole file' },
         },
         {
             'n',
-            '<leader>cb',
+            '<Leader>cb',
             actions.conflict_choose_all 'base',
             { desc = 'Choose BASE for whole file' },
         },
         {
             'n',
-            '<leader>ca',
+            '<Leader>ca',
             actions.conflict_choose_all 'all',
             { desc = 'Choose all for whole file' },
         },

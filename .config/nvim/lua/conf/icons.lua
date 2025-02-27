@@ -11,6 +11,7 @@ return {
         end,
     }),
     git = {
+        git = '',
         staged = '',
         modified = '󰄱', -- aka unstaged
         ignored = '',
@@ -59,5 +60,11 @@ return {
         Unknown = '?', -- 
         Value = '󰦨',
         Variable = '󰀫',
+    },
+    arrows = {
+        up = '',
+        down = '',
+        left = '',
+        right = '',
     },
 }

@@ -86,7 +86,7 @@ return {
         'stevearc/resession.nvim',
         keys = {
             {
-                '<leader>z',
+                '<Leader>z',
                 function()
                     require('conf.resession').load()
                 end,

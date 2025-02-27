@@ -615,16 +615,8 @@ return {
     },
     {
         'Bekaboo/dropbar.nvim',
-        event = 'VeryLazy',
-        keys = {
-            {
-                '<leader>;',
-                function()
-                    require('dropbar.api').pick()
-                end,
-                desc = 'Pick symbols in winbar',
-            },
-        },
+        event = 'FileType',
+        ---@module 'dropbar.configs'
         ---@type dropbar_configs_t
         opts = {
             bar = {
@@ -840,6 +832,16 @@ return {
         },
         config = function(_, opts)
             require('dropbar').setup(opts)
+            require('which-key').add {
+                {
+                    '<Leader>;',
+                    function()
+                        require('dropbar.api').pick()
+                    end,
+                    desc = 'Winbar pick symbol',
+                    icon = '󱐀',
+                },
+            }
 
             vim.api.nvim_create_autocmd('LspAttach', {
                 desc = 'Register LSP source and disable Treesitter source when an LS that supports documentSymbol attaches.',

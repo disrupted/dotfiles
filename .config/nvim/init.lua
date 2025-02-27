@@ -403,7 +403,7 @@ opt.termguicolors = true
 -- Mappings {{{1
 -----------------------------------------------------------------------------//
 -- <space><space> switches between buffers
--- vim.keymap.set('n', '<leader><leader>', ':b#<CR>')
+-- vim.keymap.set('n', '<Leader><Leader>', ':b#<CR>')
 
 -- Disable hjkl (get used to sneak)
 -- vim.keymap.set('n', 'j', '<Nop>')

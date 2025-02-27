@@ -15,10 +15,18 @@ return {
                 Snacks.debug.backtrace()
             end
             vim.print = _G.dd
+
+            require('which-key').add {
+                { '<Leader>h', icon = '' },
+                { '<Leader><Leader>', icon = '' },
+                { '<Leader>/', icon = '󱎸' },
+                { '<Leader>n', icon = '' },
+                { '<Leader>s', icon = '󰙅' },
+            }
         end,
         keys = {
             {
-                '<leader><leader>',
+                '<Leader><Leader>',
                 function()
                     -- smart picker is recommended over buffers picker
                     Snacks.picker.smart {
@@ -137,7 +145,7 @@ return {
                 desc = 'Files',
             },
             {
-                '<leader>/',
+                '<Leader>/',
                 function()
                     ---@diagnostic disable-next-line: undefined-field
                     Snacks.picker.grep_interactive()
@@ -181,7 +189,7 @@ return {
                 desc = 'LSP symbols',
             },
             {
-                '<leader>s',
+                '<Leader>s',
                 function()
                     ---@return boolean
                     local function has_workspace_symbol_client()
@@ -281,7 +289,7 @@ return {
                 desc = 'Git/YADM status',
             },
             {
-                '<leader>h',
+                '<Leader>h',
                 function()
                     Snacks.picker.help { layout = { preset = 'dropdown' } }
                 end,
@@ -295,11 +303,11 @@ return {
                 desc = 'Delete buffer',
             },
             {
-                '<leader>n',
+                '<Leader>n',
                 function()
                     Snacks.notifier.show_history()
                 end,
-                desc = 'Show notification history',
+                desc = 'Notification history',
             },
             {
                 '\\',
@@ -322,7 +330,7 @@ return {
                 desc = 'Prev reference',
             },
             {
-                '<leader>gl',
+                '<Leader>gl',
                 function()
                     Snacks.gitbrowse.open {
                         what = 'permalink',
@@ -616,7 +624,7 @@ return {
         event = 'VeryLazy',
         keys = {
             {
-                '<leader>?',
+                '<Leader>?',
                 function()
                     require('which-key').show { global = false }
                 end,
@@ -631,7 +639,9 @@ return {
         ---@type wk.Opts
         ---@diagnostic disable-next-line: missing-fields
         opts = {
+            preset = 'helix',
             spec = {
+                { '<Leader>?', hidden = true },
                 -- override motions preset
                 { ',', desc = '' },
                 { ';', desc = '' },
@@ -650,7 +660,7 @@ return {
         main = 'rest-nvim',
         cmd = 'Rest',
         keys = {
-            {
+            { -- which-key group
                 '<LocalLeader>r',
                 nil,
                 ft = 'http',

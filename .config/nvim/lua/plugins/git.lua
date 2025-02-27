@@ -8,7 +8,7 @@ return {
         init = function()
             require('which-key').add {
                 {
-                    '<leader>g',
+                    '<Leader>g',
                     mode = { 'n', 'v' },
                     group = 'Git',
                     icon = '',
@@ -115,45 +115,45 @@ return {
                     vim.schedule_wrap(gs.prev_hunk),
                     { desc = 'Prev Git hunk' }
                 )
-                map('n', '<leader>gs', gs.stage_hunk, { desc = 'Stage hunk' })
-                map('v', '<leader>gs', function()
+                map('n', '<Leader>gs', gs.stage_hunk, { desc = 'Stage hunk' })
+                map('v', '<Leader>gs', function()
                     gs.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
                 end, { desc = 'Stage hunk' })
-                map('n', '<leader>gr', gs.reset_hunk, { desc = 'Reset hunk' })
-                map('v', '<leader>gr', function()
+                map('n', '<Leader>gr', gs.reset_hunk, { desc = 'Reset hunk' })
+                map('v', '<Leader>gr', function()
                     gs.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
                 end, { desc = 'Reset hunk' })
                 map(
                     'n',
-                    '<leader>gS',
+                    '<Leader>gS',
                     gs.stage_buffer,
                     { desc = 'Stage buffer' }
                 )
                 map(
                     'n',
-                    '<leader>gR',
+                    '<Leader>gR',
                     gs.reset_buffer,
                     { desc = 'Reset buffer' }
                 )
                 map(
                     'n',
-                    '<leader>gp',
+                    '<Leader>gp',
                     gs.preview_hunk,
                     { desc = 'Preview hunk' }
                 )
                 map(
                     'n',
-                    '<leader>gb',
+                    '<Leader>gb',
                     gs.toggle_current_line_blame,
                     { desc = 'Blame' }
                 )
                 -- map(
                 --     'n',
-                --     '<leader>gd',
+                --     '<Leader>gd',
                 --     gs.diffthis,
                 --     { desc = 'Diff against index' }
                 -- )
-                -- map('n', '<leader>gD', function()
+                -- map('n', '<Leader>gD', function()
                 --     gs.diffthis '~'
                 -- end, {
                 --     desc = 'Diff against last commit',
@@ -176,7 +176,7 @@ return {
         'NeogitOrg/neogit',
         keys = {
             {
-                '<leader>gg',
+                '<Leader>gg',
                 function()
                     require('neogit').open()
                 end,
@@ -260,26 +260,26 @@ return {
         'akinsho/git-conflict.nvim',
         lazy = true, -- lazy-loaded on gitsigns attach
         init = function()
-            require('which-key').add { { '<leader>gx', group = 'Conflict' } }
+            require('which-key').add { { '<Leader>gx', group = 'Conflict' } }
         end,
         keys = {
             {
-                '<leader>gxo',
+                '<Leader>gxo',
                 '<Plug>(git-conflict-ours)',
                 desc = 'Pick ours',
             },
             {
-                '<leader>gxt',
+                '<Leader>gxt',
                 '<Plug>(git-conflict-theirs)',
                 desc = 'Pick theirs',
             },
             {
-                '<leader>gxb',
+                '<Leader>gxb',
                 '<Plug>(git-conflict-both)',
                 desc = 'Pick both',
             },
             {
-                '<leader>gx0',
+                '<Leader>gx0',
                 '<Plug>(git-conflict-none)',
                 desc = 'Pick none',
             },
@@ -304,7 +304,7 @@ return {
         init = function()
             require('which-key').add {
                 {
-                    '<leader>gd',
+                    '<Leader>gd',
                     group = 'Diffview',
                     icon = '',
                 },
@@ -312,7 +312,7 @@ return {
         end,
         keys = {
             {
-                '<leader>gdr',
+                '<Leader>gdr',
                 function()
                     vim.ui.input(
                         { prompt = 'Diffview Revision' },
@@ -328,12 +328,12 @@ return {
                 desc = 'Revision',
             },
             {
-                '<leader>gdf',
+                '<Leader>gdf',
                 '<cmd>DiffviewFileHistory %<CR>',
                 desc = 'File history',
             },
             {
-                '<leader>gdb',
+                '<Leader>gdb',
                 function()
                     vim.cmd.DiffviewOpen 'origin/HEAD...HEAD -- .'
                     require('gitsigns').change_base('origin/HEAD', true)
@@ -377,16 +377,16 @@ return {
         cmd = 'Octo',
         init = function()
             require('which-key').add {
-                { '<leader>go', group = 'Octo', icon = '' },
-                { '<leader>gop', icon = '' },
-                { '<leader>goi', icon = '' },
-                { '<leader>gor', icon = '' },
-                { '<leader>gos', icon = '' },
+                { '<Leader>go', group = 'Octo', icon = '' },
+                { '<Leader>gop', icon = '' },
+                { '<Leader>goi', icon = '' },
+                { '<Leader>gor', icon = '' },
+                { '<Leader>gos', icon = '' },
             }
         end,
         keys = {
             {
-                '<leader>gop',
+                '<Leader>gop',
                 function()
                     require('coop').spawn(function()
                         local git = require('git').async
@@ -420,10 +420,10 @@ return {
                 end,
                 desc = 'View or create PR',
             },
-            { '<leader>goi', '<cmd>Octo issue list<cr>', desc = 'List issues' },
-            { '<leader>gor', '<cmd>Octo review<cr>', desc = 'Review PR' },
+            { '<Leader>goi', '<cmd>Octo issue list<cr>', desc = 'List issues' },
+            { '<Leader>gor', '<cmd>Octo review<cr>', desc = 'Review PR' },
             {
-                '<leader>gos',
+                '<Leader>gos',
                 '<cmd>Octo search assignee:disrupted<cr>', -- TODO: not implemented yet
                 desc = 'Search assigned issues & PRs',
             },
@@ -650,11 +650,11 @@ return {
         'topaxi/pipeline.nvim',
         cmd = 'Pipeline',
         init = function()
-            require('which-key').add { { '<leader>gc', group = 'CI' } }
+            require('which-key').add { { '<Leader>gc', group = 'CI' } }
         end,
         keys = {
             {
-                '<leader>gci',
+                '<Leader>gci',
                 '<cmd>Pipeline<CR>',
                 desc = 'Watch pipeline run',
             },
