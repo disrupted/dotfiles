@@ -177,26 +177,6 @@ return {
         },
     },
     {
-        'zbirenbaum/neodim',
-        enabled = false, -- no longer needed because of DiagnosticUnnecessary
-        event = 'LspAttach',
-        ---@module 'neodim.config'
-        ---@type neodim.SetupOptions
-        opts = {
-            alpha = 0.70,
-            blend_color = '#000000',
-            update_in_insert = {
-                enable = false,
-                delay = 100,
-            },
-            hide = {
-                virtual_text = false,
-                signs = false,
-                underline = true,
-            },
-        },
-    },
-    {
         'stevearc/conform.nvim',
         event = 'BufWritePre',
         cmd = 'ConformInfo',
