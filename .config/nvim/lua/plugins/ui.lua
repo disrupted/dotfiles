@@ -150,49 +150,33 @@ return {
                 { provider = '%<' } -- this means that the statusline is cut here when there's not enough space
             )
 
-            ---@async
-            local function refresh_git_pr()
-                local json = require('conf.octo').pr.json { 'state', 'title' }
-                vim.g.git_pr = json
-            end
-
-            local function refresh_git()
-                require('coop').spawn(function()
-                    local git = require 'git'
-                    local remote_url = git.async.remote_url()
-                    vim.g.git_remote_type = git.match_remote_type(remote_url)
-                    if vim.g.git_remote_type == 'github' then
-                        refresh_git_pr()
-                    end
-                end)
-            end
-
             vim.api.nvim_create_autocmd(
                 'User', -- TODO: DirChanged?
                 {
                     pattern = { 'NeogitBranchCheckout' },
                     callback = function()
-                        refresh_git()
+                        require('git').refresh()
                     end,
                     desc = 'Refresh Git',
                 }
             )
-            vim.defer_fn(refresh_git, 50)
+            vim.defer_fn(require('git').refresh, 50)
 
             local GhPR = {
                 condition = function()
                     return vim.g.git_pr and vim.g.git_pr.state == 'OPEN'
                 end,
-                static = { icon = '', title_max_len = 50 },
-                provider = function(self)
-                    ---@type string
-                    local title = vim.g.git_pr.title
-                    if #title > self.title_max_len then
-                        return self.icon .. ' '
-                    end
-                    return string.format('%s %s', self.icon, title)
+                provider = ' ',
+            }
+            local GhPRTitle = {
+                condition = function()
+                    return GhPR.condition() and #vim.g.git_pr.title <= 50
+                end,
+                provider = function()
+                    return vim.g.git_pr.title
                 end,
             }
+            table.insert(GhPR, GhPRTitle)
 
             local Git = {
                 condition = function(self)
@@ -258,12 +242,7 @@ return {
                 GhPR,
                 { -- Git branch name (if no open PR or PR title too long)
                     condition = function()
-                        return not GhPR.condition()
-                            or (
-                                vim.g.git_pr
-                                and #vim.g.git_pr.title
-                                    > GhPR.static.title_max_len
-                            )
+                        return not GhPRTitle.condition()
                     end,
                     provider = function(self)
                         return string.format(

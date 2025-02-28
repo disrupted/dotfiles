@@ -37,6 +37,17 @@ M.match_remote_type = function(remote_url)
     return 'gitlab'
 end
 
+M.refresh = function()
+    require('coop').spawn(function()
+        local git = require 'git'
+        local remote_url = git.async.remote_url()
+        vim.g.git_remote_type = git.match_remote_type(remote_url)
+        if vim.g.git_remote_type == 'github' then
+            require('conf.octo').pr.refresh()
+        end
+    end)
+end
+
 ---@async
 ---@param args string[]
 ---@return string stdout

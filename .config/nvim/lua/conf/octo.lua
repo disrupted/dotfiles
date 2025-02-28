@@ -138,4 +138,9 @@ M.pr.create = function()
     return out
 end
 
+---@async
+M.pr.refresh = function()
+    vim.g.git_pr = require('conf.octo').pr.json { 'state', 'title' }
+end
+
 return M
