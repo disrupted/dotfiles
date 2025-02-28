@@ -30,6 +30,23 @@ local gh = {
 }
 
 ---@async
+---@param json_fields string[]
+---@return table<string, any>
+M.pr.json = function(json_fields)
+    assert(
+        json_fields and not vim.tbl_isempty(json_fields),
+        'Specify one or more JSON fields to query'
+    )
+    local args = { 'pr', 'view', '--json' }
+    table.insert(args, table.concat(json_fields, ','))
+    local out = gh.run { args = args }
+    if out and out ~= '' then
+        return vim.json.decode(out)
+    end
+    return {}
+end
+
+---@async
 ---@param json_field string
 ---@return string?
 M.pr.meta = function(json_field)

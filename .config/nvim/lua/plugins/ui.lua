@@ -150,11 +150,54 @@ return {
                 { provider = '%<' } -- this means that the statusline is cut here when there's not enough space
             )
 
+            ---@async
+            local function refresh_git_pr()
+                local json = require('conf.octo').pr.json { 'state', 'title' }
+                vim.g.git_pr = json
+            end
+
+            local function refresh_git()
+                require('coop').spawn(function()
+                    local git = require 'git'
+                    local remote_url = git.async.remote_url()
+                    vim.g.git_remote_type = git.match_remote_type(remote_url)
+                    if vim.g.git_remote_type == 'github' then
+                        refresh_git_pr()
+                    end
+                end)
+            end
+
+            vim.api.nvim_create_autocmd(
+                'User', -- TODO: DirChanged?
+                {
+                    pattern = { 'NeogitBranchCheckout' },
+                    callback = function()
+                        refresh_git()
+                    end,
+                    desc = 'Refresh Git',
+                }
+            )
+            vim.defer_fn(refresh_git, 50)
+
+            local GhPR = {
+                condition = function()
+                    return vim.g.git_pr and vim.g.git_pr.state == 'OPEN'
+                end,
+                static = { icon = '', title_max_len = 50 },
+                provider = function(self)
+                    ---@type string
+                    local title = vim.g.git_pr.title
+                    if #title > self.title_max_len then
+                        return self.icon .. ' '
+                    end
+                    return string.format('%s %s', self.icon, title)
+                end,
+            }
+
             local Git = {
                 condition = function(self)
                     return conditions.is_git_repo() and is_file(self.bufnr)
                 end,
-                hl = 'StatusLine',
                 static = {
                     icons = {
                         added = '+',
@@ -212,7 +255,16 @@ return {
                     end,
                     hl = 'GitSignsDelete',
                 },
-                { -- git branch name
+                GhPR,
+                { -- Git branch name (if no open PR or PR title too long)
+                    condition = function()
+                        return not GhPR.condition()
+                            or (
+                                vim.g.git_pr
+                                and #vim.g.git_pr.title
+                                    > GhPR.static.title_max_len
+                            )
+                    end,
                     provider = function(self)
                         return string.format(
                             '%s %s',
@@ -452,6 +504,7 @@ return {
                             hl = 'NeotestSkipped',
                         },
                     },
+                    Space,
                 },
             }
             NeoTestBlock = utils.insert(NeoTestBlock, NeoTest, Space)
@@ -559,7 +612,7 @@ return {
                             return '[No Name]'
                         else
                             local name = vim.fn.fnamemodify(self.filename, ':t')
-                            if #name >= 17 then
+                            if #name > 16 then
                                 name = name:sub(1, 15) .. '…'
                             end
                             return name
@@ -582,7 +635,6 @@ return {
                     DAPMessages,
                     Overseer,
                     NeoTestBlock,
-                    Space,
                     Git,
                 },
                 tabline = {
