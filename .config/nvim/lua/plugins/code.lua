@@ -4,22 +4,15 @@ return {
     {
         'johmsalas/text-case.nvim',
         cmd = 'Subs',
-        keys = {
-            -- FIXME: Snacks.picker
-            -- {
-            --     'za<space>',
-            --     function() end,
-            --     mode = { 'n', 'v' },
-            --     desc = 'Pick textcase coercion in Telescope',
-            -- },
-        },
+        main = 'textcase',
         init = function()
             require('which-key').add {
                 { 'zc', mode = { 'n', 'v' }, group = 'Coerce', icon = '󰬴' },
+                { 'zx', group = 'Coerce (operator)', icon = '󰬴' },
             }
 
             local function textcase_map(char, operation, desc)
-                vim.keymap.set('n', 'za' .. char, function()
+                vim.keymap.set('n', 'zc' .. char, function()
                     local clients_supporting_rename = vim.lsp.get_clients {
                         bufnr = 0,
                         method = 'textDocument/rename',
@@ -30,7 +23,7 @@ return {
                         require('textcase').current_word(operation)
                     end
                 end, { desc = 'to ' .. desc })
-                vim.keymap.set('n', 'zc' .. char, function()
+                vim.keymap.set('n', 'zx' .. char, function()
                     require('textcase').operator(operation)
                 end, { desc = 'to ' .. desc })
                 vim.keymap.set('v', 'zc' .. char, function()
