@@ -202,8 +202,8 @@ local create_pr_form = function(opts)
                     }
                     if out then
                         renderer:close()
-                        Snacks.notify 'created PR'
-                        require('coop.uv-utils').sleep(2000)
+                        Snacks.notify({ 'PR created', out }, { title = 'Octo' })
+                        require('coop.uv-utils').sleep(500)
                         M.pr.refresh()
                         M.pr.open()
                     end
@@ -248,7 +248,7 @@ local create_pr_form = function(opts)
                     assert(form)
                     form:submit()
                 end,
-                is_active = signal.is_loading,
+                is_active = signal.is_loading:get_value(),
             },
             n.spinner {
                 is_loading = signal.is_loading,
