@@ -1,3 +1,4 @@
+local icons = require 'conf.icons'
 ---@module 'lazy.types'
 ---@type LazySpec[]
 return {
@@ -306,7 +307,7 @@ return {
                 {
                     '<Leader>gd',
                     group = 'Diffview',
-                    icon = '',
+                    icon = icons.git.diff,
                 },
             }
         end,
@@ -377,10 +378,10 @@ return {
         cmd = 'Octo',
         init = function()
             require('which-key').add {
-                { '<Leader>go', group = 'Octo', icon = '' },
-                { '<Leader>gop', icon = '' },
-                { '<Leader>goi', icon = '' },
-                { '<Leader>gor', icon = '' },
+                { '<Leader>go', group = 'Octo', icon = icons.git.github },
+                { '<Leader>gop', icon = icons.git.pull_request },
+                { '<Leader>goi', icon = icons.git.issue },
+                { '<Leader>gor', icon = icons.git.review },
                 { '<Leader>gos', icon = '' },
             }
         end,
@@ -536,7 +537,11 @@ return {
                     { '<LocalLeader>la', desc = 'Add', icon = '󰜢' },
                     { '<LocalLeader>ld', desc = 'Remove', icon = '󰤐' },
                     { '<LocalLeader>lc', desc = 'Create', icon = '󰜢' },
-                    { '<LocalLeader>i', group = 'Issue', icon = '' },
+                    {
+                        '<LocalLeader>i',
+                        group = 'Issue',
+                        icon = icons.git.issue,
+                    },
                     { '<LocalLeader>il', group = 'List open issues' },
                     { '<LocalLeader>r', group = 'React', icon = '👀' },
                     { '<LocalLeader>rp', desc = '', icon = '🎉' },
@@ -548,7 +553,11 @@ return {
                     { '<LocalLeader>rl', desc = '', icon = '😄' },
                     { '<LocalLeader>rc', desc = '', icon = '😕' },
                     { '<LocalLeader>g', desc = 'Go to', icon = '' },
-                    { '<LocalLeader>gi', desc = 'Issue', icon = '' },
+                    {
+                        '<LocalLeader>gi',
+                        desc = 'Issue',
+                        icon = icons.git.issue,
+                    },
                 }
             end
             local function attach_pull_request(buf)
@@ -564,14 +573,38 @@ return {
                         desc = 'Unresolve thread',
                         icon = '',
                     },
-                    { '<LocalLeader>p', group = 'PR', icon = '' },
-                    { '<LocalLeader>pc', desc = 'Commits', icon = '󰜘' },
-                    { '<LocalLeader>pd', desc = 'Diff', icon = '' },
-                    { '<LocalLeader>pf', desc = 'Files', icon = '󰈙' },
-                    { '<LocalLeader>po', desc = 'Checkout', icon = '󰇚' },
-                    { '<LocalLeader>ps', desc = 'Squash', icon = '󰃸' },
+                    {
+                        '<LocalLeader>p',
+                        group = 'PR',
+                        icon = icons.git.pull_request,
+                    },
+                    {
+                        '<LocalLeader>pc',
+                        desc = 'Commits',
+                        icon = icons.git.commit,
+                    },
+                    { '<LocalLeader>pd', desc = 'Diff', icon = icons.git.diff },
+                    {
+                        '<LocalLeader>pf',
+                        desc = 'Files',
+                        icon = icons.documents.file,
+                    },
+                    {
+                        '<LocalLeader>po',
+                        desc = 'Checkout',
+                        icon = icons.git.checkout,
+                    },
+                    {
+                        '<LocalLeader>ps',
+                        desc = 'Squash',
+                        icon = icons.git.squash,
+                    },
                     { '<LocalLeader>psm', desc = 'Squash & merge' },
-                    { '<LocalLeader>v', group = 'Review', icon = '' },
+                    {
+                        '<LocalLeader>v',
+                        group = 'Review',
+                        icon = icons.git.review,
+                    },
                     { '<LocalLeader>va', desc = 'Add reviewer', icon = '' },
                     {
                         '<LocalLeader>vd',
@@ -600,7 +633,11 @@ return {
             local function attach_shared_review_diff_file_panel(buf)
                 wk.add {
                     buffer = buf,
-                    { '<LocalLeader>v', desc = 'Review', icon = '' },
+                    {
+                        '<LocalLeader>v',
+                        desc = 'Review',
+                        icon = icons.git.review,
+                    },
                     { '<LocalLeader>vs', desc = 'Submit', icon = '' },
                     { '<LocalLeader>vd', desc = 'Discard', icon = '' },
                     {

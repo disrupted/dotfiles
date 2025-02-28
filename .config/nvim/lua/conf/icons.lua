@@ -10,8 +10,22 @@ return {
             return ''
         end,
     }),
+    documents = {
+        file = '󰈙',
+        file_empty = '',
+        files = '',
+        folder = '',
+        folder_empty = '',
+        open_folder = '',
+        open_folder_empty = '',
+        sym_link = '',
+        symlink_folder = '',
+        import = '',
+    },
     git = {
         git = '',
+        github = '',
+        gitlab = '',
         staged = '',
         modified = '󰄱', -- aka unstaged
         ignored = '',
@@ -20,6 +34,22 @@ return {
         renamed = '',
         unmerged = '',
         untracked = '*',
+        commit = '󰜘',
+        issue = '',
+        pull_request = '',
+        review = '',
+        squash = '󰃸',
+        checkout = '󰇚',
+        diff = '',
+    },
+    test = {
+        notify = '',
+        passed = '',
+        failed = '',
+        skipped = '', -- 
+        running = '', -- FIXME:  symbol rendered incorrectly in Ghostty
+        unknown = '',
+        watching = '',
     },
     kinds = {
         Array = '󰅪',
@@ -34,7 +64,7 @@ return {
         Enum = '',
         EnumMember = '',
         Event = '',
-        Field = '󰜢',
+        Field = '',
         File = '󰈙',
         Folder = '󰉋',
         Function = '󰊕',
@@ -54,11 +84,11 @@ return {
         Snippet = '󱡄',
         String = '󰉾',
         Struct = '󱡠',
-        Text = '󰉿', -- 
+        Text = '', -- 󰉿󰦨
         TypeParameter = '󰊄',
         Unit = '',
         Unknown = '?', -- 
-        Value = '󰦨',
+        Value = '',
         Variable = '󰀫',
     },
     arrows = {

@@ -7,6 +7,7 @@ return {
         opts = function()
             local conditions = require 'heirline.conditions'
             local utils = require 'heirline.utils'
+            local icons = require 'conf.icons'
             local lazy_require = require('utils').lazy_require
 
             vim.api.nvim_create_autocmd('ColorScheme', {
@@ -166,7 +167,7 @@ return {
                 condition = function()
                     return vim.g.git_pr and vim.g.git_pr.state == 'OPEN'
                 end,
-                provider = ' ',
+                provider = icons.git.pull_request .. ' ',
             }
             local GhPRTitle = {
                 condition = function()
@@ -187,7 +188,7 @@ return {
                         added = '+',
                         changed = '~',
                         removed = '-',
-                        head = '',
+                        head = icons.git.git,
                     },
                 },
                 init = function(self)
@@ -385,11 +386,11 @@ return {
                 end,
                 static = {
                     icon = {
-                        total = '',
-                        passed = '',
-                        failed = '',
-                        skipped = '',
-                        running = '',
+                        total = icons.test.notify,
+                        passed = icons.test.passed,
+                        failed = icons.test.failed,
+                        skipped = icons.test.skipped,
+                        running = icons.test.running,
                     },
                 },
                 update = {
@@ -804,7 +805,7 @@ return {
                         Enum = ' ',
                         EnumMember = ' ',
                         Event = ' ',
-                        Field = '󰜢 ',
+                        Field = ' ',
                         File = '󰈙 ',
                         Folder = '󰉋 ',
                         ForStatement = '󰑖 ',
@@ -850,11 +851,11 @@ return {
                         Struct = '󱡠 ',
                         SwitchStatement = '󰺟 ',
                         Terminal = ' ',
-                        Text = ' ',
+                        Text = ' ',
                         Type = ' ',
                         TypeParameter = '󰊄 ',
                         Unit = ' ',
-                        Value = '󰦨 ',
+                        Value = ' ',
                         Variable = '󰀫 ',
                         WhileStatement = '󰑖 ',
                     },

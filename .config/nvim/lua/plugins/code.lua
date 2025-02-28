@@ -421,7 +421,7 @@ return {
                     jumpto = '<CR>',
                 },
             },
-            icons = {
+            icons = vim.tbl_extend('force', require('conf.icons').test, {
                 running_animated = {
                     '⠋',
                     '⠙',
@@ -434,7 +434,7 @@ return {
                     '⠇',
                     '⠏',
                 },
-            },
+            }),
         },
     },
     {
