@@ -379,57 +379,59 @@ return {
         init = function()
             require('which-key').add {
                 { '<Leader>go', group = 'Octo', icon = icons.git.github },
-                { '<Leader>gop', icon = icons.git.pull_request },
-                { '<Leader>goi', icon = icons.git.issue },
-                { '<Leader>gor', icon = icons.git.review },
-                { '<Leader>gos', icon = '' },
-            }
-        end,
-        keys = {
-            {
-                '<Leader>gop',
-                function()
-                    require('coop').spawn(function()
-                        local git = require('git').async
-                        local remote_url = git.remote_url()
-                        if
-                            require('git').match_remote_type(remote_url)
-                            ~= 'github'
-                        then
-                            Snacks.notify.error 'Octo only supports GitHub'
-                            return
-                        end
-                        local branch = git.current_branch()
-                        if branch == '' then
-                            Snacks.notify.error 'Current ref is not a valid branch'
-                            return
-                        end
-                        if branch == git.default_branch() then
-                            Snacks.notify.error 'PR is not possible on default branch'
-                            return
-                        end
-                        local pr = require('conf.octo').pr
-                        if not pr.exists() then
-                            if not pr.create() then
+                {
+                    '<Leader>gop',
+                    function()
+                        require('coop').spawn(function()
+                            local git = require('git').async
+                            local remote_url = git.remote_url()
+                            if
+                                require('git').match_remote_type(remote_url)
+                                ~= 'github'
+                            then
+                                Snacks.notify.error 'Octo only supports GitHub'
                                 return
                             end
-                            Snacks.notify 'created PR'
-                            require('coop.uv-utils').sleep(2000)
-                            pr.refresh()
-                        end
-                        pr.open()
-                    end)
-                end,
-                desc = 'View or create PR',
-            },
-            { '<Leader>goi', '<cmd>Octo issue list<cr>', desc = 'List issues' },
-            { '<Leader>gor', '<cmd>Octo review<cr>', desc = 'Review PR' },
-            {
-                '<Leader>gos',
-                '<cmd>Octo search assignee:disrupted<cr>', -- TODO: not implemented yet
-                desc = 'Search assigned issues & PRs',
-            },
-        },
+                            local branch = git.current_branch()
+                            if branch == '' then
+                                Snacks.notify.error 'Current ref is not a valid branch'
+                                return
+                            end
+                            if branch == git.default_branch() then
+                                Snacks.notify.error 'PR is not possible on default branch'
+                                return
+                            end
+                            local pr = require('conf.octo').pr
+                            if not pr.exists() then
+                                pr.form_create()
+                            else
+                                pr.open()
+                            end
+                        end)
+                    end,
+                    desc = 'View or create PR',
+                    icon = icons.git.pull_request,
+                },
+                {
+                    '<Leader>goi',
+                    '<cmd>Octo issue list<cr>',
+                    desc = 'List issues',
+                    icon = icons.git.issue,
+                },
+                {
+                    '<Leader>gor',
+                    '<cmd>Octo review<cr>',
+                    desc = 'Review PR',
+                    icon = icons.git.review,
+                },
+                {
+                    '<Leader>gos',
+                    '<cmd>Octo search assignee:disrupted<cr>', -- FIXME: not implemented for Snacks picker yet
+                    desc = 'Search assigned issues & PRs',
+                    icon = '',
+                },
+            }
+        end,
         ---@module 'octo.config'
         ---@type OctoConfig
         opts = {

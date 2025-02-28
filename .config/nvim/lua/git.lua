@@ -50,14 +50,13 @@ end
 
 ---@async
 ---@param args string[]
----@return string stdout
+---@return string? stdout
 local git_async = function(args)
     table.insert(args, 1, 'git')
     local out = require('coop.vim').system(args)
-    if out.code ~= 0 then
-        error(assert(out.stderr))
+    if out.code == 0 and out.stdout and out.stdout ~= '' then
+        return vim.trim(out.stdout)
     end
-    return vim.trim(assert(out.stdout))
 end
 
 M.async = {}
@@ -76,7 +75,8 @@ M.async.current_branch = function()
 end
 
 ---@async
----@return string name of the upstream tracking branch 'origin/...'
+---@return string? name of the upstream tracking branch 'origin/...'
+---errors: fatal: no upstream configured for branch '...'
 M.async.tracking_branch = function()
     return git_async {
         'rev-parse',

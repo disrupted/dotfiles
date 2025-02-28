@@ -905,6 +905,11 @@ return {
     { 'kyazdani42/nvim-web-devicons', lazy = true },
     { 'MunifTanjim/nui.nvim', lazy = true },
     {
+        'grapp-dev/nui-components.nvim',
+        dependencies = { 'MunifTanjim/nui.nvim' },
+        lazy = true,
+    },
+    {
         'folke/noice.nvim',
         event = 'VeryLazy',
         keys = {
