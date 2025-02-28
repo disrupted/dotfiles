@@ -414,6 +414,7 @@ return {
                             end
                             Snacks.notify 'created PR'
                             require('coop.uv-utils').sleep(2000)
+                            pr.refresh()
                         end
                         pr.open()
                     end)
