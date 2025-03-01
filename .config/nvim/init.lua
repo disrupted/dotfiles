@@ -200,18 +200,20 @@ opt.numberwidth = 2
 opt.signcolumn = 'auto:1-2' -- 'auto:1-2', 'yes:1'
 opt.cursorline = true
 opt.laststatus = 3 -- global statusline
-vim.api.nvim_create_augroup('cursorline_focus', {})
+local au_cursorline = vim.api.nvim_create_augroup('cursorline_focus', {})
 vim.api.nvim_create_autocmd({ 'InsertLeave', 'WinEnter' }, {
-    group = 'cursorline_focus',
+    group = au_cursorline,
     callback = function()
         vim.wo.cursorline = true
     end,
+    desc = 'Show cursorline in active window',
 })
 vim.api.nvim_create_autocmd({ 'InsertEnter', 'WinLeave' }, {
-    group = 'cursorline_focus',
-    callback = function()
+    group = au_cursorline,
+    callback = function(args)
         vim.wo.cursorline = false
     end,
+    desc = 'Hide cursorline in insert mode and inactive windows',
 })
 opt.wrap = true
 opt.linebreak = true -- wrap, but on words, not randomly

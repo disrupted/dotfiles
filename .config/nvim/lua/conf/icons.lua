@@ -85,8 +85,8 @@ return {
         String = '󰉾',
         Struct = '󱡠',
         Text = '', -- 󰉿󰦨
-        TypeParameter = '󰊄',
-        Unit = '',
+        TypeParameter = '󰊄', -- 
+        Unit = '', -- 
         Unknown = '?', -- 
         Value = '',
         Variable = '󰀫',
@@ -96,5 +96,15 @@ return {
         down = '',
         left = '',
         right = '',
+        -- up = '',
+        -- down = '',
+        -- left = '',
+        -- right = '',
+    },
+    misc = {
+        quickfix = '󱡠',
+        bug = '',
+        ellipsis = '…',
+        search = '',
     },
 }
