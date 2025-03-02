@@ -73,13 +73,34 @@ return {
                         --         require('dapui').open { reset = true }
                         --     end
                         -- end,
-                        -- win = {
-                        --     list = {
-                        --         keys = {
-                        --             ['<CR>'] = { { 'pick_win', 'jump' } }, -- FIXME: cannot open/close directories anymore
-                        --         },
-                        --     },
-                        -- },
+                        win = {
+                            list = {
+                                keys = {
+                                    -- ['<CR>'] = { { 'pick_win', 'jump' } }, -- FIXME: cannot open/close directories anymore
+                                    r = {
+                                        ---@param win snacks.win
+                                        function(win)
+                                            require('conf.ui').cursor.show()
+                                            return win:execute 'explorer_rename'
+                                        end,
+                                    },
+                                    c = {
+                                        ---@param win snacks.win
+                                        function(win)
+                                            require('conf.ui').cursor.show()
+                                            return win:execute 'explorer_copy'
+                                        end,
+                                    },
+                                    m = {
+                                        ---@param win snacks.win
+                                        function(win)
+                                            require('conf.ui').cursor.show()
+                                            return win:execute 'explorer_move'
+                                        end,
+                                    },
+                                },
+                            },
+                        },
                     }
 
                     if not picker then
