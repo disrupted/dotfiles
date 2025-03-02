@@ -180,7 +180,7 @@ return {
                     local picker = Snacks.picker.lsp_symbols {
                         title = 'LSP Document Symbols',
                         layout = {
-                            preset = 'dropdown',
+                            preset = 'sidebar',
                             preview = 'main',
                         },
                         win = {
