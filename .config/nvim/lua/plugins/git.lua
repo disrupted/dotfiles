@@ -360,6 +360,11 @@ return {
                         winbar_info = true,
                     },
                 },
+                file_panel = {
+                    win_config = {
+                        win_opts = { statuscolumn = '', signcolumn = 'auto' },
+                    },
+                },
                 hooks = {
                     diff_buf_win_enter = function(bufnr, winid, ctx)
                         -- Turn off cursor line for diffview windows because of bg conflict
