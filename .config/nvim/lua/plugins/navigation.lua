@@ -3,7 +3,7 @@
 return {
     {
         'numToStr/Navigator.nvim',
-        cond = os.getenv 'TMUX' ~= vim.NIL,
+        cond = vim.env.TMUX ~= nil,
         keys = {
             {
                 '<C-w>j',
