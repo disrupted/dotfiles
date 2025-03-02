@@ -1,21 +1,13 @@
+local icons = require 'conf.icons'
+
 ---@module 'lazy.types'
 ---@type LazySpec[]
 return {
-    { 'filNaj/tree-setter', enabled = false },
-    {
-        'windwp/nvim-ts-autotag',
-        enabled = false,
-        event = 'InsertEnter',
-        opts = {},
-    },
     {
         'nvim-treesitter/nvim-treesitter',
-        event = { 'BufRead', 'BufNewFile', 'FileType' },
-        dependencies = {
-            'nvim-treesitter/nvim-treesitter-refactor',
-            'nvim-treesitter/nvim-treesitter-textobjects',
-        },
         build = ':TSUpdate',
+        event = { 'BufReadPost', 'BufNewFile', 'FileType' },
+        lazy = vim.fn.argc(-1) == 0, -- load Treesitter early when opening a file from the cmdline
         opts = {
             ensure_installed = {
                 'bash',
@@ -92,99 +84,12 @@ return {
                     node_decremental = '<BS>', -- decrement to the previous node
                 },
             },
-            refactor = {
-                highlight_definitions = { enable = false },
-                highlight_current_scope = { enable = false },
-                smart_rename = {
-                    enable = true,
-                    keymaps = {
-                        smart_rename = '<Leader>R', -- mapping to rename reference under cursor
-                    },
-                },
-                navigation = {
-                    enable = false,
-                    keymaps = {
-                        goto_definition = 'gnd', -- mapping to go to definition of symbol under cursor
-                        list_definitions = 'gnD', -- mapping to list all definitions in current file
-                        goto_next_usage = '<C-n>',
-                        goto_previous_usage = '<C-p>',
-                    },
-                },
-            },
-            textobjects = { -- syntax-aware textobjects
-                select = {
-                    enable = true,
-                    disable = {},
-                    keymaps = {
-                        -- You can use the capture groups defined in textobjects.scm
-                        ['af'] = '@function.outer',
-                        ['if'] = '@function.inner',
-                        ['aC'] = '@class.outer',
-                        ['iC'] = '@class.inner',
-                        ['ac'] = '@conditional.outer',
-                        ['ic'] = '@conditional.inner',
-                        ['ab'] = '@block.outer',
-                        ['ib'] = '@block.inner',
-                        ['al'] = '@loop.outer',
-                        ['il'] = '@loop.inner',
-                        ['is'] = '@statement.inner',
-                        ['as'] = '@statement.outer',
-                        ['am'] = '@call.outer',
-                        ['im'] = '@call.inner',
-                        ['ad'] = '@comment.outer',
-                        ['id'] = '@comment.inner',
-                    },
-                },
-                move = {
-                    enable = true,
-                    set_jumps = false,
-                    goto_next_start = {
-                        [']f'] = {
-                            query = '@function.outer',
-                            desc = 'Next function',
-                        },
-                        [']C'] = {
-                            query = '@class.outer',
-                            desc = 'Next class',
-                        },
-                    },
-                    goto_previous_start = {
-                        ['[f'] = {
-                            query = '@function.outer',
-                            desc = 'Prev function',
-                        },
-                        ['[C'] = {
-                            query = '@class.outer',
-                            desc = 'Prev class',
-                        },
-                    },
-                },
-                swap = {
-                    enable = true,
-                    swap_next = {
-                        ['zsp>'] = '@parameter.inner',
-                        ['zsf>'] = '@function.outer',
-                    },
-                    swap_previous = {
-                        ['zsp<'] = '@parameter.inner',
-                        ['zsf<'] = '@function.outer',
-                    },
-                },
-            },
-            tree_setter = { enable = true },
         },
         config = function(_, opts)
             require('nvim-treesitter.configs').setup(opts)
-            local icons = require 'conf.icons'
             require('which-key').add {
-                { '<Leader>R', desc = 'TS: Rename symbol', icon = '󰏫' },
-                { 'zs', group = 'Swap', icon = '󰓡' },
-                { 'zsp', desc = 'Parameter', icon = icons.kinds.Variable },
-                { 'zsp>', desc = 'Next', icon = icons.arrows.right },
-                { 'zsp<', desc = 'Prev', icon = icons.arrows.left },
-                { 'zsf', desc = 'Function', icon = icons.kinds.Function },
-                { 'zsf>', desc = 'Next', icon = icons.arrows.right },
-                { 'zsf<', desc = 'Prev', icon = icons.arrows.left },
+                { '<CR>', desc = 'Increment selection', mode = { 'x', 'n' } },
+                { '<BS>', desc = 'Decrement selection', mode = 'x' },
             }
 
             -- the filetype on the RHS will use the parser and queries on the LHS
@@ -193,8 +98,146 @@ return {
         end,
     },
     {
+        'nvim-treesitter/nvim-treesitter-textobjects',
+        keys = {
+            ']f',
+            '[f',
+            ']C',
+            '[C',
+            'zsp>',
+            'zsp<',
+            'zsf>',
+            'zsf<',
+        },
+        init = function()
+            require('which-key').add {
+                { 'zs', group = 'Swap', icon = '󰓡' },
+                { 'zsp', desc = 'Parameter', icon = icons.kinds.Variable },
+                { 'zsp>', desc = 'Next', icon = icons.arrows.right },
+                { 'zsp<', desc = 'Prev', icon = icons.arrows.left },
+                { 'zsf', desc = 'Function', icon = icons.kinds.Function },
+                { 'zsf>', desc = 'Next', icon = icons.arrows.right },
+                { 'zsf<', desc = 'Prev', icon = icons.arrows.left },
+            }
+        end,
+        opts = {
+            select = {
+                enable = true,
+                disable = {},
+                keymaps = {
+                    -- You can use the capture groups defined in textobjects.scm
+                    ['af'] = '@function.outer',
+                    ['if'] = '@function.inner',
+                    ['aC'] = '@class.outer',
+                    ['iC'] = '@class.inner',
+                    ['ac'] = '@conditional.outer',
+                    ['ic'] = '@conditional.inner',
+                    ['ab'] = '@block.outer',
+                    ['ib'] = '@block.inner',
+                    ['al'] = '@loop.outer',
+                    ['il'] = '@loop.inner',
+                    ['is'] = '@statement.inner',
+                    ['as'] = '@statement.outer',
+                    ['am'] = '@call.outer',
+                    ['im'] = '@call.inner',
+                    ['ad'] = '@comment.outer',
+                    ['id'] = '@comment.inner',
+                },
+            },
+            move = {
+                enable = true,
+                set_jumps = false,
+                goto_next_start = {
+                    [']f'] = {
+                        query = '@function.outer',
+                        desc = 'Next function',
+                    },
+                    [']C'] = {
+                        query = '@class.outer',
+                        desc = 'Next class',
+                    },
+                },
+                goto_previous_start = {
+                    ['[f'] = {
+                        query = '@function.outer',
+                        desc = 'Prev function',
+                    },
+                    ['[C'] = {
+                        query = '@class.outer',
+                        desc = 'Prev class',
+                    },
+                },
+            },
+            swap = {
+                enable = true,
+                swap_next = {
+                    ['zsp>'] = '@parameter.inner',
+                    ['zsf>'] = '@function.outer',
+                },
+                swap_previous = {
+                    ['zsp<'] = '@parameter.inner',
+                    ['zsf<'] = '@function.outer',
+                },
+            },
+        },
+        config = function(_, opts)
+            ---@diagnostic disable-next-line: missing-fields
+            require('nvim-treesitter.configs').setup { textobjects = opts }
+        end,
+    },
+    {
+        'nvim-treesitter/nvim-treesitter-refactor',
+        keys = { '<Leader>R' },
+        init = function()
+            require('which-key').add {
+                { '<Leader>R', desc = 'TS: Rename symbol', icon = '󰏫' },
+            }
+        end,
+        opts = {
+            highlight_definitions = { enable = false },
+            highlight_current_scope = { enable = false },
+            smart_rename = {
+                enable = true,
+                keymaps = {
+                    smart_rename = '<Leader>R', -- mapping to rename reference under cursor
+                },
+            },
+            navigation = {
+                enable = false, -- disabled in favor of Snacks.words
+                keymaps = {
+                    goto_definition = 'gnd', -- mapping to go to definition of symbol under cursor
+                    list_definitions = 'gnD', -- mapping to list all definitions in current file
+                    goto_next_usage = '<C-n>',
+                    goto_previous_usage = '<C-p>',
+                },
+            },
+        },
+        config = function(_, opts)
+            ---@diagnostic disable-next-line: missing-fields
+            require('nvim-treesitter.configs').setup { refactor = opts }
+        end,
+    },
+    {
+        'filNaj/tree-setter',
+        enabled = false,
+        event = 'InsertEnter',
+        opts = { enable = true },
+        config = function(_, opts)
+            ---@diagnostic disable-next-line: missing-fields
+            require('nvim-treesitter.configs').setup {
+                tree_setter = opts,
+            }
+        end,
+    },
+    {
         'bezhermoso/tree-sitter-ghostty',
         ft = 'ghostty',
         build = 'make nvim_install',
+    },
+    {
+        'windwp/nvim-ts-autotag',
+        enabled = false,
+        event = 'InsertEnter',
+        opts = {},
     },
 }
