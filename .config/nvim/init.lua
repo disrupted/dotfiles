@@ -173,7 +173,7 @@ vim.api.nvim_create_autocmd('QuitPre', {
         if #invalid_wins == #wins - 1 then
             -- Should quit, so we close all invalid windows.
             for _, w in ipairs(invalid_wins) do
-                vim.api.nvim_win_close(w, true)
+                pcall(vim.api.nvim_win_close, w, true)
             end
         end
     end,
@@ -378,11 +378,17 @@ vim.api.nvim_create_autocmd('BufLeave', {
     callback = function()
         vim.api.nvim_command 'stopinsert'
     end,
+    desc = 'Exit insert mode when switching from terminal',
+})
+vim.api.nvim_create_autocmd('TermClose', {
+    pattern = 'term://*',
+    callback = function(args)
+        if vim.v.event.status == 0 then -- only close on exit code 0
+            vim.api.nvim_buf_delete(args.buf, { force = true })
+        end
+    end,
     desc = 'Close terminal buffer on process exit',
 })
-
--- autocmd TermClose term://* call nvim_input('<CR>')
--- autocmd TermClose * call feedkeys("i")
 
 -----------------------------------------------------------------------------//
 -- Mouse {{{1
