@@ -275,9 +275,9 @@ return {
                 desc = 'Pick theirs',
             },
             {
-                '<Leader>gxb',
+                '<Leader>gxa',
                 '<Plug>(git-conflict-both)',
-                desc = 'Pick both',
+                desc = 'Pick all',
             },
             {
                 '<Leader>gx0',
@@ -447,11 +447,11 @@ return {
             mappings = {
                 pull_request = {
                     resolve_thread = {
-                        lhs = '<LocalLeader>cu',
-                        desc = 'Unresolve thread',
+                        lhs = '<LocalLeader>cr',
+                        desc = 'Resolve thread',
                     },
                     unresolve_thread = {
-                        lhs = '<LocalLeader>cr',
+                        lhs = '<LocalLeader>cu',
                         desc = 'Unresolve thread',
                     },
                     -- wrong naming
@@ -590,7 +590,7 @@ return {
                         desc = 'Commits',
                         icon = icons.git.commit,
                     },
-                    { '<LocalLeader>pd', desc = 'Diff', icon = icons.git.diff },
+                    { '<LocalLeader>pD', desc = 'Diff', icon = icons.git.diff }, -- I prefer diffview
                     {
                         '<LocalLeader>pf',
                         desc = 'Files',
@@ -600,6 +600,22 @@ return {
                         '<LocalLeader>po',
                         desc = 'Checkout',
                         icon = icons.git.checkout,
+                    },
+                    {
+                        '<LocalLeader>pr',
+                        function()
+                            vim.cmd { cmd = 'Octo', args = { 'pr', 'ready' } }
+                        end,
+                        desc = 'Ready for review',
+                        icon = '',
+                    },
+                    {
+                        '<LocalLeader>pd',
+                        function()
+                            vim.cmd { cmd = 'Octo', args = { 'pr', 'draft' } }
+                        end,
+                        desc = 'Convert back to draft',
+                        icon = '',
                     },
                     {
                         '<LocalLeader>ps',
@@ -626,12 +642,15 @@ return {
                     { '<LocalLeader>vs', desc = 'Start review' },
                 }
             end
+            local function attach_issue(buf) end
             vim.api.nvim_create_autocmd('FileType', {
                 pattern = 'octo',
                 callback = function(args)
                     attach_octo(args.buf)
                     if args.file:match '^octo://.*/pull/' then
                         attach_pull_request(args.buf)
+                    elseif args.file:match '^octo://.*/issue/' then
+                        attach_issue(args.buf)
                     end
                 end,
             })
