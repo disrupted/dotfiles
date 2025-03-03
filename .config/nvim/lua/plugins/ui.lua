@@ -355,7 +355,7 @@ return {
                     self.status = dap.status()
                 end,
                 provider = function(self)
-                    return string.format('%s %s', self.icon, self.status)
+                    return string.format('%s %s ', self.icon, self.status)
                 end,
             }
 
