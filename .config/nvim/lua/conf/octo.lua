@@ -176,7 +176,7 @@ local create_pr_form = function(opts)
     return n.form(
         {
             id = 'form',
-            submit_key = '<S-CR>', -- FIXME: does not work inside tmux
+            submit_key = '<S-CR>',
             on_submit = function(is_valid)
                 coop.spawn(function()
                     if not is_valid then
