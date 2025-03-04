@@ -142,6 +142,7 @@ M.pr.open = function(opts)
     })
     if opts.octo then
         Snacks.notify('Opening PR...', { title = 'Octo' })
+        vim.cmd.tabnew()
         vim.cmd 'Octo pr'
     end
     if opts.browser then

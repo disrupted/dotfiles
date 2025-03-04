@@ -445,6 +445,10 @@ return {
             default_delete_branch = true,
             date_format = '%Y %b %d %H:%M',
             mappings = {
+                issue = {
+                    close_issue = { desc = 'Close' },
+                    reopen_issue = { desc = 'Reopen' },
+                },
                 pull_request = {
                     resolve_thread = {
                         lhs = '<LocalLeader>cr',
@@ -455,8 +459,8 @@ return {
                         desc = 'Unresolve thread',
                     },
                     -- wrong naming
-                    close_issue = { lhs = '', desc = 'close PR' },
-                    reopen_issue = { lhs = '', desc = 'reopen PR' },
+                    close_issue = { desc = 'Close' },
+                    reopen_issue = { desc = 'Reopen' },
                     -- always squash & merge
                     merge_pr = { lhs = '' },
                     rebase_and_merge_pr = { lhs = '' },
@@ -530,6 +534,7 @@ return {
             local function attach_octo(buf)
                 wk.add {
                     buffer = buf,
+                    { 'q', vim.cmd.tabclose, desc = 'Close Octo' },
                     { '<LocalLeader>a', group = 'Assignee', icon = '' },
                     { '<LocalLeader>aa', desc = 'Add', icon = '' },
                     { '<LocalLeader>ad', desc = 'Remove', icon = '' },
@@ -618,6 +623,22 @@ return {
                         icon = '',
                     },
                     {
+                        '<LocalLeader>pu',
+                        function()
+                            vim.cmd { cmd = 'Octo', args = { 'pr', 'url' } }
+                        end,
+                        desc = 'Copy URL',
+                        icon = '󰌹',
+                    },
+                    {
+                        '<LocalLeader>pb',
+                        function()
+                            vim.cmd { cmd = 'Octo', args = { 'pr', 'browser' } }
+                        end,
+                        desc = 'Open in browser',
+                        icon = '',
+                    },
+                    {
                         '<LocalLeader>ps',
                         desc = 'Squash',
                         icon = icons.git.squash,
@@ -642,7 +663,30 @@ return {
                     { '<LocalLeader>vs', desc = 'Start review' },
                 }
             end
-            local function attach_issue(buf) end
+            local function attach_issue(buf)
+                wk.add {
+                    buffer = buf,
+                    {
+                        '<LocalLeader>iu',
+                        function()
+                            vim.cmd { cmd = 'Octo', args = { 'issue', 'url' } }
+                        end,
+                        desc = 'Copy URL',
+                        icon = '󰌹',
+                    },
+                    {
+                        '<LocalLeader>ib',
+                        function()
+                            vim.cmd {
+                                cmd = 'Octo',
+                                args = { 'issue', 'browser' },
+                            }
+                        end,
+                        desc = 'Open in browser',
+                        icon = '',
+                    },
+                }
+            end
             vim.api.nvim_create_autocmd('FileType', {
                 pattern = 'octo',
                 callback = function(args)
