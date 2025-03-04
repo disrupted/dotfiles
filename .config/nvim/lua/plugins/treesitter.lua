@@ -99,6 +99,7 @@ return {
     },
     {
         'nvim-treesitter/nvim-treesitter-textobjects',
+        event = { 'BufReadPost', 'BufNewFile', 'FileType' },
         keys = {
             ']f',
             '[f',
@@ -125,13 +126,15 @@ return {
                 enable = true,
                 disable = {},
                 keymaps = {
-                    -- You can use the capture groups defined in textobjects.scm
+                    -- capture groups defined in textobjects.scm
                     ['af'] = '@function.outer',
                     ['if'] = '@function.inner',
                     ['aC'] = '@class.outer',
                     ['iC'] = '@class.inner',
-                    ['ac'] = '@conditional.outer',
-                    ['ic'] = '@conditional.inner',
+                    ['ap'] = '@parameter.outer',
+                    ['ip'] = '@parameter.inner',
+                    ['ao'] = '@conditional.outer',
+                    ['io'] = '@conditional.inner',
                     ['ab'] = '@block.outer',
                     ['ib'] = '@block.inner',
                     ['al'] = '@loop.outer',
@@ -140,8 +143,12 @@ return {
                     ['as'] = '@statement.outer',
                     ['am'] = '@call.outer',
                     ['im'] = '@call.inner',
-                    ['ad'] = '@comment.outer',
-                    ['id'] = '@comment.inner',
+                    ['ac'] = '@comment.outer',
+                    ['ic'] = '@comment.inner',
+                },
+                selection_modes = {
+                    ['@function.outer'] = 'V', -- linewise
+                    ['@class.outer'] = 'V', -- linewise
                 },
             },
             move = {
