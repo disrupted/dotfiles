@@ -102,6 +102,18 @@ return {
             })
         end,
         opts = {
+            ---@param bufnr integer
+            ---@return boolean
+            buf_filter = function(bufnr)
+                local buftype = vim.bo[bufnr].buftype
+                if buftype ~= '' and buftype ~= 'acwrite' then
+                    return false
+                end
+                if vim.api.nvim_buf_get_name(bufnr) == '' then
+                    return false
+                end
+                return vim.bo[bufnr].buflisted
+            end,
             extensions = {
                 dap = {},
             },
