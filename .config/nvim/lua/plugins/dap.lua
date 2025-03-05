@@ -213,14 +213,13 @@ return {
                 max_width = 0.7,
             },
             render = {
-                indent = 0,
+                indent = 2,
                 max_type_length = nil,
                 max_value_lines = nil,
             },
         },
         config = function(_, opts)
-            -- FIXME: does not work
-            --[[ vim.api.nvim_create_autocmd('FileType', {
+            vim.api.nvim_create_autocmd('FileType', {
                 pattern = {
                     'dap-repl',
                     'dapui_console',
@@ -230,24 +229,18 @@ return {
                     'dapui_watches',
                 },
                 callback = function(args)
-                    local buf = args.buf
-                    for _, win in ipairs(vim.api.nvim_list_wins()) do
-                        if vim.api.nvim_win_get_buf(win) == buf then
-                            vim.api.nvim_set_option_value(
-                                'fillchars',
-                                'eob: ',
-                                { win = win }
-                            )
-                            vim.api.nvim_set_option_value(
-                                'statuscolumn',
-                                '',
-                                { win = win }
-                            )
-                            return
+                    -- scheduling is necessary because on FileType event the buffer is not assigned to a window yet
+                    vim.schedule(function()
+                        for _, win in ipairs(vim.api.nvim_list_wins()) do
+                            if vim.api.nvim_win_get_buf(win) == args.buf then
+                                vim.wo[win].fillchars = 'eob: '
+                                vim.wo[win].statuscolumn = ''
+                                return
+                            end
                         end
-                    end
+                    end)
                 end,
-            }) ]]
+            })
             vim.api.nvim_create_autocmd('FileType', {
                 pattern = 'dap-repl',
                 callback = function()
