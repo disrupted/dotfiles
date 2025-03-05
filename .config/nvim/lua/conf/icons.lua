@@ -103,7 +103,7 @@ return {
     },
     misc = {
         quickfix = '󱡠',
-        bug = '',
+        bug = '',
         ellipsis = '…',
         search = '',
     },

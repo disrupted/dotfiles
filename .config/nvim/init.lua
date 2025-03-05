@@ -203,7 +203,10 @@ opt.laststatus = 3 -- global statusline
 local au_cursorline = vim.api.nvim_create_augroup('cursorline_focus', {})
 vim.api.nvim_create_autocmd({ 'InsertLeave', 'WinEnter' }, {
     group = au_cursorline,
-    callback = function()
+    callback = function(args)
+        if vim.bo[args.buf].buftype == 'terminal' then
+            return
+        end
         vim.wo.cursorline = true
     end,
     desc = 'Show cursorline in active window',

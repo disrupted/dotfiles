@@ -329,7 +329,7 @@ return {
             local Harpoon = {
                 static = { icons = { mark = 'M' } },
                 condition = function()
-                    return package.loaded['harpoon']
+                    return package.loaded.harpoon
                 end,
                 provider = function(self)
                     local harpoon = require 'harpoon'
@@ -346,23 +346,34 @@ return {
             }
 
             local dap = lazy_require 'dap'
-            local DAPMessages = {
-                static = { icon = '' },
+            local DAPStatus = {
                 condition = function()
-                    return package.loaded['dap'] and dap.session() ~= nil
+                    return package.loaded.dap and dap.session() ~= nil
                 end,
-                init = function(self)
-                    self.status = dap.status()
-                end,
+                static = { icon = icons.misc.bug },
                 provider = function(self)
-                    return string.format('%s %s ', self.icon, self.status)
+                    return self.icon .. ' '
                 end,
+                update = {
+                    'User',
+                    pattern = 'DapProgressUpdate',
+                    callback = vim.schedule_wrap(function()
+                        vim.cmd.redrawstatus()
+                    end),
+                },
+                hl = 'DiagnosticError',
+                {
+                    provider = function()
+                        return dap.status() .. ' '
+                    end,
+                    hl = 'StatusLine',
+                },
             }
 
             local neotest = lazy_require 'neotest'
             local NeoTestBlock = {
                 condition = function()
-                    return package.loaded['neotest']
+                    return package.loaded.neotest
                         and conditions.is_active()
                         and #neotest.state.adapter_ids() > 0
                 end,
@@ -540,7 +551,7 @@ return {
 
             local Overseer = {
                 condition = function()
-                    return package.loaded['overseer']
+                    return package.loaded.overseer
                 end,
                 init = function(self)
                     local tasks = require('overseer.task_list').list_tasks {
@@ -612,7 +623,7 @@ return {
                     Diagnostics,
                     Align,
                     Align,
-                    DAPMessages,
+                    DAPStatus,
                     Overseer,
                     NeoTestBlock,
                     Git,

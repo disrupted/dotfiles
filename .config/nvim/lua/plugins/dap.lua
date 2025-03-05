@@ -17,22 +17,27 @@ return {
                 '<Leader>dc',
                 function()
                     _ = require('conf.dap.adapters')[vim.bo.filetype]
-                    require 'nvim-dap-virtual-text'
-                    -- HACK: otherwise terminal_win_cmd isn't set and dap terminal is used instead of dapui console
-                    require 'dapui'
                     require('dap').continue()
                     vim.opt.signcolumn = 'yes:2'
+                    -- load dap-view early to use a smaller terminal window by default
+                    require 'dap-view'
+                    require 'nvim-dap-virtual-text'
                 end,
-                desc = 'Continue/start debugger',
+                desc = 'Continue/start',
+            },
+            {
+                '<Leader>dr',
+                function()
+                    require('dap').restart()
+                end,
+                desc = 'Restart',
             },
             {
                 '<Leader>dq',
                 function()
                     require('dap').terminate()
-                    require('dap').close()
-                    require('dapui').close {}
                 end,
-                desc = 'Close debugger',
+                desc = 'Close',
             },
             {
                 '<Leader>dQ',
@@ -74,6 +79,7 @@ return {
                 '<Leader>db',
                 function()
                     require('dap').toggle_breakpoint()
+                    vim.opt.signcolumn = 'yes:2'
                 end,
                 desc = 'Toggle breakpoint',
             },
@@ -100,8 +106,26 @@ return {
                 end,
                 desc = 'List breakpoints',
             },
+            { -- DAP UI looks better
+                '<Leader>dS',
+                function()
+                    local widgets = require 'dap.ui.widgets'
+                    widgets.centered_float(
+                        widgets.scopes,
+                        { border = 'rounded' }
+                    )
+                end,
+                desc = 'Scopes',
+            },
             {
-                '<Leader>dr',
+                '<Leader>dE',
+                function()
+                    require('dap.ui.widgets').hover()
+                end,
+                desc = 'Eval',
+            },
+            {
+                '<Leader>dR',
                 function()
                     require('dap').repl.open()
                 end,
@@ -110,19 +134,32 @@ return {
         },
         config = function()
             local dap = require 'dap'
-            -- dap.defaults.fallback.terminal_win_cmd = '15split new' -- use DAP UI console instead
             dap.defaults.fallback.exception_breakpoints = { 'uncaught' } -- { 'raised', 'uncaught' }
-            dap.listeners.before.attach.dapui_config = function()
-                require('dapui').open()
+
+            dap.listeners.after.event_exited.dap_view_config = function()
+                require('dap-view').close(false)
             end
-            dap.listeners.before.launch.dapui_config = function()
-                require('dapui').open()
+            dap.listeners.after.event_terminated.dap_view_config = function()
+                require('dap-view').close(true)
             end
-            dap.listeners.before.event_terminated.dapui_config = function()
-                require('dapui').close()
+            -- some adapters send disconnect response instead of terminated
+            dap.listeners.after.disconnect.dap_view_config = function()
+                require('dap-view').close(true)
             end
-            dap.listeners.before.event_exited.dapui_config = function()
-                require('dapui').close()
+
+            local function close_dapui()
+                if package.loaded.dapui then
+                    require('dapui').close()
+                end
+            end
+            dap.listeners.after.event_exited.dapui_config = function()
+                close_dapui()
+            end
+            dap.listeners.after.event_terminated.dapui_config = function()
+                close_dapui()
+            end
+            dap.listeners.after.disconnect.dapui_config = function()
+                close_dapui()
             end
 
             vim.fn.sign_define('DapBreakpoint', {
@@ -140,6 +177,115 @@ return {
             vim.fn.sign_define('DapStopped', {
                 text = '■',
                 texthl = 'Special',
+            })
+
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = { 'dap-repl' },
+                callback = function(args)
+                    -- scheduling is necessary because on FileType event the buffer is not assigned to a window yet
+                    vim.schedule(function()
+                        for _, win in ipairs(vim.api.nvim_list_wins()) do
+                            if vim.api.nvim_win_get_buf(win) == args.buf then
+                                vim.wo[win].fillchars = 'eob: '
+                                vim.wo[win].statuscolumn = ''
+                                return
+                            end
+                        end
+                    end)
+                end,
+            })
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = 'dap-repl',
+                callback = function()
+                    require('dap.ext.autocompl').attach()
+                end,
+            })
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = { 'dap-float', 'dap-repl' },
+                callback = function(args)
+                    vim.keymap.set('n', 'q', '<C-w>q', {
+                        buffer = args.buf,
+                        silent = true,
+                        desc = 'Close',
+                    })
+                end,
+            })
+        end,
+    },
+    {
+        'igorlfs/nvim-dap-view',
+        cmd = { 'DapViewOpen', 'DapViewToggle', 'DapViewWatch' },
+        keys = {
+            {
+                '<Leader>dv',
+                function()
+                    require('dap-view').toggle()
+                end,
+                desc = 'Toggle DAP view',
+            },
+            {
+                '<Leader>dw',
+                function()
+                    require('dap-view').add_expr()
+                end,
+                desc = 'Watch expression',
+            },
+        },
+        ---@module 'dap-view.config'
+        ---@type Config
+        ---@diagnostic disable-next-line: missing-fields
+        opts = {
+            ---@diagnostic disable-next-line: missing-fields
+            windows = {
+                ---@diagnostic disable-next-line: missing-fields
+                terminal = {
+                    start_hidden = true,
+                    hide = { 'go' },
+                },
+            },
+        },
+        config = function(_, opts)
+            require('dap-view').setup(opts)
+
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = { 'dap-view' },
+                callback = function(args)
+                    -- scheduling is necessary because on FileType event the buffer is not assigned to a window yet
+                    vim.schedule(function()
+                        for _, win in ipairs(vim.api.nvim_list_wins()) do
+                            if vim.api.nvim_win_get_buf(win) == args.buf then
+                                vim.wo[win].fillchars = 'eob: '
+                                vim.wo[win].listchars = 'tab:  '
+                                return
+                            end
+                        end
+                    end)
+                end,
+            })
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = { 'dap-view-term' },
+                callback = function(args)
+                    -- scheduling is necessary because on FileType event the buffer is not assigned to a window yet
+                    vim.schedule(function()
+                        for _, win in ipairs(vim.api.nvim_list_wins()) do
+                            if vim.api.nvim_win_get_buf(win) == args.buf then
+                                vim.wo[win].cursorline = false
+                                vim.wo[win].signcolumn = 'no'
+                                return
+                            end
+                        end
+                    end)
+                end,
+            })
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = { 'dap-view', 'dap-view-term' },
+                callback = function(args)
+                    vim.keymap.set('n', 'q', '<C-w>q', {
+                        buffer = args.buf,
+                        silent = true,
+                        desc = 'Close',
+                    })
+                end,
             })
         end,
     },
@@ -159,7 +305,7 @@ return {
                     ---@diagnostic disable-next-line: missing-fields
                     require('dapui').float_element('scopes', { enter = true })
                 end,
-                desc = 'Float DAP UI',
+                desc = 'Scopes',
             },
             {
                 '<Leader>de',
@@ -219,9 +365,10 @@ return {
             },
         },
         config = function(_, opts)
+            require('dapui').setup(opts)
+
             vim.api.nvim_create_autocmd('FileType', {
                 pattern = {
-                    'dap-repl',
                     'dapui_console',
                     'dapui_scopes',
                     'dapui_breakpoints',
@@ -241,14 +388,6 @@ return {
                     end)
                 end,
             })
-            vim.api.nvim_create_autocmd('FileType', {
-                pattern = 'dap-repl',
-                callback = function()
-                    require('dap.ext.autocompl').attach()
-                end,
-            })
-
-            require('dapui').setup(opts)
         end,
     },
     {
