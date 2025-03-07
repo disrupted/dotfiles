@@ -134,6 +134,9 @@ return {
         },
         config = function()
             local dap = require 'dap'
+            -- when hitting a breakpoint use an already open window containing the breakpoint buffer
+            -- instead of switching the current window to the other buffer
+            dap.defaults.fallback.switchbuf = 'usevisible,usetab,uselast'
             dap.defaults.fallback.exception_breakpoints = { 'uncaught' } -- { 'raised', 'uncaught' }
 
             dap.listeners.after.event_exited.dap_view_config = function()
