@@ -458,6 +458,7 @@ return {
                         lhs = '<LocalLeader>cu',
                         desc = 'Unresolve thread',
                     },
+                    show_pr_diff = { lhs = '<LocalLeader>pD' },
                     -- wrong naming
                     close_issue = { desc = 'Close' },
                     reopen_issue = { desc = 'Reopen' },
