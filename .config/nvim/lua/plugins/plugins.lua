@@ -28,25 +28,42 @@ return {
             {
                 '<Leader><Leader>',
                 function()
-                    -- smart picker is recommended over buffers picker
-                    Snacks.picker.smart {
-                        title = 'Buffers',
-                        multi = false,
-                        finder = 'buffers',
+                    local picker = Snacks.picker.buffers {
                         current = false,
-                        layout = { preset = 'dropdown' },
-                        win = {
-                            input = {
-                                keys = {
-                                    ['<c-x>'] = {
-                                        'bufdelete',
-                                        mode = { 'n', 'i' },
-                                    },
-                                },
+                        sort_lastused = true,
+                        layout = {
+                            preset = 'dropdown',
+                            ---@diagnostic disable-next-line: assign-type-mismatch
+                            preview = false, -- disable preview because it messes up lastused sorting
+                            layout = {
+                                row = 0.1,
+                                width = 0.4,
+                                min_width = 80,
+                                height = 0.4,
                             },
-                            list = { keys = { ['dd'] = 'bufdelete' } },
+                        },
+                        actions = {
+                            calculate_file_truncate_width = function(self)
+                                local width = self.list.win:size().width
+                                self.opts.formatters.file.truncate = width - 18
+                            end,
+                        },
+                        win = {
+                            list = {
+                                on_buf = function(self)
+                                    self:execute 'calculate_file_truncate_width'
+                                end,
+                            },
                         },
                     }
+
+                    if not picker then
+                        return
+                    end
+
+                    picker.list.win:on('VimResized', function()
+                        picker:action 'calculate_file_truncate_width'
+                    end)
                 end,
                 desc = 'Buffers',
             },
