@@ -477,6 +477,8 @@ vim.keymap.set('i', '<C-k>', '<Up>')
 vim.keymap.set('i', '<C-h>', '<Left>')
 vim.keymap.set('i', '<C-l>', '<Right>')
 
+vim.keymap.set({ 'i', 'c' }, '<M-BS>', '<C-w>', { desc = 'Delete word' })
+
 -- Better indenting
 vim.keymap.set('v', '<', '<gv')
 vim.keymap.set('v', '>', '>gv')
