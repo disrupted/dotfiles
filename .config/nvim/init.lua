@@ -198,8 +198,8 @@ opt.number = true -- line numbers
 opt.relativenumber = false -- relative line numbers
 opt.numberwidth = 2
 opt.signcolumn = 'auto:1-2' -- 'auto:1-2', 'yes:1'
-opt.cursorline = true
 opt.laststatus = 3 -- global statusline
+opt.cursorline = false -- use autocmd below to only enable it for the focused window
 local au_cursorline = vim.api.nvim_create_augroup('cursorline_focus', {})
 vim.api.nvim_create_autocmd({ 'InsertLeave', 'WinEnter' }, {
     group = au_cursorline,
