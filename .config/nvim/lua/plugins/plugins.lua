@@ -53,6 +53,17 @@ return {
             {
                 '<C-e>',
                 function()
+                    local explorers = Snacks.picker.get { source = 'explorer' }
+                    if not vim.tbl_isempty(explorers) then
+                        local picker = explorers[1]
+                        if picker:is_focused() then
+                            picker:close()
+                        else
+                            picker.list.win:focus()
+                        end
+                        return
+                    end
+
                     if
                         package.loaded.dapui
                         and require('dapui.windows').layouts[1]:is_open()
@@ -103,16 +114,11 @@ return {
                         },
                     }
 
-                    if not picker then
-                        return -- abort if picker was closed
-                    end
-
                     picker.list.win:on(
                         'BufEnter',
                         require('conf.ui').cursor.hide,
                         { buf = true, desc = 'Hide cursor' }
                     )
-
                     picker.list.win:on(
                         'BufLeave',
                         require('conf.ui').cursor.show,
@@ -159,6 +165,10 @@ return {
                         },
                     }
 
+                    if not picker then
+                        return -- abort if picker was closed
+                    end
+
                     picker.list.win:on('VimResized', function()
                         picker:action 'calculate_file_truncate_width'
                     end)
@@ -176,11 +186,12 @@ return {
             {
                 '<C-s>',
                 function()
-                    local cursor = vim.api.nvim_win_get_cursor(0)
+                    -- alternative: Trouble symbols open pinned=true auto_refresh=true win.relative=win win.position=left
                     local picker = Snacks.picker.lsp_symbols {
                         title = 'LSP Document Symbols',
+                        focus = 'list',
                         layout = {
-                            preset = 'sidebar',
+                            preset = 'dropdown',
                             preview = 'main',
                         },
                         win = {
@@ -189,6 +200,10 @@ return {
                             },
                         },
                     }
+
+                    if not picker then
+                        return -- abort if picker was closed
+                    end
 
                     picker.matcher.task:on(
                         'done',
