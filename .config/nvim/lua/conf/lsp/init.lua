@@ -258,6 +258,7 @@ vim.lsp.enable {
     -- 'pylyzer',
     'taplo',
     'terraform_ls',
+    'ts_query_ls',
     'vts_ls',
     'yaml_ls',
 }

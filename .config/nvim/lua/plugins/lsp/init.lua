@@ -15,7 +15,7 @@ return {
         opts = {
             ensure_installed = {},
             registries = {
-                -- 'github:mason-org/mason-registry',
+                'github:mason-org/mason-registry',
                 'github:mistweaverco/zana-registry',
                 'lua:plugins.lsp.custom',
             },
