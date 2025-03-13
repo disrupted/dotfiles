@@ -142,7 +142,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
             vim.api.nvim_create_autocmd({
                 'BufWritePost',
                 'BufEnter',
-                'InsertLeave',
                 'FocusGained',
                 'CursorHold',
             }, {
@@ -151,11 +150,27 @@ vim.api.nvim_create_autocmd('LspAttach', {
                     vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
                 end,
             })
-            vim.api.nvim_create_autocmd('InsertEnter', {
+            vim.api.nvim_create_autocmd('ModeChanged', {
                 buffer = bufnr,
-                callback = function()
-                    vim.lsp.inlay_hint.enable(false, { bufnr = bufnr })
+                callback = function(args)
+                    local _, new_mode = unpack(vim.split(args.match, ':'))
+                    if
+
+                        vim.tbl_contains(
+                            { 'i', 'v', 'V', '\22', 'R' },
+                            new_mode
+                        )
+                        and vim.lsp.inlay_hint.is_enabled { bufnr = bufnr }
+                    then
+                        vim.lsp.inlay_hint.enable(false, { bufnr = bufnr })
+                    elseif
+                        new_mode == 'n'
+                        and not vim.lsp.inlay_hint.is_enabled { bufnr = bufnr }
+                    then
+                        vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+                    end
                 end,
+                desc = 'LSP inlay hints: disable for insert & visual mode',
             })
             -- initial request
             vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
