@@ -28,10 +28,13 @@ return {
                     if
                         vim.iter(captures):any(function(capture)
                             return capture.lang == 'python'
-                                and capture.capture == 'variable.parameter'
+                                and (
+                                    capture.capture == 'variable.parameter' -- inside function call
+                                    or capture.capture == 'variable.builtin' -- self / cls param
+                                )
                         end)
                     then
-                        -- inside function call, abort override
+                        -- abort override
                         return
                     end
                     vim.lsp.semantic_tokens.highlight_token(
