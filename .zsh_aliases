@@ -1,4 +1,40 @@
 # vim: ft=zsh
+get_top_level_dir() {
+    # strip the home directory prefix and split the remaining path
+    local relative_path="${PWD#$HOME/}"
+    local top_level_dir="${relative_path%%/*}"
+    echo "$HOME/$top_level_dir"
+}
+
+function zoxide_top_level_dir() {
+    local query="$1"
+    if [ -z "$query" ]; then
+        echo "usage: zoxide_top_level_dir <query>"
+        return 1
+    fi
+
+    local top_level_dir=$(get_top_level_dir)
+    local zoxide_results=$(zoxide query -l "$query" | rg $(get_top_level_dir))
+    if [ -z "$zoxide_results" ]; then
+        echo "no result in top level dir found, fallback to regular zoxide" 1>&2
+        selected_dir=$(zoxide query --interactive "$query")
+        if [ -n "$selected_dir" ]; then
+            cd "$selected_dir" || return
+        fi
+        return
+    fi
+    count=$(echo "$zoxide_results" | wc -l)
+    if [ "$count" -eq 1 ]; then
+        cd "$zoxide_results" || return
+    else
+        # if there are multiple results, use fzf to let the user pick one
+        selected_dir=$(echo "$zoxide_results" | fzf --preview 'eza --color=always --oneline --group-directories-first --icons {}')
+        if [ -n "$selected_dir" ]; then
+            cd "$selected_dir" || return
+        fi
+    fi
+}
+alias j='zoxide_top_level_dir'
 function mkcd() { mkdir -p $1; cd $1;}
 alias cp='cp -riv'
 alias mv='mv -iv'

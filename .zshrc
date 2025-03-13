@@ -340,7 +340,7 @@ autoload colors && colors
 #####################
 source $HOME/.zsh_aliases
 source $HOME/.zsh_aliases_private
-eval "$(zoxide init --cmd j zsh)"
+eval "$(zoxide init --no-cmd zsh)" # cmd disabled in favor of custom zoxide function
 
 #####################
 # FANCY-CTRL-Z      #
