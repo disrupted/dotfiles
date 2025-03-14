@@ -151,7 +151,7 @@ return {
                         finders = {
                             'buffers',
                             'recent',
-                            require('git').is_repo() and 'git_files' or 'files',
+                            vim.g.git_repo and 'git_files' or 'files',
                         },
                         hidden = true,
                         matcher = { sort_empty = true },
@@ -329,14 +329,13 @@ return {
             {
                 '<C-g>',
                 function()
-                    if require('git').is_repo() then
-                        Snacks.picker.git_status()
-                    else
+                    if vim.g.git_repo == require('yadm').config.repo then
                         Snacks.picker.git_status {
                             title = 'YADM status',
                             finder = require('conf.snacks.finder').yadm_status,
-                            preview = require('conf.snacks.preview').yadm_status,
                         }
+                    else
+                        Snacks.picker.git_status()
                     end
                 end,
                 desc = 'Git/YADM status',
@@ -514,8 +513,7 @@ return {
                     dirs = {
                         finder = function(opts, ctx)
                             local finder = require 'conf.snacks.finder'
-                            return require('git').is_repo()
-                                    and finder.git_dirs(opts, ctx)
+                            return vim.g.git_repo and finder.git_dirs(opts, ctx)
                                 or finder.fd_dirs(opts, ctx)
                         end,
                         format = 'file',

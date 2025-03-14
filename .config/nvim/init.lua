@@ -83,24 +83,19 @@ opt.sessionoptions = {
     'winpos',
 }
 
+require('conf.workspace').setup()
 -- disable global shada; create separate shadafile for each workspace
 -- ensures project-scoped jumplist, marks, etc.
 --—@return string?
 local shadafile = function()
-    local cwd = vim.uv.cwd()
-    if not cwd then
+    if not vim.g.workspace_root then
         return
     end
-    local config = vim.fn.stdpath 'config' --[[@as string]]
-    local rel_to_config = vim.fs.relpath(config, cwd)
-    local workspace_root = rel_to_config and config or Snacks.git.get_root(cwd)
-    if not workspace_root then
-        return
-    end
-    local workspace_uid = vim.fs.basename(workspace_root)
-        .. '_'
-        .. vim.fn.sha256(workspace_root):sub(1, 8)
-    return vim.fn.stdpath 'state' .. '/shada/' .. workspace_uid .. '.shada'
+    return vim.fs.joinpath(
+        vim.fn.stdpath 'state',
+        'shada',
+        vim.g.workspace_root:gsub('/', '_') .. '.shada'
+    )
 end
 vim.o.shadafile = shadafile() or 'NONE'
 

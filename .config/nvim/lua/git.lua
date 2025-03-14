@@ -3,12 +3,22 @@ local M = {}
 ---@param args string[]
 ---@return string stdout
 local git = function(args)
-    table.insert(args, 1, 'git')
-    local out = vim.system(args):wait()
+    local cmd = { 'git', '--git-dir', vim.g.git_repo }
+    vim.list_extend(cmd, args)
+    local out = vim.system(cmd):wait()
     if out.code ~= 0 then
         error(assert(out.stderr))
     end
     return vim.trim(assert(out.stdout))
+end
+
+---@param cwd string
+---@return string?
+M.find_repo = function(cwd)
+    local root = Snacks.git.get_root(cwd)
+    if root then
+        return vim.fs.joinpath(root, '.git')
+    end
 end
 
 ---@param remote? string
@@ -20,11 +30,6 @@ end
 ---@return string name of the current branch
 M.current_branch = function()
     return git { 'branch', '--show-current' }
-end
-
----@return boolean
-M.is_repo = function()
-    return vim.uv.fs_stat '.git' ~= nil
 end
 
 ---@param remote_url string
@@ -39,21 +44,26 @@ end
 
 M.refresh = function()
     require('coop').spawn(function()
-        local git = require 'git'
-        local remote_url = git.async.remote_url()
-        vim.g.git_remote_type = git.match_remote_type(remote_url)
+        local remote_url = M.async.remote_url()
+        vim.g.git_remote_type = M.match_remote_type(remote_url)
         if vim.g.git_remote_type == 'github' then
             require('conf.octo').pr.refresh()
         end
     end)
 end
 
+---@param cwd string
+M.setup = function(cwd)
+    vim.g.git_repo = M.find_repo(cwd)
+end
+
 ---@async
 ---@param args string[]
 ---@return string? stdout
 local git_async = function(args)
-    table.insert(args, 1, 'git')
-    local out = require('coop.vim').system(args)
+    local cmd = { 'git', '--git-dir', vim.g.git_repo }
+    vim.list_extend(cmd, args)
+    local out = require('coop.vim').system(cmd)
     if out.code == 0 and out.stdout and out.stdout ~= '' then
         return vim.trim(out.stdout)
     end

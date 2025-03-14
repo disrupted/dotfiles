@@ -69,4 +69,35 @@ M.project_filetypes = function(opts)
         :totable()
 end
 
+---@param cwd string
+---@return string
+M.get_root = function(cwd)
+    if vim.g.git_repo then
+        return vim.fs.dirname(vim.g.git_repo)
+    end
+    local config = vim.fn.stdpath 'config'
+    local rel_to_config = vim.fs.relpath(config, cwd)
+    if rel_to_config then
+        return config
+    end
+    return cwd
+end
+
+M.setup = function()
+    local cwd = vim.uv.cwd()
+    if not cwd then
+        Snacks.notify.error 'Invalid CWD'
+        return
+    end
+    require('git').setup(cwd)
+    vim.g.workspace_root = M.get_root(cwd)
+    if not vim.g.git_repo then
+        require('yadm').setup()
+    end
+    Snacks.notify({
+        'Workspace root: ' .. vim.g.workspace_root,
+        'Git repo: ' .. vim.g.git_repo,
+    }, { level = 'debug' })
+end
+
 return M

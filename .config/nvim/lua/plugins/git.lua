@@ -5,7 +5,6 @@ return {
     {
         'lewis6991/gitsigns.nvim',
         event = { 'BufWinEnter', 'BufNewFile' },
-        dependencies = { 'purarue/gitsigns-yadm.nvim' },
         init = function()
             require('which-key').add {
                 {
@@ -92,7 +91,7 @@ return {
                 then
                     return -- do not attach to buffers of this filetype
                 end
-                require('gitsigns-yadm').yadm_signs(callback, { bufnr = bufnr })
+                return callback {}
             end,
             on_attach = function(bufnr)
                 local function map(mode, l, r, opts)

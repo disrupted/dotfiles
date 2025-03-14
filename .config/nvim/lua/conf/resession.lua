@@ -2,10 +2,9 @@ local M = {}
 
 ---@return string
 M.get_session_name = function()
-    local name = assert(vim.uv.cwd())
-    local git = require 'git'
-    if git.is_repo() then
-        local branch = git.current_branch()
+    local name = vim.g.workspace_root
+    if vim.g.git_repo then
+        local branch = require('git').current_branch()
         return name .. '_' .. branch
     else
         return name
