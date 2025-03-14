@@ -23,104 +23,30 @@ local function copy(args)
     return args[1]
 end
 
-return {
-    -- method
-    s({
-        trig = 'def',
-        name = 'def method',
-        dscr = {
-            'def func(arg: str) -> None:',
-        },
-    }, {
-        -- decorator
-        f(function(args)
-            if args[1][1] == 'cls, ' then
-                return { '@classmethod', '' }
-            end
-            if args[1][1] == '' then
-                return { '@staticmethod', '' }
-            end
-            return ''
-        end, 2),
-        t 'def ',
-        -- method name
-        i(1, 'func'),
-        t '(',
-        c(2, {
-            t 'self, ',
-            t 'cls, ',
-            t '',
-        }),
-        -- first method argument
-        i(3, 'arg'),
-        t ': ',
-        -- argument type
-        i(4, 'str'),
-        t ') -> ',
-        -- return type
-        i(5, 'None'),
-        -- linebreak
-        t { ':', '\t' },
-        i(0, 'pass'),
-    }, {
-        show_condition = function(line_to_cursor)
-            return #vim.trim(line_to_cursor) == 0
-        end,
-    }),
-    s({
-        trig = 'property', -- FIXME: blink.cmp doesn't match @property
-        name = 'property',
-        dscr = {
-            'New property: get and set via decorator',
-        },
-    }, {
-        -- decorator
-        t { '@property', '' },
-        t 'def ',
-        -- method name
-        i(1, 'foo'),
-        t '(self) -> ',
-        -- return type
-        i(2, 'str'),
-        -- linebreak
-        t { ':', '\t' },
-        t 'return self._',
-        -- field name, copied from argument
-        f(copy, 1),
-        -- empty lines
-        t { '', '', '' },
-        -- setter
-        t { '@' },
-        f(copy, 1),
-        t { '.setter', '' },
-        t 'def ',
-        f(copy, 1),
-        t '(self, ',
-        f(copy, 1),
-        t ': ',
-        f(copy, 2),
-        t { ') -> None:', '\t' },
-        t 'self._',
-        f(copy, 1),
-        t ' = ',
-        f(copy, 1),
-    }, {
-        show_condition = function(line_to_cursor)
-            local function is_inside_class()
-                local node = vim.treesitter.get_node()
+local ignored_nodes = { 'string', 'comment' }
 
-                while node do
-                    if node:type() == 'class_definition' then
-                        return true
-                    end
-                    node = node:parent()
-                end
-                return false
-            end
+---@param node? TSNode
+local function is_inside_ignored_node(node)
+    node = node or vim.treesitter.get_node()
+    return node and vim.tbl_contains(ignored_nodes, node:type())
+end
 
-            return #vim.trim(line_to_cursor) == 0 and is_inside_class()
-        end,
-    }),
+---@param node? TSNode
+local function is_inside_class(node)
+    node = node or vim.treesitter.get_node()
+    while node do
+        if node:type() == 'function_definition' then
+            return false
+        end
+        if node:type() == 'class_definition' then
+            return true
+        end
+        node = node:parent()
+    end
+    return false
+end
+
+local snippets = {
     -- class
     s('class', {
         t 'class ',
@@ -159,6 +85,46 @@ return {
             return #vim.trim(line_to_cursor) == 0
         end,
     }),
+    s({
+        trig = 'property', -- FIXME: blink.cmp doesn't match @property
+        name = 'property',
+        dscr = { 'New property: get and set via decorator' },
+    }, {
+        -- decorator
+        t { '@property', '' },
+        t 'def ',
+        -- method name
+        i(1, 'foo'),
+        t '(self) -> ',
+        -- return type
+        i(2, 'str'),
+        -- linebreak
+        t { ':', '\t' },
+        t 'return self._',
+        -- field name, copied from argument
+        f(copy, 1),
+        -- empty lines
+        t { '', '', '' },
+        -- setter
+        t { '@' },
+        f(copy, 1),
+        t { '.setter', '' },
+        t 'def ',
+        f(copy, 1),
+        t '(self, ',
+        f(copy, 1),
+        t ': ',
+        f(copy, 2),
+        t { ') -> None:', '\t' },
+        t 'self._',
+        f(copy, 1),
+        t ' = ',
+        f(copy, 1),
+    }, {
+        show_condition = function(line_to_cursor)
+            return #vim.trim(line_to_cursor) == 0 and is_inside_class()
+        end,
+    }),
     s('main', {
         t { 'if __name__ == "__main__":', '\t' },
         i(0, 'main()'),
@@ -171,9 +137,7 @@ return {
     s({
         trig = 'env',
         name = 'shebang',
-        dscr = {
-            'Python shebang',
-        },
+        dscr = { 'Python shebang' },
     }, {
         t { '#!/usr/bin/env python3' },
     }, {
@@ -181,44 +145,102 @@ return {
             return line_to_cursor == ''
         end,
     }),
+}
+
+local autosnippets = {
+    -- function
+    s({
+        trig = 'def',
+        name = 'def function',
+        dscr = { 'def func(arg: str) -> None:' },
+        condition = function(line_to_cursor)
+            return vim.trim(line_to_cursor) == 'def' -- beginning of the line
+                and not is_inside_ignored_node()
+                and not is_inside_class()
+        end,
+    }, {
+        t 'def ',
+        -- function name
+        i(1, 'func'),
+        t '(',
+        -- first function argument
+        i(2, 'arg'),
+        t ': ',
+        -- argument type
+        i(3, 'str'),
+        t ') -> ',
+        -- return type
+        i(4, 'None'),
+        -- linebreak
+        t { ':', '\t' },
+        i(0, 'pass'),
+    }),
+    -- method
+    s({
+        trig = 'def',
+        name = 'def method',
+        dscr = { 'def method(self, arg: str) -> None:' },
+        condition = function(line_to_cursor)
+            return vim.trim(line_to_cursor) == 'def' -- beginning of the line
+                and not is_inside_ignored_node()
+                and is_inside_class()
+        end,
+    }, {
+        -- decorator
+        f(function(args)
+            if args[1][1] == 'cls, ' then
+                return { '@classmethod', '' }
+            end
+            if args[1][1] == '' then
+                return { '@staticmethod', '' }
+            end
+            return ''
+        end, 2),
+        t 'def ',
+        -- method name
+        i(1, 'method'),
+        t '(',
+        c(2, {
+            t 'self, ',
+            t 'cls, ',
+            t '',
+        }),
+        -- first method argument
+        i(3, 'arg'),
+        t ': ',
+        -- argument type
+        i(4, 'str'),
+        t ') -> ',
+        -- return type
+        i(5, 'None'),
+        -- linebreak
+        t { ':', '\t' },
+        i(0, 'pass'),
+    }),
     s({
         trig = 'from',
         name = 'from … import …',
-        dscr = {
-            'import from module',
-        },
+        dscr = { 'import from module' },
     }, {
         t { 'from ' },
         i(1, ''),
         t { ' import ' },
         i(0, ''),
-    }, {
-        show_condition = function(line_to_cursor)
-            return #vim.trim(line_to_cursor) == 0
-        end,
     }),
     s({
         trig = 'if',
         name = 'if …:',
-        dscr = {
-            'if condition',
-        },
+        dscr = { 'if condition' },
     }, {
         t { 'if ' },
         i(1, ''),
         t { ':', '\t' },
         i(0, 'pass'),
-    }, {
-        show_condition = function(line_to_cursor)
-            return #vim.trim(line_to_cursor) == 0
-        end,
     }),
     s({
         trig = 'for',
         name = 'for …:',
-        dscr = {
-            'for loop',
-        },
+        dscr = { 'for loop' },
     }, {
         t { 'for ' },
         i(1, 'i'),
@@ -233,17 +255,11 @@ return {
         }),
         t { ':', '\t' },
         i(0, 'pass'),
-    }, {
-        show_condition = function(line_to_cursor)
-            return #vim.trim(line_to_cursor) == 0
-        end,
     }),
     s({
         trig = 'try',
         name = 'try … except',
-        dscr = {
-            'try-except-block',
-        },
+        dscr = { 'try-except-block' },
     }, {
         t { 'try:', '\t' },
         i(1, 'pass'),
@@ -260,9 +276,7 @@ return {
             i(nil, 'pass'),
         }),
         i(0),
-    }, {
-        show_condition = function(line_to_cursor)
-            return #vim.trim(line_to_cursor) == 0
-        end,
     }),
 }
+
+return snippets, autosnippets

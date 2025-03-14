@@ -41,19 +41,10 @@ return {
                 desc = 'Snippet: cycle choice node',
             },
         },
-        opts = {},
-        config = function()
-            local ls = require 'luasnip'
+        opts = function()
             local types = require 'luasnip.util.types'
-
-            vim.api.nvim_set_hl(
-                0,
-                'LuasnipChoiceNodePassive',
-                { italic = true }
-            )
-            vim.api.nvim_set_hl(0, 'LuasnipChoiceNodeActive', { bold = true })
-
-            ls.config.set_config {
+            return {
+                enable_autosnippets = true,
                 keep_roots = true,
                 link_roots = true,
                 link_children = true,
@@ -73,8 +64,17 @@ return {
                         },
                     },
                 },
-                enable_autosnippets = true,
             }
+        end,
+        config = function(_, opts)
+            require('luasnip').config.set_config(opts)
+
+            vim.api.nvim_set_hl(
+                0,
+                'LuasnipChoiceNodePassive',
+                { italic = true }
+            )
+            vim.api.nvim_set_hl(0, 'LuasnipChoiceNodeActive', { bold = true })
 
             vim.api.nvim_create_autocmd('User', {
                 pattern = 'LuasnipSnippetsAdded',
