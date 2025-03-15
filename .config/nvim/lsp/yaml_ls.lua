@@ -2,6 +2,23 @@
 return {
     cmd = { 'yaml-language-server', '--stdio' },
     filetypes = { 'yaml' },
+    handlers = {
+        ---@type lsp.Handler
+        ['textDocument/publishDiagnostics'] = function(err, result, ctx)
+            ---@param diagnostic vim.Diagnostic
+            result.diagnostics = vim.tbl_filter(function(diagnostic)
+                if
+                    -- mkdocs
+                    diagnostic.message:match 'Unresolved tag: tag:yaml%.org,2002:python/'
+                then
+                    return false
+                end
+
+                return true
+            end, result.diagnostics)
+            vim.lsp.handlers[ctx.method](err, result, ctx)
+        end,
+    },
     settings = {
         yaml = {
             editor = { formatOnType = false },
@@ -11,12 +28,7 @@ return {
                 -- Helm charts
                 -- ['https://json.schemastore.org/chart.json'] = '/templates/*',
             },
-            customTags = {
-                -- mkdocs
-                'tag:yaml.org,2002:python/name:material.extensions.emoji.twemoji',
-                'tag:yaml.org,2002:python/name:material.extensions.emoji.to_svg',
-                'tag:yaml.org,2002:python/name:pymdownx.superfences.fence_code_format',
-            },
+            customTags = {},
         },
     },
 }
