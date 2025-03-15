@@ -28,7 +28,13 @@ local ignored_nodes = { 'string', 'comment' }
 ---@param node? TSNode
 local function is_inside_ignored_node(node)
     node = node or vim.treesitter.get_node()
-    return node and vim.tbl_contains(ignored_nodes, node:type())
+    while node do
+        if vim.tbl_contains(ignored_nodes, node:type()) then
+            return true
+        end
+        node = node:parent()
+    end
+    return false
 end
 
 ---@param node? TSNode
@@ -221,6 +227,10 @@ local autosnippets = {
         trig = 'from',
         name = 'from … import …',
         dscr = { 'import from module' },
+        condition = function(line_to_cursor)
+            return vim.trim(line_to_cursor) == 'from' -- beginning of the line
+                and not is_inside_ignored_node()
+        end,
     }, {
         t { 'from ' },
         i(1, ''),
@@ -231,6 +241,10 @@ local autosnippets = {
         trig = 'if',
         name = 'if …:',
         dscr = { 'if condition' },
+        condition = function(line_to_cursor)
+            return vim.trim(line_to_cursor) == 'if' -- beginning of the line
+                and not is_inside_ignored_node()
+        end,
     }, {
         t { 'if ' },
         i(1, ''),
@@ -241,6 +255,10 @@ local autosnippets = {
         trig = 'for',
         name = 'for …:',
         dscr = { 'for loop' },
+        condition = function(line_to_cursor)
+            return vim.trim(line_to_cursor) == 'for' -- beginning of the line
+                and not is_inside_ignored_node()
+        end,
     }, {
         t { 'for ' },
         i(1, 'i'),
@@ -260,11 +278,15 @@ local autosnippets = {
         trig = 'try',
         name = 'try … except',
         dscr = { 'try-except-block' },
+        condition = function(line_to_cursor)
+            return vim.trim(line_to_cursor) == 'try' -- beginning of the line
+                and not is_inside_ignored_node()
+        end,
     }, {
         t { 'try:', '\t' },
         i(1, 'pass'),
         t { '', 'except ' },
-        i(2, 'exception'),
+        i(2, 'Exception'),
         t { ' as ' },
         i(3, 'e'),
         t { ':', '\t' },
