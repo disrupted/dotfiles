@@ -23,15 +23,13 @@ return {
 
             local WorkDir = {
                 static = { icon = '' },
-                init = function(self)
-                    self.cwd = assert(vim.uv.cwd())
-                end,
                 provider = function(self)
-                    local cwd = vim.fn.fnamemodify(self.cwd, ':~')
-                    -- if not conditions.width_percent_below(#cwd, 0.25) then
-                    --     cwd = vim.fn.pathshorten(cwd)
+                    local workspace =
+                        vim.fn.fnamemodify(vim.g.workspace_root, ':~')
+                    -- if not conditions.width_percent_below(#workspace, 0.25) then
+                    --     workspace = vim.fn.pathshorten(workspace)
                     -- end
-                    return string.format(' %s %s', self.icon, cwd)
+                    return string.format(' %s %s', self.icon, workspace)
                 end,
                 update = { 'DirChanged' },
                 hl = function()
@@ -785,9 +783,9 @@ return {
                 lsp = {
                     valid_symbols = {
                         'File',
-                        'Module',
-                        'Namespace',
-                        'Package',
+                        -- 'Module',
+                        -- 'Namespace',
+                        -- 'Package',
                         'Class',
                         'Method',
                         'Constructor',
@@ -854,10 +852,10 @@ return {
                         Reference = '󰋺 ',
                         Regex = ' ',
                         Repeat = '󰑖 ',
-                        Scope = '󰅩 ',
+                        Scope = ' ', -- FIXME: 󰅩 symbol rendered incorrectly in Ghostty
                         Snippet = '󱡄 ',
                         Specifier = '󰦪 ',
-                        Statement = '󰅩 ',
+                        Statement = ' ',
                         String = '󰉾 ',
                         Struct = '󱡠 ',
                         SwitchStatement = '󰺟 ',

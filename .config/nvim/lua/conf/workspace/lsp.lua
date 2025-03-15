@@ -2,9 +2,8 @@ local M = {}
 
 -- Start LSP client for workspace
 ---@param config vim.lsp.Config
----@param workspace_root? string defaults to cwd
 ---@return integer? client_id
-local start = function(config, workspace_root)
+local start = function(config)
     if
         vim.iter(vim.lsp.get_clients()):any(function(client)
             return client.name == config.name
@@ -15,14 +14,14 @@ local start = function(config, workspace_root)
     end
     config = vim.deepcopy(config)
     if not config.root_dir then
-        workspace_root = workspace_root or assert(vim.uv.cwd())
         if
             config.root_markers ~= nil
             and not vim.tbl_isempty(config.root_markers)
         then
-            config.root_dir = vim.fs.root(workspace_root, config.root_markers)
+            config.root_dir =
+                vim.fs.root(vim.g.workspace_root, config.root_markers)
         else
-            config.root_dir = workspace_root
+            config.root_dir = vim.g.workspace_root
         end
     end
     Snacks.notify.info(

@@ -157,7 +157,7 @@ return {
                     path = {
                         opts = {
                             get_cwd = function(_)
-                                return vim.uv.cwd()
+                                return vim.g.workspace_root
                             end,
                         },
                     },
