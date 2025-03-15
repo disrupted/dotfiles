@@ -651,9 +651,15 @@ return {
             vim.api.nvim_create_user_command('Todo', 'TodoTrouble', {})
         end,
         opts = {
-            search = {
-                pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
+            search = { pattern = [[\b(KEYWORDS)(\([^\)]*\))?:]] },
+            highlight = { pattern = [[.*<((KEYWORDS)%(\(.{-1,}\))?):]] },
             },
+        config = function(_, opts)
+            -- HACK: no option to disable highlighting globally
+            ---@diagnostic disable-next-line: duplicate-set-field
+            require('todo-comments.highlight').start = function() end
+            require('todo-comments').setup(opts)
+        end,
         },
     },
 }
