@@ -23,7 +23,8 @@ return {
         import = '',
     },
     git = {
-        git = '',
+        git = '󰊢',
+        branch = '',
         github = '',
         gitlab = '',
         staged = '',

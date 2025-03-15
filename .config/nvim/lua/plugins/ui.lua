@@ -149,44 +149,16 @@ return {
                 { provider = '%<' } -- this means that the statusline is cut here when there's not enough space
             )
 
-            vim.api.nvim_create_autocmd(
-                'User', -- TODO: DirChanged?
-                {
-                    pattern = { 'NeogitBranchCheckout' },
-                    callback = function()
-                        require('git').refresh()
-                    end,
-                    desc = 'Refresh Git',
-                }
-            )
-            vim.defer_fn(require('git').refresh, 50)
-
-            local GhPR = {
-                condition = function()
-                    return vim.g.git_pr and vim.g.git_pr.state == 'OPEN'
-                end,
-                provider = icons.git.pull_request .. ' ',
-            }
-            local GhPRTitle = {
-                condition = function()
-                    return GhPR.condition() and #vim.g.git_pr.title <= 50
-                end,
-                provider = function()
-                    return vim.g.git_pr.title
-                end,
-            }
-            table.insert(GhPR, GhPRTitle)
-
-            local Git = {
+            local GitStatus = {
                 condition = function(self)
-                    return conditions.is_git_repo() and is_file(self.bufnr)
+                    return vim.b[self.bufnr].gitsigns_status_dict
+                        and is_file(self.bufnr)
                 end,
                 static = {
                     icons = {
                         added = '+',
                         changed = '~',
                         removed = '-',
-                        head = icons.git.git,
                     },
                 },
                 init = function(self)
@@ -238,16 +210,45 @@ return {
                     end,
                     hl = 'GitSignsDelete',
                 },
+            }
+
+            local GhPR = {
+                condition = function()
+                    return vim.g.git_pr and vim.g.git_pr.state == 'OPEN'
+                end,
+                provider = icons.git.pull_request .. ' ',
+            }
+            local GhPRTitle = {
+                condition = function()
+                    return GhPR.condition() and #vim.g.git_pr.title <= 50
+                end,
+                provider = function()
+                    return vim.g.git_pr.title
+                end,
+            }
+            table.insert(GhPR, GhPRTitle)
+
+            local GitBranch = {
+                update = {
+                    'User',
+                    pattern = 'GitRefresh',
+                    callback = vim.schedule_wrap(function()
+                        vim.cmd.redrawstatus()
+                    end),
+                },
+
                 GhPR,
-                { -- Git branch name (if no open PR or PR title too long)
+                {
                     condition = function()
-                        return not GhPRTitle.condition()
+                        return (vim.g.git_branch or vim.g.git_head)
+                            and not GhPRTitle.condition()
                     end,
-                    provider = function(self)
+                    provider = function()
                         return string.format(
                             '%s %s',
-                            self.icons.head,
-                            self.status.head
+                            vim.g.git_branch and icons.git.branch
+                                or icons.git.commit,
+                            vim.g.git_branch or vim.g.git_head
                         )
                     end,
                 },
@@ -624,7 +625,8 @@ return {
                     DAPStatus,
                     Overseer,
                     NeoTestBlock,
-                    Git,
+                    GitStatus,
+                    GitBranch,
                 },
                 tabline = {
                     condition = function()

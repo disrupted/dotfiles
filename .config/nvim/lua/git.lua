@@ -46,15 +46,32 @@ M.refresh = function()
     require('coop').spawn(function()
         local remote_url = M.async.remote_url()
         vim.g.git_remote_type = M.match_remote_type(remote_url)
-        if vim.g.git_remote_type == 'github' then
-            require('conf.octo').pr.refresh()
+        vim.g.git_branch = M.async.current_branch()
+        if vim.g.git_branch then
+            if vim.g.git_remote_type == 'github' then
+                require('conf.octo').pr.refresh()
+            end
+        else
+            vim.g.git_head = M.async.head()
         end
+        vim.api.nvim_exec_autocmds('User', {
+            pattern = 'GitRefresh',
+            modeline = false,
+        })
     end)
 end
 
 ---@param cwd string
 M.setup = function(cwd)
-    vim.g.git_repo = M.find_repo(cwd)
+    vim.g.git_repo = M.find_repo(cwd) -- TODO: DirChanged autocmd?
+    vim.api.nvim_create_autocmd('User', {
+        pattern = { 'NeogitBranchCheckout' }, -- TODO: watch Git?
+        callback = function()
+            M.refresh()
+        end,
+        desc = 'Refresh Git',
+    })
+    vim.defer_fn(M.refresh, 0)
 end
 
 ---@async
@@ -82,6 +99,12 @@ end
 ---@return string name of the current branch
 M.async.current_branch = function()
     return git_async { 'branch', '--show-current' }
+end
+
+---@async
+---@return string
+M.async.head = function()
+    return git_async { 'rev-parse', '--short', 'HEAD' }
 end
 
 ---@async
