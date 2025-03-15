@@ -421,8 +421,6 @@ opt.termguicolors = true
 local expr = { expr = true, noremap = false, silent = false }
 vim.keymap.set('n', 'j', '(v:count ? \'j\' : \'gj\')', expr)
 vim.keymap.set('n', 'k', '(v:count ? \'k\' : \'gk\')', expr)
-vim.keymap.set('', '<Down>', '(v:count ? \'j\' : \'gj\')', expr)
-vim.keymap.set('', '<Up>', '(v:count ? \'k\' : \'gk\')', expr)
 
 -- Easier splits navigation
 local remap = { remap = true, silent = false }
