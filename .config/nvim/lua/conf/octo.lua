@@ -330,7 +330,11 @@ end
 
 ---@async
 M.pr.refresh = function()
-    vim.g.git_pr = M.pr.json { 'state', 'title' }
+    if vim.g.git_branch then
+        vim.g.git_pr = M.pr.json { 'state', 'title' }
+    else
+        vim.g.git_pr = nil
+    end
 end
 
 return M

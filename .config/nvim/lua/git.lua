@@ -47,12 +47,11 @@ M.refresh = function()
         local remote_url = M.async.remote_url()
         vim.g.git_remote_type = M.match_remote_type(remote_url)
         vim.g.git_branch = M.async.current_branch()
-        if vim.g.git_branch then
-            if vim.g.git_remote_type == 'github' then
-                require('conf.octo').pr.refresh()
-            end
-        else
+        if not vim.g.git_branch then
             vim.g.git_head = M.async.head()
+        end
+        if vim.g.git_remote_type == 'github' then
+            require('conf.octo').pr.refresh()
         end
         vim.api.nvim_exec_autocmds('User', {
             pattern = 'GitRefresh',
@@ -66,9 +65,7 @@ M.setup = function(cwd)
     vim.g.git_repo = M.find_repo(cwd) -- TODO: DirChanged autocmd?
     vim.api.nvim_create_autocmd('User', {
         pattern = { 'NeogitBranchCheckout' }, -- TODO: watch Git?
-        callback = function()
-            M.refresh()
-        end,
+        callback = M.refresh,
         desc = 'Refresh Git',
     })
     vim.defer_fn(M.refresh, 0)
