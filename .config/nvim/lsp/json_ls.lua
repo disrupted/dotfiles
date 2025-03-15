@@ -5,15 +5,16 @@ return {
     ---@type table<vim.lsp.protocol.Methods, lsp.Handler>
     handlers = {
         ---@type lsp.Handler
-        ['textDocument/publishDiagnostics'] = function(err, result, ctx)
-            result.diagnostics = vim.tbl_filter(function(diagnostic)
-                -- disable diagnostics for trailing comma in JSONC
-                if diagnostic.code == 519 then
+        ['textDocument/diagnostic'] = function(err, result, ctx)
+            ---@param diagnostic vim.Diagnostic
+            result.items = vim.tbl_filter(function(diagnostic)
+                -- disable diagnostic for trailing comma in JSONC
+                if diagnostic.code == 519 and diagnostic.source == 'jsonc' then
                     return false
                 end
 
                 return true
-            end, result.diagnostics)
+            end, result.items)
             vim.lsp.handlers[ctx.method](err, result, ctx)
         end,
     },
@@ -22,6 +23,7 @@ return {
     },
     settings = {
         json = {
+            validate = { enable = true },
             schemas = {
                 {
                     fileMatch = { 'package.json' },
