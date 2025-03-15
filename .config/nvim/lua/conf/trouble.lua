@@ -2,6 +2,13 @@ local trouble = require 'trouble'
 
 local M = {}
 
+---@param mode? string the mode to close
+M.close_all = function(mode)
+    while trouble.is_open(mode) do
+        trouble.close(mode)
+    end
+end
+
 ---@param modes string[] all related modes
 ---@param mode string the mode to toggle
 local function toggle(modes, mode)

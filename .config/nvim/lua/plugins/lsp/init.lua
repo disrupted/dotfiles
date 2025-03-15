@@ -568,9 +568,9 @@ return {
             {
                 '<Leader>xq',
                 function()
-                    require('trouble').toggle { mode = 'quickfix' }
+                    require('conf.trouble').close_all()
                 end,
-                desc = 'QuickFix',
+                desc = 'Close',
             },
         },
         ---@type trouble.Config
