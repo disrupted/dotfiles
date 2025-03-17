@@ -249,6 +249,7 @@ local create_pr_form = function(opts)
                     assert(form)
                     form:submit()
                 end,
+                ---@diagnostic disable-next-line: undefined-field
                 is_active = signal.is_loading:get_value(),
             },
             n.spinner {

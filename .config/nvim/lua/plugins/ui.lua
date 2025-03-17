@@ -24,8 +24,12 @@ return {
             local WorkDir = {
                 static = { icon = '' },
                 provider = function(self)
-                    local workspace =
-                        vim.fn.fnamemodify(vim.g.workspace_root, ':~')
+                    local workspace = '~/'
+                            .. vim.fs.relpath(
+                                vim.env.HOME,
+                                vim.g.workspace_root
+                            )
+                        or vim.g.workspace_root
                     -- if not conditions.width_percent_below(#workspace, 0.25) then
                     --     workspace = vim.fn.pathshorten(workspace)
                     -- end
@@ -91,9 +95,9 @@ return {
                     end
                     local filename = self.filename
                     local fp = vim.fn.fnamemodify(filename, ':~:.')
-                    if vim.fn.fnamemodify(filename, ':t') ~= '' then
+                    if vim.fs.basename(filename) ~= '' then
                         -- not unnamed file
-                        fp = vim.fn.fnamemodify(fp, ':h')
+                        fp = vim.fs.dirname(fp)
                     end
                     local tbl = split(fp, '/')
                     local len = #tbl
@@ -114,7 +118,7 @@ return {
 
             local FileName = {
                 provider = function(self)
-                    local filename = vim.fn.fnamemodify(self.filename, ':t')
+                    local filename = vim.fs.basename(self.filename)
 
                     if filename == '' then
                         filename = '[unnamed]'
@@ -601,7 +605,7 @@ return {
                         if self.filename == '' then
                             return '[No Name]'
                         else
-                            local name = vim.fn.fnamemodify(self.filename, ':t')
+                            local name = vim.fs.basename(self.filename)
                             if #name > 16 then
                                 name = name:sub(1, 15) .. '…'
                             end

@@ -482,7 +482,7 @@ return {
 
                 -- Filter out linters that don't exist or don't match the condition.
                 local ctx = { filename = vim.api.nvim_buf_get_name(0) }
-                ctx.dirname = vim.fn.fnamemodify(ctx.filename, ':h')
+                ctx.dirname = vim.fs.dirname(ctx.filename)
                 names = vim.tbl_filter(function(name)
                     local linter = lint.linters[name]
                     if not linter then

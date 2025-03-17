@@ -237,7 +237,6 @@ opt.shortmess:append 'I' -- disable :intro startup screen
 -- Title {{{1
 -----------------------------------------------------------------------------//
 opt.titlestring = '❐ %t'
-opt.titleold = '%{fnamemodify(getcwd(), ":t")}'
 opt.title = true
 opt.titlelen = 70
 
