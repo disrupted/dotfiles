@@ -72,6 +72,16 @@ end
 ---@param cwd string
 ---@return string
 M.get_root = function(cwd)
+    for filetype, files in pairs(default_project_markers) do
+        local root = vim.fs.root(cwd, files)
+        if root then
+            Snacks.notify(
+                string.format('Detected %s project', filetype),
+                { level = 'debug' }
+            )
+            return root
+        end
+    end
     if vim.g.git_repo then
         return vim.fs.dirname(vim.g.git_repo)
     end

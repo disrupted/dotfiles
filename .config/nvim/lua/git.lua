@@ -60,14 +60,54 @@ M.refresh = function()
     end)
 end
 
+---@type uv.uv_fs_event_t
+local watcher
+
+---@type uv.fs_event_start.callback
+local function on_file_change(err, filename, events)
+    if err then
+        Snacks.notify.error(
+            { ('Error watching %s'):format(filename), err },
+            { title = 'Git' }
+        )
+        return
+    end
+
+    Snacks.notify(
+        { ('%s changed'):format(filename), vim.inspect(events) },
+        { title = 'Git', level = 'debug' }
+    )
+    M.refresh()
+    M.watch() -- restart watcher
+end
+
+M.watch = function()
+    M.close()
+    watcher = assert(vim.uv.new_fs_event())
+    local file_to_watch = vim.g.git_repo .. '/HEAD'
+    watcher:start(file_to_watch, {}, vim.schedule_wrap(on_file_change))
+    Snacks.notify(
+        { ('initialized watcher on %s'):format(file_to_watch) },
+        { title = 'Git', level = 'debug' }
+    )
+end
+
+M.close = function()
+    if watcher and not watcher:is_closing() then
+        watcher:close()
+    end
+end
+
 ---@param cwd string
 M.setup = function(cwd)
     vim.g.git_repo = M.find_repo(cwd) -- TODO: DirChanged autocmd?
-    vim.api.nvim_create_autocmd('User', {
-        pattern = { 'NeogitBranchCheckout' }, -- TODO: watch Git?
-        callback = M.refresh,
-        desc = 'Refresh Git',
-    })
+    if vim.g.git_repo then
+        M.watch()
+        vim.api.nvim_create_autocmd(
+            'VimLeavePre',
+            { callback = M.close, desc = 'Close Git watcher' }
+        )
+    end
     vim.defer_fn(M.refresh, 0)
 end
 

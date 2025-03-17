@@ -653,7 +653,7 @@ return {
         opts = {
             search = { pattern = [[\b(KEYWORDS)(\([^\)]*\))?:]] },
             highlight = { pattern = [[.*<((KEYWORDS)%(\(.{-1,}\))?):]] },
-            },
+        },
         config = function(_, opts)
             -- HACK: no option to disable highlighting globally
             ---@diagnostic disable-next-line: duplicate-set-field
