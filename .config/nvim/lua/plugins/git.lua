@@ -229,23 +229,6 @@ return {
             })
 
             vim.api.nvim_create_autocmd('User', {
-                pattern = {
-                    -- 'NeogitStatusRefreshed',
-                    'NeogitCommitComplete',
-                    'NeogitBranchReset',
-                    'NeogitRebase',
-                    'NeogitReset',
-                },
-                group = augroup,
-                callback = function()
-                    if package.loaded['neo-tree'] then
-                        require('neo-tree.sources.git_status').refresh()
-                    end
-                end,
-                desc = 'Update neo-tree on Neogit event',
-            })
-
-            vim.api.nvim_create_autocmd('User', {
                 pattern = 'GitSignsChanged',
                 group = augroup,
                 callback = function()

@@ -31,7 +31,6 @@
   "mason.nvim": { "branch": "main", "commit": "fc98833b6da5de5a9c5b1446ac541577059555be" },
   "matchwith.nvim": { "branch": "hl-matchparen", "commit": "c4bfce20d365ce123c0f572e1d6167dad624029a" },
   "mkdir.nvim": { "branch": "main", "commit": "c55d1dee4f099528a1853b28bb28caa802eba217" },
-  "neo-tree.nvim": { "branch": "v3.x", "commit": "5d172e8315444dbc32867d1c7b04d8e7e68ec4e1" },
   "neoconf.nvim": { "branch": "main", "commit": "749744b5cd3603ba56a06891f5a340345f271450" },
   "neogen": { "branch": "main", "commit": "05d754004da8c89115b291f2a23ca530a8cac8fd" },
   "neogit": { "branch": "master", "commit": "757c74cf4d5765d39370ebb48cbcf1ea44c2f84d" },
