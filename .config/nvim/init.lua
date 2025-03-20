@@ -379,9 +379,9 @@ vim.api.nvim_create_autocmd('BufLeave', {
     desc = 'Exit insert mode when switching from terminal',
 })
 vim.api.nvim_create_autocmd('TermClose', {
-    pattern = 'term://*',
+    pattern = 'term://*' .. vim.env.SHELL, -- only for default shell, otherwise breaks overseer
     callback = function(args)
-        if vim.v.event.status == 0 then -- only close on exit code 0
+        if vim.v.event.status == 0 and vim.api.nvim_buf_is_valid(args.buf) then -- only close on exit code 0
             vim.api.nvim_buf_delete(args.buf, { force = true })
         end
     end,
