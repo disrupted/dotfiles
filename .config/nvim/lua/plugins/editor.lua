@@ -66,7 +66,24 @@ return {
                 ';;',
                 function()
                     local harpoon = require 'harpoon'
-                    harpoon.ui:toggle_quick_menu(harpoon:list())
+                    local list = harpoon:list()
+                    local list_info = vim.iter(list.items):fold(
+                        { max = 35 },
+                        ---@param v HarpoonItem
+                        function(acc, v)
+                            local len = v.value:len()
+                            acc.max = math.max(len, acc.max)
+                            return acc
+                        end
+                    )
+                    harpoon.ui:toggle_quick_menu(list, {
+                        title = ' Harpoon ',
+                        title_pos = 'center',
+                        ui_width_ratio = 0.6,
+                        ui_max_width = list_info.max + 5,
+                        ui_fallback_width = 60,
+                        height_in_lines = math.max(list:length(), 1),
+                    })
                 end,
                 desc = 'Menu',
             },
