@@ -51,7 +51,8 @@ return {
     condition = {
         filetype = { 'toml' },
         callback = function(search)
-            local fname = vim.fn.expand '%:t'
+            local filepath = vim.api.nvim_buf_get_name(0)
+            local fname = vim.fs.basename(filepath)
             return fname == 'pyproject.toml'
                 and is_poetry_installed()
                 and is_poetry_pyproject()
