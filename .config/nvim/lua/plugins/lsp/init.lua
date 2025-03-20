@@ -622,18 +622,17 @@ return {
                         ---@type table<string, trouble.Item>
                         local locations = {}
                         -- find first location for each line
-                        vim.iter(items):each(function(item)
+                        for _, item in ipairs(items) do
                             local current_location = item.filename
                                 .. item.pos[1]
                             if
-                                locations[current_location] ~= nil
-                                and locations[current_location].pos[2]
-                                    <= item.pos[2]
+                                not locations[current_location]
+                                or locations[current_location].pos[2]
+                                    > item.pos[2]
                             then
-                                return
+                                locations[current_location] = item
                             end
-                            locations[current_location] = item
-                        end)
+                        end
                         return vim.tbl_values(locations)
                     end,
                 },
