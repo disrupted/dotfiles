@@ -46,7 +46,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
                 'gd',
                 function()
                     require('trouble').open {
-                        mode = 'lsp_definitions',
+                        mode = 'lsp_definitions_filtered',
                         auto_jump = true,
                     }
                 end,

@@ -615,6 +615,28 @@ return {
                         end, items)
                     end,
                 },
+                lsp_definitions_filtered = {
+                    mode = 'lsp_definitions',
+                    ---@param items trouble.Item
+                    filter = function(items)
+                        ---@type table<string, trouble.Item>
+                        local locations = {}
+                        -- find first location for each line
+                        vim.iter(items):each(function(item)
+                            local current_location = item.filename
+                                .. item.pos[1]
+                            if
+                                locations[current_location] ~= nil
+                                and locations[current_location].pos[2]
+                                    <= item.pos[2]
+                            then
+                                return
+                            end
+                            locations[current_location] = item
+                        end)
+                        return vim.tbl_values(locations)
+                    end,
+                },
             },
         },
         config = function(_, opts)
