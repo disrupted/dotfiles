@@ -166,8 +166,10 @@ return {
                     { desc = 'Select Git hunk' }
                 )
 
-                -- lazy-load git-conflict
-                require 'git-conflict'
+                if not package.loaded['git-conflict'] then
+                    -- load and refresh git-conflict
+                    vim.cmd 'GitConflictRefresh'
+                end
             end,
         },
     },
@@ -240,7 +242,8 @@ return {
     },
     {
         'akinsho/git-conflict.nvim',
-        lazy = true, -- lazy-loaded on gitsigns attach
+        tag = 'v2.1.0',
+        cmd = 'GitConflictRefresh', -- lazy-loaded on gitsigns attach
         init = function()
             require('which-key').add { { '<Leader>gx', group = 'Conflict' } }
         end,
