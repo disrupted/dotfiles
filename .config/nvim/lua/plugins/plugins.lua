@@ -203,6 +203,7 @@ return {
             {
                 '<C-s>',
                 function()
+                    local cursor = vim.api.nvim_win_get_cursor(0)
                     -- alternative: Trouble symbols open pinned=true auto_refresh=true win.relative=win win.position=left
                     local picker = Snacks.picker.lsp_symbols {
                         title = 'LSP Document Symbols',
@@ -384,6 +385,7 @@ return {
             {
                 '<Leader>gl',
                 function()
+                    ---@diagnostic disable-next-line: missing-fields
                     Snacks.gitbrowse.open {
                         what = 'permalink',
                         notify = false,
@@ -644,6 +646,7 @@ return {
                     },
                     preview = { minimal = true },
                 },
+                ---@diagnostic disable-next-line: missing-fields
                 icons = {
                     git = require('conf.icons').git,
                     diagnostics = { Hint = '' },
