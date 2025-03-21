@@ -429,11 +429,6 @@ vim.keymap.set('n', '<C-k>', '<C-w>k', remap)
 vim.keymap.set('n', '<C-h>', '<C-w>h', remap)
 vim.keymap.set('n', '<C-l>', '<C-w>l', remap)
 
--- Use alt + hjkl to resize windows
-vim.keymap.set('n', '<M-j>', '<cmd>resize -2<CR>')
-vim.keymap.set('n', '<M-k>', '<cmd>resize +2<CR>')
-vim.keymap.set('n', '<M-h>', '<cmd>vertical resize -2<CR>')
-vim.keymap.set('n', '<M-l>', '<cmd>vertical resize +2<CR>')
 -- it works differently on Mac
 vim.keymap.set('n', '∆', '<cmd>resize -2<CR>')
 vim.keymap.set('n', '˚', '<cmd>resize +2<CR>')

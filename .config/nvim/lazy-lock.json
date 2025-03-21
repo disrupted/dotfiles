@@ -70,6 +70,7 @@
   "refactoring.nvim": { "branch": "master", "commit": "36bd14ddd7ebf0546c15e6088e8bc93f8a98787d" },
   "resession.nvim": { "branch": "master", "commit": "cc1cc9a4ed7e6f72057c265ba5cc711ec16c2cff" },
   "rest.nvim": { "branch": "main", "commit": "2ded89dbda1fd3c1430685ffadf2df8beb28336d" },
+  "ripple.nvim": { "branch": "main", "commit": "8009919a22bee1ae84b7e6b24c6a05e777644761" },
   "rustaceanvim": { "branch": "master", "commit": "448c76451ecf3c0edabcde427b7f1c8c219be2dd" },
   "snacks.nvim": { "branch": "main", "commit": "bc0630e43be5699bb94dadc302c0d21615421d93" },
   "sniprun": { "branch": "master", "commit": "151ada2c984aee1feb45c7e3c2abb19f597ecbd0" },
