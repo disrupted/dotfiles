@@ -15,9 +15,9 @@ return {
         opts = {
             ensure_installed = {},
             registries = {
-                'github:mason-org/mason-registry',
                 'github:mistweaverco/zana-registry',
-                'lua:plugins.lsp.custom',
+                'github:mason-org/mason-registry',
+                -- 'lua:plugins.lsp.custom',
             },
         },
         config = function(_, opts)
