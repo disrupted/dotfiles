@@ -21,6 +21,7 @@ bold-is-bright                 = true
 link-url                       = true
 macos-titlebar-style           = tabs
 mouse-hide-while-typing        = true
+window-save-state              = always
 
 # Other
 clipboard-paste-protection     = true
