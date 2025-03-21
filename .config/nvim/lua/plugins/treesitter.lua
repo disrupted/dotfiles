@@ -105,22 +105,7 @@ return {
             '[f',
             ']C',
             '[C',
-            'zsp>',
-            'zsp<',
-            'zsf>',
-            'zsf<',
         },
-        init = function()
-            require('which-key').add {
-                { 'zs', group = 'Swap', icon = '󰓡' },
-                { 'zsp', desc = 'Parameter', icon = icons.kinds.Variable },
-                { 'zsp>', desc = 'Next', icon = icons.arrows.right },
-                { 'zsp<', desc = 'Prev', icon = icons.arrows.left },
-                { 'zsf', desc = 'Function', icon = icons.kinds.Function },
-                { 'zsf>', desc = 'Next', icon = icons.arrows.right },
-                { 'zsf<', desc = 'Prev', icon = icons.arrows.left },
-            }
-        end,
         opts = {
             select = {
                 enable = true,
@@ -175,17 +160,7 @@ return {
                     },
                 },
             },
-            swap = {
-                enable = true,
-                swap_next = {
-                    ['zsp>'] = '@parameter.inner',
-                    ['zsf>'] = '@function.outer',
-                },
-                swap_previous = {
-                    ['zsp<'] = '@parameter.inner',
-                    ['zsf<'] = '@function.outer',
-                },
-            },
+            swap = { enable = false }, -- use treewalker instead
         },
         config = function(_, opts)
             ---@diagnostic disable-next-line: missing-fields
