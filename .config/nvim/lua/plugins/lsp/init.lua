@@ -638,10 +638,6 @@ return {
                 },
             },
         },
-        config = function(_, opts)
-            require('trouble').setup(opts)
-            vim.api.nvim_set_hl(0, 'TroubleText', { link = 'CursorLineNr' })
-        end,
     },
     {
         'smjonas/inc-rename.nvim',
