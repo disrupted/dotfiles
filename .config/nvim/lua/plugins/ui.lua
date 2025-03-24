@@ -42,116 +42,11 @@ return {
                 end,
             }
 
-            local FileNameBlock = {
-                init = function(self)
-                    self.filename = vim.api.nvim_buf_get_name(self.bufnr)
-                end,
-                hl = 'StatusLine',
-            }
-
-            local FileIcon = {
-                init = function(self)
-                    local extension = vim.fn.fnamemodify(self.filename, ':e')
-                    self.icon, self.icon_color =
-                        require('nvim-web-devicons').get_icon_color(
-                            self.filename,
-                            extension,
-                            { default = true }
-                        )
-                end,
-                condition = function(self)
-                    return self.icon
-                end,
-                provider = function(self)
-                    return string.format('%s ', self.icon)
-                end,
-                -- hl = function(self)
-                --     return { fg = self.icon_color }
-                -- end,
-            }
-
-            local function split(str, sep)
-                local res = {}
-                local n = 1
-                for w in str:gmatch('([^' .. sep .. ']*)') do
-                    res[n] = res[n] or w -- only set once (so the blank after a string is ignored)
-                    if w == '' then
-                        n = n + 1
-                    end -- step forwards on a blank but not a string
-                end
-                return res
-            end
-
             local function is_file(bufnr)
                 return not conditions.buffer_matches({
                     buftype = { 'nofile', 'help', 'terminal' },
                 }, bufnr)
             end
-
-            local FilePath = {
-                provider = function(self)
-                    if not is_file(self.bufnr) then
-                        return ''
-                    end
-                    local filename = self.filename
-                    local fp = vim.fn.fnamemodify(filename, ':~:.')
-                    if vim.fs.basename(filename) ~= '' then
-                        -- not unnamed file
-                        fp = vim.fs.dirname(fp)
-                    end
-                    local tbl = split(fp, '/')
-                    local len = #tbl
-
-                    -- TODO
-                    -- if not conditions.width_percent_below(#filename, 0.25) then
-                    --     filename = vim.fn.pathshorten(filename)
-                    -- end
-                    if len > 2 and not tbl[0] == '~' or len > 3 then
-                        return '…/' .. table.concat(tbl, '/', len - 1) .. '/' -- shorten filepath to last 2 folders
-                    -- alternative: only 1 containing folder using vim builtin function
-                    -- return '…/' .. fn.fnamemodify(fn.expand '%', ':p:h:t') .. '/'
-                    else
-                        return fp .. '/'
-                    end
-                end,
-            }
-
-            local FileName = {
-                provider = function(self)
-                    local filename = vim.fs.basename(self.filename)
-
-                    if filename == '' then
-                        filename = '[unnamed]'
-                    end
-
-                    return filename
-                end,
-            }
-
-            local FileFlags = {
-                {
-                    condition = function()
-                        return vim.bo.modified
-                    end,
-                    provider = '',
-                },
-                {
-                    condition = function()
-                        return not vim.bo.modifiable or vim.bo.readonly
-                    end,
-                    provider = '',
-                },
-            }
-
-            FileNameBlock = utils.insert(
-                FileNameBlock,
-                FileIcon,
-                FilePath,
-                FileName,
-                Space,
-                FileFlags,
-                { provider = '%<' } -- this means that the statusline is cut here when there's not enough space
-            )
 
             local GitStatus = {
                 condition = function(self)
@@ -329,25 +224,6 @@ return {
                 },
             }
 
-            local Harpoon = {
-                static = { icons = { mark = 'M' } },
-                condition = function()
-                    return package.loaded.harpoon
-                end,
-                provider = function(self)
-                    local harpoon = require 'harpoon'
-                    local list = harpoon:list()
-
-                    local name = vim.fn.expand '%'
-                    local item = list:get_by_value(name)
-
-                    if not item then
-                        return
-                    end
-                    return self.icons.mark
-                end,
-            }
-
             local dap = lazy_require 'dap'
             local DAPStatus = {
                 condition = function()
@@ -385,13 +261,6 @@ return {
                 end,
             }
             local NeoTest = {
-                condition = function(self)
-                    local status = neotest.state.status_counts(
-                        self.adapter_ids[1],
-                        { buffer = self.bufnr }
-                    )
-                    return status
-                end,
                 init = function(self)
                     self.status = neotest.state.status_counts(
                         self.adapter_ids[1],
@@ -419,22 +288,6 @@ return {
                         return self.status.total > 0
                     end,
                     {
-                        -- {
-                        --     init = function(self)
-                        --         self.adapter = vim.split(
-                        --             vim.split(
-                        --                 self.adapter_ids[1],
-                        --                 ':',
-                        --                 { plain = true }
-                        --             )[1],
-                        --             'neotest-',
-                        --             { plain = true }
-                        --         )[2]
-                        --     end,
-                        --     provider = function(self)
-                        --         return string.format('%s ', self.adapter)
-                        --     end,
-                        -- },
                         {
                             provider = function(self)
                                 return string.format(
