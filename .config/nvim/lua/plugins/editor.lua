@@ -2,6 +2,11 @@
 ---@type LazySpec[]
 return {
     {
+        'tiagovla/scope.nvim', -- tab-scoped buffers
+        event = 'TabNew',
+        opts = {},
+    },
+    {
         'AckslD/nvim-neoclip.lua',
         enabled = false,
         event = 'TextYankPost',
@@ -47,9 +52,10 @@ return {
                 if vim.api.nvim_buf_get_name(bufnr) == '' then
                     return false
                 end
-                return vim.bo[bufnr].buflisted
+                return true
             end,
             extensions = {
+                scope = {},
                 dap = {},
             },
         },
