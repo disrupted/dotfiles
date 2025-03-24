@@ -456,6 +456,8 @@ return {
         init = function()
             require('conf.dap.adapters').python = 'dap-python'
         end,
+        ---@module 'dap-python'
+        ---@type dap-python.setup.opts
         opts = {
             include_configs = false,
             console = 'internalConsole',
