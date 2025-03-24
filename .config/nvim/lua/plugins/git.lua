@@ -214,6 +214,13 @@ return {
                 desc = 'Close Neogit after pushing',
             })
 
+            vim.api.nvim_create_autocmd('BufEnter', {
+                pattern = 'NeogitStatus',
+                group = augroup,
+                callback = neogit.refresh,
+                desc = 'Update Neogit status on enter',
+            })
+
             vim.api.nvim_create_autocmd('User', {
                 pattern = {
                     -- 'NeogitStatusRefreshed',
@@ -230,14 +237,12 @@ return {
                 desc = 'Update gitsigns on Neogit event',
             })
 
-            vim.api.nvim_create_autocmd('User', {
-                pattern = 'GitSignsChanged',
-                group = augroup,
-                callback = function()
-                    neogit.refresh()
-                end,
-                desc = 'Update Neogit on gitsigns action',
-            })
+            -- vim.api.nvim_create_autocmd('User', {
+            --     pattern = 'GitSignsChanged',
+            --     group = augroup,
+            --     callback = neogit.refresh,
+            --     desc = 'Update Neogit on gitsigns action',
+            -- })
         end,
     },
     {
