@@ -24,12 +24,12 @@ return {
             local WorkDir = {
                 static = { icon = '' },
                 provider = function(self)
-                    local workspace = '~/'
-                            .. vim.fs.relpath(
-                                vim.env.HOME,
-                                vim.g.workspace_root
-                            )
-                        or vim.g.workspace_root
+                    local workspace = vim.g.workspace_root
+                    local relpath =
+                        vim.fs.relpath(vim.env.HOME, vim.g.workspace_root)
+                    if relpath then
+                        workspace = relpath == '.' and '~' or '~/' .. relpath
+                    end
                     -- if not conditions.width_percent_below(#workspace, 0.25) then
                     --     workspace = vim.fn.pathshorten(workspace)
                     -- end
@@ -758,7 +758,6 @@ return {
                         'keyword',
                         'macro',
                         'method',
-                        -- 'module', -- remove for Python, otherwise yields a lot of spam, e.g. `from __future__ import annotations`
                         'namespace',
                         'null',
                         'number',
