@@ -261,6 +261,12 @@ return {
                 end,
             }
             local NeoTest = {
+                condition = function(self)
+                    return neotest.state.status_counts(
+                        self.adapter_ids[1],
+                        { buffer = self.bufnr }
+                    )
+                end,
                 init = function(self)
                     self.status = neotest.state.status_counts(
                         self.adapter_ids[1],
@@ -285,7 +291,7 @@ return {
                 },
                 {
                     condition = function(self)
-                        return self.status.total > 0
+                        return self.status.total > 0 or self.status.running > 0
                     end,
                     {
                         {
