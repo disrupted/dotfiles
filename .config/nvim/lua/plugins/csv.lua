@@ -7,7 +7,7 @@ return {
         ft = 'csv',
         ---@module 'csvview'
         ---@type CsvView.Options
-        opts = {},
+        opts = { view = { header_lnum = 1 } },
         config = function(_, opts)
             local csvview = require 'csvview'
             csvview.setup(opts)
