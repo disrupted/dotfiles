@@ -72,6 +72,10 @@ end
 ---@param cwd string
 ---@return string
 M.get_root = function(cwd)
+    -- abort if cwd is already git root
+    if vim.uv.fs_stat '.git' then
+        return cwd
+    end
     for filetype, files in pairs(default_project_markers) do
         local root = vim.fs.root(cwd, files)
         if root then
