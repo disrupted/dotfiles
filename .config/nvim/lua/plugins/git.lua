@@ -396,7 +396,7 @@ return {
                                 return
                             end
                             local pr = require('conf.octo').pr
-                            if not pr.exists() then
+                            if not require('gh').pr.exists() then
                                 pr.form_create()
                             else
                                 pr.open()
@@ -800,7 +800,7 @@ return {
                             local mr = require('glab').mr
                             if not mr.exists() then
                                 -- if upstream tracking branch was changed we want to
-                                -- create the PR against that branch instead of main
+                                -- create the MR against that branch instead of main
                                 local target
                                 local tracking_branch = git.tracking_branch()
                                 if tracking_branch then

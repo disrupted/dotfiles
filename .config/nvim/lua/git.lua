@@ -51,7 +51,7 @@ M.refresh = function()
             vim.g.git_head = M.async.head()
         end
         if vim.g.git_remote_type == 'github' then
-            require('conf.octo').pr.refresh()
+            require('gh').pr.refresh()
         elseif vim.g.git_remote_type == 'gitlab' then
             require('glab').mr.refresh()
         end
