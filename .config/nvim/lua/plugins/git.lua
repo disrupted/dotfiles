@@ -771,10 +771,74 @@ return {
             'nvim-lua/plenary.nvim',
             'sindrets/diffview.nvim',
         },
+        init = function()
+            require('which-key').add {
+                { '<Leader>gl', group = 'GitLab', icon = icons.git.gitlab },
+                {
+                    '<Leader>glp',
+                    function()
+                        require('coop').spawn(function()
+                            local git = require('git').async
+                            local remote_url = git.remote_url()
+                            if
+                                require('git').match_remote_type(remote_url)
+                                ~= 'gitlab'
+                            then
+                                Snacks.notify.error 'Only GitLab supported'
+                                return
+                            end
+                            local branch = git.current_branch()
+                            if branch == '' then
+                                Snacks.notify.error 'Current ref is not a valid branch'
+                                return
+                            end
+                            if branch == git.default_branch() then
+                                Snacks.notify.error 'MR is not possible on default branch'
+                                return
+                            end
+
+                            local mr = require('glab').mr
+                            if not mr.exists() then
+                                -- if upstream tracking branch was changed we want to
+                                -- create the PR against that branch instead of main
+                                local target
+                                local tracking_branch = git.tracking_branch()
+                                if tracking_branch then
+                                    tracking_branch =
+                                        tracking_branch:gsub('^origin/', '')
+                                    if branch ~= tracking_branch then
+                                        target = tracking_branch
+                                    end
+                                end
+                                require('gitlab').create_mr { target = target }
+                                require('git').refresh()
+                            else
+                                require('gitlab').copy_mr_url()
+                            end
+                        end)
+                    end,
+                    desc = 'View or create MR',
+                    icon = icons.git.pull_request,
+                },
+                {
+                    '<Leader>glr',
+                    function()
+                        require('gitlab').choose_merge_request()
+                    end,
+                    desc = 'Review MR',
+                    icon = icons.git.review,
+                },
+            }
+        end,
         build = function()
             require('gitlab.server').build(true)
         end,
-        config = true,
+        opts = {
+            create_mr = {
+                delete_branch = true,
+                squash = true,
+            },
+        },
     },
     {
         'disrupted/github-actions.nvim',

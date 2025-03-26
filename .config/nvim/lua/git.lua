@@ -52,6 +52,8 @@ M.refresh = function()
         end
         if vim.g.git_remote_type == 'github' then
             require('conf.octo').pr.refresh()
+        elseif vim.g.git_remote_type == 'gitlab' then
+            require('glab').mr.refresh()
         end
         vim.api.nvim_exec_autocmds('User', {
             pattern = 'GitRefresh',
