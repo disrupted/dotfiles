@@ -214,7 +214,7 @@ return {
                 desc = 'Close Neogit after pushing',
             })
 
-            vim.api.nvim_create_autocmd('BufEnter', {
+            vim.api.nvim_create_autocmd({ 'BufEnter', 'FocusGained' }, {
                 pattern = 'NeogitStatus',
                 group = augroup,
                 callback = neogit.refresh,
