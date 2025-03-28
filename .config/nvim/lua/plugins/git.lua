@@ -773,9 +773,9 @@ return {
         },
         init = function()
             require('which-key').add {
-                { '<Leader>gl', group = 'GitLab', icon = icons.git.gitlab },
+                { '<Leader>ga', group = 'GitLab', icon = icons.git.gitlab },
                 {
-                    '<Leader>glp',
+                    '<Leader>gap',
                     function()
                         require('coop').spawn(function()
                             local git = require('git').async
@@ -792,28 +792,17 @@ return {
                                 Snacks.notify.error 'Current ref is not a valid branch'
                                 return
                             end
-                            if branch == git.default_branch() then
+                            local default_branch = git.default_branch()
+                            if branch == default_branch then
                                 Snacks.notify.error 'MR is not possible on default branch'
                                 return
                             end
 
                             local mr = require('glab').mr
                             if not mr.exists() then
-                                -- if upstream tracking branch was changed we want to
-                                -- create the MR against that branch instead of main
-                                local target
-                                local tracking_branch = git.tracking_branch()
-                                if tracking_branch then
-                                    tracking_branch =
-                                        tracking_branch:gsub('^origin/', '')
-                                    if branch ~= tracking_branch then
-                                        target = tracking_branch
-                                    end
-                                end
-                                require('gitlab').create_mr { target = target }
-                                require('git').refresh()
+                                require('conf.gitlab').mr.form_create()
                             else
-                                require('gitlab').copy_mr_url()
+                                require('conf.gitlab').mr.open()
                             end
                         end)
                     end,
@@ -821,7 +810,7 @@ return {
                     icon = icons.git.pull_request,
                 },
                 {
-                    '<Leader>glr',
+                    '<Leader>gar',
                     function()
                         require('gitlab').choose_merge_request()
                     end,
