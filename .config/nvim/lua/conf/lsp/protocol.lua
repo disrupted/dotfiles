@@ -43,10 +43,20 @@ local cmp_capabilities = {
     },
 }
 
+-- custom capabilities
+local capabilities = {
+    workspace = {
+        didChangeWatchedFiles = {
+            dynamicRegistration = true,
+        },
+    },
+}
+
 M.capabilties = vim.tbl_deep_extend(
     'force',
     vim.lsp.protocol.make_client_capabilities(),
-    cmp_capabilities
+    cmp_capabilities,
+    capabilities
 )
 
 ---@param override lsp.ClientCapabilities
