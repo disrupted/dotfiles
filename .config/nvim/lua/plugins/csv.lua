@@ -7,7 +7,17 @@ return {
         ft = 'csv',
         ---@module 'csvview'
         ---@type CsvView.Options
-        opts = { view = { header_lnum = 1 } },
+        opts = {
+            view = { header_lnum = 1 },
+            parser = { comments = { '#', '//' } },
+            keymaps = {
+                textobject_field_inner = { 'if', mode = { 'o', 'x' } },
+                textobject_field_outer = { 'af', mode = { 'o', 'x' } },
+                jump_next_field_start = { 'w', mode = { 'n', 'v' } },
+                jump_prev_field_start = { 'b', mode = { 'n', 'v' } },
+                jump_next_field_end = { 'e', mode = { 'n', 'v' } },
+            },
+        },
         config = function(_, opts)
             local csvview = require 'csvview'
             csvview.setup(opts)
