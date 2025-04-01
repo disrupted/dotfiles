@@ -11,16 +11,31 @@ return {
                 { 'zx', group = 'Coerce (operator)', icon = '󰬴' },
             }
 
+            local ignored_nodes = { 'string', 'comment' }
+            local function is_inside_ignored_node()
+                local node = vim.treesitter.get_node()
+                while node do
+                    if vim.tbl_contains(ignored_nodes, node:type()) then
+                        return true
+                    end
+                    node = node:parent()
+                end
+                return false
+            end
+
             local function textcase_map(char, operation, desc)
                 vim.keymap.set('n', 'zc' .. char, function()
                     local clients_supporting_rename = vim.lsp.get_clients {
                         bufnr = 0,
                         method = 'textDocument/rename',
                     }
-                    if not vim.tbl_isempty(clients_supporting_rename) then
-                        require('textcase').lsp_rename(operation)
-                    else
+                    if
+                        vim.tbl_isempty(clients_supporting_rename)
+                        or is_inside_ignored_node()
+                    then
                         require('textcase').current_word(operation)
+                    else
+                        require('textcase').lsp_rename(operation)
                     end
                 end, { desc = 'to ' .. desc })
                 vim.keymap.set('n', 'zx' .. char, function()
