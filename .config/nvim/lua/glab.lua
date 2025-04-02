@@ -37,6 +37,7 @@ end
 ---@field title string
 ---@field body string
 ---@field assignee? string
+---@field draft? boolean
 ---@field target? string base branch
 
 ---@async
@@ -53,6 +54,9 @@ M.mr.create = function(opts)
     if opts.assignee then
         table.insert(cmd, '--assignee')
         table.insert(cmd, opts.assignee)
+    end
+    if opts.draft then
+        table.insert(cmd, '--draft')
     end
     if opts.target then
         table.insert(cmd, '--target-branch')

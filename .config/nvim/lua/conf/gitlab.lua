@@ -136,6 +136,7 @@ M.mr.create = function(opts)
     ---@type glab.mr.create.Opts
     opts = vim.tbl_extend('keep', opts, {
         assignee = vim.env.GITLAB_USERNAME,
+        draft = true,
     })
     local git = require('git').async
 
@@ -153,7 +154,11 @@ M.mr.create = function(opts)
 
     local stdout, stderr = require('glab').mr.create(opts)
     signal.is_loading = false
-    if stderr and stderr ~= '' then
+    if
+        stderr
+        and stderr ~= ''
+        and not stderr:match '^Creating (draft )?merge request '
+    then
         Snacks.notify.error(stderr)
         return
     end
