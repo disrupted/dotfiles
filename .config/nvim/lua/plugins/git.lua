@@ -19,6 +19,13 @@ return {
         ---@type Gitsigns.Config
         ---@diagnostic disable: missing-fields
         opts = {
+            diff_opts = {
+                -- Include whitespace-only changes in git hunks regardless of 'diffopt'
+                ignore_whitespace_change = false,
+                ignore_blank_lines = false,
+                ignore_whitespace = false,
+                ignore_whitespace_change_at_eol = false,
+            },
             signs = {
                 add = {
                     text = '▎', -- ▍
