@@ -16,7 +16,11 @@ return {
             {
                 '<Leader>dc',
                 function()
-                    _ = require('conf.dap.adapters')[vim.bo.filetype]
+                    local filetypes =
+                        require('conf.workspace').project_filetypes()
+                    for _, filetype in ipairs(filetypes) do
+                        _ = require('conf.dap.adapters')[filetype]
+                    end
                     require('dap').continue()
                     vim.opt.signcolumn = 'yes:2'
                     -- load dap-view early to use a smaller terminal window by default
