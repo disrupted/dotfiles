@@ -233,13 +233,14 @@ return {
                 provider = function(self)
                     return self.icon .. ' '
                 end,
-                update = {
-                    'User',
-                    pattern = 'DapProgressUpdate',
-                    callback = vim.schedule_wrap(function()
-                        vim.cmd.redrawstatus()
-                    end),
-                },
+                -- FIXME: doesn't update file buffer
+                -- update = {
+                --     'User',
+                --     pattern = 'DapProgressUpdate',
+                --     callback = vim.schedule_wrap(function()
+                --         vim.cmd.redrawstatus()
+                --     end),
+                -- },
                 hl = 'DiagnosticError',
                 {
                     provider = function()
