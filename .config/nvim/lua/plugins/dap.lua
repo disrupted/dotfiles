@@ -143,11 +143,32 @@ return {
             dap.defaults.fallback.switchbuf = 'usevisible,usetab,uselast'
             dap.defaults.fallback.exception_breakpoints = { 'uncaught' } -- { 'raised', 'uncaught' }
 
-            dap.listeners.after.event_exited.dap_view_config = function()
-                require('dap-view').close(false)
+            dap.listeners.after.event_exited.dap_view_config = function(_, body)
+                if body and body.exitCode then
+                    if body.exitCode == 0 and package.loaded['dap-view'] then
+                        require('dap-view').close(true)
+                    else
+                        local term_winnr =
+                            assert(require('dap-view.term').open_term_buf_win())
+                        local term_bufnr = vim.api.nvim_win_get_buf(term_winnr)
+                        vim.api.nvim_set_current_win(term_winnr)
+                        local total_lines =
+                            vim.api.nvim_buf_line_count(term_bufnr)
+                        vim.api.nvim_win_set_cursor(
+                            term_winnr,
+                            { total_lines, 0 }
+                        )
+                    end
+                end
             end
-            dap.listeners.after.event_terminated.dap_view_config = function()
-                require('dap-view').close(true)
+            dap.listeners.after.event_terminated.dap_view_config = function(
+                _,
+                body
+            )
+                if body and body.restart then
+                    -- TODO: if dap-view open keep it open
+                    return
+                end
             end
             -- some adapters send disconnect response instead of terminated
             dap.listeners.after.disconnect.dap_view_config = function()
