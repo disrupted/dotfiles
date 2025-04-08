@@ -665,7 +665,14 @@ return {
             },
         },
     },
-    { 'tpope/vim-repeat', event = 'VeryLazy' },
+    {
+        'tpope/vim-repeat',
+        event = 'VeryLazy',
+        keys = {
+            { '<Nop>', '<Plug>(RepeatUndo)' },
+            { '<Nop>', '<Plug>(RepeatUndoLine)' },
+        },
+    },
     { 'jghauser/mkdir.nvim', event = 'BufWritePre' },
     {
         'NMAC427/guess-indent.nvim',
