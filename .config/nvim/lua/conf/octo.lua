@@ -11,6 +11,10 @@ local signal = n.create_signal {
     is_loading = false,
     labels = {},
 }
+signal.reset = function()
+    signal.is_loading = false
+    signal.labels = {}
+end
 
 ---@class octo.pr.create.form.Opts
 ---@field title? string
@@ -181,7 +185,7 @@ M.pr.create = function(opts)
 
     local gh = require 'gh'
     local stdout, stderr = gh.pr.create(opts)
-    signal.is_loading = false
+    signal:reset()
     if stderr and stderr ~= '' then
         Snacks.notify.error(stderr)
         if
