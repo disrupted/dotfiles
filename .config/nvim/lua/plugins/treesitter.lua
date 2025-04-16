@@ -217,6 +217,14 @@ return {
         build = 'make nvim_install',
     },
     {
+        'apple/pkl-neovim',
+        ft = 'pkl',
+        build = function()
+            require('pkl-neovim.internal').init()
+            vim.cmd 'TSInstall pkl'
+        end,
+    },
+    {
         'windwp/nvim-ts-autotag',
         enabled = false,
         event = 'InsertEnter',

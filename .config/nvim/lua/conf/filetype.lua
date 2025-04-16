@@ -2,6 +2,7 @@ vim.filetype.add {
     extension = {
         avsc = 'json',
         jinja2 = 'htmldjango',
+        pkl = 'pkl',
     },
     filename = {
         ['poetry.lock'] = 'toml',
