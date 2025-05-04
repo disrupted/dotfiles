@@ -111,8 +111,8 @@ M.setup = function()
     -- change global working directory to workspace root
     vim.api.nvim_set_current_dir(vim.g.workspace_root)
     Snacks.notify({
-        'Workspace root: ' .. vim.g.workspace_root,
-        'Git repo: ' .. vim.g.git_repo,
+        string.format('Workspace root: %s', vim.g.workspace_root),
+        string.format('Git repo: %s', vim.g.git_repo),
     }, { level = 'debug' })
 end
 
