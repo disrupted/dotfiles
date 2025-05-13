@@ -105,6 +105,13 @@ return {
                             list = {
                                 keys = {
                                     -- ['<CR>'] = { { 'pick_win', 'jump' } }, -- FIXME: cannot open/close directories anymore
+                                    a = {
+                                        ---@param win snacks.win
+                                        function(win)
+                                            require('conf.ui').cursor.show()
+                                            return win:execute 'explorer_add'
+                                        end,
+                                    },
                                     r = {
                                         ---@param win snacks.win
                                         function(win)
