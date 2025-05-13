@@ -752,4 +752,11 @@ return {
         opts = {},
     },
     { 'mrjones2014/op.nvim', build = 'make install', lazy = true },
+    {
+        -- 'sotte/presenting.nvim',
+        'gerazov/presenting.nvim',
+        branch = 'add_title_to_footer',
+        cmd = 'Presenting',
+        opts = {},
+    },
 }
