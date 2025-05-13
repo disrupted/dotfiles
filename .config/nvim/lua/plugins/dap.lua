@@ -489,10 +489,7 @@ return {
         },
         config = function(_, opts)
             local py = require 'dap-python'
-            local debugpy_path = require('mason-registry')
-                .get_package('debugpy')
-                :get_install_path()
-            py.setup(debugpy_path .. '/venv/bin/python', opts)
+            py.setup(vim.env.MASON .. '/packages/debugpy/venv/bin/python', opts)
             py.test_runner = 'pytest'
             local dap = require 'dap'
             local configs = dap.configurations.python or {}

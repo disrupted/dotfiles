@@ -268,7 +268,7 @@ return {
                 desc = 'Extract function',
             },
         },
-        config = true,
+        opts = {},
     },
     {
         'nvim-neotest/neotest',
