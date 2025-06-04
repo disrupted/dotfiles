@@ -25,6 +25,7 @@ M.setup = function()
     end
     vim.g.git_repo = repo
     vim.env.GIT_DIR = repo
+    vim.env.GIT_WORK_TREE = vim.env.HOME
 end
 
 return M
