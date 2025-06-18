@@ -13,10 +13,32 @@ return {
         ---@module 'mason.settings'
         ---@type MasonSettings
         opts = {
-            ensure_installed = {},
+            ensure_installed = {
+                'lua-language-server',
+                'pylyzer',
+                'rust-analyzer',
+                'dockerfile-language-server',
+                'docker-compose-language-service',
+                'yaml-language-server',
+                'json-lsp',
+                'html-lsp',
+                'css-lsp',
+                'gopls',
+                'clangd',
+                'texlab',
+                'vtsls',
+                'deno',
+                'vale-ls',
+                'terraform-ls',
+                'helm-ls',
+                'bash-language-server',
+                'basedpyright',
+                'gitlab-ci-ls',
+                'taplo',
+            },
             registries = {
-                'github:mistweaverco/zana-registry',
                 'github:mason-org/mason-registry',
+                'github:mistweaverco/zana-registry',
                 -- 'lua:plugins.lsp.custom',
             },
         },
@@ -49,36 +71,6 @@ return {
                 ensure_installed()
             end
         end,
-    },
-    {
-        'williamboman/mason-lspconfig.nvim',
-        lazy = true,
-        opts = {
-            ensure_installed = {
-                'lua_ls',
-                'pylyzer',
-                'rust_analyzer',
-                'dockerls',
-                'docker_compose_language_service',
-                'yamlls',
-                'jsonls',
-                'html',
-                'cssls',
-                'gopls',
-                'clangd',
-                'texlab',
-                'vtsls',
-                'denols',
-                'eslint',
-                'vale_ls',
-                'terraformls',
-                'helm_ls',
-                'bashls',
-                'basedpyright',
-                'gitlab_ci_ls',
-                'taplo',
-            },
-        },
     },
     {
         'folke/neoconf.nvim',
@@ -140,7 +132,7 @@ return {
         enabled = false,
         dependencies = {
             {
-                'williamboman/mason-lspconfig.nvim',
+                'williamboman/mason.nvim',
                 opts = function(_, opts)
                     opts.ensure_installed = opts.ensure_installed or {}
                     table.insert(opts.ensure_installed, 'pylance')
