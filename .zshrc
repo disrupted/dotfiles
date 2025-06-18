@@ -201,7 +201,6 @@ setopt list_ambiguous         # complete as much of a completion until it gets a
 setopt nolisttypes
 setopt listpacked
 setopt automenu
-setopt emacs  # vi            # emacs / vim keybindings
 setopt interactivecomments    # recognize comments
 setopt sharehistory           # global history
 
@@ -421,3 +420,5 @@ function git_main_branch() {
 source ~/bakdata/.zshrc
 
 export DOCKER_HOST="unix://$HOME/.config/colima/default/docker.sock" # HACK: docker-py not supporting current context https://github.com/docker/docker-py/issues/3146
+
+zinit ice depth=1; zinit light jeffreytse/zsh-vi-mode
