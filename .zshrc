@@ -159,12 +159,6 @@ zinit wait'2b' lucid \
 zinit ice lucid wait'0' as'program' id-as'mmv' from'gh-r' \
   mv'mmv* -> mmv' pick'mmv/mmv'
 zinit light 'itchyny/mmv'
-# nnn file manager
-zinit wait lucid id-as'nnn' from'github' as'program' for \
-  sbin'nnn' make='O_NERD=1' src'misc/quitcd/quitcd.bash_zsh' \
-  jarun/nnn
-export NNN_FIFO="/tmp/nnn.fifo"
-export NNN_PLUG='j:autojump;p:preview-tui;l:launch;r:renamer;w:wallpaper;o:organize;x:xdgdefault'
 # python automatic virtualenv
 zinit light MichaelAquilina/zsh-autoswitch-virtualenv
 # carapace completion
@@ -173,6 +167,10 @@ zinit ice as'program' id-as'carapace' from'gh-r' atload' \
   compinit; \
   source <(carapace _carapace);'
 zinit light carapace-sh/carapace-bin
+# quickenv (direnv replacement)
+zinit ice lucid wait'0' as'program' id-as'quickenv' from'gh-r' \
+  mv'quickenv* -> quickenv' pick'quickenv'
+zinit light 'untitaker/quickenv'
 
 #####################
 # HISTORY           #
@@ -269,6 +267,9 @@ if type brew &>/dev/null; then
 
     # LLVM (C, C++)
     export PATH="$HOMEBREW_HOME/opt/llvm/bin:$PATH"
+
+    # Java runtime
+    export PATH="$HOMEBREW_HOME/opt/openjdk/bin:$PATH"
 
     # For compilers and pkgconfig to find zlib, bzip2, llvm (c, cpp), FreeTDS (PyMSSQL)
     export LDFLAGS="-L$HOMEBREW_HOME/opt/zlib/lib -L$HOMEBREW_HOME/opt/bzip2/lib -L$HOMEBREW_HOME/opt/llvm/lib -Wl,-rpath,$HOMEBREW_HOME/opt/llvm/lib -L$HOMEBREW_HOME/opt/freetds/lib -L$HOMEBREW_HOME/opt/openssl@3/lib"
