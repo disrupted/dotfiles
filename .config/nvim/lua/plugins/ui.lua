@@ -438,6 +438,18 @@ return {
                 OverseerTasksForStatus 'FAILURE',
             }
 
+            vim.api.nvim_create_user_command('TabName', function(opts)
+                vim.api.nvim_tabpage_set_var(
+                    vim.api.nvim_get_current_tabpage(),
+                    'tabname',
+                    opts.args
+                )
+                vim.cmd.redrawtabline()
+            end, {
+                nargs = 1,
+                desc = 'Assign custom name for current tabpage',
+            })
+
             local Tab = {
                 init = function(self)
                     local win = vim.api.nvim_tabpage_get_win(self.tabpage)
@@ -459,10 +471,18 @@ return {
                 Space,
                 {
                     init = function(self)
+                        local success, tabname = pcall(
+                            vim.api.nvim_tabpage_get_var,
+                            self.tabnr,
+                            'tabname'
+                        )
+                        self.tabname = success and tabname or nil
                         self.filename = vim.api.nvim_buf_get_name(self.buf)
                     end,
                     provider = function(self)
-                        if self.filename == '' then
+                        if self.tabname then
+                            return self.tabname
+                        elseif self.filename == '' then
                             return '[No Name]'
                         else
                             local name = vim.fs.basename(self.filename)
