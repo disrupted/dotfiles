@@ -261,6 +261,7 @@ vim.lsp.enable {
     'taplo',
     'terraform_ls',
     'ts_query_ls',
+    -- 'ty',
     'vts_ls',
     'yaml_ls',
 }
