@@ -186,7 +186,8 @@ return {
             {
                 '<Leader>gg',
                 function()
-                    require('neogit').open()
+                    require('neogit').open { kind = 'tab' }
+                    vim.cmd.tabmove()
                 end,
                 desc = 'Neogit',
             },
