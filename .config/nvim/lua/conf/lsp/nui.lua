@@ -3,7 +3,9 @@ local Input = require 'nui.input'
 local event = require('nui.utils.autocmd').event
 
 local function nui_lsp_rename()
-    local curr_name = vim.fn.expand '<cword>'
+    local node = vim.treesitter.get_node()
+    local curr_name = node and vim.treesitter.get_node_text(node, 0)
+        or vim.fn.expand '<cword>'
 
     local params = vim.lsp.util.make_position_params(0, 'utf-16')
 
@@ -15,7 +17,7 @@ local function nui_lsp_rename()
 
         -- add `newName` property to `params`.
         -- this is needed for making `textDocument/rename` request.
-        params.newName = new_name
+        params['newName'] = new_name
 
         -- send the `textDocument/rename` request to LSP server
         vim.lsp.buf_request(
