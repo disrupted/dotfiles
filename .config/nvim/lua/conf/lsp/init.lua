@@ -256,7 +256,6 @@ vim.lsp.enable {
     'html_ls',
     'json_ls',
     'lua_ls',
-    'pkl_lsp',
     -- 'pylyzer',
     'taplo',
     'terraform_ls',
