@@ -13,6 +13,7 @@ return {
     documents = {
         file = '󰈙',
         file_empty = '',
+        file_modified = '',
         files = '',
         folder = '',
         folder_empty = '',

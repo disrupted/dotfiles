@@ -1,5 +1,6 @@
 ---@module 'lazy.types'
 ---@type LazySpec[]
+local icons = require 'conf.icons'
 return {
     {
         'rebelot/heirline.nvim',
@@ -7,7 +8,6 @@ return {
         opts = function()
             local conditions = require 'heirline.conditions'
             local utils = require 'heirline.utils'
-            local icons = require 'conf.icons'
             local lazy_require = require('utils').lazy_require
 
             vim.api.nvim_create_autocmd('ColorScheme', {
@@ -608,6 +608,16 @@ return {
                 end,
             },
             sources = {
+                path = {
+                    ---@type dropbar_source_t[]|fun(sym: dropbar_symbol_t): dropbar_symbol_t
+                    modified = function(sym)
+                        return sym:merge {
+                            name = sym.name
+                                .. ' '
+                                .. icons.documents.file_modified,
+                        }
+                    end,
+                },
                 treesitter = {
                     valid_types = {
                         'array',
