@@ -369,6 +369,7 @@ export FZF_CTRL_T_OPTS='--preview="bat --color=always --style=header {} 2>/dev/n
 export FZF_ALT_C_COMMAND='fd -t d -d 1'
 export FZF_ALT_C_OPTS='--preview="eza --no-quotes -1 --icons --git --git-ignore {}" --preview-window=right:60%:wrap'
 bindkey '^F' fzf-file-widget
+bindkey -M viins '^F' fzf-file-widget
 # FZF custom OneDark theme
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 --no-separator
