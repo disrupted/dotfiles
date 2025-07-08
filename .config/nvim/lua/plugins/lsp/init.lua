@@ -89,13 +89,6 @@ return {
         },
     },
     {
-        'antosha417/nvim-lsp-file-operations',
-        name = 'nvim-lsp-file-operations',
-        dependencies = { 'nvim-lua/plenary.nvim' },
-        lazy = true,
-        opts = {},
-    },
-    {
         'Davidyz/inlayhint-filler.nvim',
         lazy = true,
         init = function()
