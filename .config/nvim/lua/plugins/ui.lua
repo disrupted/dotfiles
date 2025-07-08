@@ -439,11 +439,7 @@ return {
             }
 
             vim.api.nvim_create_user_command('TabName', function(opts)
-                vim.api.nvim_tabpage_set_var(
-                    vim.api.nvim_get_current_tabpage(),
-                    'tabname',
-                    opts.args
-                )
+                vim.api.nvim_tabpage_set_var(0, 'tabname', opts.args)
                 vim.cmd.redrawtabline()
             end, {
                 nargs = 1,
@@ -606,15 +602,30 @@ return {
                         }
                     end
                 end,
+                update_events = {
+                    buf = {
+                        'BufModifiedSet',
+                        'FileChangedShellPost',
+                        'TextChanged',
+                        'ModeChanged',
+                        'BufWritePost', -- HACK: BufModifiedSet is only fired for current buffer, e.g. when running `:wa` other buffers do not get refreshed https://github.com/neovim/neovim/issues/32817
+                    },
+                    -- global = {
+                    --     'DirChanged',
+                    --     'VimResized',
+                    -- },
+                },
             },
             sources = {
                 path = {
                     ---@type dropbar_source_t[]|fun(sym: dropbar_symbol_t): dropbar_symbol_t
                     modified = function(sym)
                         return sym:merge {
-                            name = sym.name
-                                .. ' '
-                                .. icons.documents.file_modified,
+                            name = string.format(
+                                '%s %s ',
+                                sym.name,
+                                icons.documents.file_modified
+                            ),
                         }
                     end,
                 },
