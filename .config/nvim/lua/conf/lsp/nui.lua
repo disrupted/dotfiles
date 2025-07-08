@@ -132,8 +132,8 @@ local function nui_lsp_rename()
     input:mount()
 
     -- make it easier to move around long words
-    local kw = vim.opt.iskeyword - '_' - '-'
-    vim.bo.iskeyword = table.concat(kw:get(), ',')
+    -- NOTE: no longer needed to modify iskeyword due to nvim-spider
+    -- vim.opt_local.iskeyword:remove { '_', '-' }
 
     -- go into normal mode
     vim.schedule(function()
