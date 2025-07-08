@@ -87,18 +87,6 @@ return {
                 col = 1,
             },
             trouble = false,
-            _on_attach_pre = function(bufnr, callback)
-                local ignore_filetypes = {
-                    'gitcommit', -- YADM commit
-                    'gitrebase', -- YADM rebase
-                }
-                if
-                    vim.tbl_contains(ignore_filetypes, vim.bo[bufnr].filetype)
-                then
-                    return -- do not attach to buffers of this filetype
-                end
-                return callback {}
-            end,
             on_attach = function(bufnr)
                 local function map(mode, l, r, opts)
                     opts = opts or {}
