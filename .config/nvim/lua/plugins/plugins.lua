@@ -95,7 +95,7 @@ return {
                             fullscreen = false,
                         },
                         jump = { close = false },
-                        include = { '.github', '.env*' },
+                        include = { '.github', '.gitlab-ci.yml', '.env*' },
                         -- on_close = function(_)
                         --     if require('dapui.windows').layouts[1]:is_open() then
                         --         require('dapui').open { reset = true }
