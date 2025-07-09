@@ -1,16 +1,11 @@
 local M = {}
 
----@class glab.run.Opts
----@field args string[]
-
 local glab = {
     ---@async
-    ---@param opts glab.run.Opts
+    ---@param args string[]
     ---@return string out
-    run = function(opts)
-        local cmd = opts.args
-        table.insert(cmd, 1, 'glab')
-        local out = require('coop.vim').system(cmd)
+    run = function(args)
+        local out = require('coop.vim').system { 'glab', unpack(args) }
         -- assert(out.code == 0)
         return vim.trim(out.stdout or '')
     end,
@@ -21,7 +16,7 @@ M.mr = {}
 ---@async
 ---@return table<string, any>?
 M.mr.json = function()
-    local out = glab.run { args = { 'mr', 'view', '--output', 'json' } }
+    local out = glab.run { 'mr', 'view', '--output', 'json' }
     if out ~= '' then
         return vim.json.decode(out)
     end
@@ -68,7 +63,8 @@ M.mr.create = function(opts)
 
     local out = require('coop.vim').system(cmd)
     -- assert(out.code == 0)
-    return out.stdout, out.stderr
+    return vim.trim(out.stdout or ''),
+        out.stderr and vim.trim(out.stderr) or nil
 end
 
 ---@async

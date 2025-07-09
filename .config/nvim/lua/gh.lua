@@ -1,16 +1,14 @@
 local M = {}
 
----@class gh.run.Opts
----@field args string[]
-
 ---@async
----@param opts gh.run.Opts
----@return string out
-M.run = function(opts)
-    local cmd = opts.args
-    table.insert(cmd, 1, 'gh')
+---@param args string[]
+---@return string? out
+M.run = function(args)
+    local cmd = { 'gh', unpack(args) }
     local out = require('coop.vim').system(cmd)
-    -- assert(out.code == 0)
+    if out.code ~= 0 then
+        error(assert(out.stderr))
+    end
     return vim.trim(out.stdout or '')
 end
 
@@ -23,10 +21,9 @@ M.json = function(args, json_fields)
         not json_fields or (json_fields and not vim.tbl_isempty(json_fields)),
         'Specify one or more JSON fields to query'
     )
-    table.insert(args, '--json')
-    table.insert(args, table.concat(json_fields, ','))
-    local out = M.run { args = args }
-    if out ~= '' then
+    vim.list_extend(args, { '--json', table.concat(json_fields, ',') })
+    local out = M.run(args)
+    if out and out ~= '' then
         return vim.json.decode(out)
     end
 end
@@ -97,7 +94,10 @@ end
 
 ---@async
 M.pr.refresh = function()
-    if vim.g.git_branch then
+    if
+        vim.g.git_branch
+        and vim.g.git_branch ~= require('git').async.default_branch()
+    then
         vim.g.git_pr = M.pr.json { 'state', 'title' }
     else
         vim.g.git_pr = nil
