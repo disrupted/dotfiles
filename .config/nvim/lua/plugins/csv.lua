@@ -9,7 +9,14 @@ return {
         ---@type CsvView.Options
         opts = {
             view = { header_lnum = 1 },
-            parser = { comments = { '#', '//' } },
+            parser = {
+                delimiter = {
+                    ft = {
+                        tsv = '\t',
+                    },
+                    fallbacks = { ',', '\t', ';' },
+                },
+            },
             keymaps = {
                 textobject_field_inner = { 'if', mode = { 'o', 'x' } },
                 textobject_field_outer = { 'af', mode = { 'o', 'x' } },
