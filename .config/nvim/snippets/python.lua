@@ -151,19 +151,11 @@ local snippets = {
             return line_to_cursor == ''
         end,
     }),
-}
-
-local autosnippets = {
     -- function
     s({
         trig = 'def',
         name = 'def function',
         dscr = { 'def func(arg: str) -> None:' },
-        condition = function(line_to_cursor)
-            return vim.trim(line_to_cursor) == 'def' -- beginning of the line
-                and not is_inside_ignored_node()
-                and not is_inside_class()
-        end,
     }, {
         t 'def ',
         -- function name
@@ -180,17 +172,18 @@ local autosnippets = {
         -- linebreak
         t { ':', '\t' },
         i(0, 'pass'),
+    }, {
+        show_condition = function(line_to_cursor)
+            return vim.trim(line_to_cursor) == '' -- beginning of the line
+                and not is_inside_ignored_node()
+                and not is_inside_class()
+        end,
     }),
     -- method
     s({
         trig = 'def',
         name = 'def method',
         dscr = { 'def method(self, arg: str) -> None:' },
-        condition = function(line_to_cursor)
-            return vim.trim(line_to_cursor) == 'def' -- beginning of the line
-                and not is_inside_ignored_node()
-                and is_inside_class()
-        end,
     }, {
         -- decorator
         f(function(args)
@@ -222,13 +215,19 @@ local autosnippets = {
         -- linebreak
         t { ':', '\t' },
         i(0, 'pass'),
+    }, {
+        show_condition = function(line_to_cursor)
+            return vim.trim(line_to_cursor) == '' -- beginning of the line
+                and not is_inside_ignored_node()
+                and is_inside_class()
+        end,
     }),
     s({
         trig = 'from',
         name = 'from … import …',
         dscr = { 'import from module' },
         condition = function(line_to_cursor)
-            return vim.trim(line_to_cursor) == 'from' -- beginning of the line
+            return vim.trim(line_to_cursor) == '' -- beginning of the line
                 and not is_inside_ignored_node()
         end,
     }, {
@@ -242,7 +241,7 @@ local autosnippets = {
         name = 'if …:',
         dscr = { 'if condition' },
         condition = function(line_to_cursor)
-            return vim.trim(line_to_cursor) == 'if' -- beginning of the line
+            return vim.trim(line_to_cursor) == '' -- beginning of the line
                 and not is_inside_ignored_node()
         end,
     }, {
@@ -256,7 +255,7 @@ local autosnippets = {
         name = 'for …:',
         dscr = { 'for loop' },
         condition = function(line_to_cursor)
-            return vim.trim(line_to_cursor) == 'for' -- beginning of the line
+            return vim.trim(line_to_cursor) == '' -- beginning of the line
                 and not is_inside_ignored_node()
         end,
     }, {
@@ -279,7 +278,7 @@ local autosnippets = {
         name = 'try … except',
         dscr = { 'try-except-block' },
         condition = function(line_to_cursor)
-            return vim.trim(line_to_cursor) == 'try' -- beginning of the line
+            return vim.trim(line_to_cursor) == '' -- beginning of the line
                 and not is_inside_ignored_node()
         end,
     }, {
@@ -300,5 +299,7 @@ local autosnippets = {
         i(0),
     }),
 }
+
+local autosnippets = {}
 
 return snippets, autosnippets
