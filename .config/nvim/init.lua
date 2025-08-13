@@ -214,6 +214,7 @@ vim.api.nvim_create_autocmd({ 'InsertEnter', 'WinLeave' }, {
     end,
     desc = 'Hide cursorline in insert mode and inactive windows',
 })
+vim.go.tabclose = 'left'
 opt.wrap = true
 opt.linebreak = true -- wrap, but on words, not randomly
 -- opt.textwidth = 80
