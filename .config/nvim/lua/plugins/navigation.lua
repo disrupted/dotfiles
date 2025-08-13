@@ -100,9 +100,20 @@ return {
                     require('spider').motion 'w'
                 end,
                 desc = 'Spider-w',
-                -- might have to use Ex commands for dot-repeat to work
+                -- NOTE: might have to use Ex commands for dot-repeat to work
                 -- '<cmd>lua require(\'spider\').motion(\'w\')<CR>',
-                mode = { 'n', 'o', 'x' },
+                mode = { 'n' },
+            },
+            {
+                'w',
+                function()
+                    require('spider').motion(
+                        'w',
+                        { skipInsignificantPunctuation = false }
+                    )
+                end,
+                desc = 'Spider-w',
+                mode = { 'o', 'x' },
             },
             {
                 'e',
@@ -130,7 +141,7 @@ return {
             },
         },
         opts = {
-            skipInsignificantPunctuation = false,
+            skipInsignificantPunctuation = true,
         },
     },
     {
