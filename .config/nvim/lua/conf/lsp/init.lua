@@ -1,8 +1,8 @@
 local au = vim.api.nvim_create_augroup('LspAttach', { clear = true })
 
 -- client log
-vim.uv.fs_unlink(vim.lsp.get_log_path())
-vim.lsp.set_log_level(vim.log.levels.WARN)
+vim.uv.fs_unlink(vim.lsp.log.get_filename())
+vim.lsp.log.set_level(vim.log.levels.WARN)
 
 ---@type lsp.Handler
 vim.lsp.handlers['workspace/diagnostic/refresh'] = function(_, _, ctx)
