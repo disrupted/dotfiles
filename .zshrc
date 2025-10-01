@@ -44,6 +44,11 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 #####################
 # PLUGINS           #
 #####################
+# Vi Mode
+zinit ice depth=1; zinit light jeffreytse/zsh-vi-mode
+function zvm_after_lazy_keybindings() {
+  bindkey -M viins '^F' fzf-file-widget
+}
 # SSH-AGENT
 zinit light bobsoppe/zsh-ssh-agent
 # AUTOSUGGESTIONS, TRIGGER PRECMD HOOK UPON LOAD
@@ -369,7 +374,6 @@ export FZF_CTRL_T_OPTS='--preview="bat --color=always --style=header {} 2>/dev/n
 export FZF_ALT_C_COMMAND='fd -t d -d 1'
 export FZF_ALT_C_OPTS='--preview="eza --no-quotes -1 --icons --git --git-ignore {}" --preview-window=right:60%:wrap'
 bindkey '^F' fzf-file-widget
-bindkey -M viins '^F' fzf-file-widget
 # FZF custom OneDark theme
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 --no-separator
@@ -422,5 +426,3 @@ function git_main_branch() {
 source ~/bakdata/.zshrc
 
 export DOCKER_HOST="unix://$HOME/.config/colima/default/docker.sock" # HACK: docker-py not supporting current context https://github.com/docker/docker-py/issues/3146
-
-zinit ice depth=1; zinit light jeffreytse/zsh-vi-mode
