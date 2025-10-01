@@ -835,6 +835,21 @@ return {
         },
     },
     {
+        'Hdoc1509/gh-actions.nvim',
+        dependencies = { 'nvim-treesitter/nvim-treesitter' },
+        config = function()
+            require('gh-actions.tree-sitter').setup()
+            require('nvim-treesitter.configs').setup {
+                ensure_installed = {
+                    'gh_actions_expressions',
+                    'gitignore',
+                    'json',
+                    'yaml',
+                },
+            }
+        end,
+    },
+    {
         'disrupted/github-actions.nvim',
         dir = require('conf.utils').dir '~/dev/github-actions.nvim',
         dev = require('conf.utils').dev '~/dev/github-actions.nvim',
