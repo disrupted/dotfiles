@@ -238,6 +238,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end,
 })
 
+vim.lsp.on_type_formatting.enable()
+
 vim.lsp.config('*', {
     root_markers = { '.git' },
     capabilities = require('conf.lsp.protocol').capabilties,
