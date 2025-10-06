@@ -133,10 +133,10 @@ zinit light junegunn/fzf
 zinit ice wait'1' lucid
 zinit light Aloxaf/fzf-tab
 # SYNTAX HIGHLIGHTING
-zinit ice wait'0c' lucid atinit'zpcompinit;zpcdreplay'
+zinit ice wait'0c' lucid
 zinit light zdharma-continuum/fast-syntax-highlighting
 # ZSH AUTOPAIRS
-zinit ice wait'0c' lucid atinit'zpcompinit;zpcdreplay'
+zinit ice wait'0c' lucid
 zinit light hlissner/zsh-autopair
 # FORGIT
 zinit ice wait lucid id-as'forgit' atload'alias gr=forgit::checkout::file'
@@ -163,11 +163,15 @@ zinit light 'itchyny/mmv'
 # python automatic virtualenv
 zinit light MichaelAquilina/zsh-autoswitch-virtualenv
 # carapace completion
-zinit ice as'program' id-as'carapace' from'gh-r' atload' \
-  autoload -Uz compinit; \
-  compinit; \
-  source <(carapace _carapace);'
+zinit ice as'program' id-as'carapace' from'gh-r' lucid wait'0' atclone' \
+  mkdir -p ${XDG_CACHE_HOME:-$HOME/.cache}/carapace;
+  carapace _carapace > ${XDG_CACHE_HOME:-$HOME/.cache}/carapace/_carapace.zsh' \
+atpull' \
+  mkdir -p ${XDG_CACHE_HOME:-$HOME/.cache}/carapace;
+  carapace _carapace > ${XDG_CACHE_HOME:-$HOME/.cache}/carapace/_carapace.zsh' \
+atload'source "${XDG_CACHE_HOME:-$HOME/.cache}/carapace/_carapace.zsh"'
 zinit light carapace-sh/carapace-bin
+
 # quickenv (direnv replacement)
 zinit ice lucid wait'0' as'program' id-as'quickenv' from'gh-r' \
   mv'quickenv* -> quickenv' pick'quickenv'
@@ -328,6 +332,7 @@ export PATH="$HOME/.luarocks/bin:$PATH"
 #####################
 # load additional completions
 fpath+=~/.zfunc
+autoload -Uz compinit
 
 #####################
 # COLORING          #
