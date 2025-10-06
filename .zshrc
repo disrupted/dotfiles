@@ -45,9 +45,9 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 # PLUGINS           #
 #####################
 # Vi Mode
-zinit ice depth=1; zinit light jeffreytse/zsh-vi-mode
-function zvm_after_lazy_keybindings() {
-  bindkey -M viins '^F' fzf-file-widget
+zinit load jeffreytse/zsh-vi-mode
+function zvm_after_init() {
+  zvm_bindkey viins '^f' fzf-file-widget
 }
 # SSH-AGENT
 zinit light bobsoppe/zsh-ssh-agent
