@@ -1,5 +1,3 @@
-local icons = require 'conf.icons'
-
 ---@module 'lazy.types'
 ---@type LazySpec[]
 return {

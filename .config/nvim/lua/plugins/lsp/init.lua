@@ -238,6 +238,8 @@ return {
                         'kulala-fmt',
                         -- 'injected', -- FIXME: error: vim/shared.lua:0: src: expected table, got nil
                     },
+                    csv = { 'trim_newlines' },
+                    tsv = { 'trim_newlines' },
                     ['_'] = { 'trim_newlines', 'trim_whitespace' },
                 },
                 format_on_save = function(bufnr)
