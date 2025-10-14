@@ -220,9 +220,6 @@ return {
             vim.api.nvim_create_autocmd('User', {
                 pattern = 'NeogitStatusRefreshed',
                 command = 'checktime',
-                -- callback = function()
-                --     -- vim.cmd 'set autoread | checktime'
-                -- end,
                 desc = 'Reload buffer on Neogit status refresh',
             })
 
