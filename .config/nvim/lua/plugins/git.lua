@@ -182,11 +182,7 @@ return {
         },
         opts = {
             disable_hint = true,
-            signs = {
-                section = { '', '' },
-                item = { '', '' },
-                hunk = { '', '' },
-            },
+            disable_signs = true,
             integrations = {
                 diffview = true,
             },
