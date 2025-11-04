@@ -5,9 +5,8 @@ M.fd_dirs = function(opts, ctx)
     local cwd = vim.fs.normalize(opts and opts.cwd or vim.uv.cwd() or '.')
         or nil
 
-    return require('snacks.picker.source.proc').proc({
-        opts,
-        {
+    return require('snacks.picker.source.proc').proc(
+        ctx:opts {
             cmd = 'fd',
             args = {
                 '--type',
@@ -24,7 +23,8 @@ M.fd_dirs = function(opts, ctx)
                 item.dir = true
             end,
         },
-    }, ctx)
+        ctx
+    )
 end
 
 ---@type snacks.picker.finder
@@ -32,9 +32,8 @@ M.git_dirs = function(opts, ctx)
     local cwd = vim.fs.normalize(opts and opts.cwd or vim.uv.cwd() or '.')
         or nil
 
-    return require('snacks.picker.source.proc').proc({
-        opts,
-        {
+    return require('snacks.picker.source.proc').proc(
+        ctx:opts {
             cmd = 'git',
             args = {
                 '-c',
@@ -51,7 +50,8 @@ M.git_dirs = function(opts, ctx)
                 item.dir = true
             end,
         },
-    }, ctx)
+        ctx
+    )
 end
 
 ---@param opts snacks.picker.git.status.Config
