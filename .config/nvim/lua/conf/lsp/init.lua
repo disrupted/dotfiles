@@ -260,6 +260,7 @@ vim.lsp.enable {
     'json_ls',
     'lua_ls',
     -- 'pylyzer',
+    'sourcekit',
     'taplo',
     'terraform_ls',
     'ts_query_ls',

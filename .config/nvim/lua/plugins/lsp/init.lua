@@ -232,8 +232,10 @@ return {
                     htmldjango = { 'dprint' },
                     yaml = { 'dprint' },
                     graphql = { 'dprint' },
+                    pkl = { 'pkl' },
                     sh = { 'shfmt' },
                     sql = { 'sleek' }, -- or dprint
+                    swift = { 'swift' },
                     http = {
                         'kulala-fmt',
                         -- 'injected', -- FIXME: error: vim/shared.lua:0: src: expected table, got nil

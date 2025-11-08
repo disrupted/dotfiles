@@ -60,6 +60,7 @@ return {
                 'scss',
                 'sql',
                 'ssh_config',
+                'swift',
                 'terraform',
                 'toml',
                 'tmux',
