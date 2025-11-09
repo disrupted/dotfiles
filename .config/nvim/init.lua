@@ -43,8 +43,9 @@ require('lazy').setup {
                 'netrwPlugin',
                 'netrwSettings',
                 'netrwFileHandlers',
-                'matchit',
-                'matchparen',
+                -- TODO: might get repalced by matchwith plugin
+                -- 'matchit',
+                -- 'matchparen',
                 'tar',
                 'tarPlugin',
                 'rrhelper',
