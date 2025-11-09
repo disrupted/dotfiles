@@ -109,7 +109,7 @@ M.setup = function()
         require('yadm').setup()
     end
     -- change global working directory to workspace root
-    vim.api.nvim_set_current_dir(vim.g.workspace_root)
+    -- vim.api.nvim_set_current_dir(vim.g.workspace_root)
     Snacks.notify({
         string.format('Workspace root: %s', vim.g.workspace_root),
         string.format('Git repo: %s', vim.g.git_repo),
