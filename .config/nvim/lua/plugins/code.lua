@@ -676,6 +676,5 @@ return {
             require('todo-comments.highlight').start = function() end
             require('todo-comments').setup(opts)
         end,
-        },
     },
 }
