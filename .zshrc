@@ -258,6 +258,7 @@ bindkey "^[[1;5B" down-line-or-history  # [CTRL] + Cursor down
 #####################
 # HOMEBREW          #
 #####################
+export PATH="/opt/homebrew/bin:$PATH"
 if type brew &>/dev/null; then
     export HOMEBREW_HOME=$(brew --prefix)
     export HOMEBREW_CASK_OPTS=--no-quarantine
@@ -333,6 +334,7 @@ export PATH="$HOME/.luarocks/bin:$PATH"
 # load additional completions
 fpath+=~/.zfunc
 autoload -Uz compinit
+compinit
 
 #####################
 # COLORING          #
