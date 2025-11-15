@@ -246,10 +246,10 @@ vim.lsp.config('*', {
 })
 
 vim.lsp.enable {
-    'angular_ls',
+    -- 'angular_ls',
     'basedpyright',
     'bash_ls',
-    'css_ls',
+    -- 'css_ls',
     -- 'demo_ls',
     'docker_compose_ls',
     'docker_ls',
@@ -261,6 +261,8 @@ vim.lsp.enable {
     'lua_ls',
     -- 'pylyzer',
     'sourcekit',
+    'svelte',
+    'tailwindcss',
     'taplo',
     'terraform_ls',
     'ts_query_ls',

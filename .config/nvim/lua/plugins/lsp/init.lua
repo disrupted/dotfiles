@@ -235,6 +235,7 @@ return {
                     pkl = { 'pkl' },
                     sh = { 'shfmt' },
                     sql = { 'sleek' }, -- or dprint
+                    svelte = { 'dprint' },
                     swift = { 'swift' },
                     http = {
                         'kulala-fmt',

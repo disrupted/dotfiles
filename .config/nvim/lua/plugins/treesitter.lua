@@ -60,6 +60,7 @@ return {
                 'scss',
                 'sql',
                 'ssh_config',
+                'svelte',
                 'swift',
                 'terraform',
                 'toml',
