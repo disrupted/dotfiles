@@ -97,6 +97,30 @@ M.get_root = function(cwd)
     return cwd
 end
 
+---@param names string[]
+local function init_tabs(names)
+    for i, name in ipairs(names) do
+        if i > 1 then
+            vim.cmd.tabnew()
+        end
+        vim.api.nvim_tabpage_set_var(0, 'tabname', name)
+    end
+    vim.cmd.tabnext(1)
+end
+
+---@param bufnr integer
+---@param tabnr integer
+local function move_buf_to_tab(bufnr, tabnr)
+    if vim.api.nvim_get_current_tabpage() ~= tabnr then
+        local target_handle = vim.api.nvim_list_tabpages()[tabnr]
+        vim.defer_fn(function()
+            require('scope.core').move_buf(bufnr, target_handle)
+            vim.cmd.tabnext(tabnr)
+            vim.cmd.buffer(bufnr)
+        end, 0)
+    end
+end
+
 M.setup = function()
     local cwd = vim.uv.cwd()
     if not cwd then
@@ -114,6 +138,45 @@ M.setup = function()
         string.format('Workspace root: %s', vim.g.workspace_root),
         string.format('Git repo: %s', vim.g.git_repo),
     }, { level = 'debug' })
+
+    local managed_buffers = {}
+
+    init_tabs { 'code', 'tests' }
+
+    local tabmanager_augroup = vim.api.nvim_create_augroup('TabManager', {})
+    vim.api.nvim_create_autocmd('BufAdd', {
+        group = tabmanager_augroup,
+        callback = function(args)
+            if managed_buffers[args.buf] then
+                return
+            end
+
+            if args.file ~= '' then
+                managed_buffers[args.buf] = true
+            end
+        end,
+    })
+
+    vim.api.nvim_create_autocmd('BufEnter', {
+        group = tabmanager_augroup,
+        callback = function(args)
+            if managed_buffers[args.buf] then
+                if args.file:match 'test' then
+                    move_buf_to_tab(args.buf, 2)
+                else
+                    move_buf_to_tab(args.buf, 1)
+                end
+            end
+        end,
+    })
+
+    vim.api.nvim_create_autocmd('BufDelete', {
+        group = tabmanager_augroup,
+        desc = 'Clean up when buffers are deleted',
+        callback = function(args)
+            managed_buffers[args.buf] = nil
+        end,
+    })
 end
 
 return M

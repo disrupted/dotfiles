@@ -358,7 +358,14 @@ return {
             {
                 '<C-x>',
                 function()
-                    Snacks.bufdelete()
+                    if
+                        package.loaded.scope
+                        and #vim.api.nvim_list_tabpages() > 1
+                    then
+                        require('scope.core').close_buffer {}
+                    else
+                        Snacks.bufdelete()
+                    end
                 end,
                 desc = 'Delete buffer',
             },
