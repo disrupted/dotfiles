@@ -603,8 +603,11 @@ return {
     },
     {
         'michaelb/sniprun',
-        build = 'bash ./install.sh',
+        build = 'sh install.sh',
         cmd = { 'SnipRun', 'SnipInfo' },
+        opts = {
+            selected_interpreters = { 'Lua_nvim', 'Python3_fifo' },
+        },
     },
     { 'hkupty/iron.nvim', enabled = false },
     {
@@ -665,6 +668,11 @@ return {
         },
         init = function()
             vim.api.nvim_create_user_command('Todo', 'TodoTrouble', {})
+            vim.api.nvim_create_user_command(
+                'TodoBuffer',
+                'TodoTrouble filter.buf=0',
+                {}
+            )
         end,
         opts = {
             search = { pattern = [[\b(KEYWORDS)(\([^\)]*\))?:]] },
@@ -676,5 +684,46 @@ return {
             require('todo-comments.highlight').start = function() end
             require('todo-comments').setup(opts)
         end,
+    },
+    {
+        'MagicDuck/grug-far.nvim',
+        cmd = 'GrugFar',
+        keys = {
+            -- {
+            --     '<Leader>R',
+            --     function()
+            --         require('grug-far').grug_far()
+            --     end,
+            --     desc = 'Grug-Far',
+            -- },
+            -- {
+            --     '<Leader>Rf',
+            --     function()
+            --         require('grug-far').grug_far {
+            --             prefills = { flags = vim.fn.expand '%' },
+            --         }
+            --     end,
+            --     desc = 'Grug-Far: current file',
+            -- },
+            -- {
+            --     '<Leader>Rv',
+            --     function()
+            --         require('grug-far').with_visual_selection {
+            --             prefills = { flags = vim.fn.expand '%' },
+            --         }
+            --     end,
+            --     desc = 'Grug-Far: visual selection',
+            -- },
+            -- {
+            --     '<Leader>Rw',
+            --     function()
+            --         require('grug-far').grug_far {
+            --             prefills = { search = vim.fn.expand '<cword>' },
+            --         }
+            --     end,
+            --     desc = 'Grug-Far: current word',
+            -- },
+        },
+        opts = {},
     },
 }
