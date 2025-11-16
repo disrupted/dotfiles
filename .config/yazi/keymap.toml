@@ -5,7 +5,7 @@ prepend_keymap = [
   { on = "<Esc>", run = "close", desc = "Cancel input" },
 ]
 
-[manager]
+[mgr]
 prepend_keymap = [
   # toggle visibility
   { on = ["z", "h"], run = "hidden toggle", desc = "Toggle hidden files" },
