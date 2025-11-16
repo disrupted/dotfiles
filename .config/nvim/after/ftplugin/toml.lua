@@ -6,10 +6,10 @@ vim.api.nvim_create_autocmd('BufWritePost', {
     pattern = 'pyproject.toml',
     callback = function()
         local overseer = require 'overseer'
-        overseer.run_template({ name = 'uv' }, function(task)
-            if not task then
-                overseer.run_template({ name = 'Poetry' }, function(task)
-                    if not task then
+        overseer.run_task({ name = 'uv' }, function(task_uv)
+            if not task_uv then
+                overseer.run_task({ name = 'Poetry' }, function(task_poetry)
+                    if not task_poetry then
                         Snacks.notify.warn(
                             'Invalid pyproject',
                             { title = 'Overseer' }
