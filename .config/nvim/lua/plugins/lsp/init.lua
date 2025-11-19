@@ -205,6 +205,7 @@ return {
             ---@type conform.setupOpts
             return {
                 formatters_by_ft = {
+                    astro = { 'dprint' },
                     lua = { 'stylua' },
                     python = function(bufnr)
                         if

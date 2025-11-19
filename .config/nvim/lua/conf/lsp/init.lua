@@ -247,6 +247,7 @@ vim.lsp.config('*', {
 
 vim.lsp.enable {
     -- 'angular_ls',
+    'astro',
     'basedpyright',
     'bash_ls',
     -- 'css_ls',
