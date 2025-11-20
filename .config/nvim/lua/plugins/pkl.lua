@@ -6,7 +6,7 @@ return {
         ft = 'pkl',
         build = function()
             require('pkl-neovim').init()
-            vim.cmd 'TSInstall pkl'
+            require('nvim-treesitter').install 'pkl'
         end,
         config = function()
             -- require('luasnip.loaders.from_snipmate').lazy_load()

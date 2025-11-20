@@ -832,14 +832,7 @@ return {
         dependencies = { 'nvim-treesitter/nvim-treesitter' },
         config = function()
             require('gh-actions.tree-sitter').setup()
-            require('nvim-treesitter.configs').setup {
-                ensure_installed = {
-                    'gh_actions_expressions',
-                    'gitignore',
-                    'json',
-                    'yaml',
-                },
-            }
+            require('nvim-treesitter').install 'gh_actions_expressions'
         end,
     },
     {
