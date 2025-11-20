@@ -8,7 +8,7 @@ background: &background default # custom
 black: &black "#080808"
 blue: &blue "#61afef"
 green: &green "#98c379"
-grey: &grey "#abb2bf"
+grey: &grey "#696c77"
 orange: &orange "#ffb86c"
 purple: &purple "#c678dd"
 red: &red "#e06370"
