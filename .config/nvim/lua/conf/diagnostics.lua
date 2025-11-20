@@ -54,6 +54,13 @@ local function underline_handler(orig_handler)
                 return diagnostic.severity == vim.diagnostic.severity.ERROR
                     or has_tags(diagnostic)
             end, diagnostics)
+
+            -- remove severity for special tags because we don't want to show an underline
+            for _, diagnostic in ipairs(diagnostics) do
+                if has_tags(diagnostic) then
+                    diagnostic.severity = 0
+                end
+            end
             orig_handler.show(namespace, bufnr, diagnostics, opts)
         end,
         hide = orig_handler.hide,
