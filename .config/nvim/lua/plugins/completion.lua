@@ -93,7 +93,7 @@ return {
                     if vim.bo.filetype == 'gitcommit' then
                         return {
                             'conventional_commits',
-                            -- 'git', -- FIXME: typing lag when entering insert mode first time
+                            'git',
                             'path',
                             'buffer',
                         }
@@ -114,7 +114,7 @@ return {
                         'path',
                         'snippets',
                         'buffer',
-                        -- 'git', -- FIXME: typing lag when entering insert mode first time
+                        'git',
                     }
                     if vim.bo.filetype == 'lua' then
                         table.insert(sources, 'lazydev')
@@ -140,7 +140,42 @@ return {
                         end,
                         ---@module 'blink-cmp-git'
                         ---@type blink-cmp-git.Options
-                        opts = {},
+                        opts = {
+                            git_centers = {
+                                gitlab = {
+                                    issue = {
+                                        enable = function()
+                                            -- Get the default enable result
+                                            local enable = require(
+                                                'blink-cmp-git.default.gitlab'
+                                            ).issue.enable()
+                                            if enable then
+                                                return enable
+                                            end
+
+                                            ---@type string?
+                                            local gitlab_url =
+                                                vim.env.GITLAB_HOST
+                                            if not gitlab_url then
+                                                return false
+                                            end
+                                            gitlab_url =
+                                                gitlab_url:gsub('https://', '')
+                                            enable = gitlab_url
+                                                and require('blink-cmp-git.utils')
+                                                        .get_repo_remote_url()
+                                                        :find(
+                                                            gitlab_url,
+                                                            nil,
+                                                            true
+                                                        )
+                                                    ~= nil
+                                            return enable
+                                        end,
+                                    },
+                                },
+                            },
+                        },
                     },
                     snippets = {
                         min_keyword_length = 2,
