@@ -54,8 +54,11 @@ M.project_filetypes = function(opts)
     for filetype, files in pairs(opts.markers) do
         if
             not vim.list_contains(project_filetypes, filetype)
-            and vim.iter(files):any(function(file)
-                return vim.uv.fs_stat(file) ~= nil
+            and vim.iter(files):any(function(file_predicate)
+                if type(file_predicate) == 'function' then
+                    return false -- TODO: handle these
+                end
+                return vim.uv.fs_stat(file_predicate) ~= nil
             end)
         then
             table.insert(project_filetypes, filetype)
