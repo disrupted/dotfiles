@@ -1,6 +1,6 @@
 local M = {}
 
----@alias detect_project.Opts.FileTypeMarkers table<string, string[]> mapping of filetype to marker files or directories that mark a certain project type
+---@alias detect_project.Opts.FileTypeMarkers table<string, (string|fun(name: string, path: string): boolean)[]> mapping of filetype to marker files or directories that mark a certain project type
 
 ---@type detect_project.Opts.FileTypeMarkers
 local default_project_markers = {
@@ -8,6 +8,11 @@ local default_project_markers = {
     lua = { '.luarc.json', '.luarc.jsonc', '.stylua.toml', 'stylua.toml' },
     rust = { 'Cargo.toml' },
     javascript = { 'package.json' },
+    swift = {
+        function(name)
+            return name:match '%.xcodeproj$' ~= nil
+        end,
+    },
 }
 
 ---@class detect_project.Opts
@@ -72,17 +77,10 @@ end
 ---@param cwd string
 ---@return string
 M.get_root = function(cwd)
-    -- abort if cwd is already git root
-    if vim.uv.fs_stat '.git' then
-        return cwd
-    end
     for filetype, files in pairs(default_project_markers) do
         local root = vim.fs.root(cwd, files)
         if root then
-            Snacks.notify(
-                string.format('Detected %s project', filetype),
-                { level = 'debug' }
-            )
+            vim.g.project_filetype = filetype
             return root
         end
     end
@@ -105,20 +103,22 @@ local function init_tabs(names)
         end
         vim.api.nvim_tabpage_set_var(0, 'tabname', name)
     end
-    vim.cmd.tabnext(1)
+    vim.api.nvim_set_current_tabpage(1)
 end
 
 ---@param bufnr integer
 ---@param tabnr integer
 local function move_buf_to_tab(bufnr, tabnr)
-    if vim.api.nvim_get_current_tabpage() ~= tabnr then
-        local target_handle = vim.api.nvim_list_tabpages()[tabnr]
-        vim.defer_fn(function()
-            require('scope.core').move_buf(bufnr, target_handle)
-            vim.cmd.tabnext(tabnr)
-            vim.cmd.buffer(bufnr)
-        end, 0)
-    end
+    Snacks.notify(
+        { ('move buf %d to tab %d'):format(bufnr, tabnr) },
+        { title = 'Workspace', level = 'debug' }
+    )
+    local target_handle = vim.api.nvim_list_tabpages()[tabnr]
+    vim.defer_fn(function()
+        require('scope.core').move_buf(bufnr, target_handle)
+        vim.api.nvim_set_current_tabpage(tabnr)
+        vim.api.nvim_set_current_buf(bufnr)
+    end, 0)
 end
 
 M.setup = function()
@@ -134,24 +134,54 @@ M.setup = function()
     end
     -- change global working directory to workspace root
     -- vim.api.nvim_set_current_dir(vim.g.workspace_root)
+
     Snacks.notify({
+        string.format('Project filetype: %s', vim.g.project_filetype),
         string.format('Workspace root: %s', vim.g.workspace_root),
         string.format('Git repo: %s', vim.g.git_repo),
     }, { level = 'debug' })
 
-    local managed_buffers = {}
+    if not vim.g.project_filetype then
+        return
+    end
 
-    init_tabs { 'code', 'tests' }
+    local managed_buffers = {}
+    local managed_tabs = {
+        code = {
+            idx = 1,
+            name = 'code',
+        },
+        tests = {
+            idx = 2,
+            name = 'tests',
+        },
+    }
+    local tab_names = {}
+    for _, tab in pairs(managed_tabs) do
+        tab_names[tab.idx] = tab.name
+    end
+    init_tabs(tab_names)
 
     local tabmanager_augroup = vim.api.nvim_create_augroup('TabManager', {})
     vim.api.nvim_create_autocmd('BufAdd', {
         group = tabmanager_augroup,
         callback = function(args)
             if managed_buffers[args.buf] then
+                Snacks.notify(
+                    { 'already managed buffer', vim.inspect(args) },
+                    { title = 'Workspace', level = 'debug' }
+                )
                 return
             end
 
-            if args.file ~= '' then
+            if
+                args.file ~= ''
+                and vim.fs.relpath(vim.g.workspace_root, args.file)
+            then
+                Snacks.notify(
+                    { 'add managed buffer', vim.inspect(args) },
+                    { title = 'Workspace', level = 'debug' }
+                )
                 managed_buffers[args.buf] = true
             end
         end,
@@ -160,11 +190,17 @@ M.setup = function()
     vim.api.nvim_create_autocmd('BufEnter', {
         group = tabmanager_augroup,
         callback = function(args)
+            local tabnr = vim.api.nvim_get_current_tabpage()
+            if tabnr > #tab_names then
+                return
+            end
             if managed_buffers[args.buf] then
-                if args.file:match 'test' then
-                    move_buf_to_tab(args.buf, 2)
-                else
-                    move_buf_to_tab(args.buf, 1)
+                local dest = managed_tabs.code
+                if args.file:lower():match 'test' then
+                    dest = managed_tabs.tests
+                end
+                if tabnr ~= dest.idx then
+                    move_buf_to_tab(args.buf, dest.idx)
                 end
             end
         end,
@@ -174,6 +210,10 @@ M.setup = function()
         group = tabmanager_augroup,
         desc = 'Clean up when buffers are deleted',
         callback = function(args)
+            Snacks.notify(
+                { ('delete managed buffer %d'):format(args.buf) },
+                { title = 'Workspace', level = 'debug' }
+            )
             managed_buffers[args.buf] = nil
         end,
     })
