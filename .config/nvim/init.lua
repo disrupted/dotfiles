@@ -250,7 +250,6 @@ opt.foldtext = 'folds#render()'
 opt.foldopen:append { 'search' }
 opt.foldlevelstart = 10
 opt.foldmethod = 'marker' -- or 'syntax'
-opt.foldexpr = 'nvim_treesitter#foldexpr()'
 
 -----------------------------------------------------------------------------//
 -- Backup {{{1

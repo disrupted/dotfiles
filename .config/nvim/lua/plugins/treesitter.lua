@@ -73,18 +73,7 @@ return {
                 'vimdoc',
                 'xml',
                 'yaml',
-            },
-            highlight = { enable = true },
-            indent = { enable = true, disable = { 'yaml' } },
-            incremental_selection = {
-                enable = true,
-                disable = {},
-                keymaps = {
-                    init_selection = '<CR>', -- maps in normal mode to init the node/scope selection
-                    node_incremental = '<CR>', -- increment to the upper named parent
-                    -- scope_incremental = '<nop>', -- increment to the upper scope (as defined in locals.scm)
-                    node_decremental = '<BS>', -- decrement to the previous node
-                },
+                'zsh',
             },
         },
         config = function(_, opts)
@@ -97,14 +86,18 @@ return {
             }
 
             -- the filetype on the RHS will use the parser and queries on the LHS
-            vim.treesitter.language.register('bash', 'zsh')
             vim.treesitter.language.register('terraform', 'terraform-vars')
 
             vim.api.nvim_create_autocmd('FileType', {
+                group = vim.api.nvim_create_augroup('treesitter.setup', {}),
                 callback = function(args)
                     local lang = vim.treesitter.language.get_lang(args.match)
                     if vim.list_contains(treesitter.get_installed(), lang) then
-                        vim.treesitter.start(args.buf)
+                        vim.treesitter.start(args.buf, lang)
+                        -- vim.wo.foldmethod = 'expr'
+                        -- vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+                        vim.bo[args.buf].indentexpr =
+                            'v:lua.require\'nvim-treesitter\'.indentexpr()'
                     elseif
                         vim.list_contains(treesitter.get_available(), lang)
                     then
@@ -119,6 +112,25 @@ return {
                 desc = 'Enable Treesitter for installed languages',
             })
         end,
+    },
+    {
+        'MeanderingProgrammer/treesitter-modules.nvim',
+        dependencies = { 'nvim-treesitter/nvim-treesitter' },
+        event = { 'BufReadPost', 'BufNewFile', 'FileType' },
+        ---@module 'treesitter-modules'
+        ---@type ts.mod.UserConfig
+        opts = {
+            incremental_selection = {
+                enable = true,
+                disable = {},
+                keymaps = {
+                    init_selection = '<CR>', -- maps in normal mode to init the node/scope selection
+                    node_incremental = '<CR>', -- increment to the upper named parent
+                    -- scope_incremental = '<nop>', -- increment to the upper scope (as defined in locals.scm)
+                    node_decremental = '<BS>', -- decrement to the previous node
+                },
+            },
+        },
     },
     {
         'nvim-treesitter/nvim-treesitter-textobjects',
