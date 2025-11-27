@@ -144,6 +144,10 @@ M.setup = function()
         string.format('Git repo: %s', vim.g.git_repo),
     }, { level = 'debug' })
 
+    local argv = vim.fn.argv(0)
+    if type(argv) == 'string' and argv:match '.git/COMMIT_EDITMSG' ~= nil then
+        return
+    end
     if not vim.g.project_filetype then
         return
     end
