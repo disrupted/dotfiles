@@ -10,6 +10,7 @@ return {
             on_dir(root)
         end
     end,
+    workspace_required = true,
     on_attach = function(client, bufnr)
         -- Workaround to trigger reloading JS/TS files
         -- See https://github.com/sveltejs/language-tools/issues/2008

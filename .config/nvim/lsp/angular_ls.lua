@@ -20,6 +20,7 @@ return {
         'htmlangular',
     },
     root_markers = { 'angular.json', 'nx.json' },
+    workspace_required = true,
     on_new_config = function(new_config, new_root_dir)
         new_config.cmd = cmd
     end,
