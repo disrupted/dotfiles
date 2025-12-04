@@ -203,7 +203,8 @@ M.setup = function()
             end
             if managed_buffers[args.buf] then
                 local dest = managed_tabs.code
-                if args.file:lower():match 'test' then
+                local filename = args.file:lower()
+                if filename:match '[^%w]test[^%w]' then
                     dest = managed_tabs.tests
                 end
                 if tabnr ~= dest.idx then
