@@ -130,7 +130,32 @@ zinit light junegunn/fzf
 zinit ice lucid wait'0c' multisrc'shell/{completion,key-bindings}.zsh' id-as'junegunn/fzf_completions' pick'/dev/null'
 zinit light junegunn/fzf
 # FZF-TAB
-zinit ice wait'1' lucid
+_fzf_tab_fix() {
+  # Override fzf-tab insertion to allow native zsh quoting (avoid double-escapes).
+  _fzf-tab-apply() {
+    local choice bs=$'\2'
+    for choice in "$_ftb_choices[@]"; do
+      local -A v=("${(@0)${_ftb_compcap[(r)${(b)choice}$bs*]#*$bs}}")
+      local -a args=("${(@ps:\1:)v[args]}")
+      local raw_word=$v[word]
+      local unquoted=${(Q)${(Q)raw_word}}
+      unquoted=${unquoted%%[[:space:]]}
+      [[ -z $args[1] ]] && args=()
+      args=("${(@)args:#-Q}")
+      IPREFIX=${v[IPREFIX]-} PREFIX=${v[PREFIX]-} SUFFIX=${v[SUFFIX]-} ISUFFIX=${v[ISUFFIX]-}
+      builtin compadd "${args[@]}" -- "$unquoted"
+    done
+
+    compstate[list]=
+    if (( $#_ftb_choices == 1 )); then
+      compstate[insert]='1'
+      [[ $RBUFFER == ' '* ]] || compstate[insert]+=' '
+    elif (( $#_ftb_choices > 1 )); then
+      compstate[insert]='all'
+    fi
+  }
+}
+zinit ice wait'1' lucid atload'_fzf_tab_fix'
 zinit light Aloxaf/fzf-tab
 # SYNTAX HIGHLIGHTING
 zinit ice wait'0c' lucid
