@@ -32,69 +32,6 @@ zinit light-mode for \
 ### End of Zinit's installer chunk
 
 #####################
-# ENVIRONMENT       #
-#####################
-export PATH="/opt/homebrew/bin:$PATH"
-if type brew &>/dev/null; then
-    export HOMEBREW_HOME=$(brew --prefix)
-    export HOMEBREW_CASK_OPTS=--no-quarantine
-    export PATH="$HOMEBREW_HOME/bin:$PATH"
-    export PATH="$HOMEBREW_HOME/sbin:$PATH"
-    export SHELL="$HOMEBREW_HOME/bin/zsh"
-
-    # completions
-    FPATH="$HOMEBREW_HOME/share/zsh/site-functions:$FPATH"
-
-    # LLVM (C, C++)
-    export PATH="$HOMEBREW_HOME/opt/llvm/bin:$PATH"
-
-    # Java runtime
-    export PATH="$HOMEBREW_HOME/opt/openjdk/bin:$PATH"
-
-    # For compilers and pkgconfig to find zlib, bzip2, llvm (c, cpp), FreeTDS (PyMSSQL)
-    export LDFLAGS="-L$HOMEBREW_HOME/opt/zlib/lib -L$HOMEBREW_HOME/opt/bzip2/lib -L$HOMEBREW_HOME/opt/llvm/lib -Wl,-rpath,$HOMEBREW_HOME/opt/llvm/lib -L$HOMEBREW_HOME/opt/freetds/lib -L$HOMEBREW_HOME/opt/openssl@3/lib"
-    export CFLAGS="-I$HOMEBREW_HOME/opt/freetds/include"
-    export CPPFLAGS="-I$HOMEBREW_HOME/opt/zlib/include -I$HOMEBREW_HOME/opt/bzip2/include -I$HOMEBREW_HOME/opt/llvm/include -I$HOMEBREW_HOME/opt/openssl@3/include"
-    export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} $HOMEBREW_HOME/opt/zlib/lib/pkgconfig"
-    export DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH:/opt/homebrew/lib"
-fi
-
-export TERMINAL='kitty'
-export EDITOR='nvim'
-export VISUAL=$EDITOR
-export PAGER='less'
-export LESS='-F -g -i -M -R -S -w -X -z-4 -~ --mouse'
-export LESS_TERMCAP_mb=$'\E[6m'     # begin blinking
-export LESS_TERMCAP_md=$'\E[34m'    # begin bold
-export LESS_TERMCAP_us=$'\E[4;32m'  # begin underline
-export LESS_TERMCAP_so=$'\E[0m'     # begin standout-mode (info box), remove background
-export LESS_TERMCAP_me=$'\E[0m'     # end mode
-export LESS_TERMCAP_ue=$'\E[0m'     # end underline
-export LESS_TERMCAP_se=$'\E[0m'     # end standout-mode
-export MANPAGER='nvim +Man!'
-export LANG='en_US.UTF-8'
-export LC_ALL='en_US.UTF-8'
-export WORDCHARS='~!#$%^&*(){}[]<>?.+;'  # sane moving between words on the prompt
-export PROMPT_EOL_MARK=''  # hide % at end of output
-export GPG_TTY=$(tty)
-export QUOTING_STYLE=literal  # ls: do not wrap in single quotes
-
-# Python pipx
-export PATH="$HOME/.local/bin:$PATH"
-
-# Rust
-export PATH="$HOME/.cargo/bin:$PATH"
-
-# Golang
-[[ -v $GOPATH ]] && export PATH="$GOPATH/bin:$PATH"
-
-# Deno
-export PATH="$HOME/.deno/bin:$PATH"
-
-# Lua
-export PATH="$HOME/.luarocks/bin:$PATH"
-
-#####################
 # THEME             #
 #####################
 zinit ice depth=1; zinit light romkatv/powerlevel10k
@@ -331,6 +268,18 @@ zstyle ':fzf-tab:*' popup-pad 0 0
 zstyle ':completion:*:git-checkout:*' sort false
 zstyle ':completion:*:eza' file-sort modification
 zstyle ':completion:*:eza' sort false
+
+if [[ -d "$HOME/.local/share/zinit/completions" ]]; then
+  local _zinit_comp_removed=0
+  local _zinit_comp
+  for _zinit_comp in "$HOME/.local/share/zinit/completions"/_*; do
+    [[ -L $_zinit_comp && ! -e $_zinit_comp ]] || continue
+    rm -f "$_zinit_comp"
+    _zinit_comp_removed=1
+  done
+  (( _zinit_comp_removed )) && rm -f ~/.zcompdump* 2>/dev/null
+  unset _zinit_comp_removed _zinit_comp
+fi
 
 # load additional completions
 fpath+=~/.zfunc
