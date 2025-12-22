@@ -7,6 +7,11 @@ $env.LESS = "-F -g -i -M -R -S -w -X -z-4 -~ --mouse"
 $env.config = {
   show_banner: false
   edit_mode: emacs
+  cursor_shape: {
+    emacs: line
+    vi_insert: line
+    vi_normal: block
+  }
   history: {
     file_format: "sqlite"
     max_size: 100000
@@ -14,10 +19,17 @@ $env.config = {
   }
   ls: {
     use_ls_colors: true
+    clickable_links: true
   }
   completions: {
     case_sensitive: false
+    quick: true
+    partial: true
+    algorithm: "fuzzy"
+    use_ls_colors: true
   }
+  highlight_resolved_externals: true
+  bracketed_paste: true
 }
 
 use ~/.config/nushell/modules/user.nu *
@@ -95,11 +107,125 @@ $env.config.keybindings ++= [
     mode: [emacs]
     event: { send: ExecuteHostCommand, cmd: "hproj_pick" }
   }
+  # Edit command line in $EDITOR (Ctrl+X Ctrl+E)
+  {
+    name: edit_command_line
+    modifier: control
+    keycode: char_e
+    mode: [emacs]
+    event: { send: OpenEditor }
+  }
+  # History substring search with up/down (like zsh-history-substring-search)
+  {
+    name: history_substring_search_up
+    modifier: none
+    keycode: up
+    mode: [emacs]
+    event: {
+      until: [
+        { send: MenuUp }
+        { send: Up }
+      ]
+    }
+  }
+  {
+    name: history_substring_search_down
+    modifier: none
+    keycode: down
+    mode: [emacs]
+    event: {
+      until: [
+        { send: MenuDown }
+        { send: Down }
+      ]
+    }
+  }
+  # Word navigation with Alt+arrows
+  {
+    name: move_word_left
+    modifier: alt
+    keycode: left
+    mode: [emacs]
+    event: { edit: MoveWordLeft }
+  }
+  {
+    name: move_word_right
+    modifier: alt
+    keycode: right
+    mode: [emacs]
+    event: { edit: MoveWordRight }
+  }
+  # Backward kill word (Alt+Backspace)
+  {
+    name: backward_kill_word
+    modifier: alt
+    keycode: backspace
+    mode: [emacs]
+    event: { edit: BackspaceWord }
+  }
+  # FZF file picker (Ctrl+F)
+  {
+    name: fzf_file_picker
+    modifier: control
+    keycode: char_f
+    mode: [emacs]
+    event: {
+      send: ExecuteHostCommand
+      cmd: "commandline edit --insert (fzf --preview 'bat --color=always --style=header {} 2>/dev/null || ls -la {}' | str trim)"
+    }
+  }
+  # FZF directory picker (Alt+C, like zsh)
+  {
+    name: fzf_cd
+    modifier: alt
+    keycode: char_c
+    mode: [emacs]
+    event: {
+      send: ExecuteHostCommand
+      cmd: "cd (fd -t d -d 3 | fzf --preview 'eza --no-quotes -1 --icons --git-ignore {}' | str trim)"
+    }
+  }
+  # Global history search (Ctrl+R)
+  {
+    name: history_search
+    modifier: control
+    keycode: char_r
+    mode: [emacs]
+    event: { send: SearchHistory }
+  }
+  # Clear screen (Ctrl+L)
+  {
+    name: clear_screen
+    modifier: control
+    keycode: char_l
+    mode: [emacs]
+    event: { send: ClearScreen }
+  }
+  # Show jobs (Ctrl+Z)
+  {
+    name: show_jobs
+    modifier: control
+    keycode: char_z
+    mode: [emacs]
+    event: { send: ExecuteHostCommand, cmd: "job list" }
+  }
 ]
 
-# direnv (nushell cookbook)
+# PWD change hooks
 $env.config.hooks.env_change.PWD = $env.config.hooks.env_change.PWD? | default []
 
+# chpwd: auto-list directory contents on cd (like zsh)
+$env.config.hooks.env_change.PWD ++= [{||
+  let count = (ls | length)
+  if $count == 0 { return }
+  if $count >= 20 {
+    lsg
+  } else {
+    ^eza --no-quotes -1 -F --icons=always --group-directories-first --git --color=always --ignore-glob=".DS_Store|__*" | str trim | split row "\n" | each {|l| $"  ($l)" } | str join "\n" | print
+  }
+}]
+
+# direnv (nushell cookbook)
 $env.config.hooks.env_change.PWD ++= [{||
   if (which direnv | is-empty) {
     return

@@ -66,6 +66,7 @@ export alias v = nvim
 export alias y = yazi
 export alias c = clear
 export def l [] { ls | table --index false }
+export def lsg [] { ls | sort-by type name -i | grid -c -i -s '   ' }
 
 export alias gs = git status -sb
 export alias gc = git commit

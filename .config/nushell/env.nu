@@ -17,7 +17,7 @@ if (which brew | length) > 0 {
   let hb = (brew --prefix | str trim)
   $env.HOMEBREW_HOME = $hb
   $env.HOMEBREW_CASK_OPTS = "--no-quarantine"
-  $env.SHELL = ($hb | path join "bin" "zsh")
+  $env.SHELL = (which nu | get 0.path)
   prepend-path [
     ($hb | path join "bin")
     ($hb | path join "sbin")
@@ -57,7 +57,23 @@ $env.GPG_TTY = (tty)
 $env.QUOTING_STYLE = "literal"
 $env.LS_COLORS = "rs=0:fi=0:di=34:ln=36:so=33:pi=33:ex=32:bd=33;1:cd=33;1:su=31:sg=31:tw=34:ow=34:mi=31:or=31:*.tar=31:*.tgz=31:*.zip=31:*.gz=31:*.bz2=31:*.xz=31:*.7z=31:*.jpg=35:*.png=35:*.gif=35:*.pdf=35"
 
-# carapace completions (official setup) - requires `carapace` installed
+# FZF settings (OneDark theme)
+$env.FZF_DEFAULT_COMMAND = 'rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2>/dev/null'
+$env.FZF_CTRL_T_COMMAND = $env.FZF_DEFAULT_COMMAND
+$env.FZF_CTRL_T_OPTS = '--preview="bat --color=always --style=header {} 2>/dev/null" --preview-window=right:60%:wrap'
+$env.FZF_ALT_C_COMMAND = 'fd -t d -d 1'
+$env.FZF_ALT_C_OPTS = '--preview="eza --no-quotes -1 --icons --git --git-ignore {}" --preview-window=right:60%:wrap'
+$env.FZF_DEFAULT_OPTS = '
+--no-separator
+--info=hidden
+--ansi
+--color=fg:-1,bg:-1,border:#4B5164,hl:#d19a66
+--color=fg+:#f7f7f7,bg+:#2c323d,hl+:#e5c07b
+--color=info:#828997,prompt:#e06c75,pointer:#45cdff
+--color=marker:#98c379,spinner:#e06c75,header:#98c379'
+$env._ZO_FZF_OPTS = $"($env.FZF_DEFAULT_OPTS)\n--height=7"
+
+# carapace completions
 $env.CARAPACE_BRIDGES = "zsh,fish,bash,inshellisense"
 mkdir $"($nu.cache-dir)"
 carapace _carapace nushell | save --force $"($nu.cache-dir)/carapace.nu"
