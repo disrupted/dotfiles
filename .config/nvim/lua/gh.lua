@@ -6,9 +6,6 @@ local M = {}
 M.run = function(args)
     local cmd = { 'gh', unpack(args) }
     local out = require('coop.vim').system(cmd)
-    if out.code ~= 0 then
-        error(assert(out.stderr))
-    end
     return vim.trim(out.stdout or '')
 end
 
@@ -62,7 +59,7 @@ end
 
 ---@async
 ---@param opts gh.pr.create.Opts
----@return string? stdout
+---@return string stdout
 ---@return string? stderr
 M.pr.create = function(opts)
     ---@type string[]
@@ -89,7 +86,7 @@ M.pr.create = function(opts)
 
     local out = require('coop.vim').system(cmd)
     -- assert(out.code == 0)
-    return out.stdout, out.stderr
+    return out.stdout or '', out.stderr
 end
 
 ---@async

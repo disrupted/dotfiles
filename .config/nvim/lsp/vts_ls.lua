@@ -22,6 +22,9 @@ local inlayHints = {
 ---@type vim.lsp.Config
 return {
     cmd = { 'vtsls', '--stdio' },
+    init_options = {
+        hostInfo = 'neovim',
+    },
     filetypes = {
         'javascript',
         'javascriptreact',
@@ -36,6 +39,20 @@ return {
         'package.json',
         '.git',
     },
+    on_attach = function(client, bufnr)
+        vim.api.nvim_buf_create_user_command(
+            bufnr,
+            'LspOrganizeImports',
+            function()
+                client:exec_cmd {
+                    title = 'Organize TypeScript imports',
+                    command = '_typescript.organizeImports',
+                    arguments = { vim.uri_from_bufnr(bufnr) },
+                }
+            end,
+            { desc = 'Organize TypeScript imports' }
+        )
+    end,
     settings = {
         typescript = {
             inlayHints = inlayHints,

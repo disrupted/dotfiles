@@ -35,14 +35,30 @@ $env.config = {
 use ~/.config/nushell/modules/user.nu *
 use std/config *
 
-# Use ANSI colors so Nu respects the terminal theme.
+# Pure-style minimal color config
+# Philosophy: neutral by default, color only for meaningful feedback
 $env.config.color_config = {
-  separator: dark_gray_dimmed
+  # Table output
+  separator: dark_gray
   leading_trailing_space_bg: { attr: n }
-  header: { fg: default, attr: b }
-  empty: default
-  bool: yellow
+  header: { attr: b }
+  empty: dark_gray
+  row_index: dark_gray
+  hints: dark_gray
+
+  # Data types (output) - mostly neutral
+  bool: default
   int: default
+  float: default
+  string: default
+  nothing: dark_gray
+  binary: default
+  cellpath: default
+  record: default
+  list: default
+  block: default
+  table: default
+  range: default
   filesize: default
   duration: default
   date: default
@@ -55,43 +71,53 @@ $env.config.color_config = {
       'default'
     }
   }
-  range: yellow
-  float: default
-  string: default
-  nothing: default
-  binary: default
-  cellpath: default
-  row_index: dark_gray
-  record: default
-  list: default
-  block: default
-  table: default
-  hints: dark_gray
+
+  # Syntax shapes - minimal highlighting
   shape_garbage: { fg: white, bg: red, attr: b }
-  shape_bool: yellow
-  shape_int: default
-  shape_float: default
-  shape_range: yellow
-  shape_internalcall: green
-  shape_external: green
-  shape_externalarg: yellow
-  shape_literal: blue
-  shape_operator: yellow
-  shape_signature: cyan
-  shape_string: default
+
+  # Commands - the important distinction
+  shape_internalcall: white_bold
+  shape_external: red              # invalid = red (important feedback)
+  shape_external_resolved: white_bold # valid = stands out
+  shape_externalarg: default
+  shape_custom: white_bold
+
+  # Literals
+  shape_string: green
   shape_string_interpolation: cyan
+  shape_int: yellow
+  shape_float: yellow
+  shape_bool: yellow
+  shape_nothing: dark_gray
+  shape_binary: cyan
+  shape_literal: yellow
   shape_datetime: dark_gray
-  shape_list: default
-  shape_table: default
-  shape_record: default
-  shape_block: default
-  shape_pipe: yellow
-  shape_redirection: yellow
-  shape_variable: default
-  shape_flag: blue
-  shape_custom: default
+  shape_range: yellow
+
+  # Paths
+  shape_filepath: blue
   shape_directory: blue
-  shape_path: blue
+  shape_globpattern: blue
+
+  # Nushell syntax
+  shape_flag: cyan
+  shape_operator: magenta
+  shape_pipe: magenta
+  shape_redirection: magenta
+  shape_keyword: magenta
+
+  # Structures
+  shape_signature: cyan
+  shape_block: default
+  shape_list: cyan
+  shape_table: cyan
+  shape_record: cyan
+
+  # Variables
+  shape_variable: purple
+  shape_vardecl: purple_bold
+
+  shape_matching_brackets: { attr: u }
 }
 
 $env.config = ($env.config | merge {

@@ -148,7 +148,9 @@ M.setup = function()
     if type(argv) == 'string' and argv:match '.git/COMMIT_EDITMSG' ~= nil then
         return
     end
-    if not vim.g.project_filetype then
+
+    vim.g.project_tabs = false
+    if not vim.g.project_tabs or not vim.g.project_filetype then
         return
     end
 
@@ -204,7 +206,7 @@ M.setup = function()
             if managed_buffers[args.buf] then
                 local dest = managed_tabs.code
                 local filename = args.file:lower()
-                if filename:match '[^%w]test[^%w]' then
+                if filename:match '[^%w]tests?[^%w]' then
                     dest = managed_tabs.tests
                 end
                 if tabnr ~= dest.idx then

@@ -261,6 +261,7 @@ vim.lsp.enable {
     'json_ls',
     'lua_ls',
     -- 'pylyzer',
+    -- 'pyrefly',
     'sourcekit',
     'svelte',
     'tailwindcss',

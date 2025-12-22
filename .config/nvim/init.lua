@@ -503,6 +503,9 @@ vim.keymap.set('', 'Q', '') -- disable
 vim.keymap.set('n', 'x', '"_x') -- delete char without yank
 vim.keymap.set('x', 'x', '"_x') -- delete visual selection without yank
 
+-- paste and adjust indentation
+-- vim.keymap.set('n', 'p', ']p')
+-- vim.keymap.set('n', 'P', ']P')
 -- paste in visual mode and keep available
 vim.keymap.set('x', 'p', [['pgv"'.v:register.'y`>']], expr)
 vim.keymap.set('x', 'P', [['Pgv"'.v:register.'y`>']], expr)

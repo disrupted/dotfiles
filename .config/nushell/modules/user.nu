@@ -65,7 +65,7 @@ export def mkdir [...args] { ^mkdir -pv ...$args }
 export alias v = nvim
 export alias y = yazi
 export alias c = clear
-export def l [] { ls | table --index false }
+export def l [] { ls | sort-by modified -r | sort-by type | table --index false }
 
 export alias gs = git status -sb
 export alias gc = git commit

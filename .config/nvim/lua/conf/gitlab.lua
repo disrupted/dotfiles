@@ -23,7 +23,10 @@ local create_mr_form = function(opts)
             on_submit = function(is_valid)
                 require('coop').spawn(function()
                     if not is_valid then
-                        Snacks.notify.error 'Title is required'
+                        Snacks.notify.error(
+                            'Title is required',
+                            { title = 'GitLab' }
+                        )
                         return
                     end
                     signal.is_loading = true
@@ -136,7 +139,7 @@ M.mr.create = function(opts)
     ---@type glab.mr.create.Opts
     opts = vim.tbl_extend('keep', opts, {
         assignee = vim.env.GITLAB_USERNAME,
-        draft = true,
+        draft = false,
     })
     local git = require('git').async
 
@@ -157,9 +160,10 @@ M.mr.create = function(opts)
     if
         stderr
         and stderr ~= ''
-        and not stderr:match '^Creating (draft )?merge request '
+        and not stderr:match '^Creating merge request '
+        and not stderr:match '^Creating draft merge request '
     then
-        Snacks.notify.error(stderr)
+        Snacks.notify.error(stderr, { title = 'GitLab' })
         return
     end
     return stdout

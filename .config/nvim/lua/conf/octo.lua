@@ -183,18 +183,18 @@ M.pr.create = function(opts)
         end
     end
 
-    local gh = require 'gh'
-    local stdout, stderr = gh.pr.create(opts)
+    local stdout, stderr = require('gh').pr.create(opts)
+    vim.print(stdout, stderr)
     signal:reset()
-    if stderr and stderr ~= '' then
-        Snacks.notify.error(stderr)
-        if
-            not stderr:match 'Warning: ' -- e.g. 'Warning: 2 uncommitted changes'
-        then
-            -- abort if not just a warning
-            return
-        end
-    end
+    -- if stderr and stderr ~= '' then
+    --     Snacks.notify.error(stderr)
+    --     if
+    --         not stderr:match '^Warning: ' -- e.g. 'Warning: 2 uncommitted changes'
+    --     then
+    --         -- abort if not just a warning
+    --         return
+    --     end
+    -- end
     return stdout
 end
 

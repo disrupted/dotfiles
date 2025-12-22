@@ -51,6 +51,19 @@ return {
         basedpyright = {
             analysis = {
                 diagnosticMode = 'workspace', -- default: openFilesOnly
+                diagnosticSeverityOverrides = {
+                    reportAny = false,
+                    reportExplicitAny = false,
+                    reportUnusedCallResult = false,
+                    reportMissingTypeArgument = false,
+                    reportMissingParameterType = false,
+                    reportUnknownArgumentType = false,
+                    reportUnknownLambdaType = false,
+                    reportUnknownMemberType = false,
+                    reportUnknownParameterType = false,
+                    reportUnknownVariableType = false,
+                    reportImplicitStringConcatenation = false,
+                },
             },
         },
     },

@@ -138,6 +138,10 @@ return {
                                 vim.bo.filetype
                             )
                         end,
+                        should_show_items = function(ctx)
+                            return ctx.trigger.initial_kind
+                                ~= 'trigger_character' -- hide after trigger character
+                        end,
                         ---@module 'blink-cmp-git'
                         ---@type blink-cmp-git.Options
                         opts = {
@@ -187,7 +191,16 @@ return {
                     },
                     lsp = {
                         score_offset = 5,
-                        timeout_ms = 400,
+                        timeout_ms = 1000,
+                        -- name = 'LSP',
+                        -- module = 'blink.cmp.sources.lsp',
+                        -- disable completion for language keywords, use snippets instead
+                        -- transform_items = function(_, items)
+                        --     return vim.tbl_filter(function(item)
+                        --         return item.kind
+                        --             ~= require('blink.cmp.types').CompletionItemKind.Keyword
+                        --     end, items)
+                        -- end,
                     },
                     path = {
                         opts = {
@@ -198,8 +211,10 @@ return {
                     },
                     buffer = {
                         min_keyword_length = 3,
+                        -- timeout_ms = 5000,
                     },
                     conventional_commits = {
+                        score_offset = 11,
                         name = 'Conventional Commits',
                         module = 'blink-cmp-conventional-commits',
                         ---@module 'blink-cmp-conventional-commits'

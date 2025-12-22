@@ -148,16 +148,17 @@ return {
                     if body.exitCode == 0 and package.loaded['dap-view'] then
                         require('dap-view').close(true)
                     else
-                        local term_winnr =
-                            assert(require('dap-view.term').open_term_buf_win())
-                        local term_bufnr = vim.api.nvim_win_get_buf(term_winnr)
-                        vim.api.nvim_set_current_win(term_winnr)
-                        local total_lines =
-                            vim.api.nvim_buf_line_count(term_bufnr)
-                        vim.api.nvim_win_set_cursor(
-                            term_winnr,
-                            { total_lines, 0 }
-                        )
+                        -- TODO: update
+                        -- local term_winnr =
+                        --     assert(require('dap-view.term').open_term_buf_win())
+                        -- local term_bufnr = vim.api.nvim_win_get_buf(term_winnr)
+                        -- vim.api.nvim_set_current_win(term_winnr)
+                        -- local total_lines =
+                        --     vim.api.nvim_buf_line_count(term_bufnr)
+                        -- vim.api.nvim_win_set_cursor(
+                        --     term_winnr,
+                        --     { total_lines, 0 }
+                        -- )
                     end
                 end
             end
@@ -248,6 +249,7 @@ return {
                 '<Leader>dv',
                 function()
                     require('dap-view').toggle()
+                    -- require('dap-view').show_view 'scopes'
                 end,
                 desc = 'Toggle DAP view',
             },
@@ -258,6 +260,16 @@ return {
                 end,
                 desc = 'Watch expression',
             },
+            -- {
+            --     '<Leader>dS',
+            --     function()
+            --         require('dap-view.views').switch_to_view(
+            --             require('dap-view.scopes.view').show
+            --         )
+            --         -- require('dap-view.scopes.view').show()
+            --     end,
+            --     desc = 'Scopes',
+            -- },
         },
         ---@module 'dap-view.config'
         ---@type Config
