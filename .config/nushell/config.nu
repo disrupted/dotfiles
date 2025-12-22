@@ -216,12 +216,12 @@ $env.config.hooks.env_change.PWD = $env.config.hooks.env_change.PWD? | default [
 
 # chpwd: auto-list directory contents on cd (like zsh)
 $env.config.hooks.env_change.PWD ++= [{||
-  let count = (ls | length)
-  if $count == 0 { return }
-  if $count >= 20 {
-    lsg
+  let entries = (ls -s)
+  if ($entries | is-empty) { return }
+  if ($entries | length) >= 20 {
+    $entries | sort-by type name -i | grid -c -i -s '   '
   } else {
-    ^eza --no-quotes -1 -F --icons=always --group-directories-first --git --color=always --ignore-glob=".DS_Store|__*" | str trim | split row "\n" | each {|l| $"  ($l)" } | str join "\n" | print
+    $entries | sort-by type name -i | each {|f| $"  ([$f] | grid -c -i | str trim)" } | str join "\n" | print
   }
 }]
 
