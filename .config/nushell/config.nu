@@ -251,15 +251,7 @@ $env.config.hooks.env_change.PWD ++= [{||
   }
 }]
 
-# direnv (nushell cookbook)
-$env.config.hooks.env_change.PWD ++= [{||
-  if (which direnv | is-empty) {
-    return
-  }
-
-  direnv export json | from json | default {} | load-env
-  $env.PATH = do (env-conversions).path.from_string $env.PATH
-}]
+# direnv replaced by mise (see env.nu)
 
 # carapace completions (official setup)
 source ($nu.cache-dir | path join "carapace.nu")

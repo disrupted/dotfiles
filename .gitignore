@@ -144,3 +144,4 @@ scratch_*
 # Nushell (generated)
 .config/nushell/history.sqlite*
 .config/nushell/scripts/zoxide.nu
+.env.secrets

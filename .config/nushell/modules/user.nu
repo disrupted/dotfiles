@@ -153,6 +153,23 @@ export def gh-ci-retry [max_retries: int = 20] {
   }
 }
 
+# Refresh 1Password secrets for a project (cached to .env.secrets)
+export def secrets-refresh [--dir: path] {
+  let target = ($dir | default $env.PWD)
+  let tpl = ($target | path join ".env.secrets.tpl")
+  let out = ($target | path join ".env.secrets")
+
+  if not ($tpl | path exists) {
+    print $"No .env.secrets.tpl found in ($target)"
+    return
+  }
+
+  print "Fetching secrets from 1Password..."
+  ^op inject -i $tpl -o $out
+  chmod 600 $out
+  print $"Secrets cached to ($out)"
+}
+
 export alias wget = wget --content-disposition
 export alias dl = xh --download
 export alias claude = bunx @anthropic-ai/claude-code@latest

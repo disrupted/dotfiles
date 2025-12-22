@@ -83,3 +83,6 @@ $env._ZO_FZF_OPTS = $"($env.FZF_DEFAULT_OPTS)\n--height=7"
 $env.CARAPACE_BRIDGES = "zsh,fish,bash,inshellisense"
 mkdir $"($nu.cache-dir)"
 carapace _carapace nushell | save --force $"($nu.cache-dir)/carapace.nu"
+
+# mise (replaces direnv for env management + tool versions)
+source ~/.config/nushell/mise.nu
