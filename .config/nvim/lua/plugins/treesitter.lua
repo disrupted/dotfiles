@@ -50,6 +50,7 @@ return {
                 'ninja',
                 'nix',
                 'norg',
+                'nu',
                 'python',
                 'pymanifest',
                 'query',

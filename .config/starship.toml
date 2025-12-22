@@ -1,0 +1,122 @@
+add_newline = false
+
+format = "$directory$git_branch$git_status$line_break$character"
+right_format = "$cmd_duration$python$nodejs$bun$deno$rust$golang"
+
+[gcloud]
+disabled = true
+
+[character]
+success_symbol = "[❯](green)"
+error_symbol = "[❯](red)"
+
+[line_break]
+disabled = false
+
+[directory]
+style = "blue"
+format = "[$path]($style) "
+
+[git_branch]
+style = "green"
+format = "[$branch]($style) "
+
+[git_status]
+style = "yellow"
+format = '([$modified $untracked]($style) )'
+modified = "!$count"
+untracked = "?$count"
+staged = ""
+renamed = ""
+deleted = ""
+conflicted = ""
+stashed = ""
+ahead = ""
+behind = ""
+diverged = ""
+
+[status]
+disabled = true
+
+[package]
+disabled = true
+
+[cmd_duration]
+format = "[$duration]($style) "
+style = "yellow"
+min_time = 2000
+
+[python]
+style = "cyan"
+format = "[ $version $virtualenv]($style) "
+python_binary = ["python3", "python"]
+
+[nodejs]
+style = "cyan"
+format = "[ $version]($style) "
+
+[rust]
+style = "cyan"
+format = "[ $version]($style) "
+
+[golang]
+style = "cyan"
+format = "[ $version]($style) "
+
+[bun]
+style = "cyan"
+format = "[ $version]($style) "
+
+[deno]
+style = "cyan"
+format = "[ $version]($style) "
+
+[time]
+disabled = true
+style = "cyan"
+
+[swift]
+style = "cyan"
+format = "[ $version]($style) "
+
+[os]
+disabled = false
+style = "cyan"
+format = "[$symbol]($style) "
+symbols = { Macos = "", Linux = "", Windows = "" }
+
+[lua]
+style = "cyan"
+format = "[ $version]($style) "
+
+[kubernetes]
+style = "cyan"
+format = "[󱃾 $context]($style) "
+
+[hostname]
+style = "cyan"
+format = "[$hostname]($style) "
+
+[username]
+style = "cyan"
+format = "[$user]($style) "
+
+[terraform]
+style = "cyan"
+format = "[ $workspace]($style) "
+
+[zig]
+style = "cyan"
+format = "[ $version]($style) "
+
+[docker_context]
+style = "cyan"
+format = "[ $context]($style) "
+
+[container]
+style = "cyan"
+format = "[󰆧 $name]($style) "
+
+[aws]
+style = "cyan"
+format = "[ $profile]($style) "
