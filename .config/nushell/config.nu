@@ -76,11 +76,11 @@ $env.config.color_config = {
   shape_garbage: { fg: white, bg: red, attr: b }
 
   # Commands - the important distinction
-  shape_internalcall: white_bold
-  shape_external: red              # invalid = red (important feedback)
-  shape_external_resolved: white_bold # valid = stands out
+  shape_internalcall: { attr: b }           # bold, adapts to theme
+  shape_external: red                       # invalid = red (important feedback)
+  shape_external_resolved: { attr: b }      # bold, adapts to theme
   shape_externalarg: default
-  shape_custom: white_bold
+  shape_custom: { attr: b }
 
   # Literals
   shape_string: green
@@ -211,13 +211,21 @@ $env.config.keybindings ++= [
       cmd: "cd (fd -t d -d 3 | fzf --preview 'eza --no-quotes -1 --icons --git-ignore {}' | str trim)"
     }
   }
-  # Global history search (Ctrl+R)
+  # Global history search (Ctrl+R) - fzf in tmux popup
   {
     name: history_search
     modifier: control
     keycode: char_r
     mode: [emacs]
-    event: { send: SearchHistory }
+    event: {
+      send: ExecuteHostCommand
+      cmd: "commandline edit --replace (
+        let query = (commandline);
+        history | get command | uniq | reverse | str join (char newline) |
+        fzf --height=~40% --scheme=history --layout=reverse -q $query |
+        str trim
+      )"
+    }
   }
   # Clear screen (Ctrl+L)
   {
@@ -227,13 +235,13 @@ $env.config.keybindings ++= [
     mode: [emacs]
     event: { send: ClearScreen }
   }
-  # Show jobs (Ctrl+Z)
+  # Disable Ctrl+Z (no job suspension)
   {
-    name: show_jobs
+    name: disable_ctrl_z
     modifier: control
     keycode: char_z
-    mode: [emacs]
-    event: { send: ExecuteHostCommand, cmd: "job list" }
+    mode: [emacs, vi_normal, vi_insert]
+    event: null
   }
 ]
 

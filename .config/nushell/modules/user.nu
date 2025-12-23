@@ -65,10 +65,130 @@ export def mkdir [...args] { ^mkdir -pv ...$args }
 export alias v = nvim
 export alias y = yazi
 export alias c = clear
-export def l [] { ls | sort-by modified -r | sort-by type | table --index false }
+export def l [path: path = "."] { ls $path | sort-by modified -r | sort-by type | table --index false }
 
 export alias gs = git status -sb
 export alias gc = git commit
+
+# forgit-style interactive git commands
+
+# ga - interactive git add
+export def ga [] {
+  let files = (
+    git status --short |
+    lines |
+    where { ($in | str trim | str length) > 0 } |
+    each { $in | str substring 3.. } |
+    str join (char newline) |
+    fzf --height=~60% --layout=reverse --multi --preview 'git diff --color=always {}'
+  )
+  if ($files | is-empty) { return }
+  $files | lines | each { git add $in }
+  git status --short
+}
+
+# grh - interactive git reset HEAD (unstage)
+export def grh [] {
+  let files = (
+    git diff --cached --name-only |
+    fzf --height=~60% --layout=reverse --multi --preview 'git diff --cached --color=always {}'
+  )
+  if ($files | is-empty) { return }
+  $files | lines | each { git reset HEAD $in }
+  git status --short
+}
+
+# gcf - interactive git checkout file (discard changes)
+export def gcf [] {
+  let files = (
+    git diff --name-only |
+    fzf --height=~60% --layout=reverse --multi --preview 'git diff --color=always {}'
+  )
+  if ($files | is-empty) { return }
+  $files | lines | each { git checkout $in }
+  git status --short
+}
+
+# glo - interactive git log
+export def glo [] {
+  git log --oneline --color=always |
+  fzf --height=~80% --layout=reverse --ansi --preview 'git show --color=always {1}' |
+  split row ' ' |
+  first |
+  if ($in | is-empty) { } else { git show $in }
+}
+
+# gsw - interactive git switch branch
+export def gsw [] {
+  let branch = (
+    git branch --all --color=always |
+    lines |
+    str trim |
+    where { not ($in | str starts-with '*') } |
+    each { $in | ansi strip | str replace 'remotes/origin/' '' } |
+    uniq |
+    str join (char newline) |
+    fzf --height=~40% --layout=reverse --ansi
+  )
+  if ($branch | is-empty) { return }
+  git switch ($branch | str trim)
+}
+
+# gbd - interactive git branch delete
+export def gbd [] {
+  let branches = (
+    git branch |
+    lines |
+    str trim |
+    where { not ($in | str starts-with '*') } |
+    str join (char newline) |
+    fzf --height=~40% --layout=reverse --multi
+  )
+  if ($branches | is-empty) { return }
+  $branches | lines | each { git branch -d $in }
+}
+
+# gss - interactive git stash show
+export def gss [] {
+  let stash = (
+    git stash list |
+    lines |
+    each {|line| ($line | split row ':' | first) + ' ' + ($line | split row ':' | skip 1 | str join ':') } |
+    str join (char newline) |
+    fzf --height=~40% --layout=reverse --preview 'git stash show -p --color=always {1}' --preview-window=right:60% |
+    split row ' ' |
+    first
+  )
+  if ($stash | is-empty) { return }
+  git stash show -p $stash
+}
+
+# gsa - interactive git stash apply
+export def gsa [] {
+  let stash = (
+    git stash list |
+    lines |
+    each {|line| ($line | split row ':' | first) + ' ' + ($line | split row ':' | skip 1 | str join ':') } |
+    str join (char newline) |
+    fzf --height=~40% --layout=reverse --preview 'git stash show -p --color=always {1}' --preview-window=right:60% |
+    split row ' ' |
+    first
+  )
+  if ($stash | is-empty) { return }
+  git stash apply $stash
+}
+
+# gcp - interactive git cherry-pick
+export def gcp [] {
+  let commit = (
+    git log --all --oneline --color=always |
+    fzf --height=~60% --layout=reverse --ansi --preview 'git show --color=always {1}' |
+    split row ' ' |
+    first
+  )
+  if ($commit | is-empty) { return }
+  git cherry-pick $commit
+}
 
 def git_main_branch [] {
   let refs = [

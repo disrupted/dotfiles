@@ -1,6 +1,7 @@
+# :schema https://starship.rs/config-schema.json
 add_newline = false
 
-format = "$directory$git_branch$git_status$line_break$character"
+format = "$directory$git_branch$git_status$git_state$line_break$character"
 right_format = "$cmd_duration$python$nodejs$bun$deno$rust$golang"
 
 [gcloud]
@@ -16,6 +17,8 @@ disabled = false
 [directory]
 style = "blue"
 format = "[$path]($style) "
+truncation_length = 0
+truncate_to_repo = false
 
 [git_branch]
 style = "green"
@@ -23,17 +26,21 @@ format = "[$branch]($style) "
 
 [git_status]
 style = "yellow"
-format = '([$modified $untracked]($style) )'
+format = '([$ahead_behind$stashed $modified $untracked]($style) )'
 modified = "!$count"
 untracked = "?$count"
 staged = ""
 renamed = ""
 deleted = ""
 conflicted = ""
-stashed = ""
-ahead = ""
-behind = ""
-diverged = ""
+stashed = "≡$count"
+ahead = "⇡$count"
+behind = "⇣$count"
+diverged = "⇕"
+
+[git_state]
+style = "yellow"
+format = "[$state( $progress_current/$progress_total)]($style) "
 
 [status]
 disabled = true
