@@ -80,7 +80,7 @@ export def ga [] {
     where { ($in | str trim | str length) > 0 } |
     each { $in | str substring 3.. } |
     str join (char newline) |
-    fzf --height=~60% --layout=reverse --multi --preview 'git diff --color=always {}'
+    fzf --height=60% --layout=reverse --multi --preview 'git diff {} | delta'
   )
   if ($files | is-empty) { return }
   $files | lines | each { git add $in }
@@ -91,7 +91,7 @@ export def ga [] {
 export def grh [] {
   let files = (
     git diff --cached --name-only |
-    fzf --height=~60% --layout=reverse --multi --preview 'git diff --cached --color=always {}'
+    fzf --height=60% --layout=reverse --multi --preview 'git diff --cached {} | delta'
   )
   if ($files | is-empty) { return }
   $files | lines | each { git reset HEAD $in }
@@ -102,7 +102,7 @@ export def grh [] {
 export def gcf [] {
   let files = (
     git diff --name-only |
-    fzf --height=~60% --layout=reverse --multi --preview 'git diff --color=always {}'
+    fzf --height=60% --layout=reverse --multi --preview 'git diff {} | delta'
   )
   if ($files | is-empty) { return }
   $files | lines | each { git checkout $in }
@@ -112,7 +112,7 @@ export def gcf [] {
 # glo - interactive git log
 export def glo [] {
   git log --oneline --color=always |
-  fzf --height=~80% --layout=reverse --ansi --preview 'git show --color=always {1}' |
+  fzf --height=80% --layout=reverse --ansi --preview 'git show {1} | delta' |
   split row ' ' |
   first |
   if ($in | is-empty) { } else { git show $in }
@@ -128,7 +128,7 @@ export def gsw [] {
     each { $in | ansi strip | str replace 'remotes/origin/' '' } |
     uniq |
     str join (char newline) |
-    fzf --height=~40% --layout=reverse --ansi
+    fzf --height=40% --layout=reverse --ansi
   )
   if ($branch | is-empty) { return }
   git switch ($branch | str trim)
@@ -142,7 +142,7 @@ export def gbd [] {
     str trim |
     where { not ($in | str starts-with '*') } |
     str join (char newline) |
-    fzf --height=~40% --layout=reverse --multi
+    fzf --height=40% --layout=reverse --multi
   )
   if ($branches | is-empty) { return }
   $branches | lines | each { git branch -d $in }
@@ -155,12 +155,12 @@ export def gss [] {
     lines |
     each {|line| ($line | split row ':' | first) + ' ' + ($line | split row ':' | skip 1 | str join ':') } |
     str join (char newline) |
-    fzf --height=~40% --layout=reverse --preview 'git stash show -p --color=always {1}' --preview-window=right:60% |
+    fzf --height=60% --layout=reverse --preview 'git stash show -p {1} | delta' --preview-window=right:60% |
     split row ' ' |
     first
   )
   if ($stash | is-empty) { return }
-  git stash show -p $stash
+  git stash show -p $stash | delta
 }
 
 # gsa - interactive git stash apply
@@ -170,7 +170,7 @@ export def gsa [] {
     lines |
     each {|line| ($line | split row ':' | first) + ' ' + ($line | split row ':' | skip 1 | str join ':') } |
     str join (char newline) |
-    fzf --height=~40% --layout=reverse --preview 'git stash show -p --color=always {1}' --preview-window=right:60% |
+    fzf --height=60% --layout=reverse --preview 'git stash show -p {1} | delta' --preview-window=right:60% |
     split row ' ' |
     first
   )
@@ -182,12 +182,95 @@ export def gsa [] {
 export def gcp [] {
   let commit = (
     git log --all --oneline --color=always |
-    fzf --height=~60% --layout=reverse --ansi --preview 'git show --color=always {1}' |
+    fzf --height=60% --layout=reverse --ansi --preview 'git show {1} | delta' |
     split row ' ' |
     first
   )
   if ($commit | is-empty) { return }
   git cherry-pick $commit
+}
+
+# yadm variants of forgit commands
+
+# ya - interactive yadm add
+export def ya [] {
+  # Get both modified and untracked files, prefix with ~/
+  let modified = (yadm diff --name-only | lines | where { $in != "" } | each { $"~/($in)" })
+  let untracked = (yadm ls-files --others --exclude-standard | lines | where { $in != "" } | each { $"~/($in)" })
+  let files = (
+    $modified | append $untracked |
+    where { $in != "~/" and $in != "~/./" } |
+    str join (char newline) |
+    fzf --height=60% --layout=reverse --multi --preview 'bash -c "yadm diff -- ${1/#\\~/$HOME} 2>/dev/null | delta || cat ${1/#\\~/$HOME}" _ {}'
+  )
+  if ($files | is-empty) { return }
+  $files | lines | each { yadm add ($in | path expand) }
+  yadm status --short
+}
+
+# ylo - interactive yadm log
+export def ylo [] {
+  yadm log --oneline --color=always |
+  fzf --height=80% --layout=reverse --ansi --preview 'yadm show {1} | delta' |
+  split row ' ' |
+  first |
+  if ($in | is-empty) { } else { yadm show $in }
+}
+
+# yd - interactive yadm diff
+export def yd [] {
+  let files = (
+    yadm diff --name-only |
+    lines |
+    each { $"~/($in)" } |
+    str join (char newline) |
+    fzf --height=60% --layout=reverse --multi --preview 'bash -c "yadm diff -- ${1/#\\~/$HOME} | delta" _ {}'
+  )
+  if ($files | is-empty) { return }
+  $files | lines | each { yadm diff -- ($in | path expand) } | str join "\n"
+}
+
+# yrh - interactive yadm reset HEAD (unstage)
+export def yrh [] {
+  let files = (
+    yadm diff --cached --name-only |
+    lines |
+    each { $"~/($in)" } |
+    str join (char newline) |
+    fzf --height=60% --layout=reverse --multi --preview 'bash -c "yadm diff --cached -- ${1/#\\~/$HOME} | delta" _ {}'
+  )
+  if ($files | is-empty) { return }
+  $files | lines | each { yadm reset HEAD ($in | path expand) }
+  yadm status --short
+}
+
+# ycf - interactive yadm checkout file (discard changes)
+export def ycf [] {
+  let files = (
+    yadm diff --name-only |
+    lines |
+    each { $"~/($in)" } |
+    str join (char newline) |
+    fzf --height=60% --layout=reverse --multi --preview 'bash -c "yadm diff -- ${1/#\\~/$HOME} | delta" _ {}'
+  )
+  if ($files | is-empty) { return }
+  $files | lines | each { yadm checkout ($in | path expand) }
+  yadm status --short
+}
+
+# yss - interactive yadm stash show
+export def yss [] {
+  let stash = (
+    yadm stash list |
+    lines |
+    each {|line| ($line | split row ':' | first) + ' ' + ($line | split row ':' | skip 1 | str join ':') } |
+    str join (char newline) |
+    fzf --height=60% --layout=reverse --preview 'yadm stash show -p {1} | delta' --preview-window=right:60% |
+    split row ' ' |
+    first
+  )
+  if ($stash | is-empty) { return }
+  yadm stash show -p $stash | delta
 }
 
 def git_main_branch [] {

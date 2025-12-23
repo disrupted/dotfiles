@@ -121,8 +121,12 @@
 [delta]
     paging = auto
     line-numbers = true
-    syntax-theme = OneDark
     whitespace-error-style = 22 reverse
+    line-numbers-left-format = "{nm:^4} "
+    line-numbers-right-format = "{np:^4} "
+
+[delta "dark"]
+    syntax-theme = OneHalfDark
     minus-style = syntax "#402529"
     minus-emph-style = syntax "#662F33"
     plus-style = syntax "#29342A"
@@ -132,10 +136,22 @@
     file-style = white bold
     file-decoration-style = "#4b5263" ul
     line-numbers-zero-style = "#4b5263"
-    line-numbers-left-format = "{nm:^4} "
-    line-numbers-right-format = "{np:^4} "
-    line-numbers-minus-style = "#e06c75"  # onedark green
-    line-numbers-plus-style = "#98c379"  # onedark red
+    line-numbers-minus-style = "#e06c75"
+    line-numbers-plus-style = "#98c379"
+
+[delta "light"]
+    syntax-theme = OneHalfLight
+    minus-style = syntax "#ffebe9"
+    minus-emph-style = syntax "#ffc0c0"
+    plus-style = syntax "#e6ffec"
+    plus-emph-style = syntax "#abf2bc"
+    hunk-header-style = syntax bold
+    hunk-header-decoration-style = "#d0d0d0" box
+    file-style = "#1a1a1a" bold
+    file-decoration-style = "#d0d0d0" ul
+    line-numbers-zero-style = "#909090"
+    line-numbers-minus-style = "#d73a49"
+    line-numbers-plus-style = "#22863a"
 
 [delta "decorations"]
     commit-decoration-style = bold yellow box ul

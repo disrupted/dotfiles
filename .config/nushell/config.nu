@@ -227,14 +227,6 @@ $env.config.keybindings ++= [
       )"
     }
   }
-  # Clear screen (Ctrl+L)
-  {
-    name: clear_screen
-    modifier: control
-    keycode: char_l
-    mode: [emacs]
-    event: { send: ClearScreen }
-  }
   # Disable Ctrl+Z (no job suspension)
   {
     name: disable_ctrl_z
@@ -244,6 +236,11 @@ $env.config.keybindings ++= [
     event: null
   }
 ]
+
+# Pre-prompt hook for live theme switching
+$env.config.hooks.pre_prompt = ($env.config.hooks.pre_prompt? | default [] | append {||
+  update-theme
+})
 
 # PWD change hooks
 $env.config.hooks.env_change.PWD = $env.config.hooks.env_change.PWD? | default []
