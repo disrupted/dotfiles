@@ -120,4 +120,11 @@ mkdir $"($nu.cache-dir)"
 carapace _carapace nushell | save --force $"($nu.cache-dir)/carapace.nu"
 
 # mise (replaces direnv for env management + tool versions)
-source ~/.config/nushell/mise.nu
+const mise_path = "~/.config/nushell/vendor/mise.nu"
+if ((which mise | length) > 0) and (not ($mise_path | path exists)) {
+  mkdir ~/.config/nushell/vendor
+  mise activate nu | save -f $mise_path
+}
+if ($mise_path | path exists) {
+  source $mise_path
+}

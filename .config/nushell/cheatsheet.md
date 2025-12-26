@@ -123,3 +123,35 @@ exec nu
 - `~/.config/nushell/config.nu`
 - `~/.config/nushell/env.nu`
 - `~/.config/nushell/modules/user.nu`
+
+## Setup on New Device
+
+After pulling dotfiles with yadm, run these commands to initialize auto-generated files:
+
+```bash
+# macOS: Create symlink from Application Support to ~/.config/nushell
+# (nushell on macOS defaults to ~/Library/Application Support/nushell)
+rm -rf "$HOME/Library/Application Support/nushell"
+ln -s ~/.config/nushell "$HOME/Library/Application Support/nushell"
+
+# Create vendor directory
+mkdir -p ~/.config/nushell/vendor
+
+# Create login.nu (required for login shells like Ghostty/tmux)
+echo "source ~/.config/nushell/env.nu" > ~/.config/nushell/login.nu
+
+# Regenerate mise integration (machine-specific)
+/opt/homebrew/bin/mise activate nu > ~/.config/nushell/vendor/mise.nu
+
+# Generate carapace completions
+mkdir -p "$(nu -c '$nu.cache-dir')"
+carapace _carapace nushell > "$(nu -c '$nu.cache-dir')/carapace.nu"
+
+# Generate starship prompt (if starship is installed)
+starship init nu > ~/.config/nushell/vendor/starship.nu
+
+# Generate zoxide integration (if zoxide is installed)
+zoxide init nushell > ~/.config/nushell/vendor/zoxide.nu
+```
+
+Note: The `vendor/` directory contains auto-generated, machine-specific files and is gitignored.

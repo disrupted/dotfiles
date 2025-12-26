@@ -262,9 +262,8 @@ $env.config.hooks.env_change.PWD ++= [{||
 source ($nu.cache-dir | path join "carapace.nu")
 
 # starship prompt (auto-generate if missing)
-const starship_path = "~/.config/nushell/vendor/autoload/starship.nu"
+const starship_path = "~/.config/nushell/vendor/starship.nu"
 if ((which starship | length) > 0) and (not ($starship_path | path exists)) {
-  mkdir ~/.config/nushell/vendor/autoload
   starship init nu | save -f $starship_path
 }
 if ((which starship | length) > 0) {
@@ -272,7 +271,7 @@ if ((which starship | length) > 0) {
 }
 
 # zoxide (auto-generate if missing)
-const zoxide_path = "~/.zoxide.nu"
+const zoxide_path = "~/.config/nushell/vendor/zoxide.nu"
 if ((which zoxide | length) > 0) and (not ($zoxide_path | path exists)) {
   zoxide init nushell | save -f $zoxide_path
 }
