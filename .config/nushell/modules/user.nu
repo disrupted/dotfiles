@@ -192,16 +192,12 @@ export def gcp [] {
 
 # yadm variants of forgit commands
 
-# ya - interactive yadm add
+# ya - interactive yadm add (modified files only)
 export def ya [] {
-  # Get both modified and untracked files, prefix with ~/
-  let modified = (yadm diff --name-only | lines | where { $in != "" } | each { $"~/($in)" })
-  let untracked = (yadm ls-files --others --exclude-standard | lines | where { $in != "" } | each { $"~/($in)" })
   let files = (
-    $modified | append $untracked |
-    where { $in != "~/" and $in != "~/./" } |
+    yadm diff --name-only | lines | where { $in != "" } | each { $"~/($in)" } |
     str join (char newline) |
-    fzf --height=60% --layout=reverse --multi --preview 'bash -c "yadm diff -- ${1/#\\~/$HOME} 2>/dev/null | delta || cat ${1/#\\~/$HOME}" _ {}'
+    fzf --height=60% --layout=reverse --multi --preview 'bash -c "yadm diff -- ${1/#\\~/$HOME} | delta" _ {}'
   )
   if ($files | is-empty) { return }
   $files | lines | each { yadm add ($in | path expand) }
