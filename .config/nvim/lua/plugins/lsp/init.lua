@@ -347,8 +347,8 @@ return {
                             title = 'Format',
                         })
                         return {
-                            '--config',
-                            vim.fs.normalize '~/.config/dprint.jsonc',
+                            -- '--config',
+                            -- vim.fs.normalize '~/.config/dprint.jsonc',
                         }
                     end
                 end,
