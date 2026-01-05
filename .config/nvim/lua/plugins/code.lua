@@ -454,6 +454,18 @@ return {
                 },
             }),
         },
+        ---@module 'neotest.config'
+        ---@param opts neotest.Config
+        config = function(_, opts)
+            require('neotest').setup(opts)
+
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = 'neotest-summary',
+                callback = function()
+                    vim.opt_local.wrap = false
+                end,
+            })
+        end,
     },
     {
         'nvim-neotest/neotest-python',
