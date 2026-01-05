@@ -380,9 +380,11 @@ return {
         },
         dependencies = { { 'nvim-neotest/nvim-nio', lazy = true } },
         ---@module 'neotest.config'
-        ---@type neotest.CoreConfig
+        ---@type neotest.Config
         ---@diagnostic disable-next-line: missing-fields
         opts = {
+            ---@diagnostic disable-next-line: missing-fields
+            floating = { border = 'single' },
             adapters = {},
             consumers = {
                 notify = function(client)
