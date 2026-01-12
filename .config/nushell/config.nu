@@ -1,9 +1,5 @@
 # Nushell config
 
-$env.EDITOR = "nvim"
-$env.PAGER = "less"
-$env.LESS = "-F -g -i -M -R -S -w -X -z-4 -~ --mouse"
-
 $env.config = {
   show_banner: false
   edit_mode: emacs
@@ -133,15 +129,25 @@ $env.config.keybindings ++= [
     mode: [emacs]
     event: { send: ExecuteHostCommand, cmd: "hproj_pick" }
   }
-  # Edit command line in $EDITOR (Ctrl+X Ctrl+E)
+  # Edit command line in $EDITOR (Ctrl+v)
   {
     name: edit_command_line
     modifier: control
-    keycode: char_e
+    keycode: char_v
     mode: [emacs]
     event: { send: OpenEditor }
   }
-  # History substring search with up/down (like zsh-history-substring-search)
+  {
+    name: fuzzy_file
+    modifier: control
+    keycode: char_t
+    mode: emacs
+    event: {
+      send: ExecuteHostCommand
+      cmd: "commandline edit --insert (fzf --layout=reverse)"
+    }
+  }
+  # History substring search with up/down
   {
     name: history_substring_search_up
     modifier: none
@@ -197,7 +203,7 @@ $env.config.keybindings ++= [
     mode: [emacs]
     event: {
       send: ExecuteHostCommand
-      cmd: "commandline edit --insert (fzf --preview 'bat --color=always --style=header {} 2>/dev/null || ls -la {}' | str trim)"
+      cmd: "commandline edit --insert (fd --type f --hidden --follow --exclude .git --exclude node_modules | fzf --preview 'bat --color=always --style=header {} 2>/dev/null || ls -la {}' | str trim)"
     }
   }
   # FZF directory picker (Alt+C, like zsh)
@@ -211,19 +217,24 @@ $env.config.keybindings ++= [
       cmd: "cd (fd -t d -d 3 | fzf --preview 'eza --no-quotes -1 --icons --git-ignore {}' | str trim)"
     }
   }
-  # Global history search (Ctrl+R) - fzf in tmux popup
+  # Global history search (Ctrl+R) - fzf
   {
-    name: history_search
+    name: fuzzy_history_fzf
     modifier: control
     keycode: char_r
-    mode: [emacs]
+    mode: [emacs , vi_normal, vi_insert]
     event: {
       send: ExecuteHostCommand
       cmd: "commandline edit --replace (
-        let query = (commandline);
-        history | get command | uniq | reverse | str join (char newline) |
-        fzf --height=~40% --scheme=history --layout=reverse -q $query |
-        str trim
+        history
+          | where exit_status == 0
+          | get command
+          | reverse
+          | uniq
+          | str join (char -i 0)
+          | fzf --scheme=history --read0 --tiebreak=chunk --layout=reverse --preview='echo {..}' --preview-window='bottom:3:wrap' --bind alt-up:preview-up,alt-down:preview-down --height=~40% -q (commandline) --preview='echo {} | nu --stdin -c \'nu-highlight\''
+          | decode utf-8
+          | str trim
       )"
     }
   }
@@ -246,37 +257,12 @@ $env.config.hooks.pre_prompt = ($env.config.hooks.pre_prompt? | default [] | app
 $env.config.hooks.env_change.PWD = $env.config.hooks.env_change.PWD? | default []
 
 # chpwd: auto-list directory contents on cd (like zsh)
-$env.config.hooks.env_change.PWD ++= [{||
-  let entries = (ls -s)
-  if ($entries | is-empty) { return }
-  if ($entries | length) >= 20 {
-    $entries | sort-by type name -i | grid -c -i -s '   '
-  } else {
-    $entries | sort-by type name -i | each {|f| $"  ([$f] | grid -c -i | str trim)" } | str join "\n" | print
-  }
-}]
-
-# direnv replaced by mise (see env.nu)
-
-# carapace completions (official setup)
-source ($nu.cache-dir | path join "carapace.nu")
-
-# starship prompt (auto-generate if missing)
-const starship_path = "~/.config/nushell/vendor/starship.nu"
-if ((which starship | length) > 0) and (not ($starship_path | path exists)) {
-  starship init nu | save -f $starship_path
-}
-if ((which starship | length) > 0) {
-  source $starship_path
-}
-
-# zoxide (auto-generate if missing)
-const zoxide_path = "~/.config/nushell/vendor/zoxide.nu"
-if ((which zoxide | length) > 0) and (not ($zoxide_path | path exists)) {
-  zoxide init nushell | save -f $zoxide_path
-}
-if ((which zoxide | length) > 0) {
-  source $zoxide_path
-}
-
-# source ~/.config/nushell/catppuccin_mocha.nu
+# $env.config.hooks.env_change.PWD ++= [{||
+#   let entries = (ls -s)
+#   if ($entries | is-empty) { return }
+#   if ($entries | length) >= 20 {
+#     $entries | sort-by type name -i | grid -c -i -s '   '
+#   } else {
+#     $entries | sort-by type name -i | each {|f| $"  ([$f] | grid -c -i | str trim)" } | str join "\n" | print
+#   }
+# }]

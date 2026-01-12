@@ -118,6 +118,22 @@ export def glo [] {
   if ($in | is-empty) { } else { git show $in }
 }
 
+# gd - interactive git diff
+export def gd [
+  --staged (-s) # Show staged changes
+] {
+  let flags = if $staged { ["--staged"] } else { [] }
+  let root = (git rev-parse --show-toplevel | str trim)
+  let preview_flags = if $staged { "--staged" } else { "" }
+  let preview_cmd = $"git -C '($root)' diff ($preview_flags) -- '{}' | delta"
+  let files = (
+    git diff --name-only ...$flags |
+    fzf --height=60% --layout=reverse --multi --preview $preview_cmd
+  )
+  if ($files | is-empty) { return }
+  $files | lines | each { |it| git diff ...$flags -- ($root | path join $it) } | str join (char newline)
+}
+
 # gsw - interactive git switch branch
 export def gsw [] {
   let branch = (
@@ -193,7 +209,7 @@ export def gcp [] {
 # yadm variants of forgit commands
 
 # ya - interactive yadm add (modified files only)
-export def ya [] {
+export def yadd [] {
   let files = (
     yadm diff --name-only | lines | where { $in != "" } | each { $"~/($in)" } |
     str join (char newline) |
@@ -369,10 +385,17 @@ export def secrets-refresh [--dir: path] {
   print $"Secrets cached to ($out)"
 }
 
-export alias wget = wget --content-disposition
-export alias dl = xh --download
-export alias claude = bunx @anthropic-ai/claude-code@latest
-export alias codex = bunx @openai/codex@latest
+# dl - download a file
+export def dl [url: string, output?: path] {
+  if ($output == null) {
+    ^wget --content-disposition $url
+  } else {
+    ^wget $url -O $output
+  }
+}
+
+# export alias claude = bunx @anthropic-ai/claude-code@latest
+# export alias codex = bunx @openai/codex@latest
 
 def hproj [path?: path, --table] {
   let base = (if $path == null { $env.PWD } else { $path }) | path expand

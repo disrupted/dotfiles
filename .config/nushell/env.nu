@@ -116,15 +116,6 @@ $env._ZO_FZF_OPTS = $"($env.FZF_DEFAULT_OPTS)\n--height=7"
 
 # carapace completions
 $env.CARAPACE_BRIDGES = "zsh,fish,bash,inshellisense"
-mkdir $"($nu.cache-dir)"
-carapace _carapace nushell | save --force $"($nu.cache-dir)/carapace.nu"
 
-# mise (replaces direnv for env management + tool versions)
-const mise_path = "~/.config/nushell/vendor/mise.nu"
-if ((which mise | length) > 0) and (not ($mise_path | path exists)) {
-  mkdir ~/.config/nushell/vendor
-  mise activate nu | save -f $mise_path
-}
-if ($mise_path | path exists) {
-  source $mise_path
-}
+# HACK: docker-py not supporting current context https://github.com/docker/docker-py/issues/3146
+$env.DOCKER_HOST = $"unix://($env.HOME)/.config/colima/default/docker.sock"
