@@ -260,7 +260,7 @@ vim.lsp.enable {
     'html_ls',
     'json_ls',
     'lua_ls',
-    -- 'pylyzer',
+    'nushell',
     -- 'pyrefly',
     'sourcekit',
     'svelte',
