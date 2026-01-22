@@ -174,6 +174,10 @@ return {
             },
         },
         opts = function()
+            local dprint = {
+                'dprint',
+                timeout_ms = 5000, -- HACK: high because dprint needs to download WASM plugins on first run
+            }
             local check_dprint = function(bufnr)
                 if
                     require('conform').get_formatter_info('dprint', bufnr).cwd
@@ -182,7 +186,7 @@ return {
                         level = vim.log.levels.DEBUG,
                         title = 'Format',
                     })
-                    return { 'dprint' }
+                    return dprint
                 end
             end
 
@@ -214,26 +218,26 @@ return {
             ---@type conform.setupOpts
             return {
                 formatters_by_ft = {
-                    astro = { 'dprint' },
+                    astro = dprint,
                     lua = { 'stylua' },
-                    json = { 'dprint' },
-                    jsonc = { 'dprint' },
+                    json = dprint,
+                    jsonc = dprint,
                     markdown = { 'dprint', 'injected' },
                     javascript = dprint_prettier_none,
                     javascriptreact = dprint_prettier_none,
                     typescript = dprint_prettier_none,
                     typescriptreact = dprint_prettier_none,
-                    toml = { 'dprint' },
-                    dockerfile = { 'dprint' },
-                    css = { 'dprint' },
-                    html = { 'dprint' },
-                    htmldjango = { 'dprint' },
-                    yaml = { 'dprint' },
-                    graphql = { 'dprint' },
+                    toml = dprint,
+                    dockerfile = dprint,
+                    css = dprint,
+                    html = dprint,
+                    htmldjango = dprint,
+                    yaml = dprint,
+                    graphql = dprint,
                     pkl = { 'pkl' },
                     sh = { 'shfmt' },
                     sql = { 'sleek' }, -- or dprint
-                    svelte = { 'dprint' },
+                    svelte = dprint,
                     swift = { 'swift' },
                     http = {
                         'kulala-fmt',
@@ -241,12 +245,13 @@ return {
                     },
                     csv = { 'trim_newlines' },
                     tsv = { 'trim_newlines' },
-                    ['_'] = { 'trim_newlines', 'trim_whitespace' },
+                    ['_'] = {
+                        'trim_newlines',
+                        'trim_whitespace',
+                        lsp_format = 'prefer',
+                    },
                 },
-                default_format_opts = {
-                    lsp_format = 'prefer',
-                },
-                format_on_save = function(bufnr)
+                format_after_save = function(bufnr)
                     -- Disable with a global or buffer-local variable
                     if
                         vim.g.disable_autoformat
@@ -254,10 +259,7 @@ return {
                     then
                         return
                     end
-                    return {
-                        timeout_ms = 5000, -- HACK: high because dprint needs to download WASM plugins on first run
-                        lsp_format = 'prefer',
-                    }
+                    return { async = true }
                 end,
                 log_level = vim.log.levels.WARN,
             }
