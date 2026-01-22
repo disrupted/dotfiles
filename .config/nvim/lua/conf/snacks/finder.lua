@@ -67,11 +67,11 @@ function M.yadm_status(opts, ctx)
         '--',
         cwd,
     }
+    ctx.picker:set_cwd(cwd)
 
     local prev ---@type snacks.picker.finder.Item?
-    return require('snacks.picker.source.proc').proc({
-        opts,
-        {
+    return require('snacks.picker.source.proc').proc(
+        ctx:opts {
             sep = '\0',
             cwd = cwd,
             cmd = 'yadm',
@@ -82,6 +82,7 @@ function M.yadm_status(opts, ctx)
                 if status then
                     item.cwd = cwd
                     item.status = status
+                    -- item.file = file
                     item.file = vim.fs.relpath(cwd, '~/' .. file)
                     prev = item
                 elseif prev and prev.status:find 'R' then
@@ -92,7 +93,8 @@ function M.yadm_status(opts, ctx)
                 end
             end,
         },
-    }, ctx)
+        ctx
+    )
 end
 
 return M
