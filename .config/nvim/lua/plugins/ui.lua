@@ -491,6 +491,29 @@ return {
                 },
             }
 
+            local LSPActive = {
+                condition = conditions.lsp_attached,
+                update = {
+                    'LspAttach',
+                    'LspDetach',
+                    'BufWinEnter',
+                },
+                hl = function()
+                    local hl = utils.get_highlight 'StatusLineNC'
+                    return { fg = hl.fg, bg = hl.bg, bold = true }
+                end,
+                {
+                    provider = function()
+                        return vim.iter(vim.lsp.get_clients { bufnr = 0 })
+                            :map(function(server)
+                                return server.name
+                            end)
+                            :join ' '
+                    end,
+                },
+                Space,
+            }
+
             return {
                 statusline = {
                     init = function(self)
@@ -500,6 +523,7 @@ return {
                     WorkDir,
                     Space,
                     Diagnostics,
+                    LSPActive,
                     Align,
                     Align,
                     DAPStatus,
