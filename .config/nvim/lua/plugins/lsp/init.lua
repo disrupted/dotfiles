@@ -17,7 +17,6 @@ return {
                 'astro-language-server',
                 'actionlint',
                 'angular-language-server',
-                'basedpyright',
                 'bash-language-server',
                 'clangd',
                 'css-lsp',
@@ -33,8 +32,7 @@ return {
                 'json-lsp',
                 'lua-language-server',
                 'prettierd',
-                'pylyzer',
-                'pyrefly',
+                'pkl-lsp',
                 'rust-analyzer',
                 'shfmt',
                 'stylua',
@@ -43,7 +41,6 @@ return {
                 'taplo',
                 'terraform-ls',
                 'texlab',
-                'ty',
                 'vale-ls',
                 'vtsls',
                 'yaml-language-server',
@@ -219,18 +216,6 @@ return {
                 formatters_by_ft = {
                     astro = { 'dprint' },
                     lua = { 'stylua' },
-                    python = function(bufnr)
-                        if
-                            require('conform').get_formatter_info(
-                                'ruff_format',
-                                bufnr
-                            ).available
-                        then
-                            return { 'ruff_fix', 'ruff_format' }
-                        else
-                            return { 'isort', 'black' }
-                        end
-                    end,
                     json = { 'dprint' },
                     jsonc = { 'dprint' },
                     markdown = { 'dprint', 'injected' },
@@ -258,6 +243,9 @@ return {
                     tsv = { 'trim_newlines' },
                     ['_'] = { 'trim_newlines', 'trim_whitespace' },
                 },
+                default_format_opts = {
+                    lsp_format = 'prefer',
+                },
                 format_on_save = function(bufnr)
                     -- Disable with a global or buffer-local variable
                     if
@@ -268,7 +256,7 @@ return {
                     end
                     return {
                         timeout_ms = 5000, -- HACK: high because dprint needs to download WASM plugins on first run
-                        lsp_fallback = true,
+                        lsp_format = 'prefer',
                     }
                 end,
                 log_level = vim.log.levels.WARN,
@@ -373,14 +361,9 @@ return {
                     ignore_errors = false,
                     lang_to_formatters = {
                         json = { 'dprint_injected' },
-                        python = { 'black' }, -- FIXME: ruff_format deletes content
+                        python = { 'ruff_format' }, -- FIXME: ruff_format deletes content
                     },
                 },
-            }
-
-            -- TODO: custom formatters
-            conform.formatters.blackd = {
-                command = 'blackd-client',
             }
         end,
     },
