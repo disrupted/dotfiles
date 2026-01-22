@@ -1,12 +1,13 @@
 -- source: https://github.com/richardgill/nix/blob/bdd30a0a4bb328f984275c37c7146524e99f1c22/modules/home-manager/dot-files/nvim/lua/custom/directory-watcher.lua
 local M = {}
 
-local watcher = nil
-local cleanup_debounce = nil
 local on_change_handlers = {}
+-- Watched directories: { [path] = { fs_event, cleanup, refcount } }
+local watchers = {}
+local debounce_ms = 100
 
 -- Debounce helper to prevent callback storms
-local debounce = function(fn, delay)
+local function debounce(fn, delay)
     local timer = vim.uv.new_timer()
     return function(...)
         local args = { ... }
@@ -34,17 +35,16 @@ M.register_on_change_handler = function(name, handler)
 end
 
 -- Start watching a directory for file changes
-M.setup = function(opts)
-    opts = opts or {}
-    local path = opts.path
-
+-- Returns true if watcher was created or refcount incremented
+M.watch = function(path)
     if not path then
         return false
     end
 
-    -- Stop existing watcher if any
-    if watcher then
-        M.stop()
+    -- If already watching this directory, increment refcount
+    if watchers[path] then
+        watchers[path].refcount = watchers[path].refcount + 1
+        return true
     end
 
     -- Create fs_event handle
@@ -56,7 +56,7 @@ M.setup = function(opts)
     -- Debounced callback for file changes
     local on_change, cleanup = debounce(function(err, filename, events)
         if err then
-            M.stop()
+            M.unwatch(path)
             return
         end
 
@@ -68,35 +68,55 @@ M.setup = function(opts)
                 pcall(handler, full_path, events)
             end
         end
-    end, opts.debounce or 100)
-    cleanup_debounce = cleanup
+    end, debounce_ms)
 
-    -- Start watching (wrapped for thread safety)
-    local ok, err = fs_event:start(
-        path,
-        { recursive = false },
-        vim.schedule_wrap(on_change)
-    )
+    -- Start watching
+    local ok = fs_event:start(path, { recursive = false }, vim.schedule_wrap(on_change))
 
     if ok ~= 0 then
+        cleanup()
         return false
     end
 
-    watcher = fs_event
+    watchers[path] = {
+        fs_event = fs_event,
+        cleanup = cleanup,
+        refcount = 1,
+    }
     return true
 end
 
--- Stop the watcher and clean up resources
-M.stop = function()
-    if watcher then
-        watcher:stop()
-        watcher = nil
+-- Stop watching a directory (decrements refcount, stops when zero)
+M.unwatch = function(path)
+    local w = watchers[path]
+    if not w then
+        return
     end
 
-    if cleanup_debounce then
-        cleanup_debounce()
-        cleanup_debounce = nil
+    w.refcount = w.refcount - 1
+    if w.refcount <= 0 then
+        w.fs_event:stop()
+        w.cleanup()
+        watchers[path] = nil
     end
+end
+
+-- Stop all watchers and clean up resources
+M.stop_all = function()
+    for path, w in pairs(watchers) do
+        w.fs_event:stop()
+        w.cleanup()
+        watchers[path] = nil
+    end
+end
+
+-- Get list of currently watched directories (for debugging)
+M.list_watched = function()
+    local paths = {}
+    for path, w in pairs(watchers) do
+        table.insert(paths, { path = path, refcount = w.refcount })
+    end
+    return paths
 end
 
 return M
