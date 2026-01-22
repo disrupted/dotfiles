@@ -381,6 +381,7 @@ return {
                 function()
                     Snacks.terminal()
                 end,
+                mode = { 'n', 't' },
             },
             {
                 '<C-n>',
