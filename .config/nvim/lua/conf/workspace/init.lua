@@ -149,6 +149,8 @@ M.setup = function()
         return
     end
 
+    require('conf.hotreload').setup { path = cwd }
+
     vim.g.project_tabs = false
     if not vim.g.project_tabs or not vim.g.project_filetype then
         return
