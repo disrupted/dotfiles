@@ -1,6 +1,10 @@
 local M = {}
 
-local repo = vim.fs.joinpath(vim.env.XDG_DATA_HOME, 'yadm', 'repo.git')
+local repo = vim.fs.joinpath(
+    vim.env.XDG_DATA_HOME or vim.fs.joinpath(vim.env.HOME, '.local', 'share'),
+    'yadm',
+    'repo.git'
+)
 M.config = { repo = repo }
 
 M.setup = function()
@@ -11,7 +15,10 @@ M.setup = function()
     local cwd = assert(vim.uv.cwd())
     if
         cwd ~= vim.env.HOME
-        and not vim.fs.relpath(vim.env.XDG_CONFIG_HOME, cwd)
+        and not vim.fs.relpath(
+            vim.env.XDG_CONFIG_HOME or vim.fs.joinpath(vim.env.HOME, '.config'),
+            cwd
+        )
     then
         return
     end
