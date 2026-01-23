@@ -1,10 +1,5 @@
 # Nushell environment
 
-# XDG Base Directory Specification
-$env.XDG_CONFIG_HOME = ($env.HOME | path join ".config")
-$env.XDG_DATA_HOME = ($env.HOME | path join ".local" "share")
-$env.XDG_STATE_HOME = ($env.HOME | path join ".local" "state")
-$env.XDG_CACHE_HOME = ($env.HOME | path join ".cache")
 
 def --env prepend-path [paths: list<string>] {
   $env.PATH = ($paths | append $env.PATH)
