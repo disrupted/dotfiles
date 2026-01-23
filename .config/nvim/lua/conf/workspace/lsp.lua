@@ -34,7 +34,18 @@ end
 ---@type table<string, fun():integer?>
 local default_clients = {
     python = function()
-        return start(vim.lsp.config.basedpyright)
+        local configs = {
+            vim.lsp.config.ty,
+            vim.lsp.config.pyrefly,
+            vim.lsp.config.basedpyright,
+        }
+        -- check which server is available in venv
+        local venv_path = vim.env.VIRTUAL_ENV
+        for _, config in ipairs(configs) do
+            if vim.fs.relpath(venv_path, vim.fn.exepath(config.cmd[1])) then
+                return start(config)
+            end
+        end
     end,
     rust = function()
         return require('rustaceanvim.lsp').start()
@@ -44,6 +55,7 @@ local default_clients = {
 ---@type table<string, fun():integer|integer[]|nil>
 local clients = setmetatable(default_clients, {
     ---@param key string filetype
+    ---@return integer[] client_ids
     __index = function(_, key)
         return function()
             local configs = require('conf.lsp.config').filter_enabled {

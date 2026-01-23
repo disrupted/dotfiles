@@ -15,6 +15,7 @@ M.filter_enabled = function(opts)
             vim.iter(config.filetypes):any(function(filetype)
                 return filetype == opts.filetype
             end)
+            and vim.fn.executable(config.cmd[1]) == 1
         then
             table.insert(configs, config)
         end
