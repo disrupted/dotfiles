@@ -24,6 +24,7 @@ return {
                 'deno',
                 'docker-compose-language-service',
                 'dockerfile-language-server',
+                'emmylua_ls',
                 'gh-actions-language-server',
                 'gitlab-ci-ls',
                 'gopls',
@@ -92,8 +93,8 @@ return {
         opts = {
             library = {
                 -- Load luvit types when the `vim.uv` word is found
-                { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
-                { path = 'snacks.nvim', words = { 'Snacks' } },
+                -- { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+                -- { path = 'snacks.nvim', words = { 'Snacks' } },
             },
         },
     },
