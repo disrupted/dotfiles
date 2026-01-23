@@ -23,9 +23,27 @@ $env.config = {
     partial: true
     algorithm: "fuzzy"
     use_ls_colors: true
+    external: {
+      enable: true
+      max_results: 100
+      completer: null
+    }
   }
+  use_kitty_protocol: true  # Better keyboard handling in kitty terminal
   highlight_resolved_externals: true
   bracketed_paste: true
+  table: {
+    mode: rounded  # "basic", "thin", "light", "compact", "rounded", "reinforced", "heavy", "none"
+    index_mode: always  # "always", "never"
+    show_empty: true
+    padding: { left: 1, right: 1 }
+    trim: {
+      methodology: wrapping  # "wrapping", "truncating"
+      wrapping_try_keep_words: true
+      truncating_suffix: "..."
+    }
+    header_on_separator: false
+  }
 }
 
 use ~/.config/nushell/modules/user.nu *
@@ -122,6 +140,27 @@ $env.config = ($env.config | merge {
 
 
 $env.config.keybindings ++= [
+  # Tab to open/navigate completion menu
+  {
+    name: completion_menu
+    modifier: none
+    keycode: tab
+    mode: [emacs, vi_normal, vi_insert]
+    event: {
+      until: [
+        { send: Menu, name: completion_menu }
+        { send: MenuNext }
+      ]
+    }
+  }
+  # Shift+Tab to navigate backwards in menu
+  {
+    name: completion_previous
+    modifier: shift
+    keycode: backtab
+    mode: [emacs, vi_insert, vi_normal]
+    event: { send: MenuPrevious }
+  }
   {
     name: project_history
     modifier: alt

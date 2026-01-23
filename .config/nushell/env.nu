@@ -41,7 +41,7 @@ $env.TERMINAL = "kitty"
 $env.EDITOR = "nvim"
 $env.VISUAL = $env.EDITOR
 $env.PAGER = "less"
-$env.LESS = "-F -g -i -M -R -S -w -X -z-4 -~ --mouse"
+$env.LESS = "-F -g -i -M -R -S -w -X -~ --mouse"
 $env.LESS_TERMCAP_mb = "\u{1b}[6m"
 $env.LESS_TERMCAP_md = "\u{1b}[34m"
 $env.LESS_TERMCAP_us = "\u{1b}[4;32m"
@@ -65,14 +65,16 @@ $env.IS_DARK_MODE = (do { defaults read -g AppleInterfaceStyle } | complete | ge
 const FZF_COLORS_DARK = '
 --color=fg:-1,bg:-1,border:#4B5164,hl:#d19a66
 --color=fg+:#f7f7f7,bg+:#2c323d,hl+:#e5c07b
---color=info:#828997,prompt:#e06c75,pointer:#45cdff
---color=marker:#98c379,spinner:#e06c75,header:#98c379'
+--color=info:#828997,prompt:#4fb5f7,pointer:#45cdff
+--color=marker:#98c379,spinner:#e06c75,header:#98c379
+--color=gutter:#2c323d'
 
 const FZF_COLORS_LIGHT = '
 --color=fg:-1,bg:-1,border:#d0d0d0,hl:#d75f00
 --color=fg+:#1a1a1a,bg+:#e8e8e8,hl+:#d75f00
---color=info:#878787,prompt:#d7005f,pointer:#0087af
---color=marker:#5f8700,spinner:#d7005f,header:#5f8700'
+--color=info:#878787,prompt:#ff6a00,pointer:#0087af
+--color=marker:#5f8700,spinner:#d7005f,header:#5f8700
+--color=gutter:#e8e8e8'
 
 # Function to update theme-dependent env vars
 def --env update-theme [] {
@@ -82,6 +84,7 @@ def --env update-theme [] {
     $env.DELTA_FEATURES = if $is_dark { "dark" } else { "light" }
     $env.BAT_THEME = if $is_dark { "OneHalfDark" } else { "OneHalfLight" }
     $env.FZF_DEFAULT_OPTS = $"
+--style=minimal
 --no-separator
 --info=hidden
 --ansi
@@ -102,6 +105,7 @@ $env.FZF_ALT_C_COMMAND = 'fd -t d -d 1'
 $env.FZF_ALT_C_OPTS = '--preview="eza --no-quotes -1 --icons --git --git-ignore {}" --preview-window=right:60%:wrap'
 
 $env.FZF_DEFAULT_OPTS = $"
+--style=minimal
 --no-separator
 --info=hidden
 --ansi

@@ -118,6 +118,47 @@ export def glo [] {
   if ($in | is-empty) { } else { git show $in }
 }
 
+# glo-sk - interactive git log (skim binary version - compare performance)
+export def glo-sk [] {
+  let colors = if $env.IS_DARK_MODE {
+    "fg:-1,bg:-1,matched:#d19a66,current:-1:b,bg+:#2c323d,current_match:#e5c07b:b,info:#828997,prompt:#e06c75,cursor:#45cdff,spinner:#e06c75,border:#4B5164"
+  } else {
+    "fg:-1,bg:-1,matched:#d75f00,current:-1:b,bg+:#e8e8e8,current_match:#d75f00:b,info:#878787,prompt:#d7005f,cursor:#0087af,spinner:#d7005f,border:#d0d0d0"
+  }
+  git log --oneline --color=always |
+  ^sk --height=80% --layout=reverse --ansi --color $colors --preview 'git show {1} | delta' |
+  split row ' ' |
+  first |
+  if ($in | is-empty) { } else { git show $in }
+}
+
+# glos - interactive git log with skim (fast, no preview in TUI)
+# Shows full diff after selection - trades preview for speed
+export def glos [] {
+  git log --pretty=format:"%H|%h|%an|%ar|%s" -n 200
+    | lines
+    | each {|line|
+        let parts = ($line | split row '|')
+        {
+          hash: $parts.0,
+          short: $parts.1,
+          author: $parts.2,
+          date: $parts.3,
+          message: $parts.4
+        }
+      }
+    | (sk
+        --height "80%"
+        --format {
+          $"($in.short) ($in.message) \(($in.author), ($in.date)\)"
+        })
+    | if ($in | is-empty) {
+        return
+      } else {
+        git show $in.hash
+      }
+}
+
 # gd - interactive git diff
 export def gd [
   --staged (-s) # Show staged changes
@@ -413,4 +454,69 @@ export def --env hproj_pick [] {
   let choice = (hproj | input list --fuzzy "Project history")
   if ($choice | is-empty) { return }
   commandline edit --replace $choice
+}
+
+# skim-enhanced commands (structured data aware)
+
+# sk-ps - interactive process selector
+export def sk-ps [] {
+  ps
+    | where pid != 0
+    | sk --format { $"($in.name) \(pid: ($in.pid), cpu: ($in.cpu)%\)" }
+}
+
+# sk-kill - interactive process killer
+export def sk-kill [] {
+  ps
+    | where pid != 0
+    | sk --format { $"($in.name) \(pid: ($in.pid), cpu: ($in.cpu)%\)" }
+    | kill $in.pid
+}
+
+# sk-env - browse environment variables
+export def sk-env [] {
+  $env
+    | transpose key value
+    | sk --format { $in.key }
+}
+
+# sk-history - smarter history search with structured data
+export def sk-history [] {
+  history
+    | reverse
+    | sk --format { $in.command }
+}
+
+# sk-ga - interactive git add using structured data
+export def sk-ga [] {
+  git status --short
+    | lines
+    | where { not ($in | is-empty) }
+    | each {|line|
+        {
+          status: ($line | str substring 0..2 | str trim),
+          file: ($line | str substring 3..)
+        }
+      }
+    | sk --multi --format { $"($in.status) ($in.file)" }
+    | each {|f| git add $f.file}
+
+  git status --short
+}
+
+# sk-gsw - git branch switcher with structured preview
+export def sk-gsw [] {
+  git branch --all --format="%(refname:short)|%(committerdate:relative)|%(subject)"
+    | lines
+    | each {|line|
+        let parts = ($line | split row '|')
+        {
+          branch: ($parts.0 | str replace 'remotes/origin/' ''),
+          date: $parts.1,
+          subject: $parts.2
+        }
+      }
+    | uniq-by branch
+    | sk --format { $"($in.branch) \(($in.date)\)" }
+    | git switch $in.branch
 }
