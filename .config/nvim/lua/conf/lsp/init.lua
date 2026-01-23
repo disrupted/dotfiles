@@ -195,7 +195,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         if client and client:supports_method 'textDocument/codeAction' then
             require('which-key').add {
                 {
-                    '<Leader>a',
+                    '<Leader>c',
                     vim.lsp.buf.code_action,
                     buffer = bufnr,
                     mode = { 'n', 'v' },
@@ -262,6 +262,7 @@ vim.lsp.enable {
     -- 'lua_ls',
     'nushell',
     'pyrefly',
+    'pyright',
     'ruff',
     'sourcekit',
     'svelte',

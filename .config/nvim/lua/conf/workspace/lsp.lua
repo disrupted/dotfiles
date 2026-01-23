@@ -38,6 +38,7 @@ local default_clients = {
             vim.lsp.config.ty,
             vim.lsp.config.pyrefly,
             vim.lsp.config.basedpyright,
+            vim.lsp.config.pyright,
         }
         -- check which server is available in venv
         local venv_path = vim.env.VIRTUAL_ENV
