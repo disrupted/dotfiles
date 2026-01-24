@@ -1,0 +1,106 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "theme": "system",
+  "autoupdate": false,
+  "tui": {
+    "scroll_acceleration": {
+      "enabled": true,
+    },
+  },
+  "disabled_providers": ["opencode"],
+  "model": "anthropic/claude-sonnet-4-5",
+  "small_model": "anthropic/claude-haiku-4-5",
+  "permission": {
+    // "edit": "ask",
+    "bash": {
+      "*": "ask",
+      "git *": "allow",
+      "git commit *": "deny",
+      "git push *": "deny",
+      "sudo *": "deny",
+      "rm -rf *": "deny", // strictly deny all deletions for now
+      // "rm -rf /": "deny",
+      // "rm -rf /*": "deny",
+      // "rm -rf ~": "deny",
+      // "rm -rf ~/*": "deny",
+      ":(){:|:&};:": "deny", // fork bomb, just in case
+    },
+    "lsp": "allow",
+    "skill": "allow",
+    "webfetch": "allow",
+    "question": "allow",
+    "external_directory": "ask",
+  },
+  "agent": {
+    "build": {
+      "permission": {
+        "bash": {
+          "*": "ask",
+          "git *": "allow",
+          "git commit *": "ask",
+          "git push *": "deny",
+        },
+      },
+    },
+    "plan": {
+      "model": "anthropic/claude-opus-4-5",
+    },
+    "explore": {
+      "description": "Fast codebase exploration and file search",
+      "mode": "subagent",
+      "model": "anthropic/claude-haiku-4-5",
+      "temperature": 0.1,
+      "maxSteps": 20,
+      "tools": {
+        "read": true,
+        "write": false,
+        "edit": false,
+        "bash": false,
+        "grep": true,
+        "glob": true,
+        "list": true,
+      },
+    },
+  },
+  "keybinds": {
+    "theme_list": "none",
+    "username_toggle": "none",
+    "model_list": "alt+p",
+    "model_cycle_recent": "none",
+    "model_cycle_recent_reverse": "none",
+    "agent_list": "alt+a",
+  },
+  "lsp": {
+    "pyright": {
+      "disabled": true,
+    },
+    "basedpyright": {
+      "command": [
+        "basedpyright-langserver",
+        "--stdio",
+      ],
+      "extensions": [".py", ".pyi"],
+    },
+  },
+  "mcp": {
+    "context7": {
+      "enabled": true,
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+    },
+  },
+  "formatter": {
+    "ruff": { "disabled": false },
+    "uv": { "disabled": true }, // use ruff instead
+  },
+  "watcher": {
+    "ignore": ["node_modules/**", "dist/**", ".git/**", ".jj/**"],
+  },
+  "server": {
+    "hostname": "localhost",
+  },
+  "compaction": {
+    "auto": false,
+    "prune": true,
+  },
+}

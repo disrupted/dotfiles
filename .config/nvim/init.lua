@@ -43,7 +43,7 @@ require('lazy').setup {
                 'netrwPlugin',
                 'netrwSettings',
                 'netrwFileHandlers',
-                -- TODO: might get repalced by matchwith plugin
+                -- TODO: might get replaced by matchwith plugin
                 -- 'matchit',
                 -- 'matchparen',
                 'tar',
@@ -148,14 +148,16 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     desc = 'highlight yanked text briefly',
 })
 
-vim.api.nvim_create_autocmd('VimResized', {
-    desc = 'resize splits when Vim is resized',
-    callback = function()
-        local current_tab = vim.api.nvim_get_current_tabpage()
-        vim.cmd 'tabdo wincmd ='
-        vim.api.nvim_set_current_tabpage(current_tab)
-    end,
-})
+-- FIXME: disabled because it causes weird side effects, e.g. in opencode.nvim
+-- https://github.com/sudo-tee/opencode.nvim/issues/144
+-- vim.api.nvim_create_autocmd('VimResized', {
+--     desc = 'resize splits when Vim is resized',
+--     callback = function()
+--         local current_tab = vim.api.nvim_get_current_tabpage()
+--         vim.cmd 'tabdo wincmd ='
+--         vim.api.nvim_set_current_tabpage(current_tab)
+--     end,
+-- })
 
 vim.api.nvim_create_autocmd('QuitPre', {
     callback = function()
@@ -205,7 +207,11 @@ local au_cursorline = vim.api.nvim_create_augroup('cursorline_focus', {})
 vim.api.nvim_create_autocmd({ 'InsertLeave', 'WinEnter' }, {
     group = au_cursorline,
     callback = function(args)
-        if vim.bo[args.buf].buftype == 'terminal' then
+        if
+            vim.bo[args.buf].buftype == 'terminal'
+            or vim.bo[args.buf].filetype == 'opencode'
+            or vim.bo[args.buf].filetype == 'opencode_output'
+        then
             return
         end
         vim.wo.cursorline = true

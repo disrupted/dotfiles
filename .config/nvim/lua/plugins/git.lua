@@ -366,6 +366,11 @@ return {
         end,
     },
     {
+        'esmuellert/codediff.nvim',
+        dependencies = { 'MunifTanjim/nui.nvim' },
+        cmd = 'CodeDiff',
+    },
+    {
         'pwntester/octo.nvim',
         cmd = 'Octo',
         init = function()

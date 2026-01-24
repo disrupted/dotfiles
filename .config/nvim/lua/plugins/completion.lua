@@ -27,6 +27,31 @@ return {
                         return true
                     end,
                 },
+                -- Opencode: preset 'enter'
+                ['<CR>'] = {
+                    function(cmp)
+                        if vim.bo.filetype == 'opencode' then
+                            return cmp.accept()
+                        end
+                    end,
+                    'fallback',
+                },
+                ['<Tab>'] = {
+                    function(cmp)
+                        if vim.bo.filetype == 'opencode' then
+                            return cmp.select_next()
+                        end
+                    end,
+                    'fallback',
+                },
+                ['<S-Tab>'] = {
+                    function(cmp)
+                        if vim.bo.filetype == 'opencode' then
+                            return cmp.select_prev()
+                        end
+                    end,
+                    'fallback',
+                },
             },
             snippets = { preset = 'luasnip' },
             completion = {
@@ -47,7 +72,10 @@ return {
                     auto_show = true,
                     draw = {
                         columns = function(ctx)
-                            if ctx.mode == 'cmdline' then
+                            if
+                                ctx.mode == 'cmdline'
+                                or vim.bo.filetype == 'opencode'
+                            then
                                 return { { 'label' } }
                             else
                                 return {
