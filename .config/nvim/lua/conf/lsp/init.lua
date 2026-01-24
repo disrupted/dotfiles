@@ -269,8 +269,9 @@ vim.lsp.enable {
     'tailwindcss',
     'taplo',
     'terraform_ls',
+    'tsgo',
     'ts_query_ls',
     'ty',
-    'vts_ls',
+    -- 'vts_ls',
     'yaml_ls',
 }
