@@ -277,14 +277,7 @@ $env.config.keybindings ++= [
       )"
     }
   }
-  # Disable Ctrl+Z (no job suspension)
-  {
-    name: disable_ctrl_z
-    modifier: control
-    keycode: char_z
-    mode: [emacs, vi_normal, vi_insert]
-    event: null
-  }
+
 ]
 
 # Pre-prompt hook for live theme switching
