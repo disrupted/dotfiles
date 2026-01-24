@@ -30,7 +30,7 @@ return {
                 end,
             },
         },
-        opts = { auto_save = 'all', disable_on_zoom = false },
+        opts = { auto_save = false, disable_on_zoom = false },
     },
     {
         'folke/flash.nvim',
