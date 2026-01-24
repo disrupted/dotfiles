@@ -1,8 +1,29 @@
 local M = {}
 
----@alias detect_project.Opts.FileTypeMarkers table<string, (string|fun(name: string, path: string): boolean)[]> mapping of filetype to marker files or directories that mark a certain project type
+---@alias detect_project.Opts.Markers table<string, (string|fun(name: string, path: string): boolean)[]> mapping of filetype to marker files or directories that mark a certain project type
 
----@type detect_project.Opts.FileTypeMarkers
+---@type detect_project.Opts.Markers
+local default_workspace_markers = {
+    uv = { 'uv.lock' },
+    poetry = { 'poetry.lock' },
+    cargo = { 'Cargo.lock' },
+    bun = { 'bun.lock' },
+    xcode = {
+        function(name)
+            return name:match '%.xcodeproj$' ~= nil
+        end,
+    },
+}
+
+local workspace_to_filetype = {
+    uv = 'python',
+    poetry = 'python',
+    cargo = 'rust',
+    bun = 'javascript',
+    xcode = 'swift',
+}
+
+---@type detect_project.Opts.Markers
 local default_project_markers = {
     python = { 'pyproject.toml' },
     lua = { '.luarc.json', '.luarc.jsonc', '.stylua.toml', 'stylua.toml' },
@@ -16,7 +37,7 @@ local default_project_markers = {
 }
 
 ---@class detect_project.Opts
----@field markers? detect_project.Opts.FileTypeMarkers
+---@field markers? detect_project.Opts.Markers
 ---@field buffers? boolean check open buffers
 ---@field all? boolean include all filetypes
 
@@ -29,7 +50,7 @@ local default_opts = {
 
 -- Detect project type of cwd
 ---@param opts? detect_project.Opts
----@return string[] detected filetypes of current project
+---@return string detected filetypes of current project
 M.project_filetypes = function(opts)
     ---@type detect_project.Opts
     opts = vim.tbl_extend('keep', opts or {}, default_opts)
@@ -80,6 +101,14 @@ end
 ---@param cwd string
 ---@return string
 M.get_root = function(cwd)
+    for workspace_type, files in pairs(default_workspace_markers) do
+        local root = vim.fs.root(cwd, files)
+        if root then
+            vim.g.workspace_type = workspace_type
+            vim.g.project_filetype = workspace_to_filetype[workspace_type]
+            return root
+        end
+    end
     for filetype, files in pairs(default_project_markers) do
         local root = vim.fs.root(cwd, files)
         if root then
@@ -139,10 +168,13 @@ M.setup = function()
     -- vim.api.nvim_set_current_dir(vim.g.workspace_root)
 
     Snacks.notify({
-        string.format('Project filetype: %s', vim.g.project_filetype),
-        string.format('Workspace root: %s', vim.g.workspace_root),
-        string.format('Git repo: %s', vim.g.git_repo),
-    }, { level = 'debug' })
+        string.format(
+            '%s [%s %s]',
+            vim.g.workspace_root,
+            vim.g.workspace_type,
+            vim.g.project_filetype
+        ),
+    }, { title = 'Workspace', level = 'debug' })
 
     local argv = vim.fn.argv(0)
     if type(argv) == 'string' and argv:match '.git/COMMIT_EDITMSG' ~= nil then
