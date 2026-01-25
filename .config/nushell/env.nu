@@ -98,9 +98,9 @@ $env.DELTA_FEATURES = if $env.IS_DARK_MODE { "dark" } else { "light" }
 $env.BAT_THEME = if $env.IS_DARK_MODE { "OneHalfDark" } else { "OneHalfLight" }
 
 # FZF settings
-$env.FZF_DEFAULT_COMMAND = 'rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2>/dev/null'
+$env.FZF_DEFAULT_COMMAND = 'rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*"'
 $env.FZF_CTRL_T_COMMAND = $env.FZF_DEFAULT_COMMAND
-$env.FZF_CTRL_T_OPTS = '--preview="bat --color=always --style=header {} 2>/dev/null" --preview-window=right:60%:wrap'
+$env.FZF_CTRL_T_OPTS = '--preview="bat --color=always --style=header-filename {}" --preview-window=right:60%:wrap'
 $env.FZF_ALT_C_COMMAND = 'fd -t d -d 1'
 $env.FZF_ALT_C_OPTS = '--preview="eza --no-quotes -1 --icons --git --git-ignore {}" --preview-window=right:60%:wrap'
 

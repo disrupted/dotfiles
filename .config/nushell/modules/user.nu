@@ -58,10 +58,6 @@ export def --env mkcd [path: path] {
   cd $path
 }
 
-export def cp [...args] { ^cp -riv ...$args }
-export def mv [...args] { ^mv -iv ...$args }
-export def mkdir [...args] { ^mkdir -pv ...$args }
-
 export alias v = nvim
 export alias y = yazi
 export alias c = clear

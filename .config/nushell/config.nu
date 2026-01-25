@@ -242,7 +242,7 @@ $env.config.keybindings ++= [
     mode: [emacs]
     event: {
       send: ExecuteHostCommand
-      cmd: "commandline edit --insert (fd --type f --hidden --follow --exclude .git --exclude node_modules | fzf --preview 'bat --color=always --style=header {} 2>/dev/null || ls -la {}' | str trim)"
+      cmd: "commandline edit --insert (fd --type f --hidden --follow --exclude .git --exclude node_modules | fzf --preview 'bat --color=always --style=header-filename {}' --preview-window=right:60%:wrap)"
     }
   }
   # FZF directory picker (Alt+C, like zsh)
