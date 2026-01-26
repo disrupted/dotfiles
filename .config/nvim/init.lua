@@ -28,7 +28,7 @@ require('lazy').setup {
     install = { colorscheme = { 'one' } },
     checker = { enabled = true },
     diff = {
-        cmd = 'diffview.nvim',
+        cmd = 'codediff.nvim',
     },
     performance = {
         rtp = {
