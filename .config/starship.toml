@@ -1,8 +1,8 @@
-# :schema https://starship.rs/config-schema.json
+"$schema" = 'https://starship.rs/config-schema.json'
 add_newline = false
-
 format = "$directory$git_branch$git_status$git_state$line_break$character"
 right_format = "$cmd_duration$python$nodejs$bun$deno$rust$golang"
+command_timeout = 1000
 
 [gcloud]
 disabled = true
