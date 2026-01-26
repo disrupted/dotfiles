@@ -100,12 +100,16 @@ return {
                     elseif
                         vim.list_contains(treesitter.get_available(), lang)
                     then
-                        Snacks.notify(
-                            string.format(
-                                'Treesitter parser available for %s',
-                                lang
+                        -- HACK: try starting it anyways, some external parsers (e.g. ghostty) aren't correctly detected as installed
+                        ok = pcall(vim.treesitter.start, args.buf, lang)
+                        if not ok then
+                            Snacks.notify(
+                                string.format(
+                                    'Treesitter parser available for %s',
+                                    lang
+                                )
                             )
-                        )
+                        end
                     end
                 end,
                 desc = 'Enable Treesitter for installed languages',
