@@ -58,8 +58,9 @@ $env.GPG_TTY = (tty)
 $env.QUOTING_STYLE = "literal"
 $env.LS_COLORS = "rs=0:fi=0:di=34:ln=36:so=33:pi=33:ex=32:bd=33;1:cd=33;1:su=31:sg=31:tw=34:ow=34:mi=31:or=31:*.tar=31:*.tgz=31:*.zip=31:*.gz=31:*.bz2=31:*.xz=31:*.7z=31:*.jpg=35:*.png=35:*.gif=35:*.pdf=35"
 
-# Theme detection (macOS) - initial value
-$env.IS_DARK_MODE = (do { defaults read -g AppleInterfaceStyle } | complete | get stdout | str trim) == "Dark"
+# Theme detection - initial value
+$env.THEME = (^dol)
+$env.IS_DARK_MODE = $env.THEME == "dark"
 
 # Theme colors as constants
 const FZF_COLORS_DARK = '
@@ -78,10 +79,12 @@ const FZF_COLORS_LIGHT = '
 
 # Function to update theme-dependent env vars
 def --env update-theme [] {
-  let is_dark = (do { defaults read -g AppleInterfaceStyle } | complete | get stdout | str trim) == "Dark"
-  if $is_dark != $env.IS_DARK_MODE {
+  let theme = (^dol)
+  if $theme != $env.THEME {
+    $env.THEME = $theme
+    let is_dark = $theme == "dark"
     $env.IS_DARK_MODE = $is_dark
-    $env.DELTA_FEATURES = if $is_dark { "dark" } else { "light" }
+    $env.DELTA_FEATURES = $theme
     $env.BAT_THEME = if $is_dark { "OneHalfDark" } else { "OneHalfLight" }
     $env.FZF_DEFAULT_OPTS = $"
 --style=minimal
@@ -94,7 +97,7 @@ def --env update-theme [] {
 }
 
 # Initial theme setup
-$env.DELTA_FEATURES = if $env.IS_DARK_MODE { "dark" } else { "light" }
+$env.DELTA_FEATURES = $env.THEME
 $env.BAT_THEME = if $env.IS_DARK_MODE { "OneHalfDark" } else { "OneHalfLight" }
 
 # FZF settings
