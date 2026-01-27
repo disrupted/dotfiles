@@ -3,6 +3,7 @@ vim.filetype.add {
         avsc = 'json',
         jinja2 = 'htmldjango',
         pkl = 'pkl',
+        nuon = 'nu',
     },
     filename = {
         ['poetry.lock'] = 'toml',
