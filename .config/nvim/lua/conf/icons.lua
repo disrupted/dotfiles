@@ -53,6 +53,11 @@ return {
         unknown = '',
         watching = '',
     },
+    diagnostics = {
+        error = '',
+        warning = '',
+        info = '',
+    },
     kinds = {
         Array = '󰅪',
         Boolean = '◩',
@@ -108,5 +113,6 @@ return {
         bug = '',
         ellipsis = '…',
         search = '',
+        window = '',
     },
 }

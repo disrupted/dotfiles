@@ -1,3 +1,11 @@
+local function is_opencode_completion()
+    if vim.bo.filetype == 'opencode' then
+        local item = require('blink.cmp.completion.list').get_selected_item()
+        return item and vim.startswith(item.source_id, 'opencode_')
+    end
+    return false
+end
+
 ---@module 'lazy.types'
 ---@type LazySpec[]
 return {
@@ -30,7 +38,7 @@ return {
                 -- Opencode: preset 'enter'
                 ['<CR>'] = {
                     function(cmp)
-                        if vim.bo.filetype == 'opencode' then
+                        if is_opencode_completion() then
                             return cmp.accept()
                         end
                     end,
@@ -38,7 +46,7 @@ return {
                 },
                 ['<Tab>'] = {
                     function(cmp)
-                        if vim.bo.filetype == 'opencode' then
+                        if is_opencode_completion() then
                             return cmp.select_next()
                         end
                     end,
@@ -46,7 +54,7 @@ return {
                 },
                 ['<S-Tab>'] = {
                     function(cmp)
-                        if vim.bo.filetype == 'opencode' then
+                        if is_opencode_completion() then
                             return cmp.select_prev()
                         end
                     end,

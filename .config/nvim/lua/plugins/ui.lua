@@ -1,6 +1,7 @@
+local icons = require 'conf.icons'
+
 ---@module 'lazy.types'
 ---@type LazySpec[]
-local icons = require 'conf.icons'
 return {
     {
         'rebelot/heirline.nvim',
