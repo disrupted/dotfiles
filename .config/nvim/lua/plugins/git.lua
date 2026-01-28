@@ -398,7 +398,7 @@ return {
             },
             {
                 '<Leader>gdf',
-                '<cmd>CodeDiff history HEAD~50 %<CR>',
+                '<cmd>CodeDiff history %<CR>',
                 desc = 'File history',
             },
             {
