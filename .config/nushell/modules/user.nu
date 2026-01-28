@@ -71,12 +71,11 @@ export alias gc = git commit
 # ga - interactive git add
 export def ga [] {
   let files = (
-    git status --short |
-    lines |
-    where { ($in | str trim | str length) > 0 } |
-    each { $in | str substring 3.. } |
-    str join (char newline) |
-    fzf --height=60% --layout=reverse --multi --preview 'git diff {} | delta'
+    [
+      (git diff --name-only)
+      (git ls-files --others --exclude-standard)
+    ] | str join (char newline) |
+    fzf --height=60% --layout=reverse --multi --preview 'bash -c "if git ls-files --error-unmatch {} &>/dev/null; then git diff --color=always {} | delta; else bat --color=always --style=header {}; fi"'
   )
   if ($files | is-empty) { return }
   $files | lines | each { git add $in }
