@@ -103,4 +103,7 @@
     "auto": false,
     "prune": true,
   },
+  "plugin": [
+    "opencode-anthropic-auth@latest",
+  ],
 }
