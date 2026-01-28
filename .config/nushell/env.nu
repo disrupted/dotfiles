@@ -59,7 +59,7 @@ $env.QUOTING_STYLE = "literal"
 $env.LS_COLORS = "rs=0:fi=0:di=34:ln=36:so=33:pi=33:ex=32:bd=33;1:cd=33;1:su=31:sg=31:tw=34:ow=34:mi=31:or=31:*.tar=31:*.tgz=31:*.zip=31:*.gz=31:*.bz2=31:*.xz=31:*.7z=31:*.jpg=35:*.png=35:*.gif=35:*.pdf=35"
 
 # Theme detection - initial value
-$env.THEME = (^dol)
+$env.THEME = (^dawn)
 $env.IS_DARK_MODE = $env.THEME == "dark"
 
 # Theme colors as constants
@@ -79,7 +79,7 @@ const FZF_COLORS_LIGHT = '
 
 # Function to update theme-dependent env vars
 def --env update-theme [] {
-  let theme = (^dol)
+  let theme = (^dawn)
   if $theme != $env.THEME {
     $env.THEME = $theme
     let is_dark = $theme == "dark"
