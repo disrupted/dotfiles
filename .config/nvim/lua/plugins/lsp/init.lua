@@ -221,7 +221,6 @@ return {
                 formatters_by_ft = {
                     python = { 'ruff', lsp_format = 'last' }, -- provides `ruff check --fix`
                     astro = dprint,
-                    lua = { 'stylua' },
                     json = dprint,
                     jsonc = dprint,
                     markdown = { 'dprint', 'injected' },
@@ -307,21 +306,6 @@ return {
             local conform = require 'conform'
             conform.setup(opts)
 
-            conform.formatters.stylua = {
-                -- require_cwd = true,
-                prepend_args = function(self, ctx)
-                    if not self:cwd(ctx) then
-                        Snacks.notify('fallback to global stylua config', {
-                            level = vim.log.levels.DEBUG,
-                            title = 'Format',
-                        })
-                        return {
-                            '--config-path',
-                            vim.fs.normalize '~/.config/nvim/stylua.toml',
-                        }
-                    end
-                end,
-            }
             -- conform.formatters.ruff_fix = {
             --     prepend_args = { '--respect-gitignore' },
             -- }
