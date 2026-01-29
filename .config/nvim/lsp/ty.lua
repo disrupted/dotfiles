@@ -3,6 +3,11 @@ return {
     cmd = { 'ty', 'server' },
     filetypes = { 'python' },
     root_markers = { 'ty.toml', 'pyproject.toml' },
+    settings = {
+        ty = {
+            diagnosticMode = 'workspace',
+        },
+    },
     init_options = {
         settings = {
             logLevel = 'warn',
