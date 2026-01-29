@@ -215,6 +215,25 @@ return {
                 return check_dprint(bufnr) or check_prettier(bufnr) or {}
             end
 
+            vim.g.format_modifications_only = false
+            local function format_git_hunks(hunks)
+                for i = #hunks, 1, -1 do
+                    local hunk = hunks[i]
+                    if hunk ~= nil and hunk.type ~= 'delete' then
+                        local start = math.max(1, hunk.added.start) -- on untracked files, start is 0
+                        local last = start + hunk.added.count
+                        -- nvim_buf_get_lines uses zero-based indexing -> subtract from last
+                        local last_hunk_line =
+                            vim.api.nvim_buf_get_lines(0, last - 2, last - 1, true)[1]
+                        local range = {
+                            start = { start, 0 },
+                            ['end'] = { last - 1, last_hunk_line:len() },
+                        }
+                        require('conform').format { async = false, range = range }
+                    end
+                end
+            end
+
             ---@module 'conform.types'
             ---@type conform.setupOpts
             return {
@@ -252,7 +271,7 @@ return {
                         lsp_format = 'prefer',
                     },
                 },
-                format_after_save = function(bufnr)
+                format_on_save = function(bufnr)
                     -- Disable with a global or buffer-local variable
                     if
                         vim.g.disable_autoformat
@@ -260,7 +279,12 @@ return {
                     then
                         return
                     end
-                    return { async = true }
+                    local hunks = require('gitsigns').get_hunks(bufnr)
+                    local buf_status = vim.b.gitsigns_status_dict
+                    if vim.g.format_modifications_only and hunks then
+                        return format_git_hunks(hunks)
+                    end
+                    return { async = false }
                 end,
                 log_level = vim.log.levels.WARN,
             }
@@ -377,9 +401,11 @@ return {
                 for _, client in pairs(clients) do
                     require('lsp-format-modifications').format_modifications(
                         client,
-                        bufnr
+                        bufnr,
+                        { experimental_empty_line_handling = true }
                     )
                 end
+                vim.b.disable_autoformat = true
             end, {})
         end,
     },
@@ -500,7 +526,7 @@ return {
         config = function(_, opts)
             vim.g.rustaceanvim = opts
 
-            local adapter = require 'rustaceanvim.neotest'()
+            local adapter = require 'rustaceanvim.neotest' ()
             local adapters = require('neotest.config').adapters
             table.insert(adapters, adapter)
         end,
