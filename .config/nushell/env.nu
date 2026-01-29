@@ -10,6 +10,7 @@ prepend-path [
   /opt/homebrew/bin
   ($env.HOME | path join ".local" "bin")
   ($env.HOME | path join ".cargo" "bin")
+  ($env.HOME | path join ".bun" "bin")
   ($env.HOME | path join ".deno" "bin")
   ($env.HOME | path join ".luarocks" "bin")
 ]
