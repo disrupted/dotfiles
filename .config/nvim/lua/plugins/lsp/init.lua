@@ -621,19 +621,30 @@ return {
                     filter = function(items)
                         ---@type table<string, trouble.Item>
                         local locations = {}
-                        -- find first location for each line
+                        ---@type trouble.Item[]
+                        local secondary_locations = {}
+
                         for _, item in ipairs(items) do
+                            if item.dirname:match('site%-packages') then
+                                -- filter out virtualenv
+                                table.insert(secondary_locations, item)
+                                goto continue
+                            end
+                            -- find first location for each line
                             local current_location = item.filename
                                 .. item.pos[1]
                             if
                                 not locations[current_location]
                                 or locations[current_location].pos[2]
-                                    > item.pos[2]
+                                > item.pos[2]
                             then
                                 locations[current_location] = item
                             end
+                            ::continue::
                         end
-                        return vim.tbl_values(locations)
+
+                        local primary_locations = vim.tbl_values(locations)
+                        return vim.tbl_isempty(primary_locations) and secondary_locations or primary_locations
                     end,
                 },
             },
