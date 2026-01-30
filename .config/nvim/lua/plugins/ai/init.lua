@@ -22,21 +22,33 @@ return {
                     desc = 'Toggle window',
                     icon = icons.misc.window,
                 },
+                {
+                    '<BS>',
+                    ':Opencode<CR>',
+                    desc = 'Toggle Agent',
+                    icon = icons.misc.window,
+                },
+                {
+                    '<leader>a/',
+                    ':Opencode quick_chat<CR>',
+                    desc = 'Quick chat',
+                    -- Open quick chat input with selection context in visual mode or current line context in normal mode
+                    mode = { 'n', 'x' },
+                    icon = { icon = '', hl = 'DiagnosticWarn' },
+                },
             }
         end,
         dependencies = {
             {
                 'MeanderingProgrammer/render-markdown.nvim',
-                enabled = true,
-                lazy = false,
                 cmd = 'RenderMarkdown',
-                ft = { 'opencode_output' },
+                ft = { 'markdown', 'opencode_output' },
                 opts = {
                     debounce = 50,
                     file_types = { 'markdown', 'opencode_output' },
                     render_modes = { 'n', 'i', 'v', 'V', 'c', 't' },
                     anti_conceal = {
-                        enabled = true,
+                        enabled = false,
                         disabled_modes = { 'n' },
                         ignore = {},
                     },
@@ -49,7 +61,7 @@ return {
                     },
                     win_options = {
                         concealcursor = {
-                            rendered = 'nvic',
+                            rendered = 'nvc',
                         },
                     },
                     heading = {
@@ -80,6 +92,7 @@ return {
                         language_icon = true,
                         language_name = true,
                         language_info = true,
+                        width = 'block',
                     },
                     bullet = {
                         icons = {
@@ -110,6 +123,8 @@ return {
                 },
             },
         },
+        ---@module 'opencode'
+        ---@type OpencodeConfig
         opts = {
             preferred_picker = 'snacks',
             preferred_completion = 'blink',
@@ -134,7 +149,6 @@ return {
                         'open_input_new_session',
                         desc = 'New session',
                     },
-                    ['<leader>az'] = { 'toggle_zoom', desc = 'Zoom window' },
                     -- ['<leader>ad'] = { 'diff_open', desc = 'Open diff' },
                     -- ['<leader>a]'] = { 'diff_next', desc = 'Next diff' },
                     -- ['<leader>a['] = { 'diff_prev', desc = 'Prev diff' },
@@ -145,11 +159,6 @@ return {
                     -- ['<leader>arT'] = { 'diff_revert_this' }, -- Revert current file changes since the last opencode session
                     -- ['<leader>arr'] = { 'diff_restore_snapshot_file' }, -- Restore a file to a restore point
                     -- ['<leader>arR'] = { 'diff_restore_snapshot_all' }, -- Restore all files to a restore point
-                    ['<leader>a/'] = {
-                        'quick_chat',
-                        desc = 'Quick chat',
-                        mode = { 'n', 'x' },
-                    }, -- Open quick chat input with selection context in visual mode or current line context in normal mode
                 },
                 input_window = {
                     ['<leader>aS'] = false,
@@ -160,25 +169,28 @@ return {
                         'open_input_new_session',
                         desc = 'New session',
                     },
+                    ['<leader>az'] = { 'toggle_zoom', desc = 'Zoom window' },
                     ['<cr>'] = { 'submit_input_prompt', mode = { 'n' } },
                     ['<esc>'] = false,
                     ['<C-c>'] = { 'cancel' },
-                    ['q'] = { 'close' },
+                    ['q'] = { 'toggle_pane' }, -- Toggle between input and output panes
                     ['~'] = { 'mention_file', mode = 'i' }, -- Pick a file and add to context. See File Mentions section
                     ['@'] = { 'mention', mode = 'i' }, -- Insert mention (file/agent)
                     ['/'] = { 'slash_commands', mode = { 'n', 'i' } },
                     ['#'] = { 'context_items', mode = 'i' }, -- Manage context items (current file, selection, diagnostics, mentioned files)
                     -- ['<M-v>'] = { 'paste_image', mode = 'i' }, -- Paste image from clipboard as attachment
                     -- ['<C-i>'] = { 'focus_input', mode = { 'n', 'i' } }, -- Focus on input window and enter insert mode at the end of the input from the output window
-                    ['<tab>'] = { 'toggle_pane', mode = 'n' }, -- Toggle between input and output panes
+                    ['<tab>'] = false,
                     ['<S-tab>'] = { 'switch_mode' }, -- Switch between modes (build/plan)
                     -- ['<up>'] = { 'prev_prompt_history', mode = { 'n', 'i' } }, -- Navigate to previous prompt in history
                     -- ['<down>'] = { 'next_prompt_history', mode = { 'n', 'i' } }, -- Navigate to next prompt in history
                     ['<M-r>'] = { 'cycle_variant', mode = { 'n', 'i' } }, -- Cycle through available model variants
-                    ['<A-p>'] = {
+                    ['<M-p>'] = {
                         function()
                             vim.cmd.Opencode 'models'
                         end,
+                        mode = { 'n', 'i' },
+                        desc = 'Pick model',
                     },
                 },
                 output_window = {
@@ -197,23 +209,28 @@ return {
                     ['q'] = { 'close' },
                     ['<esc>'] = false,
                     ['<C-c>'] = { 'cancel' },
-                    ['i'] = { 'focus_input' },
+                    ['i'] = { 'toggle_input' },
                     ['a'] = { 'focus_input' },
                     ['A'] = { 'focus_input' },
+                    ['<tab>'] = false,
                     ['<S-tab>'] = { 'switch_mode' }, -- Switch between modes (build/plan)
                     ['<M-r>'] = { 'cycle_variant' }, -- Cycle through available model variants
-                    ['<A-p>'] = {
+                    ['<M-p>'] = {
                         function()
                             vim.cmd.Opencode 'models'
                         end,
+                        desc = 'Pick model',
                     },
-                    [']a'] = { 'next_message', desc = 'Next message' },
-                    ['[a'] = { 'prev_message', desc = 'Prev message' },
+                    [']]'] = { 'next_message', desc = 'Next message' },
+                    ['[['] = { 'prev_message', desc = 'Prev message' },
                 },
             },
             ui = {
                 position = 'right',
+                zoom_width = 0.6,
                 input = {
+                    min_height = 0.10,
+                    max_height = 0.25,
                     text = {
                         wrap = true,
                     },
@@ -247,11 +264,10 @@ return {
                         restore_point = '󱗚',
                         file = '',
                         folder = '',
-                        attached_file = '󰌷',
                         agent = '󰚩',
                         reference = '',
                         reasoning = '󰧑',
-                        question = '',
+                        question = '?',
                         -- statuses
                         status_on = '',
                         status_off = '',
@@ -284,6 +300,39 @@ return {
             debug = {
                 enabled = false,
                 show_ids = false,
+            },
+            hooks = {
+                on_done_thinking = function()
+                    Snacks.notify('Finished', { title = 'Agent' })
+                end,
+                on_permission_requested = function()
+                    Snacks.notify('Permission requested', { title = 'Agent' })
+                    require('which-key').add {
+                        {
+                            '<leader>ap',
+                            group = 'Permission',
+                            icon = { icon = '/' },
+                        },
+                        {
+                            '<leader>apa',
+                            '<cmd>Opencode permission_accept<CR>',
+                            desc = 'Accept',
+                            icon = { icon = '', hl = 'DiagnosticOk' },
+                        },
+                        {
+                            '<leader>apA',
+                            '<cmd>Opencode permission_accept_all<CR>',
+                            desc = 'Accept all',
+                            icon = { icon = '', hl = 'DiagnosticOk' },
+                        },
+                        {
+                            '<leader>apd',
+                            '<cmd>Opencode permission_deny<CR>',
+                            desc = 'Deny',
+                            icon = { icon = '', hl = 'DiagnosticError' },
+                        },
+                    }
+                end,
             },
         },
         config = function(_, opts)

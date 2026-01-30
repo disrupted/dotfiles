@@ -556,8 +556,8 @@ vim.keymap.set('n', '[q', ':cprevious<CR>', { desc = 'Prev QuickFix entry' })
 vim.keymap.set('n', '<C-_>', ':noh<CR>')
 
 -- cycle tabs
-vim.keymap.set('n', ']]', '<cmd>tabnext<CR>', { desc = 'Next tabpage' })
-vim.keymap.set('n', '[[', '<cmd>tabprevious<CR>', { desc = 'Prev tabpage' })
+vim.keymap.set('n', '<M-]>', '<cmd>tabnext<CR>', { desc = 'Next tabpage' })
+vim.keymap.set('n', '<M-[>', '<cmd>tabprevious<CR>', { desc = 'Prev tabpage' })
 
 -----------------------------------------------------------------------------//
 -- Commands {{{1
