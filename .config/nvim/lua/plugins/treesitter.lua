@@ -33,6 +33,7 @@ return {
                 'htmldjango',
                 'http',
                 'hurl',
+                'ini',
                 'java',
                 'javascript',
                 'jsdoc',

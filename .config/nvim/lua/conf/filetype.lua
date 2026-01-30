@@ -8,12 +8,14 @@ vim.filetype.add {
     filename = {
         ['poetry.lock'] = 'toml',
         ['uv.lock'] = 'toml',
-        ['.envrc'] = 'bash',
+        ['.env'] = 'ini',
+        ['.envrc'] = 'sh',
         ['Chart.lock'] = 'yaml',
         ['docker-compose.yaml'] = 'yaml.docker-compose',
         ['docker-compose.yml'] = 'yaml.docker-compose',
     },
     pattern = {
         ['.*%.gitlab%-ci%.yml'] = 'yaml.gitlab',
+        ['%.env%..*'] = 'ini',
     },
 }
