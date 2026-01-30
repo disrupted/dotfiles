@@ -94,6 +94,7 @@ return {
                 -- Load luvit types when the `vim.uv` word is found
                 -- { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
                 -- { path = 'snacks.nvim', words = { 'Snacks' } },
+                -- { path = vim.env.VIMRUNTIME, words = { 'vim' } },
             },
         },
     },
@@ -289,6 +290,7 @@ return {
                     end
                     return { async = false }
                 end,
+                notify_on_error = true,
                 log_level = vim.log.levels.WARN,
             }
         end,
