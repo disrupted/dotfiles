@@ -7,7 +7,7 @@ window-inherit-font-size       = true
 # Look and Feel
 theme                          = dark:disrupted_dark,light:disrupted_light
 window-padding-x               = 1
-window-padding-y               = 1
+window-padding-y               = 6,0
 window-padding-color           = extend
 window-step-resize             = false
 macos-icon                     = custom-style
