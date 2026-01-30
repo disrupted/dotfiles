@@ -21,7 +21,6 @@ return {
                 'clangd',
                 'css-lsp',
                 'debugpy',
-                'deno',
                 'docker-compose-language-service',
                 'dockerfile-language-server',
                 'emmylua_ls',
@@ -223,8 +222,12 @@ return {
                         local start = math.max(1, hunk.added.start) -- on untracked files, start is 0
                         local last = start + hunk.added.count
                         -- nvim_buf_get_lines uses zero-based indexing -> subtract from last
-                        local last_hunk_line =
-                            vim.api.nvim_buf_get_lines(0, last - 2, last - 1, true)[1]
+                        local last_hunk_line = vim.api.nvim_buf_get_lines(
+                            0,
+                            last - 2,
+                            last - 1,
+                            true
+                        )[1]
                         local range = {
                             start = { start, 0 },
                             ['end'] = { last - 1, last_hunk_line:len() },
@@ -239,6 +242,7 @@ return {
             return {
                 formatters_by_ft = {
                     python = { 'ruff', lsp_format = 'last' }, -- provides `ruff check --fix`
+                    lua = { 'stylua' },
                     astro = dprint,
                     json = dprint,
                     jsonc = dprint,
@@ -280,7 +284,6 @@ return {
                         return
                     end
                     local hunks = require('gitsigns').get_hunks(bufnr)
-                    local buf_status = vim.b.gitsigns_status_dict
                     if vim.g.format_modifications_only and hunks then
                         return format_git_hunks(hunks)
                     end
@@ -526,7 +529,7 @@ return {
         config = function(_, opts)
             vim.g.rustaceanvim = opts
 
-            local adapter = require 'rustaceanvim.neotest' ()
+            local adapter = require 'rustaceanvim.neotest'()
             local adapters = require('neotest.config').adapters
             table.insert(adapters, adapter)
         end,
@@ -625,7 +628,7 @@ return {
                         local secondary_locations = {}
 
                         for _, item in ipairs(items) do
-                            if item.dirname:match('site%-packages') then
+                            if item.dirname:match 'site%-packages' then
                                 -- filter out virtualenv
                                 table.insert(secondary_locations, item)
                                 goto continue
@@ -636,7 +639,7 @@ return {
                             if
                                 not locations[current_location]
                                 or locations[current_location].pos[2]
-                                > item.pos[2]
+                                    > item.pos[2]
                             then
                                 locations[current_location] = item
                             end
@@ -644,7 +647,9 @@ return {
                         end
 
                         local primary_locations = vim.tbl_values(locations)
-                        return vim.tbl_isempty(primary_locations) and secondary_locations or primary_locations
+                        return vim.tbl_isempty(primary_locations)
+                                and secondary_locations
+                            or primary_locations
                     end,
                 },
             },
