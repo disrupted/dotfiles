@@ -97,18 +97,34 @@ return {
                 local gs = package.loaded.gitsigns
 
                 -- Navigation
-                map(
-                    'n',
-                    ']g',
-                    vim.schedule_wrap(gs.next_hunk),
-                    { desc = 'Next Git hunk' }
-                )
-                map(
-                    'n',
-                    '[g',
-                    vim.schedule_wrap(gs.prev_hunk),
-                    { desc = 'Prev Git hunk' }
-                )
+                map('n', ']g', function()
+                    if vim.wo.diff then
+                        vim.cmd.normal { ']g', bang = true }
+                    else
+                        gs.nav_hunk('next', { target = 'all' })
+                    end
+                end, { desc = 'Next Git hunk' })
+                map('n', '[g', function()
+                    if vim.wo.diff then
+                        vim.cmd.normal { '[g', bang = true }
+                    else
+                        gs.nav_hunk('prev', { target = 'all' })
+                    end
+                end, { desc = 'Prev Git hunk' })
+                -- map('n', ']s', function()
+                --     if vim.wo.diff then
+                --         vim.cmd.normal { ']s', bang = true }
+                --     else
+                --         gs.nav_hunk('next', { target = 'staged' })
+                --     end
+                -- end, { desc = 'Next staged hunk' })
+                -- map('n', '[s', function()
+                --     if vim.wo.diff then
+                --         vim.cmd.normal { '[s', bang = true }
+                --     else
+                --         gs.nav_hunk('prev', { target = 'staged' })
+                --     end
+                -- end, { desc = 'Prev staged hunk' })
                 map('n', '<Leader>gs', gs.stage_hunk, { desc = 'Stage hunk' })
                 map('v', '<Leader>gs', function()
                     gs.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
@@ -184,8 +200,10 @@ return {
             disable_hint = true,
             disable_signs = true,
             integrations = {
-                diffview = true,
+                codediff = true,
+                snacks = true,
             },
+            diff_viewer = 'codediff',
             graph_style = 'kitty',
             status = {
                 recent_commit_count = 50,
