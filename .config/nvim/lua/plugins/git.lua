@@ -890,6 +890,7 @@ return {
     },
     {
         'harrisoncramer/gitlab.nvim',
+        enabled = false, -- incompatible with codediff.nvim https://github.com/harrisoncramer/gitlab.nvim/issues/517
         lazy = true,
         dependencies = {
             'MunifTanjim/nui.nvim',
