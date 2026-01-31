@@ -88,7 +88,7 @@ return {
     },
     {
         'folke/lazydev.nvim',
-        ft = 'lua',
+        lazy = true, -- lazy-loaded through LSP require
         opts = {
             library = {
                 -- Load luvit types when the `vim.uv` word is found

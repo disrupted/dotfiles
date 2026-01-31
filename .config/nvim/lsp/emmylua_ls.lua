@@ -1,3 +1,5 @@
+local first_attach = true
+
 ---@type vim.lsp.Config
 return {
     cmd = { 'emmylua_ls' },
@@ -7,6 +9,20 @@ return {
         '.luarc.json',
         '.git',
     },
+    ---@param client vim.lsp.Client
+    on_attach = function(client, bufnr)
+        if first_attach then
+            first_attach = false
+            require 'lazydev'
+            -- HACK: reattach first buffer, workaround for https://github.com/folke/lazydev.nvim/issues/136
+            vim.defer_fn(function()
+                client:on_attach(bufnr)
+            end, 500)
+        end
+    end,
+    on_exit = function()
+        first_attach = true
+    end,
     settings = {
         Lua = {
             -- NOTE: configured in .emmyrc.json
@@ -65,26 +81,3 @@ return {
     ]
   }
 } ]]
-
--- source: https://github.com/sudo-tee/dots/commit/71b14b537ece29eb829e785f7323c2bc2ffd5ce4
--- HACK: make it work with lazydev
--- EmmyLua does not sent the workspace/didChangeConfiguration on initialization
--- so we need to do it manually on the first attach
--- vim.api.nvim_create_autocmd('LspAttach', {
---     callback = function(args)
---         local client = vim.lsp.get_client_by_id(args.data.client_id)
---         if not client or client.name ~= 'emmylua_ls' then
---             return
---         end
---         vim.api.nvim_del_autocmd(args.id) -- only needed for first attach
---         -- set runtime path
---         vim.defer_fn(function()
---             client:notify('workspace/didChangeConfiguration', {
---                 settings = { Lua = {} },
---             })
---             vim.defer_fn(function()
---                 vim.cmd.edit()
---             end, 100)
---         end, 400)
---     end,
--- })

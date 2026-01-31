@@ -4,12 +4,6 @@
     "version": "LuaJIT"
   },
   "workspace": {
-    "library": [
-      "$VIMRUNTIME",
-      "${3rd}/luv/library",
-      "$HOME/.local/share/nvim/lazy/lazy.nvim",
-      "$HOME/.local/share/nvim/lazy/snacks.nvim"
-    ],
     "ignoreGlobs": [
       "**/*_spec.lua"
     ]
