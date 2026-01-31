@@ -52,13 +52,13 @@ return {
                         disabled_modes = { 'n' },
                         ignore = {},
                     },
-                    indent = {
-                        enabled = true,
-                        skip_level = 2,
-                        skip_heading = true,
-                        icon = ' ',
-                        highlight = 'Whitespace',
-                    },
+                    -- indent = {
+                    --     enabled = true,
+                    --     skip_level = 3,
+                    --     skip_heading = true,
+                    --     icon = ' ',
+                    --     highlight = 'Whitespace',
+                    -- },
                     win_options = {
                         concealcursor = {
                             rendered = 'nvc',
@@ -248,7 +248,7 @@ return {
                 window_highlight = 'Normal:OpencodeBackground,FloatBorder:OpencodeBorder,SignColumn:OpencodeSignColumn,WinSeparator:OpencodeWinSeparator',
                 icons = {
                     overrides = {
-                        header_user = '▌', -- ▌❯
+                        header_user = '▌',
                         header_assistant = '',
                         run = '',
                         task = '',
@@ -258,14 +258,14 @@ return {
                         plan = '󰝖',
                         search = '',
                         web = '󰖟',
-                        list = '',
+                        list = '󰙅',
                         tool = '',
                         snapshot = '󰻛',
                         restore_point = '󱗚',
-                        file = '',
-                        folder = '',
+                        file = icons.documents.file,
+                        folder = icons.documents.folder,
                         agent = '󰚩',
-                        reference = '',
+                        reference = icons.documents.file_empty,
                         reasoning = '󰧑',
                         question = '?',
                         -- statuses
@@ -285,7 +285,7 @@ return {
                         command = ' ',
                         bash = ' ',
                         preferred = ' ',
-                        last_used = '󰃰 ',
+                        last_used = ' ',
                     },
                 },
             },
@@ -305,38 +305,69 @@ return {
                 on_done_thinking = function()
                     Snacks.notify('Finished', { title = 'Agent' })
                 end,
-                on_permission_requested = function()
-                    Snacks.notify('Permission requested', { title = 'Agent' })
+            },
+        },
+        config = function(_, opts)
+            require('opencode').setup(opts)
+
+            require('which-key').add {
+                {
+                    '<leader>ap',
+                    group = 'Permission',
+                    icon = { icon = '󰳈' },
+                },
+            }
+
+            vim.api.nvim_create_autocmd('User', {
+                pattern = 'OpencodeEvent:permission.asked',
+                callback = function(args)
+                    vim.print 'permission.asked'
                     require('which-key').add {
                         {
-                            '<leader>ap',
-                            group = 'Permission',
-                            icon = { icon = '/' },
-                        },
-                        {
                             '<leader>apa',
-                            '<cmd>Opencode permission_accept<CR>',
+                            '<cmd>Opencode permission accept<CR>',
                             desc = 'Accept',
                             icon = { icon = '', hl = 'DiagnosticOk' },
                         },
                         {
                             '<leader>apA',
-                            '<cmd>Opencode permission_accept_all<CR>',
+                            '<cmd>Opencode permission accept_all<CR>',
                             desc = 'Accept all',
                             icon = { icon = '', hl = 'DiagnosticOk' },
                         },
                         {
                             '<leader>apd',
-                            '<cmd>Opencode permission_deny<CR>',
+                            '<cmd>Opencode permission deny<CR>',
                             desc = 'Deny',
                             icon = { icon = '', hl = 'DiagnosticError' },
                         },
                     }
                 end,
-            },
-        },
-        config = function(_, opts)
-            require('opencode').setup(opts)
+            })
+            vim.api.nvim_create_autocmd('User', {
+                pattern = 'OpencodeEvent:permission.replied',
+                callback = function(args)
+                    vim.print 'permission.replied'
+                    if
+                        vim.tbl_isempty(
+                            require('opencode.state').pending_permissions
+                        )
+                    then
+                        vim.print 'unregister permission keymaps'
+                        local keymaps =
+                            { '<leader>apa', '<leader>apA', '<leader>apd' }
+                        for _, keymap in ipairs(keymaps) do
+                            vim.keymap.del('n', keymap)
+                        end
+                        require('which-key').add {
+                            { '<leader>apa' },
+                            { '<leader>apA' },
+                            { '<leader>apd' },
+                            hidden = true,
+                        }
+                    end
+                end,
+            })
 
             vim.api.nvim_create_autocmd('FileType', {
                 pattern = { 'opencode' },
