@@ -36,6 +36,14 @@ return {
                     mode = { 'n', 'x' },
                     icon = { icon = '', hl = 'DiagnosticWarn' },
                 },
+                {
+                    '<M-BS>',
+                    ':Opencode quick_chat<CR>',
+                    desc = 'Quick chat',
+                    -- Open quick chat input with selection context in visual mode or current line context in normal mode
+                    mode = { 'n', 'x' },
+                    icon = { icon = '', hl = 'DiagnosticWarn' },
+                },
             }
         end,
         dependencies = {
@@ -270,7 +278,7 @@ return {
                         plan = '󰝖',
                         search = '',
                         web = '󰖟',
-                        list = '󰙅',
+                        list = '󱎸',
                         tool = '',
                         snapshot = '󰻛',
                         restore_point = '󱗚',

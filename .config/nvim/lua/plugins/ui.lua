@@ -427,7 +427,7 @@ return {
                 end,
                 static = {
                     icon = {
-                        CANCELED = '',
+                        CANCELED = '',
                         FAILURE = '󰅚',
                         SUCCESS = '󰄴',
                         RUNNING = '󰑮',
@@ -854,7 +854,7 @@ return {
         event = 'VeryLazy',
         keys = {
             {
-                '<M-Enter>', -- Alt-Enter
+                '<M-i>',
                 function()
                     require('noice').redirect 'Inspect'
                 end,

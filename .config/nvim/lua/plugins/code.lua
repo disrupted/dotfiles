@@ -335,7 +335,8 @@ return {
             {
                 '<Leader>to',
                 function()
-                    require('neotest').output.open { last_run = true }
+                    -- require('neotest').output.open { last_run = true }
+                    require('overseer').open()
                 end,
                 desc = 'Open output of last run',
             },
@@ -352,7 +353,27 @@ return {
                             _ = require('conf.neotest.adapters')[filetype]
                         end
                     end
-                    require('neotest').summary.toggle()
+
+                    if vim.bo.filetype == 'neotest-summary' then
+                        require('neotest').summary.close()
+                        return
+                    end
+                    require('neotest').summary.open()
+
+                    for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+                        local buf = vim.api.nvim_win_get_buf(win)
+                        if vim.bo[buf].filetype == 'neotest-summary' then
+                            vim.api.nvim_set_current_win(win)
+                            vim.wo[win].wrap = false
+                            vim.wo[win].fillchars = 'eob: '
+                            vim.keymap.set('n', 'q', '<C-w>q', {
+                                buffer = buf,
+                                silent = true,
+                                desc = 'Close',
+                            })
+                            return
+                        end
+                    end
                 end,
                 desc = 'Toggle summary',
             },
@@ -388,11 +409,18 @@ return {
             adapters = {},
             consumers = {
                 notify = function(client)
-                    client.listeners.results = function(_, _, partial)
+                    client.listeners.results = function(_, results, partial)
                         if partial then
                             return
                         end
-                        require('neotest.lib').notify 'Tests completed'
+                        local error = vim.iter(vim.tbl_values(results))
+                            :any(function(result)
+                                return not vim.tbl_isempty(result.errors)
+                            end)
+                        require('neotest.lib').notify(
+                            'Tests completed',
+                            error and vim.log.levels.WARN or vim.log.levels.INFO
+                        )
                     end
                     return {}
                 end,
@@ -457,14 +485,12 @@ return {
         ---@module 'neotest.config'
         ---@param opts neotest.Config
         config = function(_, opts)
+            opts = vim.tbl_deep_extend('force', opts, {
+                consumers = {
+                    overseer = require 'neotest.consumers.overseer',
+                },
+            }) --[[@as neotest.Config]]
             require('neotest').setup(opts)
-
-            vim.api.nvim_create_autocmd('FileType', {
-                pattern = 'neotest-summary',
-                callback = function()
-                    vim.opt_local.wrap = false
-                end,
-            })
         end,
     },
     {
@@ -631,6 +657,10 @@ return {
             'OverseerToggle',
             'OverseerRun',
         },
+        keys = {
+            { '\\', '<cmd>OverseerToggle<cr>', desc = 'Toggle Overseer' },
+            { '<M-\\>', '<cmd>OverseerRun<cr>', desc = 'Overseer run' },
+        },
         ---@module 'overseer.config'
         ---@type overseer.Config
         opts = {
@@ -639,21 +669,122 @@ return {
                 'python.poetry',
                 'python.uv',
             },
+            keymaps = {
+                ['<C-u>'] = 'keymap.scroll_output_up',
+                ['<C-d>'] = 'keymap.scroll_output_down',
+            },
+            form = {
+                border = 'rounded',
+            },
+            task_win = {
+                border = 'rounded',
+                padding = 10,
+            },
             task_list = {
-                bindings = {
+                keymaps = {
                     ['<C-j>'] = false,
                     ['<C-k>'] = false,
                     ['<C-h>'] = false,
                     ['<C-l>'] = false,
-                    ['<C-u>'] = 'ScrollOutputUp',
-                    ['<C-d>'] = 'ScrollOutputDown',
+                    ['<C-u>'] = 'keymap.scroll_output_up',
+                    ['<C-d>'] = 'keymap.scroll_output_down',
+                    [']]'] = 'keymap.next_task',
+                    ['[['] = 'keymap.prev_task',
+                    ['j'] = 'keymap.next_task',
+                    ['k'] = 'keymap.prev_task',
                 },
                 direction = 'bottom',
                 min_height = 25,
                 max_height = 25,
-                default_detail = 1,
+            },
+            component_aliases = {
+                default_neotest = {
+                    {
+                        'open_output',
+                        direction = 'dock',
+                        focus = false,
+                        -- on_start = 'never',
+                        -- on_complete = 'failure',
+                    },
+                    'on_exit_set_status',
+                    'on_complete_dispose',
+                },
             },
         },
+        config = function(_, opts)
+            local overseer = require 'overseer'
+            overseer.setup(opts)
+
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = 'OverseerOutput',
+                callback = function(args)
+                    -- scheduling is necessary because on FileType event the buffer is not assigned to a window yet
+                    vim.schedule(function()
+                        for _, win in ipairs(vim.api.nvim_list_wins()) do
+                            if vim.api.nvim_win_get_buf(win) == args.buf then
+                                vim.wo[win].fillchars = 'eob: '
+                                return
+                            end
+                        end
+                    end)
+                end,
+            })
+
+            vim.api.nvim_create_autocmd('FileType', {
+                group = vim.api.nvim_create_augroup(
+                    'OverseerListCursor',
+                    { clear = true }
+                ),
+                pattern = 'OverseerList',
+                callback = function(args)
+                    vim.api.nvim_create_autocmd('WinEnter', {
+                        buffer = args.buf,
+                        callback = require('conf.ui').cursor.hide,
+                    })
+                    vim.api.nvim_create_autocmd('WinLeave', {
+                        buffer = args.buf,
+                        callback = require('conf.ui').cursor.show,
+                    })
+                    for _, win in ipairs(vim.api.nvim_list_wins()) do
+                        if vim.api.nvim_win_get_buf(win) == args.buf then
+                            vim.wo[win].fillchars = 'eob: '
+                            vim.wo[win].winhighlight = 'CursorLine:Visual'
+                            return
+                        end
+                    end
+                end,
+            })
+
+            local function toggle_runner(window)
+                if vim.bo.buftype == 'terminal' then
+                    vim.cmd 'close'
+                    return
+                end
+
+                -- check for Overseer window
+                local task_list = require 'overseer.task_list'
+                local tasks = overseer.list_tasks {
+                    status = {
+                        overseer.STATUS.RUNNING,
+                        overseer.STATUS.SUCCESS,
+                        overseer.STATUS.FAILURE,
+                        overseer.STATUS.CANCELED,
+                    },
+                    sort = task_list.sort_finished_recently,
+                }
+
+                if vim.tbl_isempty(tasks) then
+                    Snacks.notify.warn('No tasks found', { title = 'Overseer' })
+                else
+                    local most_recent = tasks[1]
+                    overseer.run_action(most_recent, 'open ' .. window)
+                end
+            end
+
+            vim.keymap.set('n', '|', function()
+                toggle_runner 'float'
+            end, { desc = 'Overseer: open task in floating window' })
+        end,
     },
     {
         'Zeioth/compiler.nvim',

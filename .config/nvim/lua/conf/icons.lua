@@ -55,7 +55,7 @@ return {
     },
     diagnostics = {
         error = '',
-        warning = '',
+        warning = '', -- 
         info = '',
     },
     kinds = {

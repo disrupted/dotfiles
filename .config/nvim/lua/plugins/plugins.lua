@@ -17,7 +17,7 @@ return {
             vim.print = _G.dd
 
             require('which-key').add {
-                { '<Leader>h', icon = '' },
+                { '<Leader>h', icon = '?' },
                 { '<Leader><Leader>', icon = '' },
                 { '<Leader>/', icon = '󱎸' },
                 { '<Leader>n', icon = '' },
@@ -377,7 +377,7 @@ return {
                 desc = 'Notification history',
             },
             {
-                '\\',
+                '<C-\\>',
                 function()
                     Snacks.terminal()
                 end,
@@ -669,7 +669,12 @@ return {
                 },
             },
             terminal = {
-                keys = { ['\\'] = 'hide' },
+                -- keys = { ['\\'] = 'hide' },
+                win = {
+                    wo = {
+                        winbar = '',
+                    },
+                },
             },
             words = { enabled = true },
             styles = {
