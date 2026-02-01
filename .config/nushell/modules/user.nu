@@ -321,8 +321,17 @@ export def yss [] {
   yadm stash show -p $stash | delta
 }
 
-def git_main_branch [] {
-  let refs = [
+export def git_main_branch [] {
+  if (do { git rev-parse --is-inside-work-tree } | complete).exit_code != 0 {
+    return null
+  }
+
+  let origin_head = (do { git symbolic-ref -q --short refs/remotes/origin/HEAD } | complete)
+  if $origin_head.exit_code == 0 {
+    return ($origin_head.stdout | str trim | path basename)
+  }
+
+  for ref in [
     "refs/heads/main"
     "refs/heads/trunk"
     "refs/heads/mainline"
@@ -338,12 +347,11 @@ def git_main_branch [] {
     "refs/remotes/upstream/mainline"
     "refs/remotes/upstream/default"
     "refs/remotes/upstream/master"
-  ]
-  for r in $refs {
-    ^git show-ref -q --verify $r
-    if $env.LAST_EXIT_CODE == 0 { return ($r | path basename) }
+  ] {
+    if (git show-ref -q --verify $ref | complete).exit_code == 0 {
+      return ($ref | path basename)
+    }
   }
-  "master"
 }
 
 export def gm [] {
