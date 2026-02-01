@@ -5,7 +5,6 @@ local icons = require 'conf.icons'
 return {
     {
         'sudo-tee/opencode.nvim',
-        enabled = true,
         lazy = true,
         name = 'opencode-native',
         cmd = 'Opencode',
@@ -14,14 +13,15 @@ return {
                 {
                     '<leader>a',
                     group = 'Agent',
+                    mode = { 'n', 'x' },
                     icon = { icon = '', hl = 'DiagnosticWarn' },
                 },
-                {
-                    '<leader>ag',
-                    ':Opencode<CR>',
-                    desc = 'Toggle window',
-                    icon = icons.misc.window,
-                },
+                -- {
+                --     '<leader>ag',
+                --     ':Opencode<CR>',
+                --     desc = 'Toggle window',
+                --     icon = icons.misc.window,
+                -- },
                 {
                     '<BS>',
                     ':Opencode<CR>',
@@ -135,19 +135,31 @@ return {
                     -- ['<leader>ai'] = { 'open_input' }, -- Opens and focuses on input window on insert mode
                     -- ['<leader>ao'] = { 'open_output' }, -- Opens and focuses on output window
                     -- ['<leader>at'] = { 'toggle_focus' },
-                    ['<leader>aT'] = { 'timeline', desc = 'Timeline' }, -- Display timeline picker to navigate/undo/redo/fork messages
+                    ['<leader>aT'] = {
+                        'timeline',
+                        desc = 'Timeline',
+                        mode = 'n',
+                    }, -- Display timeline picker to navigate/undo/redo/fork messages
                     -- ['<leader>aq'] = { 'close', desc = 'Close' },
                     ['<leader>as'] = {
                         'select_session',
                         desc = 'Select session',
+                        mode = 'n',
                     },
                     ['<leader>aR'] = {
                         'rename_session',
                         desc = 'Rename session',
+                        mode = 'n',
                     },
                     ['<leader>an'] = {
                         'open_input_new_session',
                         desc = 'New session',
+                        mode = 'n',
+                    },
+                    ['<leader>az'] = {
+                        'toggle_zoom',
+                        desc = 'Zoom window',
+                        mode = 'n',
                     },
                     -- ['<leader>ad'] = { 'diff_open', desc = 'Open diff' },
                     -- ['<leader>a]'] = { 'diff_next', desc = 'Next diff' },
@@ -265,7 +277,7 @@ return {
                         file = icons.documents.file,
                         folder = icons.documents.folder,
                         agent = '󰚩',
-                        reference = icons.documents.file_empty,
+                        reference = icons.documents.file_empty .. ' ',
                         reasoning = '󰧑',
                         question = '?',
                         -- statuses
@@ -321,7 +333,6 @@ return {
             vim.api.nvim_create_autocmd('User', {
                 pattern = 'OpencodeEvent:permission.asked',
                 callback = function(args)
-                    vim.print 'permission.asked'
                     require('which-key').add {
                         {
                             '<leader>apa',
@@ -347,13 +358,11 @@ return {
             vim.api.nvim_create_autocmd('User', {
                 pattern = 'OpencodeEvent:permission.replied',
                 callback = function(args)
-                    vim.print 'permission.replied'
                     if
                         vim.tbl_isempty(
                             require('opencode.state').pending_permissions
                         )
                     then
-                        vim.print 'unregister permission keymaps'
                         local keymaps =
                             { '<leader>apa', '<leader>apA', '<leader>apd' }
                         for _, keymap in ipairs(keymaps) do
@@ -366,6 +375,38 @@ return {
                             hidden = true,
                         }
                     end
+                end,
+            })
+
+            vim.g.agent_follow_edits = true -- I believe ACP would make this more seamless
+
+            vim.api.nvim_create_autocmd('User', {
+                pattern = 'OpencodeEvent:file.edited',
+                callback = function(args)
+                    if vim.g.workspace_root == nil then
+                        return
+                    end
+                    ---@type string
+                    local abspath = args.data.event.file
+                    local relpath = vim.fs.relpath(vim.g.worspace_root, abspath)
+                    if not relpath then
+                        return
+                    end
+                    Snacks.notify(
+                        string.format('edit %s', relpath),
+                        { title = 'Agent' }
+                    )
+                    if not vim.g.agent_follow_edits then
+                        return
+                    end
+                    local bufnr = vim.fn.bufnr(abspath, true)
+                    if not api.nvim_buf_is_loaded(bufnr) then
+                        pcall(vim.fn.bufload, bufnr)
+                    end
+                    -- local ok = pcall(api.nvim_win_set_buf, code_winid, bufnr)
+                    -- if not ok then
+                    --     return
+                    -- end
                 end,
             })
 

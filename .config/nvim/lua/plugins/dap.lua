@@ -8,6 +8,7 @@ return {
                 {
                     '<Leader>d',
                     group = 'Debug',
+                    mode = { 'n', 'v' },
                     icon = { icon = '󰃤', hl = 'DiagnosticError' },
                 },
             }
