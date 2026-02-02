@@ -82,14 +82,14 @@ export def ga [] {
   git status --short
 }
 
-# grh - interactive git reset HEAD (unstage)
-export def grh [] {
+# gr - interactive git restore
+export def gr [] {
   let files = (
-    git diff --cached --name-only |
-    fzf --height=60% --layout=reverse --multi --preview 'git diff --cached {} | delta'
+    git diff --name-only |
+    fzf --height=60% --layout=reverse --multi --preview 'git diff {} | delta'
   )
   if ($files | is-empty) { return }
-  $files | lines | each { git reset HEAD $in }
+  $files | lines | each { git restore $in }
   git status --short
 }
 
