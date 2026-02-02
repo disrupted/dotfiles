@@ -71,7 +71,7 @@ keybind                        = ctrl+i=text:\x1b[105;5u
 keybind                        = ctrl+m=text:\x1b[109;5u
 
 # Disable Ctrl+Z (prevent suspend)
-keybind                        = ctrl+z=ignore
+# keybind                        = ctrl+z=ignore
 
 # Ctrl + Shift
 keybind                        = ctrl+shift+h=text:\x1b[72;6u
