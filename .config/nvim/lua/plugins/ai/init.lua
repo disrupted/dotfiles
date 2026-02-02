@@ -16,25 +16,11 @@ return {
                     mode = { 'n', 'x' },
                     icon = { icon = '', hl = 'DiagnosticWarn' },
                 },
-                -- {
-                --     '<leader>ag',
-                --     ':Opencode<CR>',
-                --     desc = 'Toggle window',
-                --     icon = icons.misc.window,
-                -- },
                 {
                     '<BS>',
                     ':Opencode<CR>',
                     desc = 'Toggle Agent',
                     icon = icons.misc.window,
-                },
-                {
-                    '<leader>a/',
-                    ':Opencode quick_chat<CR>',
-                    desc = 'Quick chat',
-                    -- Open quick chat input with selection context in visual mode or current line context in normal mode
-                    mode = { 'n', 'x' },
-                    icon = { icon = '', hl = 'DiagnosticWarn' },
                 },
                 {
                     '<M-BS>',
@@ -48,12 +34,62 @@ return {
         end,
         dependencies = {
             {
+                'folke/snacks.nvim',
+                opts = {
+                    picker = {
+                        actions = {
+                            opencode_send = function(picker)
+                                local selected =
+                                    picker:selected { fallback = true }
+                                if selected and #selected > 0 then
+                                    local files = {}
+                                    for _, item in ipairs(selected) do
+                                        if item.file then
+                                            table.insert(files, item.file)
+                                        end
+                                    end
+                                    if #files == 0 then
+                                        Snacks.notify.warn(
+                                            'Please select files to send as context',
+                                            { title = 'Agent' }
+                                        )
+                                        return
+                                    end
+                                    picker:close()
+
+                                    require('opencode.core').open {
+                                        new_session = false,
+                                        focus = 'input',
+                                        start_insert = true,
+                                    }
+
+                                    local context = require 'opencode.context'
+                                    for _, file in ipairs(files) do
+                                        context.add_file(file)
+                                    end
+                                end
+                            end,
+                        },
+                        win = {
+                            input = {
+                                keys = {
+                                    ['<C-a>'] = {
+                                        'opencode_send',
+                                        mode = { 'n', 'i' },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            {
                 'MeanderingProgrammer/render-markdown.nvim',
                 cmd = 'RenderMarkdown',
-                ft = { 'markdown', 'opencode_output' },
+                ft = { 'opencode_output' },
                 opts = {
                     debounce = 50,
-                    file_types = { 'markdown', 'opencode_output' },
+                    file_types = { 'opencode_output' },
                     render_modes = { 'n', 'i', 'v', 'V', 'c', 't' },
                     anti_conceal = {
                         enabled = false,
@@ -140,7 +176,7 @@ return {
             keymap_prefix = '<leader>a',
             keymap = {
                 editor = {
-                    -- ['<leader>ai'] = { 'open_input' }, -- Opens and focuses on input window on insert mode
+                    ['<leader>ai'] = { 'open_input', desc = 'Input' },
                     -- ['<leader>ao'] = { 'open_output' }, -- Opens and focuses on output window
                     -- ['<leader>at'] = { 'toggle_focus' },
                     ['<leader>aT'] = {
@@ -181,6 +217,7 @@ return {
                     -- ['<leader>arR'] = { 'diff_restore_snapshot_all' }, -- Restore all files to a restore point
                 },
                 input_window = {
+                    ['<leader>ai'] = false, -- FIXME
                     ['<leader>aS'] = false,
                     ['<leader>aD'] = false,
                     ['<leader>aO'] = false,
@@ -194,14 +231,15 @@ return {
                     ['<esc>'] = false,
                     ['<C-c>'] = { 'cancel' },
                     ['q'] = { 'toggle_pane' }, -- Toggle between input and output panes
-                    ['~'] = { 'mention_file', mode = 'i' }, -- Pick a file and add to context. See File Mentions section
+                    ['~'] = false, -- disabled since I use Snacks file picker instead
+                    -- ['~'] = { 'mention_file', mode = 'i' }, -- Pick a file and add to context. See File Mentions section
                     ['@'] = { 'mention', mode = 'i' }, -- Insert mention (file/agent)
-                    ['/'] = { 'slash_commands', mode = { 'n', 'i' } },
+                    ['/'] = { 'slash_commands', mode = 'i' },
                     ['#'] = { 'context_items', mode = 'i' }, -- Manage context items (current file, selection, diagnostics, mentioned files)
                     -- ['<M-v>'] = { 'paste_image', mode = 'i' }, -- Paste image from clipboard as attachment
                     -- ['<C-i>'] = { 'focus_input', mode = { 'n', 'i' } }, -- Focus on input window and enter insert mode at the end of the input from the output window
                     ['<tab>'] = false,
-                    ['<S-tab>'] = { 'switch_mode' }, -- Switch between modes (build/plan)
+                    ['<S-tab>'] = { 'switch_mode', mode = { 'n', 'i' } }, -- Switch between modes (build/plan)
                     -- ['<up>'] = { 'prev_prompt_history', mode = { 'n', 'i' } }, -- Navigate to previous prompt in history
                     -- ['<down>'] = { 'next_prompt_history', mode = { 'n', 'i' } }, -- Navigate to next prompt in history
                     ['<M-r>'] = { 'cycle_variant', mode = { 'n', 'i' } }, -- Cycle through available model variants
@@ -209,11 +247,12 @@ return {
                         function()
                             vim.cmd.Opencode 'models'
                         end,
-                        mode = { 'n', 'i' },
                         desc = 'Pick model',
+                        mode = { 'n', 'i' },
                     },
                 },
                 output_window = {
+                    ['<leader>ai'] = false, -- FIXME
                     ['<leader>aS'] = false,
                     ['<leader>aD'] = false,
                     ['<leader>aO'] = false,
@@ -286,7 +325,7 @@ return {
                         folder = icons.documents.folder,
                         agent = '󰚩',
                         reference = icons.documents.file_empty .. ' ',
-                        reasoning = '󰧑',
+                        reasoning = '󱍎',
                         question = '?',
                         -- statuses
                         status_on = '',
@@ -316,6 +355,10 @@ return {
                     error = true,
                     only_closest = true,
                 },
+                current_file = {
+                    enabled = false,
+                    show_full_path = false,
+                },
             },
             debug = {
                 enabled = false,
@@ -335,6 +378,43 @@ return {
                     '<leader>ap',
                     group = 'Permission',
                     icon = { icon = '󰳈' },
+                },
+                {
+                    '<leader>an',
+                    desc = 'New session',
+                    icon = '󱐏',
+                },
+                {
+                    '<leader>az',
+                    desc = 'Zoom window',
+                    icon = icons.misc.window,
+                },
+                {
+                    '<leader>aR',
+                    desc = 'Rename session',
+                    icon = '󰑕',
+                },
+                {
+                    '<leader>as',
+                    desc = 'Select session',
+                    icon = '󱅳',
+                },
+                {
+                    '<leader>aT',
+                    desc = 'Timeline',
+                    icon = '󱇼',
+                },
+                {
+                    '<leader>ai',
+                    desc = 'Input + selection',
+                    mode = 'v',
+                    icon = { icon = '󰐒', color = 'blue' },
+                },
+                {
+                    '<leader>ai',
+                    desc = 'Input',
+                    mode = 'n',
+                    icon = '󰲔',
                 },
             }
 
@@ -391,12 +471,13 @@ return {
             vim.api.nvim_create_autocmd('User', {
                 pattern = 'OpencodeEvent:file.edited',
                 callback = function(args)
-                    if vim.g.workspace_root == nil then
+                    ---@type string?
+                    local abspath = args.data.event.file
+                    if not abspath or not vim.g.workspace_root then
                         return
                     end
-                    ---@type string
-                    local abspath = args.data.event.file
-                    local relpath = vim.fs.relpath(vim.g.worspace_root, abspath)
+                    local relpath =
+                        vim.fs.relpath(vim.g.workspace_root, abspath)
                     if not relpath then
                         return
                     end

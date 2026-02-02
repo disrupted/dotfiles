@@ -721,11 +721,35 @@ return {
         ---@diagnostic disable-next-line: missing-fields
         opts = {
             preset = 'helix',
+            ---@param mapping wk.Mapping
+            filter = function(mapping)
+                -- exclude mappings without a description
+                return mapping.desc and mapping.desc ~= ''
+            end,
             spec = {
                 { '<Leader>?', hidden = true },
                 -- override motions preset
                 { ',', desc = '' },
                 { ';', desc = '' },
+            },
+            icons = {
+                rules = {
+                    {
+                        plugin = 'opencode-native',
+                        icon = ' ',
+                        color = 'yellow',
+                    },
+                    {
+                        plugin = 'opencode-native',
+                        pattern = 'reasoning',
+                        icon = '󱍎 ',
+                    },
+                    {
+                        plugin = 'opencode-native',
+                        pattern = 'tool',
+                        icon = ' ',
+                    },
+                },
             },
         },
     },

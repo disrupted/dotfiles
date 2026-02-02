@@ -489,7 +489,7 @@ vim.keymap.set('x', 'K', ':move \'<-2<CR>gv-gv')
 vim.keymap.set('x', 'J', ':move \'>+1<CR>gv-gv')
 
 -- ctrl + a: select all
-vim.keymap.set('n', '<C-a>', '<esc>ggVG<CR>')
+-- vim.keymap.set('n', '<C-a>', '<esc>ggVG<CR>')
 
 -- navigate paragraphs without altering jumplist
 local silent = { silent = true }
