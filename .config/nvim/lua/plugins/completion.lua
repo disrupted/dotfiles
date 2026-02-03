@@ -18,7 +18,18 @@ return {
         opts = {
             keymap = {
                 preset = 'default',
-                ['<C-c>'] = { 'show', 'cancel' },
+                ['<C-c>'] = {
+                    function(cmp)
+                        if cmp.is_menu_visible() then
+                            return cmp.cancel()
+                        end
+                        if vim.bo.filetype == 'opencode' then
+                            return false
+                        end
+                        return cmp.show()
+                    end,
+                    'fallback',
+                },
                 ['<C-d>'] = { 'show_documentation', 'hide_documentation' },
                 ['<C-e>'] = {}, -- disable default because mapped to LuaSnip
                 ['<C-s>'] = {

@@ -229,7 +229,7 @@ return {
                     ['<leader>az'] = { 'toggle_zoom', desc = 'Zoom window' },
                     ['<cr>'] = { 'submit_input_prompt', mode = { 'n' } },
                     ['<esc>'] = false,
-                    ['<C-c>'] = { 'cancel' },
+                    ['<C-c>'] = { 'cancel', mode = { 'n', 'i' } },
                     ['q'] = { 'toggle_pane' }, -- Toggle between input and output panes
                     ['~'] = false, -- disabled since I use Snacks file picker instead
                     -- ['~'] = { 'mention_file', mode = 'i' }, -- Pick a file and add to context. See File Mentions section
@@ -289,7 +289,7 @@ return {
                 zoom_width = 0.6,
                 input = {
                     min_height = 0.10,
-                    max_height = 0.25,
+                    max_height = 0.35,
                     text = {
                         wrap = true,
                     },
