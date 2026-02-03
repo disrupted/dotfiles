@@ -47,6 +47,7 @@ $env.config = {
 }
 
 use ~/.config/nushell/modules/user.nu *
+use ~/.config/nushell/modules/agent.nu *
 use std/config *
 
 # Pure-style minimal color config
@@ -277,7 +278,16 @@ $env.config.keybindings ++= [
       )"
     }
   }
-
+  {
+    name: ask_agent
+    modifier: control
+    keycode: char_g
+    mode: [emacs vi_normal vi_insert]
+    event: {
+        send: executehostcommand
+        cmd: "commandline edit --replace (ask (commandline))"
+    }
+  }
 ]
 
 # Pre-prompt hook for live theme switching

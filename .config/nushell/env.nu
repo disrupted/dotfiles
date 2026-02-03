@@ -23,6 +23,7 @@ if (which brew | length) > 0 {
     ($hb | path join "bin")
     ($hb | path join "sbin")
     ($hb | path join "opt" "llvm" "bin")
+    ($hb | path join "opt" "openjdk" "bin")
   ]
 
   $env.LDFLAGS = $" -L($hb)/opt/zlib/lib -L($hb)/opt/bzip2/lib -L($hb)/opt/llvm/lib -Wl,-rpath,($hb)/opt/llvm/lib -L($hb)/opt/freetds/lib -L($hb)/opt/openssl@3/lib"
