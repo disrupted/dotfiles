@@ -239,6 +239,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 vim.lsp.on_type_formatting.enable()
+vim.lsp.codelens.enable()
 
 vim.lsp.config('*', {
     root_markers = { '.git' },

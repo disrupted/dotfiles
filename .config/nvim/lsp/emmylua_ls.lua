@@ -9,6 +9,7 @@ return {
         '.luarc.json',
         '.git',
     },
+    workspace_required = false,
     ---@param client vim.lsp.Client
     on_attach = function(client, bufnr)
         if first_attach then
