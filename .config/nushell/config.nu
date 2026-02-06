@@ -303,10 +303,7 @@ $env.config.keybindings ++= [
   }
 ]
 
-# Pre-prompt hooks (idempotent, preserves existing hooks)
-let pre_prompt_update_theme = {||
-  update-theme
-}
+$env.config.hooks.pre_execution = ([ update-theme ])
 
 let pre_prompt_terminal_safety = {||
   # disable Ctrl+z to suspend
@@ -320,7 +317,6 @@ if ($env.__pre_prompt_local_hooks_installed? | is-empty) {
   $env.config.hooks.pre_prompt = (
     $env.config.hooks.pre_prompt?
     | default []
-    | append $pre_prompt_update_theme
     | append $pre_prompt_terminal_safety
   )
   $env.__pre_prompt_local_hooks_installed = true
@@ -339,3 +335,6 @@ $env.config.hooks.env_change.PWD = $env.config.hooks.env_change.PWD? | default [
 #     $entries | sort-by type name -i | each {|f| $"  ([$f] | grid -c -i | str trim)" } | str join "\n" | print
 #   }
 # }]
+
+# detect theme on load
+update-theme

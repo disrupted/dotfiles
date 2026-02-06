@@ -115,7 +115,7 @@ export def glo [] {
 
 # glo-sk - interactive git log (skim binary version - compare performance)
 export def glo-sk [] {
-  let colors = if $env.IS_DARK_MODE {
+  let colors = if $env.THEME == "dark" {
     "fg:-1,bg:-1,matched:#d19a66,current:-1:b,bg+:#2c323d,current_match:#e5c07b:b,info:#828997,prompt:#e06c75,cursor:#45cdff,spinner:#e06c75,border:#4B5164"
   } else {
     "fg:-1,bg:-1,matched:#d75f00,current:-1:b,bg+:#e8e8e8,current_match:#d75f00:b,info:#878787,prompt:#d7005f,cursor:#0087af,spinner:#d7005f,border:#d0d0d0"

@@ -62,10 +62,6 @@ $env.GPG_TTY = (tty)
 $env.QUOTING_STYLE = "literal"
 $env.LS_COLORS = "rs=0:fi=0:di=34:ln=36:so=33:pi=33:ex=32:bd=33;1:cd=33;1:su=31:sg=31:tw=34:ow=34:mi=31:or=31:*.tar=31:*.tgz=31:*.zip=31:*.gz=31:*.bz2=31:*.xz=31:*.7z=31:*.jpg=35:*.png=35:*.gif=35:*.pdf=35"
 
-# Theme detection - initial value
-$env.THEME = (^dawn)
-$env.IS_DARK_MODE = $env.THEME == "dark"
-
 # Theme colors as constants
 const FZF_COLORS_DARK = '
 --color=fg:-1,bg:-1,border:#4B5164,hl:#d19a66
@@ -83,26 +79,24 @@ const FZF_COLORS_LIGHT = '
 
 # Function to update theme-dependent env vars
 def --env update-theme [] {
-  let theme = (^dawn)
-  if $theme != $env.THEME {
-    $env.THEME = $theme
-    let is_dark = $theme == "dark"
-    $env.IS_DARK_MODE = $is_dark
-    $env.DELTA_FEATURES = $theme
-    $env.BAT_THEME = if $is_dark { "OneHalfDark" } else { "OneHalfLight" }
+  const dark_theme = 1
+  const light_theme = 2
+  let system_theme = term query "\e[?996n" --prefix "\e[?997;" --terminator "n" | decode | into int
+
+  if $system_theme != $env.THEME? {
+    $env.THEME = if $system_theme == $dark_theme { "dark" } else { "light" }
+    $env.BAT_THEME = if $system_theme == $dark_theme { "OneHalfDark" } else { "OneHalfLight" }
+    $env.DELTA_FEATURES = $env.THEME
     $env.FZF_DEFAULT_OPTS = $"
 --style=minimal
 --no-separator
 --info=hidden
 --ansi
-(if $is_dark { $FZF_COLORS_DARK } else { $FZF_COLORS_LIGHT })"
+(if $system_theme == $dark_theme { $FZF_COLORS_DARK } else { $FZF_COLORS_LIGHT })"
     $env._ZO_FZF_OPTS = $"($env.FZF_DEFAULT_OPTS)\n--height=7"
   }
 }
 
-# Initial theme setup
-$env.DELTA_FEATURES = $env.THEME
-$env.BAT_THEME = if $env.IS_DARK_MODE { "OneHalfDark" } else { "OneHalfLight" }
 
 # FZF settings
 $env.FZF_DEFAULT_COMMAND = 'rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*"'
@@ -110,15 +104,6 @@ $env.FZF_CTRL_T_COMMAND = $env.FZF_DEFAULT_COMMAND
 $env.FZF_CTRL_T_OPTS = '--preview="bat --color=always --style=header-filename {}" --preview-window=right:60%:wrap'
 $env.FZF_ALT_C_COMMAND = 'fd -t d -d 1'
 $env.FZF_ALT_C_OPTS = '--preview="eza --no-quotes -1 --icons --git --git-ignore {}" --preview-window=right:60%:wrap'
-
-$env.FZF_DEFAULT_OPTS = $"
---style=minimal
---no-separator
---info=hidden
---ansi
-(if $env.IS_DARK_MODE { $FZF_COLORS_DARK } else { $FZF_COLORS_LIGHT })"
-
-$env._ZO_FZF_OPTS = $"($env.FZF_DEFAULT_OPTS)\n--height=7"
 
 # carapace completions
 $env.CARAPACE_BRIDGES = "zsh,fish,bash,inshellisense"
