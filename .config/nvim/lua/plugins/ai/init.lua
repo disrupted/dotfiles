@@ -176,7 +176,7 @@ return {
             keymap_prefix = '<leader>a',
             keymap = {
                 editor = {
-                    ['<leader>ai'] = { 'open_input', desc = 'Input' },
+                    ['<C-a>'] = { 'open_input', desc = 'Input' },
                     -- ['<leader>ao'] = { 'open_output' }, -- Opens and focuses on output window
                     -- ['<leader>at'] = { 'toggle_focus' },
                     ['<leader>aT'] = {
@@ -268,9 +268,10 @@ return {
                     ['q'] = { 'close' },
                     ['<esc>'] = false,
                     ['<C-c>'] = { 'cancel' },
-                    ['i'] = { 'toggle_input' },
-                    ['a'] = { 'focus_input' },
-                    ['A'] = { 'focus_input' },
+                    ['i'] = { 'focus_input' },
+                    ['a'] = { 'permission_accept', mode = 'n' },
+                    ['A'] = { 'permission_accept_all', mode = 'n' },
+                    ['d'] = { 'permission_deny', mode = 'n' },
                     ['<tab>'] = false,
                     ['<S-tab>'] = { 'switch_mode' }, -- Switch between modes (build/plan)
                     ['<M-r>'] = { 'cycle_variant' }, -- Cycle through available model variants
@@ -286,6 +287,7 @@ return {
             },
             ui = {
                 position = 'right',
+                keep_buffers_on_toggle = true,
                 zoom_width = 0.6,
                 input = {
                     min_height = 0.10,
@@ -361,7 +363,8 @@ return {
                 },
             },
             debug = {
-                enabled = false,
+                enabled = true,
+                capture_streamed_events = true,
                 show_ids = false,
             },
             hooks = {
@@ -405,13 +408,13 @@ return {
                     icon = '󱇼',
                 },
                 {
-                    '<leader>ai',
+                    '<C-a>',
                     desc = 'Input + selection',
                     mode = 'v',
                     icon = { icon = '󰐒', color = 'blue' },
                 },
                 {
-                    '<leader>ai',
+                    '<C-a>',
                     desc = 'Input',
                     mode = 'n',
                     icon = '󰲔',

@@ -23,7 +23,8 @@ link-url                       = true
 macos-titlebar-style           = transparent
 mouse-hide-while-typing        = true
 window-save-state              = always
-# background-opacity             = 0.98
+# background-opacity             = 0.90
+# background-blur-radius         = 10
 # background-blur                = true
 # unfocused-split-opacity        = 0.30
 
@@ -70,8 +71,8 @@ keybind                        = shift+enter=text:\x1b[13;2u
 keybind                        = ctrl+i=text:\x1b[105;5u
 keybind                        = ctrl+m=text:\x1b[109;5u
 
-# Disable Ctrl+Z (prevent suspend)
-# keybind                        = ctrl+z=ignore
+# distinguish Ctrl + [ from Esc
+keybind                        = ctrl+left_bracket=text:\x1b
 
 # Ctrl + Shift
 keybind                        = ctrl+shift+h=text:\x1b[72;6u

@@ -415,7 +415,10 @@ return {
                         end
                         local error = vim.iter(vim.tbl_values(results))
                             :any(function(result)
-                                return not vim.tbl_isempty(result.errors)
+                                return not (
+                                    result.errors == nil
+                                    or vim.tbl_isempty(result.errors)
+                                )
                             end)
                         require('neotest.lib').notify(
                             'Tests completed',
@@ -692,6 +695,7 @@ return {
                     ['[['] = 'keymap.prev_task',
                     ['j'] = 'keymap.next_task',
                     ['k'] = 'keymap.prev_task',
+                    ['l'] = '<CMD>wincmd l<CR>',
                 },
                 direction = 'bottom',
                 min_height = 25,

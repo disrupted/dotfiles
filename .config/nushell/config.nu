@@ -141,6 +141,19 @@ $env.config = ($env.config | merge {
 
 
 $env.config.keybindings ++= [
+  {
+    name: suspend_ctrl_z
+    modifier: control
+    keycode: char_z
+    mode: [vi_normal, vi_insert, emacs]
+    event: null  # disabled to prevent accidental job suspension
+    # event: {
+    #   until: [
+    #     { send: ExecuteHostCommand cmd: "if (job list | where type == frozen | is-not-empty) { job unfreeze e> /dev/null }" }
+    #     { sedit: Undo }
+    #   ]
+    # }
+  }
   # Tab to open/navigate completion menu
   {
     name: completion_menu
@@ -284,16 +297,34 @@ $env.config.keybindings ++= [
     keycode: char_g
     mode: [emacs vi_normal vi_insert]
     event: {
-        send: executehostcommand
+        send: ExecuteHostCommand
         cmd: "commandline edit --replace (ask (commandline))"
     }
   }
 ]
 
-# Pre-prompt hook for live theme switching
-$env.config.hooks.pre_prompt = ($env.config.hooks.pre_prompt? | default [] | append {||
+# Pre-prompt hooks (idempotent, preserves existing hooks)
+let pre_prompt_update_theme = {||
   update-theme
-})
+}
+
+let pre_prompt_terminal_safety = {||
+  # disable Ctrl+z to suspend
+  if (which stty | is-not-empty) {
+    try { ^stty susp undef } catch { }
+    try { ^stty -ixon } catch { }
+  }
+}
+
+if ($env.__pre_prompt_local_hooks_installed? | is-empty) {
+  $env.config.hooks.pre_prompt = (
+    $env.config.hooks.pre_prompt?
+    | default []
+    | append $pre_prompt_update_theme
+    | append $pre_prompt_terminal_safety
+  )
+  $env.__pre_prompt_local_hooks_installed = true
+}
 
 # PWD change hooks
 $env.config.hooks.env_change.PWD = $env.config.hooks.env_change.PWD? | default []

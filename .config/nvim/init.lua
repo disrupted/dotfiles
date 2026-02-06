@@ -1,5 +1,5 @@
 -- vim: foldmethod=marker
-local fn, opt = vim.fn, vim.opt
+local opt = vim.opt
 local command = vim.api.nvim_create_user_command
 
 require 'conf.filetype'
@@ -106,7 +106,7 @@ opt.clipboard = 'unnamedplus'
 opt.inccommand = 'nosplit'
 
 local executable = function(e)
-    return fn.executable(e) > 0
+    return vim.fn.executable(e) > 0
 end
 
 -- Restore cursor on opening buffer
@@ -361,12 +361,6 @@ opt.diffopt:prepend {
 -----------------------------------------------------------------------------//
 -- Terminal {{{1
 -----------------------------------------------------------------------------//
-command(
-    'Term',
-    'botright vsplit term://$SHELL',
-    { desc = 'Open a terminal split on the right' }
-)
-
 vim.api.nvim_create_autocmd('TermOpen', {
     callback = function()
         vim.opt_local.number = false
@@ -390,7 +384,7 @@ vim.api.nvim_create_autocmd('BufLeave', {
     desc = 'Exit insert mode when switching from terminal',
 })
 vim.api.nvim_create_autocmd('TermClose', {
-    pattern = 'term://*' .. vim.env.SHELL, -- only for default shell, otherwise breaks overseer
+    pattern = 'term://*' .. vim.o.shell, -- only for default shell, otherwise breaks overseer
     callback = function(args)
         if vim.v.event.status == 0 and vim.api.nvim_buf_is_valid(args.buf) then -- only close on exit code 0
             vim.api.nvim_buf_delete(args.buf, { force = true })
@@ -419,6 +413,9 @@ opt.termguicolors = true
 -----------------------------------------------------------------------------//
 -- Mappings {{{1
 -----------------------------------------------------------------------------//
+-- disable suspend
+vim.keymap.set({ 'n', 'i', 'v', 'x', 's', 'o', 'c', 't' }, '<C-z>', '<Nop>')
+
 -- <space><space> switches between buffers
 -- vim.keymap.set('n', '<Leader><Leader>', ':b#<CR>')
 
@@ -427,6 +424,10 @@ opt.termguicolors = true
 -- vim.keymap.set('n', 'k', '<Nop>')
 -- vim.keymap.set('n', 'h', '<Nop>')
 -- vim.keymap.set('n', 'l', '<Nop>')
+
+-- disable increment / decrement
+vim.keymap.set({ 'n', 'x' }, '<C-a>', '<Nop>')
+vim.keymap.set('x', '<C-x>', '<Nop>') -- normal mode mapped to bufdelete
 
 -- Sane movement defaults that works on long wrapped lines
 local expr = { expr = true, noremap = false, silent = false }
@@ -556,8 +557,9 @@ vim.keymap.set('n', '[q', ':cprevious<CR>', { desc = 'Prev QuickFix entry' })
 vim.keymap.set('n', '<C-_>', ':noh<CR>')
 
 -- cycle tabs
-vim.keymap.set('n', '<M-]>', '<cmd>tabnext<CR>', { desc = 'Next tabpage' })
-vim.keymap.set('n', '<M-[>', '<cmd>tabprevious<CR>', { desc = 'Prev tabpage' })
+-- vim.keymap.set('n', '<esc>', '<esc>') -- NOTE: either configure Ghostty or enable this to distinguish <C-[> from <esc>
+vim.keymap.set('n', '<C-]>', '<cmd>tabnext<CR>', { desc = 'Next tabpage' })
+vim.keymap.set('n', '<C-[>', '<cmd>tabprevious<CR>', { desc = 'Prev tabpage' })
 
 -----------------------------------------------------------------------------//
 -- Commands {{{1
