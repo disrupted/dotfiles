@@ -377,7 +377,7 @@ return {
                 desc = 'Notification history',
             },
             {
-                '<C-\\>',
+                '<C-Bslash>',
                 function()
                     Snacks.terminal()
                 end,

@@ -661,8 +661,8 @@ return {
             'OverseerRun',
         },
         keys = {
-            { '\\', '<cmd>OverseerToggle<cr>', desc = 'Toggle Overseer' },
-            { '<M-\\>', '<cmd>OverseerRun<cr>', desc = 'Overseer run' },
+            { '<Bslash>', '<cmd>OverseerToggle<cr>', desc = 'Toggle Overseer' },
+            { '<M-Bslash>', '<cmd>OverseerRun<cr>', desc = 'Overseer run' },
         },
         ---@module 'overseer.config'
         ---@type overseer.Config
