@@ -94,7 +94,7 @@ local shadafile = function()
         return
     end
     return vim.fs.joinpath(
-        vim.fn.stdpath 'state',
+        vim.fn.stdpath 'state', ---@diagnostic disable-line: param-type-mismatch
         'shada',
         vim.g.workspace_root:gsub('/', '_') .. '.shada'
     )
@@ -153,9 +153,11 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- vim.api.nvim_create_autocmd('VimResized', {
 --     desc = 'resize splits when Vim is resized',
 --     callback = function()
---         local current_tab = vim.api.nvim_get_current_tabpage()
---         vim.cmd 'tabdo wincmd ='
---         vim.api.nvim_set_current_tabpage(current_tab)
+--         vim.schedule(function()
+--             local current_tab = vim.api.nvim_get_current_tabpage()
+--             vim.cmd 'tabdo wincmd ='
+--             vim.api.nvim_set_current_tabpage(current_tab)
+--         end)
 --     end,
 -- })
 
@@ -580,6 +582,8 @@ command('TabDir', 'tcd %:p:h', {
 --     end,
 -- })
 
+---@param mode string
+---@param key string
 local function keymap_exists(mode, key)
     local mappings = vim.api.nvim_get_keymap(mode)
 
@@ -591,12 +595,9 @@ local function keymap_exists(mode, key)
 end
 
 -- remove some default keymaps
-if keymap_exists('n', 'grr') then
-    vim.keymap.del('n', 'grr')
-end
-if keymap_exists('n', 'gra') then
-    vim.keymap.del('n', 'gra')
-end
-if keymap_exists('n', 'grn') then
-    vim.keymap.del('n', 'grn')
+local nmaps_to_delete = { 'grr', 'gra', 'grn', 'gri', 'grt' }
+for _, nmap in ipairs(nmaps_to_delete) do
+    if keymap_exists('n', nmap) then
+        vim.keymap.del('n', nmap)
+    end
 end

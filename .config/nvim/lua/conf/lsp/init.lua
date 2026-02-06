@@ -55,9 +55,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
             {
                 'gr',
                 function()
-                    require('trouble').open { mode = 'lsp' }
+                    require('trouble').open { mode = 'lsp_references' }
                 end,
-                desc = 'LSP: References, definition,…',
+                desc = 'LSP: References',
             },
             { 'K', vim.lsp.buf.hover, desc = 'LSP: Hover' },
             { '<Leader>w', group = 'LSP workspace', icon = '' },
