@@ -10,7 +10,7 @@ disk: 100
 
 # Size of the memory in GiB to be allocated to the virtual machine.
 # Default: 2
-memory: 12
+memory: 8
 
 # Architecture of the virtual machine (x86_64, aarch64, host).
 #
@@ -38,7 +38,7 @@ kubernetes:
   # Kubernetes version to use.
   # This needs to exactly match a k3s version https://github.com/k3s-io/k3s/releases
   # Default: latest stable release
-  version: v1.33.3+k3s1
+  version: v1.33.4+k3s1
 
   # Additional args to pass to k3s https://docs.k3s.io/cli/server
   # Default: traefik is disabled
