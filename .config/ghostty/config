@@ -71,9 +71,6 @@ keybind                        = shift+enter=text:\x1b[13;2u
 keybind                        = ctrl+i=text:\x1b[105;5u
 keybind                        = ctrl+m=text:\x1b[109;5u
 
-# distinguish Ctrl + [ from Esc
-keybind                        = ctrl+left_bracket=text:\x1b
-
 # Ctrl + Shift
 keybind                        = ctrl+shift+h=text:\x1b[72;6u
 keybind                        = ctrl+shift+j=text:\x1b[74;6u

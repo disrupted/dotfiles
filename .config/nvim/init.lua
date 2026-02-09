@@ -559,7 +559,7 @@ vim.keymap.set('n', '[q', ':cprevious<CR>', { desc = 'Prev QuickFix entry' })
 vim.keymap.set('n', '<C-_>', ':noh<CR>')
 
 -- cycle tabs
--- vim.keymap.set('n', '<esc>', '<esc>') -- NOTE: either configure Ghostty or enable this to distinguish <C-[> from <esc>
+vim.keymap.set('n', '<esc>', '<esc>') -- distinguish <C-[> from <esc>
 vim.keymap.set('n', '<C-]>', '<cmd>tabnext<CR>', { desc = 'Next tabpage' })
 vim.keymap.set('n', '<C-[>', '<cmd>tabprevious<CR>', { desc = 'Prev tabpage' })
 
