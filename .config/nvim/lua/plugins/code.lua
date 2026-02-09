@@ -463,6 +463,9 @@ return {
                 enabled = false,
                 open = true,
             },
+            output = {
+                enabled = false, -- disabled in favor of overseer (live logs)
+            },
             summary = {
                 mappings = {
                     expand = { '<right>', '<left>', '<2-LeftMouse>' },
