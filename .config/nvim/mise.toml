@@ -1,0 +1,3 @@
+[tasks.test]
+description = "Run Plenary test suite"
+run = "./run_tests.sh"

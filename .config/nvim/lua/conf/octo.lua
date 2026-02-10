@@ -11,6 +11,7 @@ local signal = n.create_signal {
     is_loading = false,
     labels = {},
 }
+
 signal.reset = function()
     signal.is_loading = false
     signal.labels = {}
@@ -166,7 +167,7 @@ end
 M.pr.create = function(opts)
     ---@type gh.pr.create.Opts
     opts = vim.tbl_extend('keep', opts, {
-        assignee = '@me',
+        -- assignee = '@me',
         draft = true,
     })
     local git = require('git').async
@@ -184,18 +185,15 @@ M.pr.create = function(opts)
     end
 
     local stdout, stderr = require('gh').pr.create(opts)
-    vim.print(stdout, stderr)
     signal:reset()
-    -- if stderr and stderr ~= '' then
-    --     Snacks.notify.error(stderr)
-    --     if
-    --         not stderr:match '^Warning: ' -- e.g. 'Warning: 2 uncommitted changes'
-    --     then
-    --         -- abort if not just a warning
-    --         return
-    --     end
-    -- end
-    return stdout
+
+    if stderr and stderr ~= '' and not stderr:match '^Warning: ' then
+        Snacks.notify.error(stderr)
+    end
+
+    if stdout and stdout ~= '' then
+        return stdout
+    end
 end
 
 return M

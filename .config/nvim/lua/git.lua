@@ -56,7 +56,7 @@ end
 
 ---@param args string[]
 ---@return string stdout
-local git = function(args)
+local function git(args)
     local out = vim.system({ 'git', '--git-dir', vim.g.git_repo, unpack(args) })
         :wait()
     if out.code ~= 0 then
@@ -299,7 +299,7 @@ end
 ---@async
 ---@param args string[]
 ---@return string? stdout
-local git_async = function(args)
+local function git_async(args)
     local cmd = { 'git', '--git-dir', vim.g.git_repo }
     vim.list_extend(cmd, args)
     local out = require('coop.vim').system(cmd)
