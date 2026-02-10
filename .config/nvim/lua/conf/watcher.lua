@@ -74,6 +74,7 @@ M.watch = function(path)
     local ok = fs_event:start(path, { recursive = false }, vim.schedule_wrap(on_change))
 
     if ok ~= 0 then
+        fs_event:close()
         cleanup()
         return false
     end
@@ -96,6 +97,9 @@ M.unwatch = function(path)
     w.refcount = w.refcount - 1
     if w.refcount <= 0 then
         w.fs_event:stop()
+        if not w.fs_event:is_closing() then
+            w.fs_event:close()
+        end
         w.cleanup()
         watchers[path] = nil
     end
@@ -105,6 +109,9 @@ end
 M.stop_all = function()
     for path, w in pairs(watchers) do
         w.fs_event:stop()
+        if not w.fs_event:is_closing() then
+            w.fs_event:close()
+        end
         w.cleanup()
         watchers[path] = nil
     end

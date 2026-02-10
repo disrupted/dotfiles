@@ -571,6 +571,34 @@ command('Cclear', 'cexpr []', { desc = 'clear QuickFix list' })
 command('TabDir', 'tcd %:p:h', {
     desc = 'change working directory of current tab to the directory of the currently open file',
 })
+command('Debug', function(opts)
+    local target = (opts.fargs[1] or ''):lower()
+    local action = opts.fargs[2] and opts.fargs[2]:lower() or nil
+
+    if target == 'git' then
+        require('git').debug_command(action)
+        return
+    end
+
+    if target == 'hotreload' then
+        require('conf.hotreload').debug_command(action)
+        return
+    end
+
+    Snacks.notify('Usage: :Debug [git|hotreload] [reset]', {
+        title = 'Debug',
+    })
+end, {
+    nargs = '*',
+    complete = function(_, cmdline)
+        local args = vim.split(vim.trim(cmdline), '%s+')
+        if #args <= 2 then
+            return { 'git', 'hotreload' }
+        end
+        return { 'reset' }
+    end,
+    desc = 'Show or reset debug status for internal watchers',
+})
 
 -----------------------------------------------------------------------------//
 -- }}}1
