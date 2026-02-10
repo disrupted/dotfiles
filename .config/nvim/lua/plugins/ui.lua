@@ -958,4 +958,129 @@ return {
             horizontal_step_size = 2,
         },
     },
+    {
+        'folke/edgy.nvim',
+        event = 'VeryLazy',
+        ---@module 'edgy'
+        ---@type Edgy.Config
+        opts = {
+            close_when_all_hidden = false,
+            exit_when_last = false,
+            animate = { enabled = false },
+            icons = {
+                open = '',
+                closed = '',
+            },
+            ---@type table<Edgy.Pos, {size:integer | fun():integer, wo?:vim.wo}>
+            options = {
+                left = { size = 40 },
+                right = { size = 40 },
+            },
+            wo = {
+                winbar = true,
+                fillchars = 'eob: ',
+            },
+            ---@type table<string, fun(win:Edgy.Window)|false>
+            keys = {
+                -- toggle width
+                ['<C-w>z'] = function(win)
+                    if vim.w[win.win]['edgy_width'] == nil then
+                        vim.w[win.win]['edgy_width'] = 120
+                    else
+                        vim.w[win.win]['edgy_width'] = nil
+                    end
+                    require('edgy.layout').update()
+                end,
+            },
+            left = {
+                {
+                    ft = 'snacks_layout_box',
+                    title = 'Explorer',
+                    filter = function(buf, win)
+                        -- exclude floating windows
+                        return vim.api.nvim_win_get_config(win).relative == ''
+                    end,
+                },
+                {
+                    ft = 'neotest-summary',
+                    title = 'Tests',
+                    wo = {
+                        winhighlight = 'WinBar:EdgyWinBar,WinBarNC:EdgyWinBarNC,Normal:EdgyNormal,WinSeparator:EdgyWinSeparator',
+                    },
+                },
+                {
+                    ft = 'pipeline',
+                    title = 'CI',
+                    wo = {
+                        winhighlight = 'WinBar:EdgyWinBar,WinBarNC:EdgyWinBarNC,Normal:EdgyNormal,WinSeparator:EdgyWinSeparator',
+                    },
+                },
+            },
+            right = {
+                {
+                    ft = 'opencode_output',
+                    size = { width = 75 },
+                    wo = {
+                        winbar = false,
+                        winhighlight = 'Normal:OpencodeBackground',
+                    },
+                },
+                {
+                    ft = 'opencode',
+                    size = { height = 10 },
+                    wo = {
+                        winbar = false,
+                        winhighlight = 'Normal:OpencodeBackground',
+                        statuscolumn = '',
+                    },
+                },
+                {
+                    ft = 'help',
+                    size = { height = 20 },
+                    filter = function(buf)
+                        return vim.bo[buf].buftype == 'help'
+                    end,
+                },
+            },
+            bottom = {
+                {
+                    ft = 'snacks_terminal',
+                    title = 'Terminal',
+                    size = { height = 20 },
+                    filter = function(_buf, win)
+                        return vim.w[win].snacks_win
+                            and vim.w[win].snacks_win.relative == 'editor'
+                            and not vim.w[win].trouble_preview
+                    end,
+                    wo = { winbar = false },
+                },
+                {
+                    ft = 'trouble',
+                    filter = function(_buf, win)
+                        return vim.w[win].trouble
+                            and vim.w[win].trouble.type == 'split'
+                            and vim.w[win].trouble.relative == 'editor'
+                            and not vim.w[win].trouble_preview
+                    end,
+                    wo = { winbar = false },
+                },
+                { ft = 'qf', title = 'QuickFix' },
+                {
+                    ft = 'dap-view',
+                    title = 'DAP',
+                    size = { height = 15 },
+                },
+                {
+                    ft = 'OverseerList',
+                    title = 'Tasks',
+                    size = { width = 40 },
+                },
+                {
+                    ft = 'OverseerOutput',
+                    title = 'Output',
+                    size = { height = 20 },
+                },
+            },
+        },
+    },
 }

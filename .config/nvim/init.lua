@@ -300,7 +300,7 @@ opt.iskeyword:prepend { '-' } -- treat dash separated words as a word textobject
 opt.hidden = true -- Enable modified buffers in background
 opt.splitbelow = true -- Put new windows below current
 opt.splitright = true -- Put new windows right of current
--- opt.splitkeep = 'screen'
+opt.splitkeep = 'screen'
 opt.fillchars = {
     vert = '│',
     fold = ' ',

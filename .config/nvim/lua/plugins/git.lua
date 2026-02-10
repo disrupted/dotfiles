@@ -886,7 +886,13 @@ return {
         dependencies = { 'nvim-lua/plenary.nvim', 'MunifTanjim/nui.nvim' },
         ---@module 'pipeline.config'
         ---@type pipeline.Config
-        opts = {},
+        opts = {
+            split = {
+                buf_options = {
+                    filetype = 'pipeline',
+                },
+            },
+        },
     },
     {
         'harrisoncramer/gitlab.nvim',

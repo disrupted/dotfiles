@@ -502,10 +502,10 @@ return {
                 ui_select = true,
                 sources = {
                     explorer = {
-                        layout = {
-                            fullscreen = true,
-                            layout = { backdrop = false, relative = 'win' },
-                        },
+                        -- layout = {
+                        --     fullscreen = true,
+                        --     layout = { backdrop = false, relative = 'win' },
+                        -- },
                         jump = { close = true },
                         win = {
                             input = {

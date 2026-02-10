@@ -200,11 +200,6 @@ return {
                         desc = 'New session',
                         mode = 'n',
                     },
-                    ['<leader>az'] = {
-                        'toggle_zoom',
-                        desc = 'Zoom window',
-                        mode = 'n',
-                    },
                     -- ['<leader>ad'] = { 'diff_open', desc = 'Open diff' },
                     -- ['<leader>a]'] = { 'diff_next', desc = 'Next diff' },
                     -- ['<leader>a['] = { 'diff_prev', desc = 'Prev diff' },
@@ -226,7 +221,6 @@ return {
                         'open_input_new_session',
                         desc = 'New session',
                     },
-                    ['<leader>az'] = { 'toggle_zoom', desc = 'Zoom window' },
                     ['<cr>'] = { 'submit_input_prompt', mode = { 'n' } },
                     ['<esc>'] = false,
                     ['<C-c>'] = { 'cancel', mode = { 'n', 'i' } },
@@ -254,9 +248,9 @@ return {
                 output_window = {
                     ['<leader>ai'] = false, -- FIXME
                     ['<leader>aS'] = false,
-                    ['<leader>aD'] = false,
-                    ['<leader>aO'] = false,
-                    ['<leader>ads'] = false,
+                    ['<leader>aD'] = { 'debug_message' },
+                    ['<leader>aO'] = { 'debug_output' },
+                    ['<leader>ads'] = { 'debug_session' },
                     ['<leader>at'] = {
                         'toggle_tool_output',
                         desc = 'Toggle tool visibility',
@@ -281,6 +275,7 @@ return {
                         end,
                         desc = 'Pick model',
                     },
+                    ['S'] = { 'select_child_session' },
                     [']]'] = { 'next_message', desc = 'Next message' },
                     ['[['] = { 'prev_message', desc = 'Prev message' },
                 },
@@ -290,8 +285,10 @@ return {
                 keep_buffers_on_toggle = true,
                 zoom_width = 0.6,
                 input = {
-                    min_height = 0.10,
-                    max_height = 0.35,
+                    -- min_height = 0.10,
+                    -- max_height = 0.35,
+                    min_height = 0.25,
+                    max_height = 0.25,
                     text = {
                         wrap = true,
                     },
@@ -388,7 +385,21 @@ return {
                     icon = '󱐏',
                 },
                 {
-                    '<leader>az',
+                    '<S-BS>',
+                    function()
+                        for _, win in ipairs(vim.api.nvim_list_wins()) do
+                            local buf = vim.api.nvim_win_get_buf(win)
+                            if vim.bo[buf].filetype == 'opencode_output' then
+                                if vim.w[win]['edgy_width'] == nil then
+                                    vim.w[win]['edgy_width'] = 115
+                                else
+                                    vim.w[win]['edgy_width'] = nil
+                                end
+                                require('edgy.layout').update()
+                                return
+                            end
+                        end
+                    end,
                     desc = 'Zoom window',
                     icon = icons.misc.window,
                 },
@@ -424,6 +435,11 @@ return {
             vim.api.nvim_create_autocmd('User', {
                 pattern = 'OpencodeEvent:permission.asked',
                 callback = function(args)
+                    -- local event = args.data.event
+                    -- Snacks.notify(
+                    --     { 'permission requested', vim.inspect(event) },
+                    --     { title = 'Agent' }
+                    -- )
                     require('which-key').add {
                         {
                             '<leader>apa',
@@ -502,155 +518,76 @@ return {
                 end,
             })
 
-            vim.api.nvim_create_autocmd('FileType', {
-                pattern = { 'opencode' },
-                callback = function(args)
-                    -- scheduling is necessary because on FileType event the buffer is not assigned to a window yet
-                    vim.schedule(function()
-                        for _, win in ipairs(vim.api.nvim_list_wins()) do
-                            if vim.api.nvim_win_get_buf(win) == args.buf then
-                                vim.wo[win].fillchars = 'eob: '
-                                -- vim.wo[win].signcolumn = 'no'
-                                vim.wo[win].statuscolumn = ''
-                                vim.wo[win].cursorline = false
-                                -- vim.wo[win].cursorlineopt = 'line'
-                                -- vim.bo[args.buf].wrapmargin = 2
-                                -- vim.wo[win].winhighlight = 'Normal:OpencodeInput'
-                                return
-                            end
-                        end
-                    end)
-                end,
-            })
+            -- NOTE: disabled in favor of edgy.nvim
+            -- vim.api.nvim_create_autocmd('FileType', {
+            --     pattern = { 'opencode' },
+            --     callback = function(args)
+            --         -- scheduling is necessary because on FileType event the buffer is not assigned to a window yet
+            --         vim.schedule(function()
+            --             for _, win in ipairs(vim.api.nvim_list_wins()) do
+            --                 if vim.api.nvim_win_get_buf(win) == args.buf then
+            --                     vim.wo[win].fillchars = 'eob: '
+            --                     -- vim.wo[win].signcolumn = 'no'
+            --                     vim.wo[win].statuscolumn = ''
+            --                     vim.wo[win].cursorline = false
+            --                     -- vim.wo[win].cursorlineopt = 'line'
+            --                     -- vim.bo[args.buf].wrapmargin = 2
+            --                     -- vim.wo[win].winhighlight = 'Normal:OpencodeInput'
+            --                     return
+            --                 end
+            --             end
+            --         end)
+            --     end,
+            -- })
 
-            vim.api.nvim_create_autocmd('FileType', {
-                pattern = { 'opencode_output' },
-                callback = function(args)
-                    -- scheduling is necessary because on FileType event the buffer is not assigned to a window yet
-                    vim.schedule(function()
-                        for _, win in ipairs(vim.api.nvim_list_wins()) do
-                            if vim.api.nvim_win_get_buf(win) == args.buf then
-                                vim.wo[win].fillchars = 'eob: '
-                                vim.wo[win].cursorline = false
-                                -- vim.wo[win].wrap = false
-                                -- vim.wo[win].conceallevel = 3
-                                return
-                            end
-                        end
-                    end)
-                end,
-            })
+            -- vim.api.nvim_create_autocmd('FileType', {
+            --     pattern = { 'opencode_output' },
+            --     callback = function(args)
+            --         -- scheduling is necessary because on FileType event the buffer is not assigned to a window yet
+            --         vim.schedule(function()
+            --             for _, win in ipairs(vim.api.nvim_list_wins()) do
+            --                 if vim.api.nvim_win_get_buf(win) == args.buf then
+            --                     vim.wo[win].fillchars = 'eob: '
+            --                     vim.wo[win].cursorline = false
+            --                     -- vim.wo[win].wrap = false
+            --                     -- vim.wo[win].conceallevel = 3
+            --                     return
+            --                 end
+            --             end
+            --         end)
+            --     end,
+            -- })
         end,
     },
     {
-        'coder/claudecode.nvim',
+        'guill/mcp-tools.nvim',
         enabled = false,
-        name = 'claudecode-tui',
-        cmd = 'ClaudeCode',
-        keys = {
-            {
-                '<leader>ac',
-                '<cmd>ClaudeCode<cr>',
-                mode = { 'n', 't' },
-                desc = 'Toggle Claude',
-            },
-        },
-        opts = {
-            terminal = {
-                split_side = 'right',
-                split_width_percentage = 0.40,
-                provider = 'snacks',
-                auto_close = true,
-            },
-        },
-    },
-    {
-        'NickvanDyke/opencode.nvim',
-        enabled = false,
-        init = function()
-            require('which-key').add {
-                {
-                    '<leader>a',
-                    group = 'Agent',
-                    icon = { icon = '', hl = 'DiagnosticWarn' },
-                },
-            }
-        end,
-        keys = {
-            {
-                '<leader>ao',
-                function()
-                    require('opencode').toggle()
-                end,
-                mode = { 'n', 't' },
-                desc = 'Toggle opencode',
-            },
-            {
-                '<leader>aa',
-                function()
-                    require('opencode').ask('@this: ', { submit = true })
-                end,
-                mode = { 'x' },
-                desc = 'Ask…',
-            },
-            {
-                '<leader>ax',
-                function()
-                    require('opencode').select()
-                end,
-                mode = { 'n', 'x' },
-                desc = 'Execute action…',
-            },
-        },
+        event = 'VeryLazy',
+        build = 'bun install --cwd ./bridge',
         config = function()
-            ---@module 'opencode.config'
-            ---@type opencode.Opts
-            vim.g.opencode_opts = {
-                provider = {
-                    enabled = vim.env.TMUX ~= nil and 'tmux' or 'snacks',
+            require('mcp-tools').setup {
+                tools = {
+                    dap = true,
+                    diagnostics = true,
+                    lsp = true,
                 },
-            }
-
-            vim.keymap.set({ 'n', 'x' }, 'go', function()
-                return require('opencode').operator '@this '
-            end, { desc = 'Add range to opencode', expr = true })
-            vim.keymap.set('n', 'goo', function()
-                return require('opencode').operator '@this ' .. '_'
-            end, { desc = 'Add line to opencode', expr = true })
-
-            vim.keymap.set('n', '<S-C-u>', function()
-                require('opencode').command 'session.half.page.up'
-            end, { desc = 'Opencode scroll up' })
-            vim.keymap.set('n', '<S-C-d>', function()
-                require('opencode').command 'session.half.page.down'
-            end, { desc = 'Opencode scroll down' })
-
-            vim.api.nvim_create_autocmd('User', {
-                pattern = 'OpencodeEvent:*',
-                callback = function(args)
-                    ---@type opencode.cli.client.Event
-                    local event = args.data.event
-
-                    if event.type == 'session.idle' then
-                        Snacks.notify('finished', {
-                            title = 'opencode',
-                        })
-                        return
-                    end
-                    if
-                        event.type == 'server.connected'
-                        or event.type == 'server.heartbeat'
-                        -- or vim.startswith(event.type, 'session.')
-                        -- or vim.startswith(event.type, 'message.')
-                    then
-                        return
-                    end
-                    Snacks.notify(vim.inspect(event), {
-                        level = vim.log.levels.DEBUG,
-                        title = 'opencode',
-                    })
+                integrations = {
+                    opencode = true,
+                },
+                on_ready = function(port)
+                    print('MCP bridge ready on port ' .. port)
                 end,
-            })
+                on_stop = function()
+                    print 'MCP bridge stopped'
+                end,
+            }
         end,
+    },
+    {
+        'linw1995/nvim-mcp',
+        enabled = false,
+        event = 'VeryLazy',
+        build = 'cargo install --path .',
+        opts = {},
     },
 }
