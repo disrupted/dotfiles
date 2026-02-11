@@ -36,4 +36,20 @@ return {
             vim.log.levels.INFO
         )
     end,
+    settings = {
+        python = {
+            pyrefly = {
+                displayTypeErrors = 'force-on',
+            },
+            analysis = {
+                diagnosticMode = 'workspace',
+                inlayHints = {
+                    callArgumentNames = 'partial',
+                    variableTypes = true,
+                    functionReturnTypes = true,
+                    pytestParameters = true,
+                },
+            },
+        },
+    },
 }
