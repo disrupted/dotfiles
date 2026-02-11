@@ -256,6 +256,7 @@ vim.lsp.enable {
     'docker_compose_ls',
     'docker_ls',
     'emmylua_ls',
+    'expert',
     'gitlab_ci_ls',
     'helm_ls',
     'html_ls',

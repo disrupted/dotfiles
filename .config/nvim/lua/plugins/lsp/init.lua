@@ -24,6 +24,7 @@ return {
                 'docker-compose-language-service',
                 'dockerfile-language-server',
                 'emmylua_ls',
+                'expert',
                 'gh-actions-language-server',
                 'gitlab-ci-ls',
                 'gopls',
