@@ -243,7 +243,7 @@ return {
             ---@type conform.setupOpts
             return {
                 formatters_by_ft = {
-                    python = { 'ruff', lsp_format = 'last' }, -- provides `ruff check --fix`
+                    -- python = { 'ruff', lsp_format = 'last' }, -- provides `ruff check --fix`
                     lua = { 'stylua' },
                     astro = dprint,
                     json = dprint,

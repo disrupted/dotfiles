@@ -147,4 +147,10 @@ return {
         config = true,
     },
     { 'tpope/vim-abolish' },
+    {
+        'okuuva/auto-save.nvim',
+        cmd = 'ASToggle',
+        event = { 'InsertLeave', 'TextChanged' },
+        opts = {},
+    },
 }
