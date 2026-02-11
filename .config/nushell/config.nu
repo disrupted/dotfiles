@@ -294,7 +294,7 @@ $env.config.keybindings ++= [
   {
     name: ask_agent
     modifier: control
-    keycode: char_g
+    keycode: char_a
     mode: [emacs vi_normal vi_insert]
     event: {
         send: ExecuteHostCommand
