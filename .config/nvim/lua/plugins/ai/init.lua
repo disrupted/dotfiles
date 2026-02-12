@@ -285,10 +285,8 @@ return {
                 keep_buffers_on_toggle = true,
                 zoom_width = 0.6,
                 input = {
-                    -- min_height = 0.10,
-                    -- max_height = 0.35,
-                    min_height = 0.25,
-                    max_height = 0.25,
+                    min_height = 0.10,
+                    max_height = 0.35,
                     text = {
                         wrap = true,
                     },
@@ -383,25 +381,6 @@ return {
                     '<leader>an',
                     desc = 'New session',
                     icon = '󱐏',
-                },
-                {
-                    '<S-BS>',
-                    function()
-                        for _, win in ipairs(vim.api.nvim_list_wins()) do
-                            local buf = vim.api.nvim_win_get_buf(win)
-                            if vim.bo[buf].filetype == 'opencode_output' then
-                                if vim.w[win]['edgy_width'] == nil then
-                                    vim.w[win]['edgy_width'] = 115
-                                else
-                                    vim.w[win]['edgy_width'] = nil
-                                end
-                                require('edgy.layout').update()
-                                return
-                            end
-                        end
-                    end,
-                    desc = 'Zoom window',
-                    icon = icons.misc.window,
                 },
                 {
                     '<leader>aR',
@@ -518,45 +497,83 @@ return {
                 end,
             })
 
-            -- NOTE: disabled in favor of edgy.nvim
-            -- vim.api.nvim_create_autocmd('FileType', {
-            --     pattern = { 'opencode' },
-            --     callback = function(args)
-            --         -- scheduling is necessary because on FileType event the buffer is not assigned to a window yet
-            --         vim.schedule(function()
-            --             for _, win in ipairs(vim.api.nvim_list_wins()) do
-            --                 if vim.api.nvim_win_get_buf(win) == args.buf then
-            --                     vim.wo[win].fillchars = 'eob: '
-            --                     -- vim.wo[win].signcolumn = 'no'
-            --                     vim.wo[win].statuscolumn = ''
-            --                     vim.wo[win].cursorline = false
-            --                     -- vim.wo[win].cursorlineopt = 'line'
-            --                     -- vim.bo[args.buf].wrapmargin = 2
-            --                     -- vim.wo[win].winhighlight = 'Normal:OpencodeInput'
-            --                     return
-            --                 end
-            --             end
-            --         end)
-            --     end,
-            -- })
+            local input_window = require 'opencode.ui.input_window'
+            input_window.schedule_resize = function() end
 
-            -- vim.api.nvim_create_autocmd('FileType', {
-            --     pattern = { 'opencode_output' },
-            --     callback = function(args)
-            --         -- scheduling is necessary because on FileType event the buffer is not assigned to a window yet
-            --         vim.schedule(function()
-            --             for _, win in ipairs(vim.api.nvim_list_wins()) do
-            --                 if vim.api.nvim_win_get_buf(win) == args.buf then
-            --                     vim.wo[win].fillchars = 'eob: '
-            --                     vim.wo[win].cursorline = false
-            --                     -- vim.wo[win].wrap = false
-            --                     -- vim.wo[win].conceallevel = 3
-            --                     return
-            --                 end
-            --             end
-            --         end)
-            --     end,
-            -- })
+            -- TODO: auto resize input window with edgy
+            --[[ vim.api.nvim_create_autocmd('FileType', {
+                pattern = { 'opencode' },
+                callback = function(args)
+                    local function get_content_height(windows)
+                        local line_count =
+                            vim.api.nvim_buf_line_count(windows.input_buf)
+                        if line_count <= 0 then
+                            return 1
+                        end
+                        local ok, result = pcall(
+                            vim.api.nvim_win_text_height,
+                            windows.input_win,
+                            {
+                                start_row = 0,
+                                end_row = math.max(0, line_count - 1),
+                            }
+                        )
+                        if ok and result and result.all then
+                            return result.all
+                        end
+
+                        return line_count
+                    end
+                    local function calculate_height(windows)
+                        local total_height =
+                            vim.api.nvim_get_option_value('lines', {})
+                        local min_height = 5
+                        local max_height = 40
+                        local content_height = get_content_height(windows)
+                        vim.print('content height', content_height)
+                        local content_height = content_height + 1 -- context winbar
+                        return math.min(
+                            max_height,
+                            math.max(min_height, content_height)
+                        )
+                    end
+
+                    input_window.schedule_resize = function(windows)
+                        vim.defer_fn(function()
+                            local height = calculate_height(windows)
+                            vim.w[windows.input_win]['edgy_height'] = height
+                            vim.print('height', height)
+                            require('edgy.layout').update()
+                        end, 1000 / 60) -- throttle to 60 FPS
+                    end
+                end,
+            }) ]]
+
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = { 'opencode_output' },
+                callback = function()
+                    require('which-key').add {
+                        {
+                            '<S-BS>',
+                            function()
+                                local win = (
+                                    require('opencode.state').windows or {}
+                                ).output_win
+                                if win and vim.api.nvim_win_is_valid(win) then
+                                    if vim.w[win]['edgy_width'] == nil then
+                                        vim.w[win]['edgy_width'] = 115
+                                    else
+                                        vim.w[win]['edgy_width'] = nil
+                                    end
+                                    require('edgy.layout').update()
+                                end
+                            end,
+                            desc = 'Zoom window',
+                            icon = icons.misc.window,
+                        },
+                    }
+                end,
+            })
         end,
     },
     {
