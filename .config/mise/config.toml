@@ -1,2 +1,78 @@
+# :schema https://mise.jdx.dev/schema/mise.json
+[tools]
+neovim = "nightly"
+starship = "latest"
+tmux = "latest"
+
+rust = "stable"
+python = "latest"
+bun = "latest"
+deno = "latest"
+erlang = "latest"
+elixir = "latest"
+go = "latest"
+java = "latest" # only needed for pkl-lsp https://github.com/apple/pkl-lsp/issues/60
+
+uv = "latest"
+"pipx:poetry" = "latest" # for legacy projects
+
+bat = "latest"
+delta = "latest"
+dust = "latest"
+duf = "latest"
+eza = "latest"
+fd = "latest"
+glow = "latest"
+helm = "latest"
+hyperfine = "latest"
+jq = "latest"
+just = "latest"
+kubectl = "latest"
+k9s = "latest"
+kubeconform = "latest"
+kubectx = "latest"
+kubeseal = "latest"
+ripgrep = "latest"
+sd = "latest"
+trivy = "latest"
+vale = "latest"
+xh = "latest"
+yq = "latest"
+zoxide = "latest"
+glab = "latest"
+rclone = "latest"
+ast-grep = "latest"
+carapace = "latest"
+cheat = "latest"
+dive = "latest"
+gh = "latest"
+git-lfs = "latest"
+grex = "latest"
+htmlq = "latest"
+jless = "latest"
+"cargo:navi" = "latest"
+railway = "latest"
+stylua = "latest"
+television = "latest"
+tree-sitter = "latest"
+websocat = "latest"
+xcbeautify = "latest"
+yazi = "latest"
+"cargo:cargo-nextest" = "latest"
+dprint = "latest"
+pkl = "latest"
+usage = "latest"
+hk = "latest"
+lefthook = "latest"
+opencode = "latest"
+
 [settings]
-python.uv_venv_auto = true
+experimental = true
+idiomatic_version_file_enable_tools = ["rust"]
+
+[settings.python]
+compile = false
+uv_venv_auto = true
+
+[settings.npm]
+package_manager = "bun"
