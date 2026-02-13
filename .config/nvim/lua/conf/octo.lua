@@ -12,7 +12,7 @@ local signal = n.create_signal {
     labels = {},
 }
 
-signal.reset = function()
+local function reset_signal()
     signal.is_loading = false
     signal.labels = {}
 end
@@ -38,6 +38,7 @@ local create_pr_form = function(opts)
                         Snacks.notify.error 'Title is required'
                         return
                     end
+
                     signal.is_loading = true
 
                     local title = vim.trim(
@@ -185,7 +186,7 @@ M.pr.create = function(opts)
     end
 
     local stdout, stderr = require('gh').pr.create(opts)
-    signal:reset()
+    reset_signal()
 
     if stderr and stderr ~= '' and not stderr:match '^Warning: ' then
         Snacks.notify.error(stderr)

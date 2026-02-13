@@ -8,9 +8,6 @@ describe('gh wrapper', function()
         if type(response) == 'function' then
             return response(cmd)
         end
-        if response == '__error__' then
-            error('mocked system failure')
-        end
         return response
     end
 
@@ -28,84 +25,77 @@ describe('gh wrapper', function()
         package.loaded['coop.vim'] = nil
     end)
 
-    it('extracts PR url and keeps warning as stderr', function()
+    it('returns trimmed stdout from run', function()
         responses = {
             {
                 code = 0,
-                stdout = {
-                    'https://github.com/acme/repo/pull/171\n',
-                    'Warning: 1 uncommitted change\n',
-                },
+                stdout = '  hello world\n',
             },
         }
 
         local gh = require 'gh'
-        local stdout, stderr = gh.pr.create {
-            title = 'test',
-            body = 'body',
-            label = {},
-            draft = true,
-        }
+        local out = gh.run { 'repo', 'view' }
 
-        assert.equals('https://github.com/acme/repo/pull/171', stdout)
-        assert.equals('Warning: 1 uncommitted change', stderr)
+        assert.equals('hello world', out)
+        assert.same({ 'gh', 'repo', 'view' }, calls[1])
     end)
 
-    it('returns error when create exits non-zero', function()
-        responses = {
-            {
-                code = 1,
-                stdout = '',
-                stderr = 'create failed',
-            },
-        }
-
-        local gh = require 'gh'
-        local stdout, stderr = gh.pr.create {
-            title = 'test',
-            body = 'body',
-            label = {},
-            draft = true,
-        }
-
-        assert.equals('', stdout)
-        assert.equals('create failed', stderr)
-    end)
-
-    it('returns generic success when create output has no url', function()
+    it('passes expected flags to pr create', function()
         responses = {
             {
                 code = 0,
-                stdout = '',
+                stdout = 'ok',
                 stderr = '',
             },
         }
 
         local gh = require 'gh'
-        local stdout, stderr = gh.pr.create {
+        gh.pr.create {
             title = 'test',
             body = 'body',
-            label = {},
+            assignee = 'me',
             draft = true,
+            label = { 'bug', 'urgent' },
+            base = 'main',
         }
 
-        assert.equals('PR created', stdout)
-        assert.is_nil(stderr)
-        assert.equals(1, #calls)
+        assert.same({
+            'gh',
+            'pr',
+            'create',
+            '--title',
+            'test',
+            '--body',
+            'body',
+            '--assignee',
+            'me',
+            '--draft',
+            '--label',
+            'bug',
+            '--label',
+            'urgent',
+            '--base',
+            'main',
+        }, calls[1])
     end)
 
-    it('converts system exceptions into stderr return', function()
-        responses = { '__error__' }
+    it('returns raw stdout and stderr from pr create', function()
+        responses = {
+            {
+                code = 1,
+                stdout = 'stdout text\n',
+                stderr = 'stderr text\n',
+            },
+        }
 
         local gh = require 'gh'
         local stdout, stderr = gh.pr.create {
             title = 'test',
             body = 'body',
             label = {},
-            draft = true,
         }
 
-        assert.equals('', stdout)
-        assert.matches('mocked system failure', stderr)
+        assert.equals('stdout text\n', stdout)
+        assert.equals('stderr text\n', stderr)
     end)
 end)
