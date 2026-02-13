@@ -500,6 +500,23 @@ return {
         end,
     },
     {
+        'nvim-neotest/neotest-plenary',
+        lazy = true,
+        dependencies = { 'nvim-neotest/neotest' },
+        init = function()
+            require('conf.neotest.adapters').lua = 'neotest-plenary'
+        end,
+        ---@module 'neotest-plenary.adapter'
+        ---@type neotest-plenary._AdapterConfig
+        ---@diagnostic disable-next-line: missing-fields
+        opts = {},
+        config = function(_, opts)
+            local adapter = require 'neotest-plenary'(opts)
+            local adapters = require('neotest.config').adapters
+            table.insert(adapters, adapter)
+        end,
+    },
+    {
         'nvim-neotest/neotest-python',
         lazy = true,
         keys = {
