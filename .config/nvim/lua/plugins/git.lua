@@ -976,6 +976,15 @@ return {
         ft = 'yaml.github',
         ---@module 'github-actions.config'
         ---@type github_actions.Opts
-        opts = {},
+        opts = {
+            lsp = {
+                cmd = {
+                    'bunx',
+                    '--bun',
+                    'gh-actions-language-server',
+                    '--stdio',
+                },
+            },
+        },
     },
 }

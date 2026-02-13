@@ -1,5 +1,5 @@
 ---@type vim.lsp.Config
 return {
-    cmd = { 'docker-compose-langserver', '--stdio' },
+    cmd = { 'bunx', '--bun', 'docker-compose-langserver', '--stdio' },
     filetypes = { 'yaml.docker-compose' },
 }

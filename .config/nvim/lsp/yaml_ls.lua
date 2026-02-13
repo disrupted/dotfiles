@@ -1,6 +1,6 @@
 ---@type vim.lsp.Config
 return {
-    cmd = { 'yaml-language-server', '--stdio' },
+    cmd = { 'bunx', '--bun', 'yaml-language-server', '--stdio' },
     filetypes = { 'yaml' },
     handlers = {
         ---@type lsp.Handler

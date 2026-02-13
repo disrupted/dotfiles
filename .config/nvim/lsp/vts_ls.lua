@@ -21,7 +21,7 @@ local inlayHints = {
 
 ---@type vim.lsp.Config
 return {
-    cmd = { 'vtsls', '--stdio' },
+    cmd = { 'bunx', '--bun', 'vtsls', '--stdio' },
     init_options = {
         hostInfo = 'neovim',
     },
