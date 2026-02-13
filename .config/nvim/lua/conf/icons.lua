@@ -11,7 +11,7 @@ return {
         end,
     }),
     documents = {
-        file = '󰈙',
+        file = '',
         file_empty = '',
         file_modified = '',
         files = '',

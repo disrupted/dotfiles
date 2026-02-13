@@ -83,89 +83,6 @@ return {
                     },
                 },
             },
-            {
-                'MeanderingProgrammer/render-markdown.nvim',
-                cmd = 'RenderMarkdown',
-                ft = { 'opencode_output' },
-                opts = {
-                    debounce = 50,
-                    file_types = { 'opencode_output' },
-                    render_modes = { 'n', 'i', 'v', 'V', 'c', 't' },
-                    anti_conceal = {
-                        enabled = false,
-                        disabled_modes = { 'n' },
-                        ignore = {},
-                    },
-                    -- indent = {
-                    --     enabled = true,
-                    --     skip_level = 3,
-                    --     skip_heading = true,
-                    --     icon = ' ',
-                    --     highlight = 'Whitespace',
-                    -- },
-                    win_options = {
-                        concealcursor = {
-                            rendered = 'nvc',
-                        },
-                    },
-                    heading = {
-                        backgrounds = {},
-                        width = 'block',
-                        sign = false,
-                        icons = {
-                            '', -- 󰉫󰬺
-                            '', -- 󰉬󰬻
-                            '', -- 󰉭󰬼
-                            '', -- 󰉮󰬽
-                            '', -- 󰉯󰬾
-                            '', -- 󰉰󰬿
-                        },
-                        position = 'inline',
-                        -- border = {
-                        --     true, -- h1
-                        --     true, -- h2
-                        --     false, -- h3
-                        --     false, -- h4
-                        --     false, -- h5
-                        --     false, -- h6
-                        -- },
-                        border_virtual = true,
-                    },
-                    code = {
-                        sign = false,
-                        language_icon = true,
-                        language_name = true,
-                        language_info = true,
-                        width = 'block',
-                    },
-                    bullet = {
-                        icons = {
-                            '•',
-                            '◦',
-                            '•',
-                            '◦',
-                        },
-                    },
-                    checkbox = {
-                        enabled = true,
-                        unchecked = {
-                            icon = '󰄱',
-                            highlight = 'RenderMarkdownUnchecked',
-                        },
-                        checked = {
-                            icon = '✔',
-                            highlight = 'RenderMarkdownChecked',
-                        },
-                        custom = {
-                            todo = {
-                                raw = '[-]',
-                                rendered = '󰄮',
-                                highlight = 'RenderMarkdownTodo',
-                            },
-                        },
-                    },
-                },
-            },
         },
         ---@module 'opencode'
         ---@type OpencodeConfig
@@ -176,7 +93,12 @@ return {
             keymap_prefix = '<leader>a',
             keymap = {
                 editor = {
-                    ['<C-a>'] = { 'open_input', desc = 'Input' },
+                    ['<C-a>'] = { 'open_input', desc = 'Input', mode = 'n' },
+                    ['<C-a>'] = { -- FIXME: should not overwrite normal mode mapping
+                        'add_visual_selection',
+                        desc = 'Add selection',
+                        mode = 'v',
+                    },
                     -- ['<leader>ao'] = { 'open_output' }, -- Opens and focuses on output window
                     -- ['<leader>at'] = { 'toggle_focus' },
                     ['<leader>aT'] = {
@@ -349,7 +271,7 @@ return {
                 diagnostics = {
                     info = false,
                     warn = false,
-                    error = true,
+                    error = false,
                     only_closest = true,
                 },
                 current_file = {
@@ -399,7 +321,7 @@ return {
                 },
                 {
                     '<C-a>',
-                    desc = 'Input + selection',
+                    desc = 'Add selection',
                     mode = 'v',
                     icon = { icon = '󰐒', color = 'blue' },
                 },

@@ -1022,6 +1022,7 @@ return {
                     size = { width = 75 },
                     wo = {
                         winbar = false,
+                        signcolumn = 'yes',
                         winhighlight = 'Normal:OpencodeBackground',
                     },
                 },
@@ -1045,10 +1046,11 @@ return {
             bottom = {
                 {
                     ft = 'snacks_terminal',
-                    title = 'Terminal',
+                    title = 'Terminal %{b:snacks_terminal.id}',
                     size = { height = 20 },
                     filter = function(_buf, win)
                         return vim.w[win].snacks_win
+                            and vim.w[win].snacks_win.position == 'bottom'
                             and vim.w[win].snacks_win.relative == 'editor'
                             and not vim.w[win].trouble_preview
                     end,
