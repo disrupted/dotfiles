@@ -251,7 +251,7 @@ vim.lsp.enable {
     'astro',
     'basedpyright',
     'bash_ls',
-    -- 'css_ls',
+    'css_ls',
     -- 'demo_ls',
     'docker_compose_ls',
     'docker_ls',

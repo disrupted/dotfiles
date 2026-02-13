@@ -5,7 +5,12 @@ return {
     root_markers = { 'package.json', '.git' },
     init_options = { provideFormatter = false },
     settings = {
-        css = { validate = true },
+        css = {
+            validate = true,
+            lint = {
+                unknownAtRules = 'ignore',
+            },
+        },
         scss = { validate = true },
         less = { validate = true },
     },
