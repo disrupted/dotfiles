@@ -68,9 +68,15 @@ end
 ---@param cwd string
 ---@return string?
 M.find_repo = function(cwd)
-    local root = Snacks.git.get_root(cwd)
-    if root then
-        return vim.fs.joinpath(root, '.git')
+    local out = vim.system({
+        'git',
+        '-C',
+        cwd,
+        'rev-parse',
+        '--absolute-git-dir',
+    }):wait()
+    if out.code == 0 and out.stdout and out.stdout ~= '' then
+        return vim.trim(out.stdout)
     end
 end
 
@@ -189,6 +195,9 @@ local function on_file_change(err, filename, events)
         { ('%s changed'):format(filename), vim.inspect(events) },
         { title = 'Git', level = 'debug' }
     )
+
+    -- git may replace .git/HEAD atomically; restart watcher after each event
+    M.watch()
     schedule_refresh()
 end
 
@@ -285,9 +294,27 @@ end
 
 ---@param cwd string
 M.setup = function(cwd)
-    vim.g.git_repo = M.find_repo(cwd) -- TODO: DirChanged autocmd?
+    vim.g.git_repo = M.find_repo(cwd)
     if vim.g.git_repo then
         M.watch()
+        vim.api.nvim_create_autocmd('DirChanged', {
+            callback = function(args)
+                local new_cwd = args.file ~= '' and args.file or vim.fn.getcwd()
+                local new_repo = M.find_repo(new_cwd)
+                if new_repo ~= vim.g.git_repo then
+                    vim.g.git_repo = new_repo
+                    if new_repo then
+                        M.watch()
+                    else
+                        M.close()
+                    end
+                end
+                if vim.g.git_repo then
+                    schedule_refresh()
+                end
+            end,
+            desc = 'Reinitialize Git watcher on cwd changes',
+        })
         vim.api.nvim_create_autocmd(
             'VimLeavePre',
             { callback = M.close, desc = 'Close Git watcher' }
