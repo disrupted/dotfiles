@@ -974,7 +974,7 @@ return {
             ---@type table<Edgy.Pos, {size:integer | fun():integer, wo?:vim.wo}>
             options = {
                 left = { size = 40 },
-                right = { size = 40 },
+                right = { size = 78 },
             },
             wo = {
                 winbar = true,
@@ -1019,7 +1019,6 @@ return {
             right = {
                 {
                     ft = 'opencode_output',
-                    size = { width = 75 },
                     wo = {
                         winbar = false,
                         signcolumn = 'yes',
@@ -1037,7 +1036,7 @@ return {
                 },
                 {
                     ft = 'help',
-                    size = { height = 20 },
+                    size = { height = 40 },
                     filter = function(buf)
                         return vim.bo[buf].buftype == 'help'
                     end,

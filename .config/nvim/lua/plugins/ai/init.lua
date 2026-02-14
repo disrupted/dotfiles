@@ -483,7 +483,7 @@ return {
                                 ).output_win
                                 if win and vim.api.nvim_win_is_valid(win) then
                                     if vim.w[win]['edgy_width'] == nil then
-                                        vim.w[win]['edgy_width'] = 115
+                                        vim.w[win]['edgy_width'] = 110
                                     else
                                         vim.w[win]['edgy_width'] = nil
                                     end
