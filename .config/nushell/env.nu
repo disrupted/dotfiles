@@ -1,24 +1,18 @@
 # Nushell environment
 
-
+# Path helpers
 def --env prepend-path [paths: list<string>] {
-  $env.PATH = ($paths | append $env.PATH)
+  let current_path = ($env.PATH? | default [])
+  let missing_paths = ($paths | where { |p| $p not-in $current_path })
+  if ($missing_paths | is-not-empty) {
+    $env.PATH = ($missing_paths | append $current_path)
+  }
 }
 
-prepend-path [
-  /opt/homebrew/bin
-  ($env.HOME | path join ".local" "bin")
-  ($env.HOME | path join ".cargo" "bin")
-  ($env.HOME | path join ".bun" "bin")
-  ($env.HOME | path join ".deno" "bin")
-  ($env.HOME | path join ".luarocks" "bin")
-]
-
-if (which brew | length) > 0 {
-  let hb = (brew --prefix | str trim)
+# Homebrew setup
+def --env setup-homebrew [hb: string] {
   $env.HOMEBREW_HOME = $hb
   $env.HOMEBREW_CASK_OPTS = "--no-quarantine"
-  $env.SHELL = (which nu | get 0.path)
   prepend-path [
     ($hb | path join "bin")
     ($hb | path join "sbin")
@@ -32,15 +26,33 @@ if (which brew | length) > 0 {
   $env.DYLD_LIBRARY_PATH = ([$env.DYLD_LIBRARY_PATH? "/opt/homebrew/lib"] | where { |it| ($it | default "") != "" } | str join ":")
 }
 
-if (($env.GOPATH? | default "") != "") {
-  prepend-path [($env.GOPATH | path join "bin")]
+let user_bin_paths = [
+  ($env.HOME | path join ".local" "bin")
+  ($env.HOME | path join ".cargo" "bin")
+  ($env.HOME | path join ".bun" "bin")
+  ($env.HOME | path join ".deno" "bin")
+  ($env.HOME | path join ".luarocks" "bin")
+]
+prepend-path $user_bin_paths
+
+# Prefer known Homebrew prefixes to avoid startup subprocess calls.
+let homebrew_prefix = match $nu.os-info.name {
+  "macos" => "/opt/homebrew"
+  "linux" => "/home/linuxbrew/.linuxbrew"
+  _ => null
 }
 
-prepend-path [
-  /usr/local/bin
-]
+if ($homebrew_prefix != null and (($homebrew_prefix | path join "bin" "brew") | path exists)) {
+  setup-homebrew $homebrew_prefix
+} else if (which brew | is-not-empty) {
+  setup-homebrew (brew --prefix | str trim)
+}
 
-$env.TERMINAL = "kitty"
+# Fallback paths
+prepend-path [/usr/local/bin]
+
+# Core environment
+$env.SHELL = $nu.current-exe
 $env.EDITOR = "nvim"
 $env.VISUAL = $env.EDITOR
 $env.PAGER = "less"
@@ -57,11 +69,13 @@ $env.LANG = "en_US.UTF-8"
 $env.LC_TIME = "de_DE.UTF-8"
 $env.WORDCHARS = "~!#$%^&*(){}[]<>?.+;"
 $env.PROMPT_EOL_MARK = ""
-$env.GPG_TTY = (tty)
 $env.QUOTING_STYLE = "literal"
 $env.LS_COLORS = "rs=0:fi=0:di=34:ln=36:so=33:pi=33:ex=32:bd=33;1:cd=33;1:su=31:sg=31:tw=34:ow=34:mi=31:or=31:*.tar=31:*.tgz=31:*.zip=31:*.gz=31:*.bz2=31:*.xz=31:*.7z=31:*.jpg=35:*.png=35:*.gif=35:*.pdf=35"
+if $nu.is-interactive {
+  $env.GPG_TTY = (tty)
+}
 
-# Theme colors as constants
+# Theme colors
 const FZF_COLORS_DARK = '
 --color=fg:-1,bg:-1,border:#4B5164,hl:#d19a66
 --color=fg+:#f7f7f7,bg+:#2c323d,hl+:#e5c07b
@@ -76,7 +90,7 @@ const FZF_COLORS_LIGHT = '
 --color=marker:#5f8700,spinner:#d7005f,header:#5f8700
 --color=gutter:#e8e8e8'
 
-# Function to update theme-dependent env vars
+# Theme update helper
 def --env update-theme [] {
   const dark_theme = 1
   const light_theme = 2
@@ -96,7 +110,6 @@ def --env update-theme [] {
   }
 }
 
-
 # FZF settings
 $env.FZF_DEFAULT_COMMAND = 'rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*"'
 $env.FZF_CTRL_T_COMMAND = $env.FZF_DEFAULT_COMMAND
@@ -104,7 +117,7 @@ $env.FZF_CTRL_T_OPTS = '--preview="bat --color=always --style=header-filename {}
 $env.FZF_ALT_C_COMMAND = 'fd -t d -d 1'
 $env.FZF_ALT_C_OPTS = '--preview="eza --no-quotes -1 --icons --git --git-ignore {}" --preview-window=right:60%:wrap'
 
-# carapace completions
+# Carapace completions
 $env.CARAPACE_BRIDGES = "zsh,fish,bash,inshellisense"
 
 # HACK: docker-py not supporting current context https://github.com/docker/docker-py/issues/3146

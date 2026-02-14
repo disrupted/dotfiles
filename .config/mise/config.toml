@@ -65,6 +65,8 @@ usage = "latest"
 hk = "latest"
 lefthook = "latest"
 opencode = "latest"
+"pipx:pymobiledevice3" = "latest"
+"pipx:visidata" = "latest"
 
 [settings]
 experimental = true
