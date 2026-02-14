@@ -154,18 +154,30 @@ return {
             {
                 '<C-f>',
                 function()
-                    local picker = Snacks.picker.smart {
-                        finders = {
-                            'buffers',
-                            'recent',
-                            vim.g.git_repo and 'git_files' or 'files',
-                        },
-                        hidden = true,
-                        matcher = { sort_empty = true },
-                        filter = {
-                            cwd = true,
-                        },
-                        layout = { preset = 'telescope', reverse = true },
+                    ---@type snacks.picker.Config
+                    local source = {}
+
+                    local fff_exists = pcall(require, 'fff-snacks')
+                    if fff_exists then
+                        source = require('fff-snacks').source
+                        source.formatters = nil
+                    else
+                        Snacks.notify 'fff unavailable, falling back to builtin smart picker'
+                        source = {
+                            source = 'smart',
+                            finders = {
+                                'buffers',
+                                'recent',
+                                vim.g.git_repo and 'git_files' or 'files',
+                            },
+                            hidden = true,
+                            matcher = { sort_empty = true },
+                            filter = { cwd = true },
+                        }
+                    end
+
+                    source = vim.tbl_deep_extend('force', source, {
+                        title = 'Files',
                         actions = {
                             calculate_file_truncate_width = function(self)
                                 local width = self.list.win:size().width
@@ -187,7 +199,8 @@ return {
                                 end,
                             },
                         },
-                    }
+                    })
+                    local picker = Snacks.picker(source)
 
                     if not picker then
                         return -- abort if picker was closed
@@ -684,6 +697,23 @@ return {
                 },
             },
         },
+    },
+    {
+        'dmtrKovalenko/fff.nvim',
+        lazy = true,
+        build = function()
+            require('fff.download').download_binary()
+        end,
+        opts = {},
+    },
+    {
+        'madmaxieee/fff-snacks.nvim',
+        lazy = true,
+        dependencies = {
+            'dmtrKovalenko/fff.nvim',
+            'folke/snacks.nvim',
+        },
+        opts = {},
     },
     {
         'tpope/vim-repeat',
