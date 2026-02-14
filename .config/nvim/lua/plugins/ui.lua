@@ -156,7 +156,10 @@ return {
 
             local Diagnostics = {
                 condition = function(self)
-                    return not vim.tbl_isempty(vim.diagnostic.count(self.bufnr))
+                    return vim.diagnostic.is_enabled { bufnr = self.bufnr }
+                        and not vim.tbl_isempty(
+                            vim.diagnostic.count(self.bufnr)
+                        )
                 end,
                 init = function(self)
                     self.status = vim.diagnostic.count(self.bufnr)

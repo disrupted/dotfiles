@@ -176,11 +176,6 @@ return {
                     ':<C-U>Gitsigns select_hunk<CR>',
                     { desc = 'Select Git hunk' }
                 )
-
-                if not package.loaded['git-conflict'] then
-                    -- load and refresh git-conflict
-                    vim.cmd 'GitConflictRefresh'
-                end
             end,
         },
     },
@@ -264,47 +259,91 @@ return {
         end,
     },
     {
-        'akinsho/git-conflict.nvim',
-        tag = 'v2.1.0',
-        cmd = 'GitConflictRefresh', -- lazy-loaded on gitsigns attach
-        init = function()
-            require('which-key').add { { '<Leader>gx', group = 'Conflict' } }
-        end,
+        'barrettruth/diffs.nvim',
+        event = { 'BufWinEnter', 'BufNewFile' },
+        -- ft = {
+        --     'git',
+        --     'gitcommit',
+        --     'diff',
+        --     'NeogitStatus',
+        --     'NeogitCommitView',
+        --     'NeogitDiffView',
+        -- },
         keys = {
             {
                 '<Leader>gxo',
-                '<Plug>(git-conflict-ours)',
+                '<Plug>(diffs-conflict-ours)',
                 desc = 'Pick ours',
             },
             {
                 '<Leader>gxt',
-                '<Plug>(git-conflict-theirs)',
+                '<Plug>(diffs-conflict-theirs)',
                 desc = 'Pick theirs',
             },
             {
                 '<Leader>gxa',
-                '<Plug>(git-conflict-both)',
+                '<Plug>(diffs-conflict-both)',
                 desc = 'Pick all',
             },
             {
                 '<Leader>gx0',
-                '<Plug>(git-conflict-none)',
+                '<Plug>(diffs-conflict-none)',
                 desc = 'Pick none',
             },
             {
                 '[x',
-                '<Plug>(git-conflict-prev-conflict)',
+                '<Plug>(diffs-conflict-prev)',
                 desc = 'Prev conflict',
             },
             {
                 ']x',
-                '<Plug>(git-conflict-next-conflict)',
+                '<Plug>(diffs-conflict-next)',
                 desc = 'Next conflict',
             },
         },
-        ---@module 'git-conflict'
-        ---@type GitConflictUserConfig
-        opts = { default_mappings = false },
+        init = function()
+            require('which-key').add { { '<Leader>gx', group = 'Conflict' } }
+
+            ---@type diffs.Config
+            vim.g.diffs = {
+                hide_prefix = true,
+                neogit = true,
+                extra_filetypes = { 'diff' },
+                conflict = {
+                    enabled = true,
+                    disable_diagnostics = true,
+                    show_virtual_text = true,
+                    show_actions = false,
+                    priority = 200,
+                    keymaps = {
+                        ours = '<Leader>gxo',
+                        theirs = '<Leader>gxt',
+                        both = '<Leader>gxa',
+                        none = '<Leader>gx0',
+                        next = ']x',
+                        prev = '[x',
+                    },
+                },
+                highlights = {
+                    background = true,
+                    gutter = false,
+                    -- blend_alpha = 0.2,
+                    intra = {
+                        enabled = true,
+                        algorithm = 'vscode',
+                        -- max_lines = 500,
+                    },
+                },
+            }
+        end,
+        config = function()
+            vim.api.nvim_create_autocmd('User', {
+                pattern = 'DiffsConflictResolved',
+                callback = function()
+                    Snacks.notify 'all conflicts resolved!'
+                end,
+            })
+        end,
     },
     {
         'sindrets/diffview.nvim',
