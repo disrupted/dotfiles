@@ -924,8 +924,7 @@ return {
                                 Snacks.notify.error 'Current ref is not a valid branch'
                                 return
                             end
-                            local default_branch = git.default_branch()
-                            if branch == default_branch then
+                            if branch == git.default_branch() then
                                 Snacks.notify.error 'MR is not possible on default branch'
                                 return
                             end

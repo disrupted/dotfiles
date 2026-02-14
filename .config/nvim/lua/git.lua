@@ -369,9 +369,12 @@ M.async.tracking_branch = function()
 end
 
 ---@async
----@return string name of the default branch
+---@return string? name of the default branch
 M.async.default_branch = function()
     local ref = git_async { 'symbolic-ref', 'refs/remotes/origin/HEAD' }
+    if not ref then
+        return
+    end
     local elements = vim.split(ref, '/')
     return elements[#elements]
 end
