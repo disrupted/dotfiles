@@ -123,13 +123,23 @@ M.refresh = function()
         end
 
         vim.g.git_branch = M.async.current_branch()
+        vim.g.git_pr = nil
+        vim.api.nvim_exec_autocmds('User', {
+            pattern = 'GitRefresh',
+            modeline = false,
+        })
         if not vim.g.git_branch then
             vim.g.git_head = M.async.head()
         end
 
         if vim.g.git_remote_type == 'github' then
             local ok, err = pcall(require('gh').pr.refresh)
-            if not ok then
+            if ok then
+                vim.api.nvim_exec_autocmds('User', {
+                    pattern = 'GitRefresh',
+                    modeline = false,
+                })
+            else
                 Snacks.notify.error(
                     { err },
                     { title = 'GitHub PR refresh failed' }
@@ -137,18 +147,18 @@ M.refresh = function()
             end
         elseif vim.g.git_remote_type == 'gitlab' then
             local ok, err = pcall(require('glab').mr.refresh)
-            if not ok then
+            if ok then
+                vim.api.nvim_exec_autocmds('User', {
+                    pattern = 'GitRefresh',
+                    modeline = false,
+                })
+            else
                 Snacks.notify.error(
                     { err },
                     { title = 'GitLab MR refresh failed' }
                 )
             end
         end
-
-        vim.api.nvim_exec_autocmds('User', {
-            pattern = 'GitRefresh',
-            modeline = false,
-        })
 
         refresh_running = false
         metrics.refresh_completed = metrics.refresh_completed + 1

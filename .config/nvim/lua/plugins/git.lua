@@ -196,6 +196,8 @@ return {
                 desc = 'Neogit',
             },
         },
+        ---@module 'neogit.config'
+        ---@type NeogitConfig
         opts = {
             disable_hint = true,
             disable_signs = true,
