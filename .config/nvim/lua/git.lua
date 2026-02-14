@@ -323,13 +323,16 @@ M.setup = function(cwd)
     end
 end
 
+local default_opts = { timeout = 2000 }
 ---@async
 ---@param args string[]
+---@param opts? { timeout: integer }
 ---@return string? stdout
-local function git_async(args)
+local function git_async(args, opts)
     local cmd = { 'git', '--git-dir', vim.g.git_repo }
     vim.list_extend(cmd, args)
-    local out = require('coop.vim').system(cmd)
+    local merged_opts = vim.tbl_extend('force', default_opts, opts or {})
+    local out = require('coop.vim').system(cmd, merged_opts)
     if out.code == 0 and out.stdout and out.stdout ~= '' then
         return vim.trim(out.stdout)
     end
@@ -371,12 +374,64 @@ end
 ---@async
 ---@return string? name of the default branch
 M.async.default_branch = function()
-    local ref = git_async { 'symbolic-ref', 'refs/remotes/origin/HEAD' }
-    if not ref then
-        return
+    local remote = 'origin'
+
+    -- Prefer upstream remote when available.
+    local upstream = M.async.tracking_branch()
+    if upstream then
+        local upstream_remote = upstream:match '^([^/]+)/'
+        if upstream_remote then
+            remote = upstream_remote
+        end
     end
-    local elements = vim.split(ref, '/')
-    return elements[#elements]
+
+    -- If origin is absent and no upstream remote, pick the first configured remote.
+    if remote == 'origin' then
+        local remotes = git_async { 'remote' }
+        if remotes then
+            local first_remote = vim.split(remotes, '\n', {
+                plain = true,
+                trimempty = true,
+            })[1]
+            if first_remote then
+                remote = first_remote
+            end
+        end
+    end
+
+    -- Local cached remote HEAD: refs/remotes/<remote>/HEAD -> <remote>/<branch>
+    local short = git_async {
+        'symbolic-ref',
+        '--short',
+        ('refs/remotes/%s/HEAD'):format(remote),
+    }
+    if short then
+        local branch = short:gsub(('^%s/'):format(vim.pesc(remote)), '')
+        if branch ~= '' then
+            return branch
+        end
+    end
+
+    -- Remote query fallback: works when local remote HEAD is missing/stale.
+    local symref = git_async { 'ls-remote', '--symref', remote, 'HEAD' }
+    if symref then
+        local branch = symref:match 'ref:%s+refs/heads/(.-)%s+HEAD'
+        if branch and branch ~= '' then
+            return branch
+        end
+    end
+
+    -- Heuristic fallback for common default branch names
+    for _, branch in ipairs { 'main', 'master' } do
+        local ref = git_async {
+            'show-ref',
+            '--verify',
+            ('refs/remotes/%s/%s'):format(remote, branch),
+        }
+        if ref then
+            return branch
+        end
+    end
 end
 
 ---@async
