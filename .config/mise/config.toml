@@ -58,23 +58,55 @@ tree-sitter = "latest"
 websocat = "latest"
 xcbeautify = "latest"
 yazi = "latest"
-"cargo:cargo-nextest" = "latest"
+"aqua:nextest-rs/nextest/cargo-nextest" = "latest"
 dprint = "latest"
 pkl = "latest"
 usage = "latest"
 hk = "latest"
 lefthook = "latest"
 opencode = "latest"
+"github:Mapika/portview" = "latest"
 "pipx:pymobiledevice3" = "latest"
 "pipx:visidata" = "latest"
 
 [settings]
 experimental = true
-idiomatic_version_file_enable_tools = ["rust"]
+idiomatic_version_file_enable_tools = [
+  "python",
+  "rust",
+  "elixir",
+  "go",
+  "node",
+]
 
 [settings.python]
 compile = false
 uv_venv_auto = true
 
+[settings.pipx]
+# use uvx instead of pipx
+uvx = true
+
 [settings.npm]
 package_manager = "bun"
+
+[tasks."docker:stop-all"]
+description = 'Docker stop all containers'
+run = """
+if [ -z "$(docker ps -q)" ]; then
+  echo "No running containers"
+else
+  echo "Stopping all running containers..."
+  docker stop $(docker ps -a -q) || true
+fi
+"""
+
+[tasks."docker:prune"]
+description = 'Docker prune'
+depends = ["docker:stop-all"]
+run = """
+docker system prune -f
+docker image prune -a -f
+docker builder prune -a -f
+docker buildx prune -a -f
+"""
