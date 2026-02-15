@@ -48,7 +48,7 @@ $env.config = {
 
 use ~/.config/nushell/modules/user.nu *
 use ~/.config/nushell/modules/agent.nu *
-use ($nu.default-config-dir | path join "mise.nu")
+use ~/.config/nushell/mise-hooks.nu *
 use std/config *
 
 # Pure-style minimal color config
