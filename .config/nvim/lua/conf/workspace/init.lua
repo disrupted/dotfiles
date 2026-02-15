@@ -13,6 +13,7 @@ local default_workspace_markers = {
             return name:match '%.xcodeproj$' ~= nil
         end,
     },
+    nvim = { '.emmyrc.json' },
 }
 
 local workspace_to_filetype = {
@@ -21,6 +22,7 @@ local workspace_to_filetype = {
     cargo = 'rust',
     bun = 'javascript',
     xcode = 'swift',
+    nvim = 'lua',
 }
 
 ---@type detect_project.Opts.Markers
