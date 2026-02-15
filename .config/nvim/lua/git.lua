@@ -308,8 +308,12 @@ M.setup = function(cwd)
     if vim.g.git_repo then
         M.watch()
         vim.api.nvim_create_autocmd('DirChanged', {
+            pattern = 'global',
             callback = function(args)
-                local new_cwd = args.file ~= '' and args.file or vim.fn.getcwd()
+                local new_cwd = args.file
+                if new_cwd == vim.g.workspace_root then
+                    return
+                end
                 local new_repo = M.find_repo(new_cwd)
                 if new_repo ~= vim.g.git_repo then
                     vim.g.git_repo = new_repo

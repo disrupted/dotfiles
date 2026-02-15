@@ -190,6 +190,14 @@ return {
                 end,
                 desc = 'Neogit',
             },
+            {
+                '<tab>',
+                function()
+                    require('neogit').open { kind = 'tab' }
+                    vim.cmd.tabmove()
+                end,
+                desc = 'Neogit',
+            },
         },
         ---@module 'neogit.config'
         ---@type NeogitConfig
@@ -207,6 +215,7 @@ return {
             },
             process_spinner = true,
         },
+        ---@param opts NeogitConfig
         config = function(_, opts)
             local neogit = require 'neogit'
             neogit.setup(opts)
@@ -221,17 +230,30 @@ return {
                 desc = 'Close Neogit after pushing',
             })
 
-            vim.api.nvim_create_autocmd({ 'BufEnter', 'FocusGained' }, {
+            vim.api.nvim_create_autocmd({ 'BufEnter' }, {
                 pattern = 'NeogitStatus',
                 group = augroup,
                 callback = neogit.refresh,
                 desc = 'Update Neogit status on enter',
             })
 
+            -- vim.api.nvim_create_autocmd('User', {
+            --     pattern = 'NeogitStatusRefreshed',
+            --     command = 'checktime',
+            --     desc = 'Reload buffer on Neogit status refresh',
+            -- })
+
             vim.api.nvim_create_autocmd('User', {
-                pattern = 'NeogitStatusRefreshed',
-                command = 'checktime',
-                desc = 'Reload buffer on Neogit status refresh',
+                pattern = {
+                    'NeogitCommitComplete',
+                    'NeogitBranchCheckout',
+                    'NeogitBranchReset',
+                    'NeogitRebase',
+                    'NeogitReset',
+                },
+                group = augroup,
+                callback = neogit.refresh,
+                desc = 'Refresh Neogit',
             })
 
             vim.api.nvim_create_autocmd('User', {
@@ -260,6 +282,7 @@ return {
     },
     {
         'barrettruth/diffs.nvim',
+        enabled = false,
         event = { 'BufWinEnter', 'BufNewFile' },
         -- ft = {
         --     'git',
@@ -937,7 +960,7 @@ return {
     },
     {
         'harrisoncramer/gitlab.nvim',
-        enabled = false, -- incompatible with codediff.nvim https://github.com/harrisoncramer/gitlab.nvim/issues/517
+        -- enabled = false, -- incompatible with codediff.nvim https://github.com/harrisoncramer/gitlab.nvim/issues/517
         lazy = true,
         dependencies = {
             'MunifTanjim/nui.nvim',
