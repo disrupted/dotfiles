@@ -129,21 +129,46 @@ M.get_root = function(cwd)
     return cwd
 end
 
---- Convert a tab index (1-based) to the tabpage handle
----@param idx integer
----@return integer
-local function tab_handle(idx)
-    return vim.api.nvim_list_tabpages()[idx]
+--- Find a managed tab by name
+---@param name string
+---@return integer? handle tabpage handle, or nil if not found
+local function find_tab(name)
+    for _, handle in ipairs(vim.api.nvim_list_tabpages()) do
+        local ok, tabname =
+            pcall(vim.api.nvim_tabpage_get_var, handle, 'tabname')
+        if ok and tabname == name then
+            return handle
+        end
+    end
+    return nil
 end
 
---- Convert a tabpage handle to its 1-based index, or nil if not found
+--- Find a managed tab by name, creating it on demand if it doesn't exist
+---@param name string
+---@return integer handle tabpage handle
+local function find_or_create_tab(name)
+    local handle = find_tab(name)
+    if handle then
+        return handle
+    end
+    vim.cmd.tabnew()
+    handle = vim.api.nvim_get_current_tabpage()
+    vim.api.nvim_tabpage_set_var(handle, 'tabname', name)
+    Snacks.notify(
+        { ('created tab %q'):format(name) },
+        { title = 'Workspace', level = 'debug' }
+    )
+    return handle
+end
+
+--- Get the managed tab name for a tabpage, or nil if unmanaged
 ---@param handle integer
----@return integer?
-local function tab_index(handle)
-    for i, h in ipairs(vim.api.nvim_list_tabpages()) do
-        if h == handle then
-            return i
-        end
+---@return string?
+local function get_tab_name(handle)
+    local ok, tabname =
+        pcall(vim.api.nvim_tabpage_get_var, handle, 'tabname')
+    if ok then
+        return tabname
     end
     return nil
 end
@@ -170,58 +195,60 @@ local function is_test_file(filepath)
     return false
 end
 
----@param names string[]
-local function init_tabs(names)
-    for i, name in ipairs(names) do
-        if i > 1 then
-            vim.cmd.tabnew()
-        end
-        vim.api.nvim_tabpage_set_var(0, 'tabname', name)
-    end
-    vim.api.nvim_set_current_tabpage(tab_handle(1))
-end
-
 local moving = false
 
 ---@param bufnr integer
----@param target_idx integer 1-based tab index
-local function move_buf_to_tab(bufnr, target_idx)
-    local target = tab_handle(target_idx)
-    if not target then
-        return
-    end
-    Snacks.notify(
-        { ('move buf %d to tab %d'):format(bufnr, target_idx) },
-        { title = 'Workspace', level = 'debug' }
-    )
+---@param dest_name string managed tab name (e.g. 'code', 'tests')
+local function move_buf_to_tab(bufnr, dest_name)
     moving = true
     vim.schedule(function()
-        local scope = require('scope.core')
+        local scope_core = require('scope.core')
+        local scope_utils = require('scope.utils')
         local source_tab = vim.api.nvim_get_current_tabpage()
+        local source_name = get_tab_name(source_tab) or '?'
 
-        -- if this is the only listed buffer in the source tab, create an
-        -- empty buffer to keep the tab alive before moving
-        local listed = require('scope.utils').get_valid_buffers()
-        if #listed <= 1 then
+        -- 1. snapshot current tab into scope's cache so it's up to date
+        scope_core.cache[source_tab] = scope_utils.get_valid_buffers()
+
+        -- 2. remove bufnr from the source tab's cache
+        scope_core.cache[source_tab] = vim.tbl_filter(function(b)
+            return b ~= bufnr
+        end, scope_core.cache[source_tab])
+
+        -- 3. if source tab would be empty, create a placeholder buffer
+        if #scope_core.cache[source_tab] == 0 then
             vim.cmd.enew()
             vim.bo.buflisted = true
+            scope_core.cache[source_tab] =
+                scope_utils.get_valid_buffers()
         end
 
-        scope.move_buf(bufnr, target)
-        -- scope skips unlisting when it's the last buffer, so force it
-        vim.api.nvim_set_option_value('buflisted', false, { buf = bufnr })
-        scope.revalidate()
+        -- 4. switch away from bufnr in the source tab
+        if vim.api.nvim_get_current_buf() == bufnr then
+            vim.cmd.bprevious()
+        end
 
+        -- 5. find or create the target tab, add bufnr to its cache
+        local target = find_or_create_tab(dest_name)
+        local target_cache = scope_core.cache[target] or {}
+        if not vim.list_contains(target_cache, bufnr) then
+            target_cache[#target_cache + 1] = bufnr
+            scope_core.cache[target] = target_cache
+        end
+
+        -- 6. switch to the target tab — scope's TabLeave/TabEnter will
+        --    use our updated caches
         vim.api.nvim_set_current_tabpage(target)
         vim.api.nvim_set_current_buf(bufnr)
+
         moving = false
 
         Snacks.notify(
             {
-                ('moved buf %d from tab %s to tab %s'):format(
+                ('moved buf %d from tab %q to tab %q'):format(
                     bufnr,
-                    tab_index(source_tab),
-                    target_idx
+                    source_name,
+                    dest_name
                 ),
             },
             { title = 'Workspace', level = 'debug' }
@@ -265,21 +292,9 @@ M.setup = function()
     end
 
     local managed_buffers = {}
-    local managed_tabs = {
-        code = {
-            idx = 1,
-            name = 'code',
-        },
-        tests = {
-            idx = 2,
-            name = 'tests',
-        },
-    }
-    local tab_names = {}
-    for _, tab in pairs(managed_tabs) do
-        tab_names[tab.idx] = tab.name
-    end
-    init_tabs(tab_names)
+
+    -- label the initial tab as 'code'
+    vim.api.nvim_tabpage_set_var(0, 'tabname', 'code')
 
     local tabmanager_augroup = vim.api.nvim_create_augroup('TabManager', {})
     vim.api.nvim_create_autocmd('BufAdd', {
@@ -323,19 +338,17 @@ M.setup = function()
             end
 
             local current_tab = vim.api.nvim_get_current_tabpage()
-            local current_idx = tab_index(current_tab)
-            -- skip unmanaged tabs (e.g. user-created 3rd+ tab)
-            if not current_idx or current_idx > #tab_names then
+            local current_name = get_tab_name(current_tab)
+            -- skip unmanaged tabs (user-created without a tabname)
+            if not current_name then
                 return
             end
 
             if managed_buffers[args.buf] then
-                local dest = managed_tabs.code
-                if is_test_file(args.file) then
-                    dest = managed_tabs.tests
-                end
-                if current_idx ~= dest.idx then
-                    move_buf_to_tab(args.buf, dest.idx)
+                local dest_name = is_test_file(args.file) and 'tests'
+                    or 'code'
+                if current_name ~= dest_name then
+                    move_buf_to_tab(args.buf, dest_name)
                 end
             end
         end,
