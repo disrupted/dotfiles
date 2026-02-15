@@ -165,8 +165,7 @@ end
 ---@param handle integer
 ---@return string?
 local function get_tab_name(handle)
-    local ok, tabname =
-        pcall(vim.api.nvim_tabpage_get_var, handle, 'tabname')
+    local ok, tabname = pcall(vim.api.nvim_tabpage_get_var, handle, 'tabname')
     if ok then
         return tabname
     end
@@ -197,62 +196,86 @@ end
 
 local moving = false
 
+--- Temporarily suppress scope's autocmds during a function call.
+--- Scope is re-enabled afterwards regardless of errors.
+---@param fn fun()
+local function without_scope(fn)
+    pcall(vim.api.nvim_del_augroup_by_name, 'ScopeAU')
+    local ok, err = pcall(fn)
+    require('scope')._setup()
+    if not ok then
+        error(err)
+    end
+end
+
 ---@param bufnr integer
 ---@param dest_name string managed tab name (e.g. 'code', 'tests')
 local function move_buf_to_tab(bufnr, dest_name)
     moving = true
     vim.schedule(function()
-        local scope_core = require('scope.core')
-        local scope_utils = require('scope.utils')
+        local scope_core = require 'scope.core'
+        local scope_utils = require 'scope.utils'
         local source_tab = vim.api.nvim_get_current_tabpage()
         local source_name = get_tab_name(source_tab) or '?'
 
-        -- 1. snapshot current tab into scope's cache so it's up to date
-        scope_core.cache[source_tab] = scope_utils.get_valid_buffers()
+        -- suppress scope's autocmds so TabLeave/TabEnter during tabnew
+        -- and set_current_tabpage don't overwrite our cache changes
+        without_scope(function()
+            -- 1. unlist the buffer and switch away from it in source tab
+            vim.api.nvim_set_option_value('buflisted', false, { buf = bufnr })
+            if vim.api.nvim_get_current_buf() == bufnr then
+                -- if it's the only buffer, create a placeholder first
+                if #scope_utils.get_valid_buffers() == 0 then
+                    vim.cmd.enew()
+                    vim.bo.buflisted = true
+                else
+                    vim.cmd.bprevious()
+                end
+            end
 
-        -- 2. remove bufnr from the source tab's cache
-        scope_core.cache[source_tab] = vim.tbl_filter(function(b)
-            return b ~= bufnr
-        end, scope_core.cache[source_tab])
+            -- 2. update scope's cache for source tab (without the buffer)
+            scope_core.cache[source_tab] = scope_utils.get_valid_buffers()
 
-        -- 3. if source tab would be empty, create a placeholder buffer
-        if #scope_core.cache[source_tab] == 0 then
-            vim.cmd.enew()
-            vim.bo.buflisted = true
-            scope_core.cache[source_tab] =
-                scope_utils.get_valid_buffers()
-        end
+            -- 3. unlist all buffers before switching — the target tab
+            --    should only contain what's in its scope cache, not
+            --    whatever is globally listed right now
+            for _, b in ipairs(scope_utils.get_valid_buffers()) do
+                vim.api.nvim_set_option_value('buflisted', false, { buf = b })
+            end
 
-        -- 4. switch away from bufnr in the source tab
-        if vim.api.nvim_get_current_buf() == bufnr then
-            vim.cmd.bprevious()
-        end
+            -- 4. find or create the target tab and switch to it
+            local target = find_or_create_tab(dest_name)
+            if vim.api.nvim_get_current_tabpage() ~= target then
+                vim.api.nvim_set_current_tabpage(target)
+            end
 
-        -- 5. find or create the target tab, add bufnr to its cache
-        local target = find_or_create_tab(dest_name)
-        local target_cache = scope_core.cache[target] or {}
-        if not vim.list_contains(target_cache, bufnr) then
-            target_cache[#target_cache + 1] = bufnr
-            scope_core.cache[target] = target_cache
-        end
+            -- 5. restore listed buffers from target's cache, plus our buffer
+            local target_cache = scope_core.cache[target] or {}
+            for _, b in ipairs(target_cache) do
+                if vim.api.nvim_buf_is_valid(b) then
+                    vim.api.nvim_set_option_value(
+                        'buflisted',
+                        true,
+                        { buf = b }
+                    )
+                end
+            end
+            vim.api.nvim_set_option_value('buflisted', true, { buf = bufnr })
+            vim.api.nvim_set_current_buf(bufnr)
 
-        -- 6. switch to the target tab — scope's TabLeave/TabEnter will
-        --    use our updated caches
-        vim.api.nvim_set_current_tabpage(target)
-        vim.api.nvim_set_current_buf(bufnr)
+            -- 6. update scope's cache for target tab
+            scope_core.cache[target] = scope_utils.get_valid_buffers()
+        end)
 
         moving = false
 
-        Snacks.notify(
-            {
-                ('moved buf %d from tab %q to tab %q'):format(
-                    bufnr,
-                    source_name,
-                    dest_name
-                ),
-            },
-            { title = 'Workspace', level = 'debug' }
-        )
+        Snacks.notify({
+            ('moved buf %d from tab %q to tab %q'):format(
+                bufnr,
+                source_name,
+                dest_name
+            ),
+        }, { title = 'Workspace', level = 'debug' })
     end)
 end
 
@@ -345,8 +368,7 @@ M.setup = function()
             end
 
             if managed_buffers[args.buf] then
-                local dest_name = is_test_file(args.file) and 'tests'
-                    or 'code'
+                local dest_name = is_test_file(args.file) and 'tests' or 'code'
                 if current_name ~= dest_name then
                     move_buf_to_tab(args.buf, dest_name)
                 end

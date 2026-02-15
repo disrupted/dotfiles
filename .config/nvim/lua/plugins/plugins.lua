@@ -29,7 +29,7 @@ return {
                 '<Leader><Leader>',
                 function()
                     local picker = Snacks.picker.buffers {
-                        current = false,
+                        current = true,
                         sort_lastused = true,
                         layout = {
                             preset = 'dropdown',
