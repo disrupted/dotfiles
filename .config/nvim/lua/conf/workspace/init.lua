@@ -129,6 +129,47 @@ M.get_root = function(cwd)
     return cwd
 end
 
+--- Convert a tab index (1-based) to the tabpage handle
+---@param idx integer
+---@return integer
+local function tab_handle(idx)
+    return vim.api.nvim_list_tabpages()[idx]
+end
+
+--- Convert a tabpage handle to its 1-based index, or nil if not found
+---@param handle integer
+---@return integer?
+local function tab_index(handle)
+    for i, h in ipairs(vim.api.nvim_list_tabpages()) do
+        if h == handle then
+            return i
+        end
+    end
+    return nil
+end
+
+--- Check if a file path looks like a test file
+---@param filepath string
+---@return boolean
+local function is_test_file(filepath)
+    local filename = vim.fs.basename(filepath):lower()
+    local name_no_ext = filename:match '^(.+)%.' or filename
+    -- test_foo.py, tests_foo.py
+    if name_no_ext:match '^tests?[_%-%.]' then
+        return true
+    end
+    -- foo_test.py, foo_test.go
+    if name_no_ext:match '[_%-%.]tests?$' then
+        return true
+    end
+    -- directory contains /test/ or /tests/
+    local dir = filepath:lower()
+    if dir:match '[/\\]tests?[/\\]' then
+        return true
+    end
+    return false
+end
+
 ---@param names string[]
 local function init_tabs(names)
     for i, name in ipairs(names) do
@@ -137,22 +178,55 @@ local function init_tabs(names)
         end
         vim.api.nvim_tabpage_set_var(0, 'tabname', name)
     end
-    vim.api.nvim_set_current_tabpage(1)
+    vim.api.nvim_set_current_tabpage(tab_handle(1))
 end
 
+local moving = false
+
 ---@param bufnr integer
----@param tabnr integer
-local function move_buf_to_tab(bufnr, tabnr)
+---@param target_idx integer 1-based tab index
+local function move_buf_to_tab(bufnr, target_idx)
+    local target = tab_handle(target_idx)
+    if not target then
+        return
+    end
     Snacks.notify(
-        { ('move buf %d to tab %d'):format(bufnr, tabnr) },
+        { ('move buf %d to tab %d'):format(bufnr, target_idx) },
         { title = 'Workspace', level = 'debug' }
     )
-    local target_handle = vim.api.nvim_list_tabpages()[tabnr]
-    vim.defer_fn(function()
-        require('scope.core').move_buf(bufnr, target_handle)
-        vim.api.nvim_set_current_tabpage(tabnr)
+    moving = true
+    vim.schedule(function()
+        local scope = require('scope.core')
+        local source_tab = vim.api.nvim_get_current_tabpage()
+
+        -- if this is the only listed buffer in the source tab, create an
+        -- empty buffer to keep the tab alive before moving
+        local listed = require('scope.utils').get_valid_buffers()
+        if #listed <= 1 then
+            vim.cmd.enew()
+            vim.bo.buflisted = true
+        end
+
+        scope.move_buf(bufnr, target)
+        -- scope skips unlisting when it's the last buffer, so force it
+        vim.api.nvim_set_option_value('buflisted', false, { buf = bufnr })
+        scope.revalidate()
+
+        vim.api.nvim_set_current_tabpage(target)
         vim.api.nvim_set_current_buf(bufnr)
-    end, 0)
+        moving = false
+
+        Snacks.notify(
+            {
+                ('moved buf %d from tab %s to tab %s'):format(
+                    bufnr,
+                    tab_index(source_tab),
+                    target_idx
+                ),
+            },
+            { title = 'Workspace', level = 'debug' }
+        )
+    end)
 end
 
 M.setup = function()
@@ -185,7 +259,7 @@ M.setup = function()
 
     require('conf.hotreload').setup()
 
-    vim.g.project_tabs = false
+    vim.g.project_tabs = true
     if not vim.g.project_tabs or not vim.g.workspace_type then
         return
     end
@@ -218,6 +292,10 @@ M.setup = function()
                 )
                 return
             end
+            -- skip non-file buffers
+            if vim.bo[args.buf].buftype ~= '' then
+                return
+            end
 
             if
                 args.file ~= ''
@@ -235,17 +313,28 @@ M.setup = function()
     vim.api.nvim_create_autocmd('BufEnter', {
         group = tabmanager_augroup,
         callback = function(args)
-            local tabnr = vim.api.nvim_get_current_tabpage()
-            if tabnr > #tab_names then
+            -- skip if we're already moving a buffer
+            if moving then
                 return
             end
+            -- skip non-file buffers
+            if vim.bo[args.buf].buftype ~= '' then
+                return
+            end
+
+            local current_tab = vim.api.nvim_get_current_tabpage()
+            local current_idx = tab_index(current_tab)
+            -- skip unmanaged tabs (e.g. user-created 3rd+ tab)
+            if not current_idx or current_idx > #tab_names then
+                return
+            end
+
             if managed_buffers[args.buf] then
                 local dest = managed_tabs.code
-                local filename = args.file:lower()
-                if filename:match '[^%w]tests?[^%w]' then
+                if is_test_file(args.file) then
                     dest = managed_tabs.tests
                 end
-                if tabnr ~= dest.idx then
+                if current_idx ~= dest.idx then
                     move_buf_to_tab(args.buf, dest.idx)
                 end
             end
