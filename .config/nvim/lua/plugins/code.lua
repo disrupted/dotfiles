@@ -282,7 +282,6 @@ return {
             {
                 '<Leader>tf',
                 function()
-                    _ = require('conf.neotest.adapters')[vim.bo.filetype]
                     require('neotest').run.run { suite = false }
                 end,
                 desc = 'Nearest function',
@@ -290,7 +289,6 @@ return {
             {
                 '<Leader>tb',
                 function()
-                    _ = require('conf.neotest.adapters')[vim.bo.filetype]
                     require('neotest').run.run {
                         vim.api.nvim_buf_get_name(0),
                         suite = false,
@@ -301,7 +299,6 @@ return {
             {
                 '<Leader>ta',
                 function()
-                    _ = require('conf.neotest.adapters')[vim.bo.filetype]
                     for _, adapter_id in
                         ipairs(require('neotest').state.adapter_ids())
                     do
@@ -316,7 +313,6 @@ return {
             {
                 '<Leader>td',
                 function()
-                    _ = require('conf.neotest.adapters')[vim.bo.filetype]
                     _ = require('conf.dap.adapters')[vim.bo.filetype]
                     require('neotest').run.run {
                         strategy = 'dap',
@@ -333,49 +329,44 @@ return {
                 desc = 'Re-run last',
             },
             {
-                '<Leader>to',
-                function()
-                    -- require('neotest').output.open { last_run = true }
-                    require('overseer').open()
-                end,
-                desc = 'Open output of last run',
-            },
-            {
                 '<Leader>ts',
                 function()
-                    if
-                        not package.loaded.neotest
-                        or vim.tbl_isempty(require('neotest.config').adapters)
-                    then
-                        local filetypes =
-                            require('conf.workspace').project_filetypes()
-                        for _, filetype in ipairs(filetypes) do
-                            _ = require('conf.neotest.adapters')[filetype]
-                        end
-                    end
-
                     if vim.bo.filetype == 'neotest-summary' then
                         require('neotest').summary.close()
                         return
                     end
-                    require('neotest').summary.open()
 
-                    for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+                    local target =
+                        require('conf.workspace').find_or_create_tab 'tests'
+                    if vim.api.nvim_get_current_tabpage() ~= target then
+                        vim.api.nvim_set_current_tabpage(target)
+                    end
+
+                    for _, win in ipairs(vim.api.nvim_tabpage_list_wins(target)) do
                         local buf = vim.api.nvim_win_get_buf(win)
                         if vim.bo[buf].filetype == 'neotest-summary' then
                             vim.api.nvim_set_current_win(win)
-                            vim.wo[win].wrap = false
-                            vim.wo[win].fillchars = 'eob: '
-                            vim.keymap.set('n', 'q', '<C-w>q', {
-                                buffer = buf,
-                                silent = true,
-                                desc = 'Close',
-                            })
                             return
                         end
                     end
+
+                    require('neotest').summary.open()
                 end,
                 desc = 'Toggle summary',
+            },
+            {
+                '<Leader>tm',
+                function()
+                    if vim.tbl_isempty(require('neotest').summary.marked()) then
+                        require('neotest.lib').notify(
+                            'No marked tests',
+                            vim.log.levels.WARN
+                        )
+                        return
+                    end
+                    require('neotest').summary.run_marked()
+                end,
+                desc = 'Marked',
             },
             {
                 '<Leader>tq',
@@ -497,6 +488,76 @@ return {
                 },
             }) --[[@as neotest.Config]]
             require('neotest').setup(opts)
+
+            -- lazy-load adapters
+            local filetypes = require('conf.workspace').project_filetypes()
+            for _, filetype in ipairs(filetypes) do
+                _ = require('conf.neotest.adapters')[filetype]
+            end
+
+            local function expand_summary_dirs_only()
+                local neotest = require 'neotest'
+                local expanded = {}
+
+                for _, adapter_id in ipairs(neotest.state.adapter_ids() or {}) do
+                    local tree = neotest.state.positions(adapter_id)
+                    if tree then
+                        for _, pos in tree:iter() do
+                            if pos.type == 'dir' then
+                                expanded[pos.id] = true
+                            end
+                        end
+                    end
+                end
+
+                if next(expanded) then
+                    neotest.summary.render(expanded)
+                    return true
+                end
+                return false
+            end
+
+            vim.api.nvim_create_autocmd('User', {
+                pattern = 'NeotestSummaryOpen',
+                callback = function()
+                    -- discovery can still be running; retry briefly
+                    local tries = 0
+                    local timer = vim.uv.new_timer()
+                    timer:start(
+                        0,
+                        100,
+                        vim.schedule_wrap(function()
+                            if vim.uv.is_closing(timer) then
+                                return
+                            end
+
+                            tries = tries + 1
+                            if expand_summary_dirs_only() or tries > 20 then
+                                timer:stop()
+                                timer:close()
+                            end
+                        end)
+                    )
+                end,
+            })
+
+            vim.api.nvim_create_autocmd('FileType', {
+                group = vim.api.nvim_create_augroup(
+                    'NeotestSummaryCursor',
+                    { clear = true }
+                ),
+                pattern = 'neotest-summary',
+                callback = function(args)
+                    vim.api.nvim_create_autocmd('WinEnter', {
+                        buffer = args.buf,
+                        callback = require('conf.ui').cursor.hide,
+                    })
+                    vim.api.nvim_create_autocmd('WinLeave', {
+                        buffer = args.buf,
+                        callback = require('conf.ui').cursor.show,
+                    })
+                end,
+            })
         end,
     },
     {
@@ -512,6 +573,7 @@ return {
         opts = {},
         config = function(_, opts)
             local adapter = require 'neotest-plenary'(opts)
+            adapter.name = 'Plenary'
             local adapters = require('neotest.config').adapters
             table.insert(adapters, adapter)
         end,
@@ -565,6 +627,7 @@ return {
         },
         config = function(_, opts)
             local adapter = require 'neotest-python'(opts)
+            adapter.name = 'Python'
             local adapters = require('neotest.config').adapters
             table.insert(adapters, adapter)
         end,
@@ -592,6 +655,7 @@ return {
         },
         config = function(_, opts)
             local adapter = require 'neotest-jest'(opts)
+            adapter.name = 'Jest'
             local adapters = require('neotest.config').adapters
             table.insert(adapters, adapter)
         end,
@@ -769,13 +833,6 @@ return {
                         buffer = args.buf,
                         callback = require('conf.ui').cursor.show,
                     })
-                    for _, win in ipairs(vim.api.nvim_list_wins()) do
-                        if vim.api.nvim_win_get_buf(win) == args.buf then
-                            vim.wo[win].fillchars = 'eob: '
-                            vim.wo[win].winhighlight = 'CursorLine:Visual'
-                            return
-                        end
-                    end
                 end,
             })
 

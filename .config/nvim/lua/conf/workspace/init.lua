@@ -146,7 +146,7 @@ end
 --- Find a managed tab by name, creating it on demand if it doesn't exist
 ---@param name string
 ---@return integer handle tabpage handle
-local function find_or_create_tab(name)
+M.find_or_create_tab = function(name)
     local handle = find_tab(name)
     if handle then
         return handle
@@ -244,7 +244,7 @@ local function move_buf_to_tab(bufnr, dest_name)
             end
 
             -- 4. find or create the target tab and switch to it
-            local target = find_or_create_tab(dest_name)
+            local target = M.find_or_create_tab(dest_name)
             if vim.api.nvim_get_current_tabpage() ~= target then
                 vim.api.nvim_set_current_tabpage(target)
             end

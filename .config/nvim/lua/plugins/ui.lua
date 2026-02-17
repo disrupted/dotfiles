@@ -982,6 +982,7 @@ return {
             wo = {
                 winbar = true,
                 fillchars = 'eob: ',
+                winhighlight = 'WinBar:EdgyWinBar,WinBarNC:EdgyWinBarNC,Normal:EdgyNormal,WinSeparator:EdgyWinSeparator',
             },
             ---@type table<string, fun(win:Edgy.Window)|false>
             keys = {
@@ -1008,15 +1009,14 @@ return {
                     ft = 'neotest-summary',
                     title = 'Tests',
                     wo = {
-                        winhighlight = 'WinBar:EdgyWinBar,WinBarNC:EdgyWinBarNC,Normal:EdgyNormal,WinSeparator:EdgyWinSeparator',
+                        winbar = false,
+                        wrap = false,
+                        winhighlight = 'WinBar:EdgyWinBar,WinBarNC:EdgyWinBarNC,Normal:EdgyNormal,WinSeparator:EdgyWinSeparator,CursorLine:Visual',
                     },
                 },
                 {
                     ft = 'pipeline',
                     title = 'CI',
-                    wo = {
-                        winhighlight = 'WinBar:EdgyWinBar,WinBarNC:EdgyWinBarNC,Normal:EdgyNormal,WinSeparator:EdgyWinSeparator',
-                    },
                 },
             },
             right = {
@@ -1078,6 +1078,9 @@ return {
                     ft = 'OverseerList',
                     title = 'Tasks',
                     size = { width = 40 },
+                    wo = {
+                        winhighlight = 'WinBar:EdgyWinBar,WinBarNC:EdgyWinBarNC,Normal:EdgyNormal,WinSeparator:EdgyWinSeparator,CursorLine:Visual',
+                    },
                 },
                 {
                     ft = 'OverseerOutput',

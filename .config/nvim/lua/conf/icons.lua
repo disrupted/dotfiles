@@ -52,6 +52,17 @@ return {
         running = '', -- FIXME:  symbol rendered incorrectly in Ghostty
         unknown = '',
         watching = '',
+
+        -- summary tree
+        child_prefix = '├',
+        final_child_prefix = '└',
+        child_indent = '│',
+        final_child_indent = ' ',
+
+        -- node icon shown after connector
+        expanded = '┐',
+        collapsed = '─',
+        non_collapsible = '',
     },
     diagnostics = {
         error = '',

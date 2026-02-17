@@ -533,6 +533,7 @@ return {
             vim.g.rustaceanvim = opts
 
             local adapter = require 'rustaceanvim.neotest'()
+            adapter.name = 'Rust'
             local adapters = require('neotest.config').adapters
             table.insert(adapters, adapter)
         end,
