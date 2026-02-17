@@ -611,11 +611,14 @@ return {
                     title = 'Workspace Diagnostics (most severe)',
                     auto_refresh = true,
                     auto_close = true,
-                    -- only the most severe diagnostics, min severity.WARN
+                    -- only the most severe diagnostics, min warning
                     filter = function(items)
                         local severity = vim.diagnostic.severity.WARN
                         for _, item in ipairs(items) do
-                            severity = math.min(severity, item.severity)
+                            if item.severity > 0 then -- filter out unnecessary
+                                severity =
+                                    math.min(severity, math.max(item.severity))
+                            end
                         end
                         return vim.tbl_filter(function(item)
                             return item.severity == severity
