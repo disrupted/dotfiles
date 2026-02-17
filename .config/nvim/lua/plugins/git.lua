@@ -643,6 +643,9 @@ return {
                     -- always squash & merge
                     merge_pr = { lhs = '' },
                     rebase_and_merge_pr = { lhs = '' },
+                    merge_pr_queue = { lhs = '' },
+                    squash_and_merge_queue = { lhs = '' },
+                    rebase_and_merge_queue = { lhs = '' },
                 },
                 review_diff = {
                     next_thread = {
