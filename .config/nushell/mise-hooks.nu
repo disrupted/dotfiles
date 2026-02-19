@@ -46,11 +46,8 @@ export-env {
     condition: { "MISE_SHELL" in $env }
     code: { mise_hook }
   }
-  if ($env.__mise_hooks_installed? | default false) == false {
     add-hook hooks.pre_prompt $hook
     add-hook hooks.env_change.PWD $hook
-    $env.__mise_hooks_installed = true
-  }
 }
 
 export def --env "mise-env" [command: string, ...rest: string] {
