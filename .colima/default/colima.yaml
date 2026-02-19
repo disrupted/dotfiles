@@ -1,16 +1,16 @@
 # Number of CPUs to be allocated to the virtual machine.
 # Default: 2
-cpu: 4
+cpu: 2
 
 # Size of the disk in GiB to be allocated to the virtual machine for container data.
 # NOTE: value can only be increased after virtual machine has been created.
 #
 # Default: 100
-disk: 100
+disk: 50
 
 # Size of the memory in GiB to be allocated to the virtual machine.
 # Default: 2
-memory: 8
+memory: 4
 
 # Architecture of the virtual machine (x86_64, aarch64, host).
 #
@@ -106,6 +106,15 @@ network:
   #
   # Default: false
   hostAddresses: false
+  
+  # Custom gateway address for the virtual machine.
+  # The last octet needs to be 2.
+  #
+  # EXAMPLE
+  # gatewayAddress: 192.168.10.2
+  #
+  # Default: 192.168.5.2
+  gatewayAddress: null
 
 # ===================================================================== #
 # ADVANCED CONFIGURATION
@@ -134,18 +143,20 @@ forwardAgent: false
 # Default: {}
 docker: {}
 
-# Virtual Machine type (qemu, vz)
+# Virtual Machine type (krunkit, qemu, vz)
 # NOTE: this is macOS 13 only. For Linux and macOS <13.0, qemu is always used.
 #
-# vz is macOS virtualization framework and requires macOS 13
+# vz is macOS virtualization framework and requires macOS 13.
+# krunkit runs super‑light VMs on macOS/ARM64 with a focus on GPU access. It is experimental.
 #
 # NOTE: value cannot be changed after virtual machine is created.
 # Default: qemu
 vmType: vz
 
-# Port forwarder for the virtual machine (ssh, grpc).
+# Port forwarder for the virtual machine (ssh, grpc, none).
 # ssh is more stable but supports only TCP.
 # grpc supports both TCP and UDP, but is experimental.
+# none disables port forwarding.
 #
 # Default: ssh
 portForwarder: ssh
@@ -200,6 +211,16 @@ cpuType: ""
 #       [ -f ~/.provision ] && exit 0;
 #       echo provisioning as $USER...
 #       touch ~/.provision
+#
+# EXAMPLE - script executed after VM boot, before container runtimes start
+# provision:
+#   - mode: after-boot
+#     script: echo "VM is up, containers not yet started"
+#
+# EXAMPLE - script executed after VM and container runtimes are ready
+# provision:
+#   - mode: ready
+#     script: echo "everything is ready"
 #
 # Default: []
 provision: []
