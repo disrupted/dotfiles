@@ -48,6 +48,7 @@ $env.config = {
 
 use ~/.config/nushell/modules/user.nu *
 use ~/.config/nushell/modules/agent.nu *
+use ~/.config/nushell/modules/tmux.nu *
 use ~/.config/nushell/mise-hooks.nu *
 use std/config *
 
@@ -336,6 +337,13 @@ $env.config.hooks.env_change.PWD = $env.config.hooks.env_change.PWD? | default [
 #     $entries | sort-by type name -i | each {|f| $"  ([$f] | grid -c -i | str trim)" } | str join "\n" | print
 #   }
 # }]
+
+$env.config.hooks.env_change.PWD ++= [{||
+    if ($env.TMUX? | is-not-empty) {
+        let dir = $env.PWD | path basename
+        tmux rename-window $dir
+    }
+}]
 
 # detect theme on load
 update-theme

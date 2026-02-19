@@ -25,6 +25,7 @@ style = "green"
 format = "[$branch]($style) "
 
 [git_status]
+disabled = true # not async
 style = "yellow"
 format = '([$ahead_behind$stashed $modified $untracked]($style) )'
 modified = "!$count"
@@ -36,7 +37,7 @@ conflicted = ""
 stashed = "≡$count"
 ahead = "⇡$count"
 behind = "⇣$count"
-diverged = "⇕"
+diverged = "⇡${ahead_count}⇣${behind_count}"
 
 [git_state]
 style = "yellow"
