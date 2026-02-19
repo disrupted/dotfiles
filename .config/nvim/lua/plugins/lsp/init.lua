@@ -599,18 +599,23 @@ return {
                 },
                 workspace_diagnostics = {
                     mode = 'diagnostics',
+                    source = 'diagnostics_pull',
                     title = 'Workspace Diagnostics',
                     auto_refresh = true,
-                    auto_close = true,
+                    auto_close = false,
                     filter = {
-                        severity = { min = vim.diagnostic.severity.WARN },
+                        severity = {
+                            vim.diagnostic.severity.ERROR,
+                            vim.diagnostic.severity.WARN,
+                        },
                     },
                 },
                 workspace_diagnostics_severe = {
                     mode = 'diagnostics',
+                    source = 'diagnostics_pull',
                     title = 'Workspace Diagnostics (most severe)',
                     auto_refresh = true,
-                    auto_close = true,
+                    auto_close = false,
                     -- only the most severe diagnostics, min warning
                     filter = function(items)
                         local severity = vim.diagnostic.severity.WARN
