@@ -14,6 +14,7 @@ return {
                 if args.data.client_id ~= client.id then
                     return
                 end
+                ---@module 'vim.lsp.semantic_tokens'
                 ---@type STTokenRange
                 local token = args.data.token
                 if token.type == 'property' then
