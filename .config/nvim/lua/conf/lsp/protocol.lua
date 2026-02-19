@@ -43,7 +43,7 @@ local cmp_capabilities = {
     },
 }
 
-M.capabilties = vim.tbl_deep_extend(
+M.capabilities = vim.tbl_deep_extend(
     'force',
     vim.lsp.protocol.make_client_capabilities(),
     cmp_capabilities
@@ -51,7 +51,7 @@ M.capabilties = vim.tbl_deep_extend(
 
 ---@param override lsp.ClientCapabilities
 M.extend_client_capabilities = function(override)
-    return vim.tbl_deep_extend('force', M.capabilties, override)
+    return vim.tbl_deep_extend('force', M.capabilities, override)
 end
 
 return M

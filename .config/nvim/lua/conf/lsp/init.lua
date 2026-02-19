@@ -236,7 +236,7 @@ vim.lsp.codelens.enable()
 
 vim.lsp.config('*', {
     root_markers = { '.git' },
-    capabilities = require('conf.lsp.protocol').capabilties,
+    capabilities = require('conf.lsp.protocol').capabilities,
 })
 
 vim.lsp.enable {
