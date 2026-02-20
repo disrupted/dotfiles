@@ -143,7 +143,7 @@ return {
                         'open_input_new_session',
                         desc = 'New session',
                     },
-                    ['<cr>'] = { 'submit_input_prompt', mode = { 'n' } },
+                    ['<cr>'] = { 'submit_input_prompt', mode = 'n' },
                     ['<esc>'] = false,
                     ['<C-c>'] = { 'cancel', mode = { 'n', 'i' } },
                     ['q'] = { 'toggle_pane' }, -- Toggle between input and output panes
@@ -183,8 +183,13 @@ return {
                     },
                     ['q'] = { 'close' },
                     ['<esc>'] = false,
-                    ['<C-c>'] = { 'cancel' },
-                    ['i'] = { 'focus_input' },
+                    ['<C-c>'] = { 'cancel', mode = 'n' },
+                    ['i'] = {
+                        function()
+                            require('opencode.ui.ui').focus_input() -- no start_insert
+                        end,
+                        mode = 'n',
+                    },
                     ['a'] = { 'permission_accept', mode = 'n' },
                     ['A'] = { 'permission_accept_all', mode = 'n' },
                     ['d'] = { 'permission_deny', mode = 'n' },
@@ -197,6 +202,7 @@ return {
                         end,
                         desc = 'Pick model',
                     },
+                    ['<M-i>'] = false,
                     ['S'] = { 'select_child_session' },
                     [']]'] = { 'next_message', desc = 'Next message' },
                     ['[['] = { 'prev_message', desc = 'Prev message' },
