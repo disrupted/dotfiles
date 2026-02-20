@@ -276,11 +276,11 @@ return {
         ---@type Config
         ---@diagnostic disable-next-line: missing-fields
         opts = {
+            -- auto_toggle = true,
             ---@diagnostic disable-next-line: missing-fields
             windows = {
                 ---@diagnostic disable-next-line: missing-fields
                 terminal = {
-                    start_hidden = true,
                     hide = { 'go' },
                 },
             },
