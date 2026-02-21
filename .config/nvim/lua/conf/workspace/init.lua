@@ -201,6 +201,21 @@ local moving = false
 ---@type table<integer, string>
 local buf_tab_assignment = {}
 
+--- Cross-tab jump stack.  Records jumps that crossed tab boundaries so
+--- that <C-o>/<C-i> can navigate back/forward across tabs.
+---@class CrossTabJump
+---@field source_tab string managed tab name
+---@field source_buf integer buffer number
+---@field source_pos integer[] {lnum, col}
+---@field dest_tab string managed tab name
+---@field dest_buf integer buffer number
+---@field dest_pos integer[] {lnum, col}
+
+---@type CrossTabJump[]
+local cross_tab_jumps = {}
+---@type integer
+local cross_tab_pos = 0 -- 0 = before first entry
+
 ---@param bufnr integer
 ---@param dest_name string managed tab name (e.g. 'code', 'tests')
 local function move_buf_to_tab(bufnr, dest_name)
@@ -214,10 +229,53 @@ local function move_buf_to_tab(bufnr, dest_name)
         -- suppress scope's autocmds during the entire move
         pcall(vim.api.nvim_del_augroup_by_name, 'ScopeAU')
 
-        -- 1. unlist the buffer and switch away from it in source tab
+        -- Save the cursor position that the caller (e.g. LSP) set on the
+        -- buffer before we navigate away from it in the source tab.
+        local cursor_pos
+        if vim.api.nvim_get_current_buf() == bufnr then
+            cursor_pos = vim.api.nvim_win_get_cursor(0)
+        end
+
+        -- 1. Record the cross-tab jump, then unlist the buffer and switch
+        --    away from it in the source tab.
         vim.api.nvim_set_option_value('buflisted', false, { buf = bufnr })
         if vim.api.nvim_get_current_buf() == bufnr then
-            if #scope_utils.get_valid_buffers() == 0 then
+            -- Try to find the position we jumped FROM via the jumplist
+            local source_buf = nil
+            local source_pos = nil
+            local jumplist, pos = unpack(vim.fn.getjumplist())
+            if pos > 0 and pos == #jumplist then
+                local prev = jumplist[pos]
+                if
+                    prev
+                    and vim.api.nvim_buf_is_valid(prev.bufnr)
+                    and prev.bufnr ~= bufnr
+                then
+                    source_buf = prev.bufnr
+                    source_pos = { prev.lnum, prev.col }
+                end
+            end
+
+            -- Record the cross-tab jump (truncate any forward entries)
+            if source_buf then
+                for i = #cross_tab_jumps, cross_tab_pos + 1, -1 do
+                    cross_tab_jumps[i] = nil
+                end
+                cross_tab_pos = cross_tab_pos + 1
+                cross_tab_jumps[cross_tab_pos] = {
+                    source_tab = source_name,
+                    source_buf = source_buf,
+                    source_pos = source_pos,
+                    dest_tab = dest_name,
+                    dest_buf = bufnr,
+                    dest_pos = cursor_pos or { 1, 0 },
+                }
+            end
+
+            -- Navigate away from the buffer in the source tab
+            if source_buf then
+                vim.cmd [[exe "normal! \<C-o>"]]
+            elseif #scope_utils.get_valid_buffers() == 0 then
                 vim.cmd.enew()
                 vim.bo.buflisted = true
             else
@@ -249,7 +307,15 @@ local function move_buf_to_tab(bufnr, dest_name)
             end
         end
         vim.api.nvim_set_option_value('buflisted', true, { buf = bufnr })
-        vim.api.nvim_set_current_buf(bufnr)
+        vim.cmd('keepjumps buffer ' .. bufnr)
+
+        -- Restore the cursor position (e.g. LSP definition target)
+        if cursor_pos then
+            local line_count = vim.api.nvim_buf_line_count(bufnr)
+            if cursor_pos[1] <= line_count then
+                vim.api.nvim_win_set_cursor(0, cursor_pos)
+            end
+        end
 
         -- 5. update scope's cache for target tab
         scope_core.cache[target] = scope_utils.get_valid_buffers()
@@ -362,8 +428,11 @@ M.setup = function()
 
             if managed_buffers[args.buf] then
                 local dest_name = is_test_file(args.file) and 'tests' or 'code'
-                -- skip if already assigned to the correct tab
-                if buf_tab_assignment[args.buf] == dest_name then
+                -- skip if already assigned AND we're in the correct tab
+                if
+                    buf_tab_assignment[args.buf] == dest_name
+                    and current_name == dest_name
+                then
                     return
                 end
                 if current_name ~= dest_name then
@@ -375,6 +444,103 @@ M.setup = function()
             end
         end,
     })
+
+    -- Tab-aware <C-o>/<C-i> mappings.
+    -- When at the boundary of a cross-tab jump, switch tabs instead of
+    -- using the native (per-window) jumplist.
+    --- Execute a native jumplist navigation, skipping over any entries
+    --- that belong in a different tab.
+    ---@param backward boolean  true for <C-o>, false for <C-i>
+    local function native_jump_filtered(backward)
+        local current_name = get_tab_name(vim.api.nvim_get_current_tabpage())
+        local key_code = vim.api.nvim_replace_termcodes(
+            backward and '<C-o>' or '<C-i>',
+            true,
+            false,
+            true
+        )
+        -- Try up to 100 times to skip cross-tab entries
+        for _ = 1, 100 do
+            local jumplist, pos = unpack(vim.fn.getjumplist())
+            local idx = pos + (backward and 0 or 1)
+            if idx < 1 or idx > #jumplist then
+                return -- nothing left in this direction
+            end
+            local target_entry = jumplist[idx]
+            if not target_entry then
+                return
+            end
+            -- If the target buffer belongs in a different tab, silently
+            -- advance the jumplist pointer past it and try again
+            if
+                current_name
+                and vim.api.nvim_buf_is_valid(target_entry.bufnr)
+                and buf_tab_assignment[target_entry.bufnr]
+                and buf_tab_assignment[target_entry.bufnr] ~= current_name
+            then
+                vim.api.nvim_feedkeys(key_code, 'x', false)
+            else
+                -- Safe to land here
+                vim.api.nvim_feedkeys(key_code, 'n', false)
+                return
+            end
+        end
+    end
+
+    vim.keymap.set('n', '<C-o>', function()
+        if cross_tab_pos > 0 then
+            local entry = cross_tab_jumps[cross_tab_pos]
+            local current_name =
+                get_tab_name(vim.api.nvim_get_current_tabpage())
+            if
+                current_name == entry.dest_tab
+                and vim.api.nvim_get_current_buf() == entry.dest_buf
+            then
+                local target = find_tab(entry.source_tab)
+                if target then
+                    cross_tab_pos = cross_tab_pos - 1
+                    vim.api.nvim_set_current_tabpage(target)
+                    if
+                        vim.api.nvim_buf_is_valid(entry.source_buf)
+                        and vim.api.nvim_get_current_buf()
+                            ~= entry.source_buf
+                    then
+                        vim.cmd('keepjumps buffer ' .. entry.source_buf)
+                    end
+                    pcall(vim.api.nvim_win_set_cursor, 0, entry.source_pos)
+                    return
+                end
+            end
+        end
+        native_jump_filtered(true)
+    end, { desc = 'Jump back (tab-aware)' })
+
+    vim.keymap.set('n', '<C-i>', function()
+        if cross_tab_pos < #cross_tab_jumps then
+            local entry = cross_tab_jumps[cross_tab_pos + 1]
+            local current_name =
+                get_tab_name(vim.api.nvim_get_current_tabpage())
+            if
+                current_name == entry.source_tab
+                and vim.api.nvim_get_current_buf() == entry.source_buf
+            then
+                local target = find_tab(entry.dest_tab)
+                if target then
+                    cross_tab_pos = cross_tab_pos + 1
+                    vim.api.nvim_set_current_tabpage(target)
+                    if
+                        vim.api.nvim_buf_is_valid(entry.dest_buf)
+                        and vim.api.nvim_get_current_buf() ~= entry.dest_buf
+                    then
+                        vim.cmd('keepjumps buffer ' .. entry.dest_buf)
+                    end
+                    pcall(vim.api.nvim_win_set_cursor, 0, entry.dest_pos)
+                    return
+                end
+            end
+        end
+        native_jump_filtered(false)
+    end, { desc = 'Jump forward (tab-aware)' })
 
     vim.api.nvim_create_autocmd('BufWipeout', {
         group = tabmanager_augroup,
@@ -388,6 +554,16 @@ M.setup = function()
             end
             managed_buffers[args.buf] = nil
             buf_tab_assignment[args.buf] = nil
+            -- purge cross-tab jump entries referencing this buffer
+            for i = #cross_tab_jumps, 1, -1 do
+                local e = cross_tab_jumps[i]
+                if e.source_buf == args.buf or e.dest_buf == args.buf then
+                    table.remove(cross_tab_jumps, i)
+                    if cross_tab_pos >= i then
+                        cross_tab_pos = math.max(0, cross_tab_pos - 1)
+                    end
+                end
+            end
         end,
     })
 end
