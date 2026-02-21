@@ -175,6 +175,7 @@ M.pr = {}
 ---@param opts? octo.pr.open.Opts
 M.pr.open = function(opts)
     ---@class octo.pr.open.Opts
+    ---@field number? integer
     ---@field octo boolean
     ---@field browser boolean
     opts = vim.tbl_extend('keep', opts or {}, {
@@ -182,8 +183,9 @@ M.pr.open = function(opts)
         browser = false,
     })
     if opts.octo then
-        Snacks.notify('Opening PR...', { title = 'Octo' })
-        vim.cmd.tabnew()
+        local number = opts.number or require('gh').pr.json({ 'number' }).number
+        Snacks.notify('Opening PR' .. number .. '...', { title = 'Octo' })
+        require('conf.workspace').create_tab('PR ' .. number)
         vim.cmd 'Octo pr'
     end
     if opts.browser then

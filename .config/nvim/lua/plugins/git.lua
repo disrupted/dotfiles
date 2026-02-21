@@ -585,10 +585,12 @@ return {
                                 return
                             end
                             local pr = require('conf.octo').pr
-                            if not require('gh').pr.exists() then
+                            local existing_pr =
+                                require('gh').pr.json { 'number' }
+                            if not existing_pr then
                                 pr.form_create()
                             else
-                                pr.open()
+                                pr.open { number = existing_pr.number }
                             end
                         end)
                     end,

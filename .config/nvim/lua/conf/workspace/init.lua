@@ -146,11 +146,7 @@ end
 --- Find a managed tab by name, creating it on demand if it doesn't exist
 ---@param name string
 ---@return integer handle tabpage handle
-M.find_or_create_tab = function(name)
-    local handle = find_tab(name)
-    if handle then
-        return handle
-    end
+M.create_tab = function(name)
     vim.cmd.tabnew()
     handle = vim.api.nvim_get_current_tabpage()
     vim.api.nvim_tabpage_set_var(handle, 'tabname', name)
@@ -317,7 +313,7 @@ local function move_buf_to_tab(bufnr, dest_name)
         --    NOTE: tabnew() will inherit currently listed buffers — we
         --    clean those up after switching instead of unlisting them
         --    beforehand (unlisting causes cascading wipeouts)
-        local target = M.find_or_create_tab(dest_name)
+        local target = find_tab(dest_name) or M.create_tab(dest_name)
         if vim.api.nvim_get_current_tabpage() ~= target then
             vim.api.nvim_set_current_tabpage(target)
         end
