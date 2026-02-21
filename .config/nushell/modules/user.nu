@@ -30,7 +30,7 @@ export def --env zoxide_top_level_dir [query: string] {
   }
 
   let top = (get_top_level_dir)
-  let results = (zoxide query -l $query | lines | where { |it| $it | str starts-with $top })
+  let results = (zoxide query -l $query | lines | where {|it| $it | str starts-with $top })
 
   if ($results | is-empty) {
     print "no result in top level dir found, fallback to regular zoxide"
@@ -74,8 +74,7 @@ export def ga [] {
     [
       (git diff --name-only)
       (git ls-files --others --exclude-standard)
-    ] | str join (char newline) |
-    fzf --height=60% --layout=reverse --multi --preview 'bash -c "if git ls-files --error-unmatch {} &>/dev/null; then git diff --color=always {} | delta; else bat --color=always --style=header {}; fi"'
+    ] | str join (char newline) | fzf --height=60% --layout=reverse --multi --preview 'bash -c "if git ls-files --error-unmatch {} &>/dev/null; then git diff --color=always {} | delta; else bat --color=always --style=header {}; fi"'
   )
   if ($files | is-empty) { return }
   $files | lines | each { git add $in }
@@ -85,8 +84,7 @@ export def ga [] {
 # gr - interactive git restore
 export def gr [] {
   let files = (
-    git diff --name-only |
-    fzf --height=60% --layout=reverse --multi --preview 'git diff {} | delta'
+    git diff --name-only | fzf --height=60% --layout=reverse --multi --preview 'git diff {} | delta'
   )
   if ($files | is-empty) { return }
   $files | lines | each { git restore $in }
@@ -96,8 +94,7 @@ export def gr [] {
 # gcf - interactive git checkout file (discard changes)
 export def gcf [] {
   let files = (
-    git diff --name-only |
-    fzf --height=60% --layout=reverse --multi --preview 'git diff {} | delta'
+    git diff --name-only | fzf --height=60% --layout=reverse --multi --preview 'git diff {} | delta'
   )
   if ($files | is-empty) { return }
   $files | lines | each { git checkout $in }
@@ -106,11 +103,7 @@ export def gcf [] {
 
 # glo - interactive git log
 export def glo [] {
-  git log --oneline --color=always |
-  fzf --height=80% --layout=reverse --ansi --preview 'git show {1} | delta' |
-  split row ' ' |
-  first |
-  if ($in | is-empty) { } else { git show $in }
+  git log --oneline --color=always | fzf --height=80% --layout=reverse --ansi --preview 'git show {1} | delta' | split row ' ' | first | if ($in | is-empty) { } else { git show $in }
 }
 
 # glo-sk - interactive git log (skim binary version - compare performance)
@@ -120,38 +113,36 @@ export def glo-sk [] {
   } else {
     "fg:-1,bg:-1,matched:#d75f00,current:-1:b,bg+:#e8e8e8,current_match:#d75f00:b,info:#878787,prompt:#d7005f,cursor:#0087af,spinner:#d7005f,border:#d0d0d0"
   }
-  git log --oneline --color=always |
-  ^sk --height=80% --layout=reverse --ansi --color $colors --preview 'git show {1} | delta' |
-  split row ' ' |
-  first |
-  if ($in | is-empty) { } else { git show $in }
+  git log --oneline --color=always | ^sk --height=80% --layout=reverse --ansi --color $colors --preview 'git show {1} | delta' | split row ' ' | first | if ($in | is-empty) { } else { git show $in }
 }
 
 # glos - interactive git log with skim (fast, no preview in TUI)
 # Shows full diff after selection - trades preview for speed
 export def glos [] {
-  git log --pretty=format:"%H|%h|%an|%ar|%s" -n 200
-    | lines
-    | each {|line|
-        let parts = ($line | split row '|')
-        {
-          hash: $parts.0,
-          short: $parts.1,
-          author: $parts.2,
-          date: $parts.3,
-          message: $parts.4
-        }
-      }
-    | (sk
-        --height "80%"
-        --format {
-          $"($in.short) ($in.message) \(($in.author), ($in.date)\)"
-        })
-    | if ($in | is-empty) {
-        return
-      } else {
-        git show $in.hash
-      }
+  git log --pretty="format:%H|%h|%an|%ar|%s" -n 200
+  | lines
+  | each {|line|
+    let parts = ($line | split row '|')
+    {
+      hash: $parts.0
+      short: $parts.1
+      author: $parts.2
+      date: $parts.3
+      message: $parts.4
+    }
+  }
+  | (
+    sk
+    --height "80%"
+    --format {
+      $"($in.short) ($in.message) \(($in.author), ($in.date)\)"
+    }
+  )
+  | if ($in | is-empty) {
+    return
+  } else {
+    git show $in.hash
+  }
 }
 
 # gd - interactive git diff
@@ -163,24 +154,16 @@ export def gd [
   let preview_flags = if $staged { "--staged" } else { "" }
   let preview_cmd = $"git -C '($root)' diff ($preview_flags) -- '{}' | delta"
   let files = (
-    git diff --name-only ...$flags |
-    fzf --height=60% --layout=reverse --multi --preview $preview_cmd
+    git diff --name-only ...$flags | fzf --height=60% --layout=reverse --multi --preview $preview_cmd
   )
   if ($files | is-empty) { return }
-  $files | lines | each { |it| git diff ...$flags -- ($root | path join $it) } | str join (char newline)
+  $files | lines | each {|it| git diff ...$flags -- ($root | path join $it) } | str join (char newline)
 }
 
 # gsw - interactive git switch branch
 export def gsw [] {
   let branch = (
-    git branch --all --color=always |
-    lines |
-    str trim |
-    where { not ($in | str starts-with '*') } |
-    each { $in | ansi strip | str replace 'remotes/origin/' '' } |
-    uniq |
-    str join (char newline) |
-    fzf --height=40% --layout=reverse --ansi
+    git branch --all --color=always | lines | str trim | where { not ($in | str starts-with '*') } | each { $in | ansi strip | str replace 'remotes/origin/' '' } | uniq | str join (char newline) | fzf --height=40% --layout=reverse --ansi
   )
   if ($branch | is-empty) { return }
   git switch ($branch | str trim)
@@ -189,12 +172,7 @@ export def gsw [] {
 # gbd - interactive git branch delete
 export def gbd [] {
   let branches = (
-    git branch |
-    lines |
-    str trim |
-    where { not ($in | str starts-with '*') } |
-    str join (char newline) |
-    fzf --height=40% --layout=reverse --multi
+    git branch | lines | str trim | where { not ($in | str starts-with '*') } | str join (char newline) | fzf --height=40% --layout=reverse --multi
   )
   if ($branches | is-empty) { return }
   $branches | lines | each { git branch -d $in }
@@ -203,13 +181,7 @@ export def gbd [] {
 # gss - interactive git stash show
 export def gss [] {
   let stash = (
-    git stash list |
-    lines |
-    each {|line| ($line | split row ':' | first) + ' ' + ($line | split row ':' | skip 1 | str join ':') } |
-    str join (char newline) |
-    fzf --height=60% --layout=reverse --preview 'git stash show -p {1} | delta' --preview-window=right:60% |
-    split row ' ' |
-    first
+    git stash list | lines | each {|line| ($line | split row ':' | first) + ' ' + ($line | split row ':' | skip 1 | str join ':') } | str join (char newline) | fzf --height=60% --layout=reverse --preview 'git stash show -p {1} | delta' --preview-window=right:60% | split row ' ' | first
   )
   if ($stash | is-empty) { return }
   git stash show -p $stash | delta
@@ -218,13 +190,7 @@ export def gss [] {
 # gsa - interactive git stash apply
 export def gsa [] {
   let stash = (
-    git stash list |
-    lines |
-    each {|line| ($line | split row ':' | first) + ' ' + ($line | split row ':' | skip 1 | str join ':') } |
-    str join (char newline) |
-    fzf --height=60% --layout=reverse --preview 'git stash show -p {1} | delta' --preview-window=right:60% |
-    split row ' ' |
-    first
+    git stash list | lines | each {|line| ($line | split row ':' | first) + ' ' + ($line | split row ':' | skip 1 | str join ':') } | str join (char newline) | fzf --height=60% --layout=reverse --preview 'git stash show -p {1} | delta' --preview-window=right:60% | split row ' ' | first
   )
   if ($stash | is-empty) { return }
   git stash apply $stash
@@ -233,10 +199,7 @@ export def gsa [] {
 # gcp - interactive git cherry-pick
 export def gcp [] {
   let commit = (
-    git log --all --oneline --color=always |
-    fzf --height=60% --layout=reverse --ansi --preview 'git show {1} | delta' |
-    split row ' ' |
-    first
+    git log --all --oneline --color=always | fzf --height=60% --layout=reverse --ansi --preview 'git show {1} | delta' | split row ' ' | first
   )
   if ($commit | is-empty) { return }
   git cherry-pick $commit
@@ -247,9 +210,7 @@ export def gcp [] {
 # ya - interactive yadm add (modified files only)
 export def yadd [] {
   let files = (
-    yadm diff --name-only | lines | where { $in != "" } | each { $"~/($in)" } |
-    str join (char newline) |
-    fzf --height=60% --layout=reverse --multi --preview 'bash -c "yadm diff -- ${1/#\\~/$HOME} | delta" _ {}'
+    yadm diff --name-only | lines | where { $in != "" } | each { $"~/($in)" } | str join (char newline) | fzf --height=60% --layout=reverse --multi --preview 'bash -c "yadm diff -- ${1/#\\~/$HOME} | delta" _ {}'
   )
   if ($files | is-empty) { return }
   $files | lines | each { yadm add ($in | path expand) }
@@ -258,21 +219,13 @@ export def yadd [] {
 
 # ylo - interactive yadm log
 export def ylo [] {
-  yadm log --oneline --color=always |
-  fzf --height=80% --layout=reverse --ansi --preview 'yadm show {1} | delta' |
-  split row ' ' |
-  first |
-  if ($in | is-empty) { } else { yadm show $in }
+  yadm log --oneline --color=always | fzf --height=80% --layout=reverse --ansi --preview 'yadm show {1} | delta' | split row ' ' | first | if ($in | is-empty) { } else { yadm show $in }
 }
 
 # yd - interactive yadm diff
 export def yd [] {
   let files = (
-    yadm diff --name-only |
-    lines |
-    each { $"~/($in)" } |
-    str join (char newline) |
-    fzf --height=60% --layout=reverse --multi --preview 'bash -c "yadm diff -- ${1/#\\~/$HOME} | delta" _ {}'
+    yadm diff --name-only | lines | each { $"~/($in)" } | str join (char newline) | fzf --height=60% --layout=reverse --multi --preview 'bash -c "yadm diff -- ${1/#\\~/$HOME} | delta" _ {}'
   )
   if ($files | is-empty) { return }
   $files | lines | each { yadm diff -- ($in | path expand) } | str join "\n"
@@ -281,11 +234,7 @@ export def yd [] {
 # yrh - interactive yadm reset HEAD (unstage)
 export def yrh [] {
   let files = (
-    yadm diff --cached --name-only |
-    lines |
-    each { $"~/($in)" } |
-    str join (char newline) |
-    fzf --height=60% --layout=reverse --multi --preview 'bash -c "yadm diff --cached -- ${1/#\\~/$HOME} | delta" _ {}'
+    yadm diff --cached --name-only | lines | each { $"~/($in)" } | str join (char newline) | fzf --height=60% --layout=reverse --multi --preview 'bash -c "yadm diff --cached -- ${1/#\\~/$HOME} | delta" _ {}'
   )
   if ($files | is-empty) { return }
   $files | lines | each { yadm reset HEAD ($in | path expand) }
@@ -295,11 +244,7 @@ export def yrh [] {
 # ycf - interactive yadm checkout file (discard changes)
 export def ycf [] {
   let files = (
-    yadm diff --name-only |
-    lines |
-    each { $"~/($in)" } |
-    str join (char newline) |
-    fzf --height=60% --layout=reverse --multi --preview 'bash -c "yadm diff -- ${1/#\\~/$HOME} | delta" _ {}'
+    yadm diff --name-only | lines | each { $"~/($in)" } | str join (char newline) | fzf --height=60% --layout=reverse --multi --preview 'bash -c "yadm diff -- ${1/#\\~/$HOME} | delta" _ {}'
   )
   if ($files | is-empty) { return }
   $files | lines | each { yadm checkout ($in | path expand) }
@@ -309,13 +254,7 @@ export def ycf [] {
 # yss - interactive yadm stash show
 export def yss [] {
   let stash = (
-    yadm stash list |
-    lines |
-    each {|line| ($line | split row ':' | first) + ' ' + ($line | split row ':' | skip 1 | str join ':') } |
-    str join (char newline) |
-    fzf --height=60% --layout=reverse --preview 'yadm stash show -p {1} | delta' --preview-window=right:60% |
-    split row ' ' |
-    first
+    yadm stash list | lines | each {|line| ($line | split row ':' | first) + ' ' + ($line | split row ':' | skip 1 | str join ':') } | str join (char newline) | fzf --height=60% --layout=reverse --preview 'yadm stash show -p {1} | delta' --preview-window=right:60% | split row ' ' | first
   )
   if ($stash | is-empty) { return }
   yadm stash show -p $stash | delta
@@ -430,7 +369,7 @@ export def secrets-refresh [--dir: path] {
 }
 
 # dl - download a file
-export def dl [url: string, output?: path] {
+export def dl [url: string output?: path] {
   if ($output == null) {
     ^wget --content-disposition $url
   } else {
@@ -441,12 +380,12 @@ export def dl [url: string, output?: path] {
 # export alias claude = bunx @anthropic-ai/claude-code@latest
 # export alias codex = bunx @openai/codex@latest
 
-def hproj [path?: path, --table] {
+def hproj [path?: path --table] {
   let base = (if $path == null { $env.PWD } else { $path }) | path expand
   let h = (try { history --long } catch { [] })
   if ($h | is-empty) { return }
   if ('cwd' in ($h | columns)) {
-    let rows = ($h | where {|row| ($row.cwd | path expand | str starts-with $base)})
+    let rows = ($h | where {|row| ($row.cwd | path expand | str starts-with $base) })
     if $table { $rows } else { $rows | get command }
   } else {
     if $table { $h } else { $h | get command }
@@ -464,45 +403,45 @@ export def --env hproj_pick [] {
 # sk-ps - interactive process selector
 export def sk-ps [] {
   ps
-    | where pid != 0
-    | sk --format { $"($in.name) \(pid: ($in.pid), cpu: ($in.cpu)%\)" }
+  | where pid != 0
+  | sk --format { $"($in.name) \(pid: ($in.pid), cpu: ($in.cpu)%\)" }
 }
 
 # sk-kill - interactive process killer
 export def sk-kill [] {
   ps
-    | where pid != 0
-    | sk --format { $"($in.name) \(pid: ($in.pid), cpu: ($in.cpu)%\)" }
-    | kill $in.pid
+  | where pid != 0
+  | sk --format { $"($in.name) \(pid: ($in.pid), cpu: ($in.cpu)%\)" }
+  | kill $in.pid
 }
 
 # sk-env - browse environment variables
 export def sk-env [] {
   $env
-    | transpose key value
-    | sk --format { $in.key }
+  | transpose key value
+  | sk --format { $in.key }
 }
 
 # sk-history - smarter history search with structured data
 export def sk-history [] {
   history
-    | reverse
-    | sk --format { $in.command }
+  | reverse
+  | sk --format { $in.command }
 }
 
 # sk-ga - interactive git add using structured data
 export def sk-ga [] {
   git status --short
-    | lines
-    | where { not ($in | is-empty) }
-    | each {|line|
-        {
-          status: ($line | str substring 0..2 | str trim),
-          file: ($line | str substring 3..)
-        }
-      }
-    | sk --multi --format { $"($in.status) ($in.file)" }
-    | each {|f| git add $f.file}
+  | lines
+  | where { not ($in | is-empty) }
+  | each {|line|
+    {
+      status: ($line | str substring 0..2 | str trim)
+      file: ($line | str substring 3..)
+    }
+  }
+  | sk --multi --format { $"($in.status) ($in.file)" }
+  | each {|f| git add $f.file }
 
   git status --short
 }
@@ -510,16 +449,16 @@ export def sk-ga [] {
 # sk-gsw - git branch switcher with structured preview
 export def sk-gsw [] {
   git branch --all --format="%(refname:short)|%(committerdate:relative)|%(subject)"
-    | lines
-    | each {|line|
-        let parts = ($line | split row '|')
-        {
-          branch: ($parts.0 | str replace 'remotes/origin/' ''),
-          date: $parts.1,
-          subject: $parts.2
-        }
-      }
-    | uniq-by branch
-    | sk --format { $"($in.branch) \(($in.date)\)" }
-    | git switch $in.branch
+  | lines
+  | each {|line|
+    let parts = ($line | split row '|')
+    {
+      branch: ($parts.0 | str replace 'remotes/origin/' '')
+      date: $parts.1
+      subject: $parts.2
+    }
+  }
+  | uniq-by branch
+  | sk --format { $"($in.branch) \(($in.date)\)" }
+  | git switch $in.branch
 }

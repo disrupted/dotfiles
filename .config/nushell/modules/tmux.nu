@@ -25,7 +25,7 @@ def session_exists [name: string] {
   (do { ^tmux has-session -t $name } | complete).exit_code == 0
 }
 
-def new_session [name: string, root: string] {
+def new_session [name: string root: string] {
   ^tmux new-session -d -s $name -c ($root | path expand)
 }
 
@@ -45,7 +45,7 @@ export def --env t [
 
   if not ($target in $sessions) {
     let known = ($sessions | columns | str join ", ")
-    error make { msg: $"Unknown session '($target)'. Known sessions: ($known)" }
+    error make {msg: $"Unknown session '($target)'. Known sessions: ($known)"}
   }
 
   let current_session = if ($env.TMUX? | is-not-empty) {
@@ -71,14 +71,14 @@ export def --env t [
 export def "t list" [] {
   let running = (running_sessions)
   load_sessions
-    | transpose name root
-    | each {|row|
-        {
-          session: $row.name
-          root: $row.root
-          status: (if ($row.name in $running) { "running" } else { "stopped" })
-        }
-      }
+  | transpose name root
+  | each {|row|
+    {
+      session: $row.name
+      root: $row.root
+      status: (if ($row.name in $running) { "running" } else { "stopped" })
+    }
+  }
 }
 
 export def "t kill" [] {

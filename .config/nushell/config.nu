@@ -29,16 +29,16 @@ $env.config = {
       completer: null
     }
   }
-  use_kitty_protocol: true  # Better keyboard handling in kitty terminal
+  use_kitty_protocol: true # Better keyboard handling in kitty terminal
   highlight_resolved_externals: true
   bracketed_paste: true
   table: {
-    mode: rounded  # "basic", "thin", "light", "compact", "rounded", "reinforced", "heavy", "none"
-    index_mode: always  # "always", "never"
+    mode: rounded # "basic", "thin", "light", "compact", "rounded", "reinforced", "heavy", "none"
+    index_mode: always # "always", "never"
     show_empty: true
-    padding: { left: 1, right: 1 }
+    padding: {left: 1 right: 1}
     trim: {
-      methodology: wrapping  # "wrapping", "truncating"
+      methodology: wrapping # "wrapping", "truncating"
       wrapping_try_keep_words: true
       truncating_suffix: "..."
     }
@@ -57,8 +57,8 @@ use std/config *
 $env.config.color_config = {
   # Table output
   separator: dark_gray
-  leading_trailing_space_bg: { attr: n }
-  header: { attr: b }
+  leading_trailing_space_bg: {attr: n}
+  header: {attr: b}
   empty: dark_gray
   row_index: dark_gray
   hints: dark_gray
@@ -79,8 +79,8 @@ $env.config.color_config = {
   filesize: default
   duration: default
   date: default
-  datetime: {|| (date now) - $in |
-    if $in < 2hr {
+  datetime: {||
+    (date now) - $in | if $in < 2hr {
       'red'
     } else if $in < 1day {
       'yellow'
@@ -90,14 +90,14 @@ $env.config.color_config = {
   }
 
   # Syntax shapes - minimal highlighting
-  shape_garbage: { fg: white, bg: red, attr: b }
+  shape_garbage: {fg: white bg: red attr: b}
 
   # Commands - the important distinction
-  shape_internalcall: { attr: b }           # bold, adapts to theme
-  shape_external: red                       # invalid = red (important feedback)
-  shape_external_resolved: { attr: b }      # bold, adapts to theme
+  shape_internalcall: {attr: b} # bold, adapts to theme
+  shape_external: red # invalid = red (important feedback)
+  shape_external_resolved: {attr: b} # bold, adapts to theme
   shape_externalarg: default
-  shape_custom: { attr: b }
+  shape_custom: {attr: b}
 
   # Literals
   shape_string: green
@@ -134,21 +134,22 @@ $env.config.color_config = {
   shape_variable: purple
   shape_vardecl: purple_bold
 
-  shape_matching_brackets: { attr: u }
+  shape_matching_brackets: {attr: u}
 }
 
-$env.config = ($env.config | merge {
-  keybindings: ($env.config.keybindings | default []),
-})
-
+$env.config = (
+  $env.config | merge {
+    keybindings: ($env.config.keybindings | default [])
+  }
+)
 
 $env.config.keybindings ++= [
   {
     name: suspend_ctrl_z
     modifier: control
     keycode: char_z
-    mode: [vi_normal, vi_insert, emacs]
-    event: null  # disabled to prevent accidental job suspension
+    mode: [vi_normal vi_insert emacs]
+    event: null # disabled to prevent accidental job suspension
     # event: {
     #   until: [
     #     { send: ExecuteHostCommand cmd: "if (job list | where type == frozen | is-not-empty) { job unfreeze e> /dev/null }" }
@@ -161,11 +162,11 @@ $env.config.keybindings ++= [
     name: completion_menu
     modifier: none
     keycode: tab
-    mode: [emacs, vi_normal, vi_insert]
+    mode: [emacs vi_normal vi_insert]
     event: {
       until: [
-        { send: Menu, name: completion_menu }
-        { send: MenuNext }
+        {send: Menu name: completion_menu}
+        {send: MenuNext}
       ]
     }
   }
@@ -174,15 +175,15 @@ $env.config.keybindings ++= [
     name: completion_previous
     modifier: shift
     keycode: backtab
-    mode: [emacs, vi_insert, vi_normal]
-    event: { send: MenuPrevious }
+    mode: [emacs vi_insert vi_normal]
+    event: {send: MenuPrevious}
   }
   {
     name: project_history
     modifier: alt
     keycode: char_r
     mode: [emacs]
-    event: { send: ExecuteHostCommand, cmd: "hproj_pick" }
+    event: {send: ExecuteHostCommand cmd: "hproj_pick"}
   }
   # Edit command line in $EDITOR (Ctrl+v)
   {
@@ -190,7 +191,7 @@ $env.config.keybindings ++= [
     modifier: control
     keycode: char_v
     mode: [emacs]
-    event: { send: OpenEditor }
+    event: {send: OpenEditor}
   }
   {
     name: fuzzy_file
@@ -210,8 +211,8 @@ $env.config.keybindings ++= [
     mode: [emacs]
     event: {
       until: [
-        { send: MenuUp }
-        { send: Up }
+        {send: MenuUp}
+        {send: Up}
       ]
     }
   }
@@ -222,8 +223,8 @@ $env.config.keybindings ++= [
     mode: [emacs]
     event: {
       until: [
-        { send: MenuDown }
-        { send: Down }
+        {send: MenuDown}
+        {send: Down}
       ]
     }
   }
@@ -233,14 +234,14 @@ $env.config.keybindings ++= [
     modifier: alt
     keycode: left
     mode: [emacs]
-    event: { edit: MoveWordLeft }
+    event: {edit: MoveWordLeft}
   }
   {
     name: move_word_right
     modifier: alt
     keycode: right
     mode: [emacs]
-    event: { edit: MoveWordRight }
+    event: {edit: MoveWordRight}
   }
   # Backward kill word (Alt+Backspace)
   {
@@ -248,7 +249,7 @@ $env.config.keybindings ++= [
     modifier: alt
     keycode: backspace
     mode: [emacs]
-    event: { edit: BackspaceWord }
+    event: {edit: BackspaceWord}
   }
   # FZF file picker (Ctrl+F)
   {
@@ -277,7 +278,7 @@ $env.config.keybindings ++= [
     name: fuzzy_history_fzf
     modifier: control
     keycode: char_r
-    mode: [emacs , vi_normal, vi_insert]
+    mode: [emacs vi_normal vi_insert]
     event: {
       send: ExecuteHostCommand
       cmd: "commandline edit --replace (
@@ -299,13 +300,13 @@ $env.config.keybindings ++= [
     keycode: char_s
     mode: [emacs vi_normal vi_insert]
     event: {
-        send: ExecuteHostCommand
-        cmd: "commandline edit --replace (ask (commandline))"
+      send: ExecuteHostCommand
+      cmd: "commandline edit --replace (ask (commandline))"
     }
   }
 ]
 
-$env.config.hooks.pre_execution = ([ update-theme ])
+$env.config.hooks.pre_execution = ([update-theme])
 
 let pre_prompt_terminal_safety = {||
   # disable Ctrl+z to suspend
@@ -338,12 +339,14 @@ $env.config.hooks.env_change.PWD = $env.config.hooks.env_change.PWD? | default [
 #   }
 # }]
 
-$env.config.hooks.env_change.PWD ++= [{||
+$env.config.hooks.env_change.PWD ++= [
+  {||
     if ($env.TMUX? | is-not-empty) {
-        let dir = $env.PWD | path basename
-        tmux rename-window $dir
+      let dir = $env.PWD | path basename
+      tmux rename-window $dir
     }
-}]
+  }
+]
 
 # detect theme on load
 update-theme

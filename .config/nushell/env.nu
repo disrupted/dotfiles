@@ -3,7 +3,7 @@
 # Path helpers
 def --env prepend-path [paths: list<string>] {
   let current_path = ($env.PATH? | default [])
-  let missing_paths = ($paths | where { |p| $p not-in $current_path })
+  let missing_paths = ($paths | where {|p| $p not-in $current_path })
   if ($missing_paths | is-not-empty) {
     $env.PATH = ($missing_paths | append $current_path)
   }
@@ -23,7 +23,7 @@ def --env setup-homebrew [hb: string] {
   $env.CFLAGS = $" -I($hb)/opt/freetds/include"
   $env.CPPFLAGS = $" -I($hb)/opt/zlib/include -I($hb)/opt/bzip2/include -I($hb)/opt/llvm/include -I($hb)/opt/openssl@3/include"
   $env.PKG_CONFIG_PATH = ($env.PKG_CONFIG_PATH? | default "" | str trim | $"($in) ($hb)/opt/zlib/lib/pkgconfig" | str trim)
-  $env.DYLD_LIBRARY_PATH = ([$env.DYLD_LIBRARY_PATH? "/opt/homebrew/lib"] | where { |it| ($it | default "") != "" } | str join ":")
+  $env.DYLD_LIBRARY_PATH = ([$env.DYLD_LIBRARY_PATH? "/opt/homebrew/lib"] | where {|it| ($it | default "") != "" } | str join ":")
 }
 
 let user_bin_paths = [
@@ -104,8 +104,8 @@ def --env update-theme [] {
 --style=minimal
 --no-separator
 --info=hidden
---ansi
-(if $system_theme == $dark_theme { $FZF_COLORS_DARK } else { $FZF_COLORS_LIGHT })"
+--ansi 
+  (if $system_theme == $dark_theme { $FZF_COLORS_DARK } else { $FZF_COLORS_LIGHT })"
     $env._ZO_FZF_OPTS = $"($env.FZF_DEFAULT_OPTS)\n--height=7"
   }
 }

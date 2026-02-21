@@ -46,12 +46,12 @@ export-env {
     condition: { "MISE_SHELL" in $env }
     code: { mise_hook }
   }
-    add-hook hooks.pre_prompt $hook
-    add-hook hooks.env_change.PWD $hook
+  add-hook hooks.pre_prompt $hook
+  add-hook hooks.env_change.PWD $hook
 }
 
-export def --env "mise-env" [command: string, ...rest: string] {
-  let env_commands = ["deactivate", "shell", "sh"]
+export def --env "mise-env" [command: string ...rest: string] {
+  let env_commands = ["deactivate" "shell" "sh"]
 
   if ($command == "activate") {
     $env.MISE_SHELL = "nu"
