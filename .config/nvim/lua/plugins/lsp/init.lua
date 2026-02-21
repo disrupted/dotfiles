@@ -266,6 +266,7 @@ return {
                     sql = { 'sleek' }, -- or dprint
                     svelte = dprint,
                     swift = { 'swift' },
+                    nu = { 'topiary_nu' },
                     http = {
                         'kulala-fmt',
                         -- 'injected', -- FIXME: error: vim/shared.lua:0: src: expected table, got nil
@@ -359,6 +360,10 @@ return {
                         }
                     end
                 end,
+            }
+            conform.formatters.topiary_nu = {
+                command = 'topiary',
+                args = { 'format', '--language', 'nu' },
             }
             conform.formatters.dprint_injected = vim.tbl_deep_extend(
                 'force',
