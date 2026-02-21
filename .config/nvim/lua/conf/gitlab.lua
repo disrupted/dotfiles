@@ -5,20 +5,30 @@ local n = require 'nui-components'
 local renderer = n.create_renderer {
     width = 60,
     height = 13,
+    keymap = {
+        close = '<Esc>',
+        focus_next = '<C-n>',
+        focus_prev = '<C-p>',
+    },
 }
 
 renderer:on_mount(function()
-    local augroup = vim.api.nvim_create_augroup('GitlabMrForm', { clear = true })
+    local augroup =
+        vim.api.nvim_create_augroup('GitlabMrForm', { clear = true })
     vim.api.nvim_create_autocmd('WinLeave', {
         group = augroup,
         callback = function()
             vim.schedule(function()
                 if renderer.layout and renderer.layout._.mounted then
-                    local wins = vim.tbl_map(
-                        function(c) return c.winid end,
-                        renderer:get_focusable_components()
-                    )
-                    if not vim.tbl_contains(wins, vim.api.nvim_get_current_win()) then
+                    local wins = vim.tbl_map(function(c)
+                        return c.winid
+                    end, renderer:get_focusable_components())
+                    if
+                        not vim.tbl_contains(
+                            wins,
+                            vim.api.nvim_get_current_win()
+                        )
+                    then
                         vim.api.nvim_del_augroup_by_name 'GitlabMrForm'
                         renderer:close()
                     end
@@ -94,7 +104,8 @@ local create_mr_form = function(opts)
             autoresize = true,
             on_change = function(_, component)
                 vim.schedule(function()
-                    local visual_lines = vim.api.nvim_win_text_height(component.winid, {}).all
+                    local visual_lines =
+                        vim.api.nvim_win_text_height(component.winid, {}).all
                     local new_size = math.max(7, visual_lines)
                     component._private.text_input_signal.size = new_size
                     renderer:set_size { height = 6 + new_size }
