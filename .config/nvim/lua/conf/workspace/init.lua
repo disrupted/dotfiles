@@ -219,12 +219,39 @@ local cross_tab_pos = 0 -- 0 = before first entry
 ---@param bufnr integer
 ---@param dest_name string managed tab name (e.g. 'code', 'tests')
 local function move_buf_to_tab(bufnr, dest_name)
+    -- Mark assignment immediately so other handlers (TabEnter, BufEnter)
+    -- can see it before the scheduled move executes.
+    buf_tab_assignment[bufnr] = dest_name
+    -- Capture source context now; by the time vim.schedule runs the user
+    -- may have switched tabs.
+    local source_tab = vim.api.nvim_get_current_tabpage()
+    local source_name = get_tab_name(source_tab) or '?'
     moving = true
     vim.schedule(function()
         local scope_core = require 'scope.core'
         local scope_utils = require 'scope.utils'
-        local source_tab = vim.api.nvim_get_current_tabpage()
-        local source_name = get_tab_name(source_tab) or '?'
+
+        -- If the user has switched away from the source tab, do a
+        -- lightweight move: update scope caches without switching focus.
+        if vim.api.nvim_get_current_tabpage() ~= source_tab then
+            vim.api.nvim_set_option_value('buflisted', false, { buf = bufnr })
+            -- remove from source cache
+            local src_cache = scope_core.cache[source_tab] or {}
+            scope_core.cache[source_tab] = vim.tbl_filter(function(b)
+                return b ~= bufnr
+            end, src_cache)
+            -- add to dest cache
+            local target = find_tab(dest_name)
+            if target then
+                local cache = scope_core.cache[target] or {}
+                if not vim.list_contains(cache, bufnr) then
+                    table.insert(cache, bufnr)
+                    scope_core.cache[target] = cache
+                end
+            end
+            moving = false
+            return
+        end
 
         -- suppress scope's autocmds during the entire move
         pcall(vim.api.nvim_del_augroup_by_name, 'ScopeAU')
@@ -320,10 +347,7 @@ local function move_buf_to_tab(bufnr, dest_name)
         -- 5. update scope's cache for target tab
         scope_core.cache[target] = scope_utils.get_valid_buffers()
 
-        -- 6. mark buffer as assigned to destination tab
-        buf_tab_assignment[bufnr] = dest_name
-
-        -- 7. re-enable scope
+        -- 6. re-enable scope
         require('scope')._setup()
 
         moving = false
@@ -407,13 +431,61 @@ M.setup = function()
         end,
     })
 
+    vim.api.nvim_create_autocmd('TabEnter', {
+        group = tabmanager_augroup,
+        desc = 'Clean up wrong-tab buffers after tab switch',
+        callback = function()
+            local current_tab = vim.api.nvim_get_current_tabpage()
+            local current_name = get_tab_name(current_tab)
+            if not current_name then
+                return
+            end
+            -- Check all listed buffers, not just the active one — scope
+            -- may have restored several wrong-tab buffers on TabEnter.
+            vim.schedule(function()
+                local scope_core = require 'scope.core'
+                local scope_utils = require 'scope.utils'
+                local listed = scope_utils.get_valid_buffers()
+                local switched = false
+                for _, b in ipairs(listed) do
+                    local assigned = buf_tab_assignment[b]
+                    if assigned and assigned ~= current_name then
+                        vim.api.nvim_set_option_value(
+                            'buflisted',
+                            false,
+                            { buf = b }
+                        )
+                        switched = true
+                    end
+                end
+                -- If the active buffer was one of the wrong ones, switch away
+                local active_assigned =
+                    buf_tab_assignment[vim.api.nvim_get_current_buf()]
+                if active_assigned and active_assigned ~= current_name then
+                    local valid = vim.iter(scope_utils.get_valid_buffers())
+                        :filter(function(b)
+                            local a = buf_tab_assignment[b]
+                            return a == current_name or a == nil
+                        end)
+                        :totable()
+                    if #valid > 0 then
+                        vim.cmd('keepjumps buffer ' .. valid[1])
+                    else
+                        vim.cmd.enew()
+                        vim.bo.buflisted = true
+                    end
+                end
+                if switched then
+                    scope_core.cache[current_tab] =
+                        scope_utils.get_valid_buffers()
+                end
+            end)
+        end,
+    })
+
     vim.api.nvim_create_autocmd('BufEnter', {
         group = tabmanager_augroup,
         callback = function(args)
-            -- skip if we're already moving a buffer
-            if moving then
-                return
-            end
             -- skip non-file buffers
             if vim.bo[args.buf].buftype ~= '' then
                 return
@@ -428,18 +500,25 @@ M.setup = function()
 
             if managed_buffers[args.buf] then
                 local dest_name = is_test_file(args.file) and 'tests' or 'code'
-                -- skip if already assigned AND we're in the correct tab
-                if
-                    buf_tab_assignment[args.buf] == dest_name
-                    and current_name == dest_name
-                then
+                local already_assigned = buf_tab_assignment[args.buf] ~= nil
+                -- Record the assignment so TabEnter can clean up later,
+                -- even if we can't move right now.
+                if not already_assigned then
+                    buf_tab_assignment[args.buf] = dest_name
+                end
+                if already_assigned then
+                    -- Don't re-trigger a move for buffers that were already
+                    -- assigned.  TabEnter handles cleanup if they appear in
+                    -- the wrong tab (e.g. scope cache restore).
                     return
                 end
+                -- skip if we're already moving a buffer
+                if moving then
+                    return
+                end
+                -- First time seeing this buffer — move if needed
                 if current_name ~= dest_name then
                     move_buf_to_tab(args.buf, dest_name)
-                else
-                    -- buffer is in the right tab, just record it
-                    buf_tab_assignment[args.buf] = dest_name
                 end
             end
         end,
