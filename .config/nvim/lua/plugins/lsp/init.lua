@@ -42,6 +42,7 @@ return {
                 'terraform-ls',
                 'texlab',
                 'tombi',
+                'ts_query_ls',
                 'vale-ls',
                 'vtsls',
                 'yaml-language-server',

@@ -47,6 +47,7 @@ return {
                 'make',
                 'markdown',
                 'markdown_inline',
+                'nickel',
                 'ninja',
                 'nix',
                 'nu',
@@ -102,14 +103,21 @@ return {
                         vim.list_contains(treesitter.get_available(), lang)
                     then
                         -- HACK: try starting it anyways, some external parsers (e.g. ghostty) aren't correctly detected as installed
-                        ok = pcall(vim.treesitter.start, args.buf, lang)
+                        local ok = pcall(vim.treesitter.start, args.buf, lang)
                         if not ok then
-                            Snacks.notify(
-                                string.format(
-                                    'Treesitter parser available for %s',
-                                    lang
+                            if
+                                vim.b[args.buf].ts_available_notified_lang
+                                ~= lang
+                            then
+                                Snacks.notify(
+                                    string.format(
+                                        'Treesitter parser available for %s',
+                                        lang
+                                    )
                                 )
-                            )
+                                vim.b[args.buf].ts_available_notified_lang =
+                                    lang
+                            end
                         end
                     end
                 end,

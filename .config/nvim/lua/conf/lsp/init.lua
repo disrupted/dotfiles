@@ -255,6 +255,7 @@ vim.lsp.enable {
     'html_ls',
     'json_ls',
     -- 'lua_ls',
+    'nickel_ls',
     'nushell',
     'pyrefly',
     'pyright',

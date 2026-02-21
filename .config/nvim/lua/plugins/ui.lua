@@ -831,6 +831,10 @@ return {
                         client
                         and client:supports_method 'textDocument/documentSymbol'
                     then
+                        if client.name == 'nickel_ls' then
+                            -- HACK: workaround so Treesitter can take priority for dropbar.nvim
+                            return
+                        end
                         local sources = require 'dropbar.sources'
                         local utils = require 'dropbar.utils'
                         for win in pairs(_G.dropbar.bars[bufnr]) do
