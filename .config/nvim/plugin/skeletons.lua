@@ -7,7 +7,11 @@ local skeletons = {
 local au = vim.api.nvim_create_augroup('skeletons', {})
 vim.api.nvim_create_autocmd('BufNewFile', {
     group = au,
-    pattern = { '*.lua', '*.tsx', 'tests/**.py' },
+    pattern = {
+        'lua/plugins/*.lua',
+        '*.tsx',
+        'tests/**.py',
+    },
     desc = 'Load skeleton when creating new file',
     callback = function(args)
         local ft = vim.api.nvim_get_option_value('filetype', { buf = args.buf })
