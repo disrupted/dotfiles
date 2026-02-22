@@ -99,29 +99,6 @@ return {
                         desc = 'Add selection',
                         mode = 'v',
                     },
-                    -- ['<leader>ao'] = { 'open_output' }, -- Opens and focuses on output window
-                    -- ['<leader>at'] = { 'toggle_focus' },
-                    ['<leader>aT'] = {
-                        'timeline',
-                        desc = 'Timeline',
-                        mode = 'n',
-                    }, -- Display timeline picker to navigate/undo/redo/fork messages
-                    -- ['<leader>aq'] = { 'close', desc = 'Close' },
-                    ['<leader>as'] = {
-                        'select_session',
-                        desc = 'Select session',
-                        mode = 'n',
-                    },
-                    ['<leader>aR'] = {
-                        'rename_session',
-                        desc = 'Rename session',
-                        mode = 'n',
-                    },
-                    ['<leader>an'] = {
-                        'open_input_new_session',
-                        desc = 'New session',
-                        mode = 'n',
-                    },
                     -- ['<leader>ad'] = { 'diff_open', desc = 'Open diff' },
                     -- ['<leader>a]'] = { 'diff_next', desc = 'Next diff' },
                     -- ['<leader>a['] = { 'diff_prev', desc = 'Prev diff' },
@@ -134,30 +111,32 @@ return {
                     -- ['<leader>arR'] = { 'diff_restore_snapshot_all' }, -- Restore all files to a restore point
                 },
                 input_window = {
-                    ['<leader>ai'] = false, -- FIXME
-                    ['<leader>aS'] = false,
-                    ['<leader>aD'] = false,
-                    ['<leader>aO'] = false,
-                    ['<leader>ads'] = false,
-                    ['<leader>an'] = {
+                    ['<LocalLeader>n'] = {
                         'open_input_new_session',
                         desc = 'New session',
+                    },
+                    ['<LocalLeader>R'] = {
+                        'rename_session',
+                        desc = 'Rename session',
+                        mode = 'n',
+                    },
+                    ['<LocalLeader>S'] = {
+                        'select_session',
+                        desc = 'Select session',
+                        mode = 'n',
                     },
                     ['<cr>'] = { 'submit_input_prompt', mode = 'n' },
                     ['<esc>'] = false,
                     ['<C-c>'] = { 'cancel', mode = { 'n', 'i' } },
                     ['q'] = { 'toggle_pane' }, -- Toggle between input and output panes
                     ['~'] = false, -- disabled since I use Snacks file picker instead
-                    -- ['~'] = { 'mention_file', mode = 'i' }, -- Pick a file and add to context. See File Mentions section
                     ['@'] = { 'mention', mode = 'i' }, -- Insert mention (file/agent)
                     ['/'] = { 'slash_commands', mode = 'i' },
                     ['#'] = { 'context_items', mode = 'i' }, -- Manage context items (current file, selection, diagnostics, mentioned files)
-                    -- ['<M-v>'] = { 'paste_image', mode = 'i' }, -- Paste image from clipboard as attachment
-                    -- ['<C-i>'] = { 'focus_input', mode = { 'n', 'i' } }, -- Focus on input window and enter insert mode at the end of the input from the output window
                     ['<tab>'] = false,
                     ['<S-tab>'] = { 'switch_mode', mode = { 'n', 'i' } }, -- Switch between modes (build/plan)
-                    -- ['<up>'] = { 'prev_prompt_history', mode = { 'n', 'i' } }, -- Navigate to previous prompt in history
-                    -- ['<down>'] = { 'next_prompt_history', mode = { 'n', 'i' } }, -- Navigate to next prompt in history
+                    ['<up>'] = { 'prev_prompt_history', mode = 'n' }, -- Navigate to previous prompt in history
+                    ['<down>'] = { 'next_prompt_history', mode = 'n' }, -- Navigate to next prompt in history
                     ['<M-r>'] = { 'cycle_variant', mode = { 'n', 'i' } }, -- Cycle through available model variants
                     ['<M-p>'] = {
                         function()
@@ -168,16 +147,33 @@ return {
                     },
                 },
                 output_window = {
-                    ['<leader>ai'] = false, -- FIXME
-                    ['<leader>aS'] = false,
-                    ['<leader>aD'] = { 'debug_message' },
-                    ['<leader>aO'] = { 'debug_output' },
-                    ['<leader>ads'] = { 'debug_session' },
-                    ['<leader>at'] = {
+                    ['<LocalLeader>n'] = {
+                        'open_input_new_session',
+                        desc = 'New session',
+                    },
+                    ['<LocalLeader>R'] = {
+                        'rename_session',
+                        desc = 'Rename session',
+                        mode = 'n',
+                    },
+                    ['<LocalLeader>S'] = {
+                        'select_session',
+                        desc = 'Select session',
+                        mode = 'n',
+                    },
+                    ['<LocalLeader>T'] = {
+                        'timeline',
+                        desc = 'Timeline',
+                        mode = 'n',
+                    }, -- Display timeline picker to navigate/undo/redo/fork messages
+                    ['<LocalLeader>dm'] = { 'debug_message' },
+                    ['<LocalLeader>do'] = { 'debug_output' },
+                    ['<LocalLeader>ds'] = { 'debug_session' },
+                    ['<LocalLeader>t'] = {
                         'toggle_tool_output',
                         desc = 'Toggle tool visibility',
                     },
-                    ['<leader>ar'] = {
+                    ['<LocalLeader>r'] = {
                         'toggle_reasoning_output',
                         desc = 'Toggle reasoning visibility',
                     },
@@ -203,7 +199,10 @@ return {
                         desc = 'Pick model',
                     },
                     ['<M-i>'] = false,
-                    ['S'] = { 'select_child_session' },
+                    ['<LocalLeader>s'] = {
+                        'select_child_session',
+                        desc = 'Select child session',
+                    },
                     [']]'] = { 'next_message', desc = 'Next message' },
                     ['[['] = { 'prev_message', desc = 'Prev message' },
                 },
@@ -301,31 +300,6 @@ return {
 
             require('which-key').add {
                 {
-                    '<leader>ap',
-                    group = 'Permission',
-                    icon = { icon = '󰳈' },
-                },
-                {
-                    '<leader>an',
-                    desc = 'New session',
-                    icon = '󱐏',
-                },
-                {
-                    '<leader>aR',
-                    desc = 'Rename session',
-                    icon = '󰑕',
-                },
-                {
-                    '<leader>as',
-                    desc = 'Select session',
-                    icon = '󱅳',
-                },
-                {
-                    '<leader>aT',
-                    desc = 'Timeline',
-                    icon = '󱇼',
-                },
-                {
                     '<C-a>',
                     desc = 'Add selection',
                     mode = 'v',
@@ -342,26 +316,21 @@ return {
             vim.api.nvim_create_autocmd('User', {
                 pattern = 'OpencodeEvent:permission.asked',
                 callback = function(args)
-                    -- local event = args.data.event
-                    -- Snacks.notify(
-                    --     { 'permission requested', vim.inspect(event) },
-                    --     { title = 'Agent' }
-                    -- )
                     require('which-key').add {
                         {
-                            '<leader>apa',
+                            '<leader>aa',
                             '<cmd>Opencode permission accept<CR>',
                             desc = 'Accept',
                             icon = { icon = '', hl = 'DiagnosticOk' },
                         },
                         {
-                            '<leader>apA',
+                            '<leader>aA',
                             '<cmd>Opencode permission accept_all<CR>',
                             desc = 'Accept all',
                             icon = { icon = '', hl = 'DiagnosticOk' },
                         },
                         {
-                            '<leader>apd',
+                            '<leader>ad',
                             '<cmd>Opencode permission deny<CR>',
                             desc = 'Deny',
                             icon = { icon = '', hl = 'DiagnosticError' },
@@ -378,14 +347,14 @@ return {
                         )
                     then
                         local keymaps =
-                            { '<leader>apa', '<leader>apA', '<leader>apd' }
+                            { '<leader>aa', '<leader>aA', '<leader>ad' }
                         for _, keymap in ipairs(keymaps) do
                             vim.keymap.del('n', keymap)
                         end
                         require('which-key').add {
-                            { '<leader>apa' },
-                            { '<leader>apA' },
-                            { '<leader>apd' },
+                            { '<leader>aa' },
+                            { '<leader>aA' },
+                            { '<leader>ad' },
                             hidden = true,
                         }
                     end
@@ -394,12 +363,36 @@ return {
 
             vim.g.agent_follow_edits = true -- I believe ACP would make this more seamless
 
+            local function is_main_edit_win(winid)
+                if not vim.api.nvim_win_is_valid(winid) then
+                    return false
+                end
+                local config = vim.api.nvim_win_get_config(winid)
+                if config.relative ~= '' then
+                    return false
+                end
+                return not vim.wo[winid].winfixbuf
+            end
+
+            local function get_main_edit_winid()
+                local current_winid = vim.api.nvim_get_current_win()
+                if is_main_edit_win(current_winid) then
+                    return current_winid
+                end
+
+                for _, winid in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+                    if is_main_edit_win(winid) then
+                        return winid
+                    end
+                end
+            end
+
             vim.api.nvim_create_autocmd('User', {
                 pattern = 'OpencodeEvent:file.edited',
                 callback = function(args)
-                    ---@type string?
-                    local abspath = args.data.event.file
-                    if not abspath or not vim.g.workspace_root then
+                    ---@type string
+                    local abspath = args.data.event.properties.file
+                    if not vim.g.workspace_root then
                         return
                     end
                     local relpath =
@@ -415,24 +408,53 @@ return {
                         return
                     end
                     local bufnr = vim.fn.bufnr(abspath, true)
-                    if not api.nvim_buf_is_loaded(bufnr) then
+                    if not vim.api.nvim_buf_is_loaded(bufnr) then
                         pcall(vim.fn.bufload, bufnr)
                     end
-                    -- local ok = pcall(api.nvim_win_set_buf, code_winid, bufnr)
-                    -- if not ok then
-                    --     return
-                    -- end
+                    local main_winid = get_main_edit_winid()
+                    if not main_winid then
+                        return
+                    end
+                    local ok =
+                        pcall(vim.api.nvim_win_set_buf, main_winid, bufnr)
+                    if not ok then
+                        return
+                    end
                 end,
             })
 
             local input_window = require 'opencode.ui.input_window'
             input_window.schedule_resize = function() end
 
-            -- TODO: auto resize input window with edgy
-            --[[ vim.api.nvim_create_autocmd('FileType', {
+            vim.api.nvim_create_autocmd('FileType', {
                 pattern = { 'opencode' },
                 callback = function(args)
-                    local function get_content_height(windows)
+                    require('which-key').add {
+                        buffer = args.buf,
+                        {
+                            '<LocalLeader>',
+                            group = 'Agent',
+                            icon = { icon = '', hl = 'DiagnosticWarn' },
+                        },
+                        {
+                            '<LocalLeader>n',
+                            desc = 'New session',
+                            icon = '󱐏',
+                        },
+                        {
+                            '<LocalLeader>R',
+                            desc = 'Rename session',
+                            icon = '󰑕',
+                        },
+                        {
+                            '<LocalLeader>S',
+                            desc = 'Select session',
+                            icon = '󱅳',
+                        },
+                    }
+
+                    -- TODO: auto resize input window with edgy
+                    --[[ local function get_content_height(windows)
                         local line_count =
                             vim.api.nvim_buf_line_count(windows.input_buf)
                         if line_count <= 0 then
@@ -473,13 +495,65 @@ return {
                             vim.print('height', height)
                             require('edgy.layout').update()
                         end, 1000 / 60) -- throttle to 60 FPS
-                    end
+                    end ]]
                 end,
-            }) ]]
+            })
 
             vim.api.nvim_create_autocmd('FileType', {
                 pattern = { 'opencode_output' },
-                callback = function()
+                callback = function(args)
+                    require('which-key').add {
+                        buffer = args.buf,
+                        {
+                            '<LocalLeader>',
+                            group = 'Agent',
+                            icon = { icon = '', hl = 'DiagnosticWarn' },
+                        },
+                        {
+                            '<LocalLeader>n',
+                            desc = 'New session',
+                            icon = '󱐏',
+                        },
+                        {
+                            '<LocalLeader>R',
+                            desc = 'Rename session',
+                            icon = '󰑕',
+                        },
+                        {
+                            '<LocalLeader>S',
+                            desc = 'Select session',
+                            icon = '󱅳',
+                        },
+                        {
+                            '<LocalLeader>s',
+                            desc = 'Select child session',
+                            icon = '󰚩',
+                        },
+                        {
+                            '<LocalLeader>T',
+                            desc = 'Timeline',
+                            icon = '󱇼',
+                        },
+                        {
+                            '<S-BS>',
+                            function()
+                                local win = (
+                                    require('opencode.state').windows or {}
+                                ).output_win
+                                if win and vim.api.nvim_win_is_valid(win) then
+                                    if vim.w[win]['edgy_width'] == nil then
+                                        vim.w[win]['edgy_width'] = 110
+                                    else
+                                        vim.w[win]['edgy_width'] = nil
+                                    end
+                                    require('edgy.layout').update()
+                                end
+                            end,
+                            desc = 'Zoom window',
+                            icon = icons.misc.window,
+                        },
+                    }
+
                     require('which-key').add {
                         {
                             '<S-BS>',

@@ -1,9 +1,10 @@
+local function is_inside_opencode_prompt()
+    return vim.bo.filetype == 'opencode'
+end
+
 local function is_opencode_completion()
-    if vim.bo.filetype == 'opencode' then
-        local item = require('blink.cmp.completion.list').get_selected_item()
-        return item and vim.startswith(item.source_id, 'opencode_')
-    end
-    return false
+    local item = require('blink.cmp.completion.list').get_selected_item()
+    return item and vim.startswith(item.source_id, 'opencode_')
 end
 
 ---@module 'lazy.types'
@@ -23,7 +24,7 @@ return {
                         if cmp.is_menu_visible() then
                             return cmp.cancel()
                         end
-                        if vim.bo.filetype == 'opencode' then
+                        if is_inside_opencode_prompt() then
                             return false
                         end
                         return cmp.show()
@@ -49,7 +50,10 @@ return {
                 -- Opencode: preset 'enter'
                 ['<CR>'] = {
                     function(cmp)
-                        if is_opencode_completion() then
+                        if
+                            is_inside_opencode_prompt()
+                            and is_opencode_completion()
+                        then
                             return cmp.accept()
                         end
                     end,
@@ -57,7 +61,10 @@ return {
                 },
                 ['<Tab>'] = {
                     function(cmp)
-                        if is_opencode_completion() then
+                        if
+                            is_inside_opencode_prompt()
+                            and is_opencode_completion()
+                        then
                             return cmp.select_next()
                         end
                     end,
@@ -65,7 +72,10 @@ return {
                 },
                 ['<S-Tab>'] = {
                     function(cmp)
-                        if is_opencode_completion() then
+                        if
+                            is_inside_opencode_prompt()
+                            and is_opencode_completion()
+                        then
                             return cmp.select_prev()
                         end
                     end,
@@ -91,10 +101,7 @@ return {
                     auto_show = true,
                     draw = {
                         columns = function(ctx)
-                            if
-                                ctx.mode == 'cmdline'
-                                or vim.bo.filetype == 'opencode'
-                            then
+                            if ctx.mode == 'cmdline' then
                                 return { { 'label' } }
                             else
                                 return {
