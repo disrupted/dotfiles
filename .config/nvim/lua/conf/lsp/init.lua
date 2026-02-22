@@ -257,6 +257,7 @@ vim.lsp.enable {
     -- 'lua_ls',
     'nickel_ls',
     'nushell',
+    'pkl_ls',
     'pyrefly',
     'pyright',
     'ruff',

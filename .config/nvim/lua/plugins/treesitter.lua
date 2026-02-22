@@ -51,6 +51,7 @@ return {
                 'ninja',
                 'nix',
                 'nu',
+                'pkl',
                 'python',
                 'pymanifest',
                 'query',
