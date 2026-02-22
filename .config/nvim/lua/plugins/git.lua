@@ -190,14 +190,6 @@ return {
                 end,
                 desc = 'Neogit',
             },
-            {
-                '<tab>',
-                function()
-                    require('neogit').open { kind = 'tab' }
-                    vim.cmd.tabmove()
-                end,
-                desc = 'Neogit',
-            },
         },
         ---@module 'neogit.config'
         ---@type NeogitConfig
@@ -230,12 +222,15 @@ return {
                 desc = 'Close Neogit after pushing',
             })
 
-            vim.api.nvim_create_autocmd({ 'BufEnter' }, {
-                pattern = 'NeogitStatus',
-                group = augroup,
-                callback = neogit.refresh,
-                desc = 'Update Neogit status on enter',
-            })
+            -- vim.api.nvim_create_autocmd({ 'BufEnter' }, {
+            --     pattern = 'NeogitStatus',
+            --     group = augroup,
+            --     callback = function()
+            --         vim.notify 'Refresh Neogit'
+            --         neogit.refresh()
+            --     end,
+            --     desc = 'Update Neogit status on enter',
+            -- })
 
             -- vim.api.nvim_create_autocmd('User', {
             --     pattern = 'NeogitStatusRefreshed',
@@ -243,18 +238,18 @@ return {
             --     desc = 'Reload buffer on Neogit status refresh',
             -- })
 
-            vim.api.nvim_create_autocmd('User', {
-                pattern = {
-                    'NeogitCommitComplete',
-                    'NeogitBranchCheckout',
-                    'NeogitBranchReset',
-                    'NeogitRebase',
-                    'NeogitReset',
-                },
-                group = augroup,
-                callback = neogit.refresh,
-                desc = 'Refresh Neogit',
-            })
+            -- vim.api.nvim_create_autocmd('User', {
+            --     pattern = {
+            --         'NeogitCommitComplete',
+            --         'NeogitBranchCheckout',
+            --         'NeogitBranchReset',
+            --         'NeogitRebase',
+            --         'NeogitReset',
+            --     },
+            --     group = augroup,
+            --     callback = neogit.refresh,
+            --     desc = 'Refresh Neogit',
+            -- })
 
             vim.api.nvim_create_autocmd('User', {
                 pattern = {
@@ -282,16 +277,7 @@ return {
     },
     {
         'barrettruth/diffs.nvim',
-        enabled = false,
-        event = { 'BufWinEnter', 'BufNewFile' },
-        -- ft = {
-        --     'git',
-        --     'gitcommit',
-        --     'diff',
-        --     'NeogitStatus',
-        --     'NeogitCommitView',
-        --     'NeogitDiffView',
-        -- },
+        lazy = false, -- lazy-loads itself
         keys = {
             {
                 '<Leader>gxo',
@@ -327,17 +313,13 @@ return {
         init = function()
             require('which-key').add { { '<Leader>gx', group = 'Conflict' } }
 
+            ---@module 'diffs'
             ---@type diffs.Config
             vim.g.diffs = {
                 hide_prefix = true,
-                neogit = true,
+                neogit = {},
                 extra_filetypes = { 'diff' },
                 conflict = {
-                    enabled = true,
-                    disable_diagnostics = true,
-                    show_virtual_text = true,
-                    show_actions = false,
-                    priority = 200,
                     keymaps = {
                         ours = '<Leader>gxo',
                         theirs = '<Leader>gxt',
@@ -350,11 +332,10 @@ return {
                 highlights = {
                     background = true,
                     gutter = false,
-                    -- blend_alpha = 0.2,
+                    blend_alpha = 0.30,
                     intra = {
                         enabled = true,
                         algorithm = 'vscode',
-                        -- max_lines = 500,
                     },
                 },
             }
@@ -363,7 +344,7 @@ return {
             vim.api.nvim_create_autocmd('User', {
                 pattern = 'DiffsConflictResolved',
                 callback = function()
-                    Snacks.notify 'all conflicts resolved!'
+                    Snacks.notify('all conflicts resolved!', { title = '' })
                 end,
             })
         end,
@@ -450,7 +431,6 @@ return {
     },
     {
         'esmuellert/codediff.nvim',
-        dependencies = { 'MunifTanjim/nui.nvim' },
         cmd = 'CodeDiff',
         init = function()
             require('which-key').add {
@@ -1045,10 +1025,14 @@ return {
         ---@module 'github-actions.config'
         ---@type github_actions.Opts
         opts = {
+            token_provider = function(callback)
+                callback(vim.env.GITHUB_TOKEN)
+            end,
             lsp = {
                 cmd = {
                     'bunx',
                     '--bun',
+                    '--no-install',
                     'gh-actions-language-server',
                     '--stdio',
                 },

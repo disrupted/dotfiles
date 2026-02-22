@@ -414,7 +414,7 @@ return {
                 desc = 'Prev reference',
             },
             {
-                '<Leader>gl',
+                '<Leader>gy',
                 function()
                     ---@diagnostic disable-next-line: missing-fields
                     Snacks.gitbrowse.open {
@@ -716,7 +716,6 @@ return {
             'dmtrKovalenko/fff.nvim',
             'folke/snacks.nvim',
         },
-        opts = {},
     },
     {
         'tpope/vim-repeat',

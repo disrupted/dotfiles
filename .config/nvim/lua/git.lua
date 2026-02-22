@@ -386,8 +386,10 @@ M.async.tracking_branch = function()
 end
 
 ---@async
+---@param opts {online?: boolean}
 ---@return string? name of the default branch
-M.async.default_branch = function()
+M.async.default_branch = function(opts)
+    local opts = opts or {}
     local remote = 'origin'
 
     -- Prefer upstream remote when available.
@@ -427,11 +429,13 @@ M.async.default_branch = function()
     end
 
     -- Remote query fallback: works when local remote HEAD is missing/stale.
-    local symref = git_async { 'ls-remote', '--symref', remote, 'HEAD' }
-    if symref then
-        local branch = symref:match 'ref:%s+refs/heads/(.-)%s+HEAD'
-        if branch and branch ~= '' then
-            return branch
+    if opts.online then
+        local symref = git_async { 'ls-remote', '--symref', remote, 'HEAD' }
+        if symref then
+            local branch = symref:match 'ref:%s+refs/heads/(.-)%s+HEAD'
+            if branch and branch ~= '' then
+                return branch
+            end
         end
     end
 
