@@ -743,6 +743,7 @@ return {
             'OverseerOpen',
             'OverseerToggle',
             'OverseerRun',
+            'OverseerShell',
         },
         keys = {
             { '<Bslash>', '<cmd>OverseerToggle<cr>', desc = 'Toggle Overseer' },
@@ -753,6 +754,8 @@ return {
         opts = {
             templates = {
                 'builtin',
+                'terminal',
+                'pkl',
                 'python.poetry',
                 'python.uv',
             },
@@ -866,12 +869,6 @@ return {
                 toggle_runner 'float'
             end, { desc = 'Overseer: open task in floating window' })
         end,
-    },
-    {
-        'Zeioth/compiler.nvim',
-        cmd = { 'CompilerOpen', 'CompilerToggleResults', 'CompilerRedo' },
-        dependencies = { 'stevearc/overseer.nvim' },
-        opts = {},
     },
     {
         'folke/todo-comments.nvim',
