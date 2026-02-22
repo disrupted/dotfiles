@@ -81,6 +81,26 @@ export def "t list" [] {
   }
 }
 
+export def "t pick" [] {
+  let running = (running_sessions)
+  let choice = (
+    load_sessions
+    | transpose name root
+    | each {|row|
+      let status = if ($row.name in $running) { "●" } else { "○" }
+      $"($status) ($row.name)  ($row.root)"
+    }
+    | str join "\n"
+    | fzf --prompt="session> " --no-sort
+    | str trim
+  )
+
+  if ($choice | is-empty) { return }
+
+  let name = ($choice | split row " " | where { $in != "" } | get 1)
+  t $name
+}
+
 export def "t kill" [] {
   let running = (running_sessions)
   if ($running | is-empty) {
