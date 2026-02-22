@@ -1,7 +1,7 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 add_newline = false
 format = "$directory$git_branch$git_status$git_state$line_break$character"
-right_format = "$cmd_duration$python$nodejs$bun$deno$rust$golang"
+right_format = "$status$cmd_duration$python$nodejs$bun$deno$rust$golang"
 command_timeout = 1000
 
 [gcloud]
@@ -45,39 +45,40 @@ format = "[$state( $progress_current/$progress_total)]($style) "
 
 [status]
 disabled = true
+format = " [$status]($style)"
+
+[cmd_duration]
+format = " [$duration]($style)"
+style = "yellow"
+min_time = 2000
 
 [package]
 disabled = true
 
-[cmd_duration]
-format = "[$duration]($style) "
-style = "yellow"
-min_time = 2000
-
 [python]
 style = "cyan"
-format = "[ $version $virtualenv]($style) "
+format = " [ $version $virtualenv]($style)"
 python_binary = ["python3", "python"]
 
 [nodejs]
 style = "cyan"
-format = "[ $version]($style) "
+format = " [ $version]($style)"
 
 [rust]
 style = "cyan"
-format = "[ $version]($style) "
+format = " [ $version]($style)"
 
 [golang]
 style = "cyan"
-format = "[ $version]($style) "
+format = " [ $version]($style)"
 
 [bun]
 style = "cyan"
-format = "[ $version]($style) "
+format = " [ $version]($style)"
 
 [deno]
 style = "cyan"
-format = "[ $version]($style) "
+format = " [ $version]($style)"
 
 [time]
 disabled = true
