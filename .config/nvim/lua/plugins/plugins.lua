@@ -159,7 +159,7 @@ return {
 
                     local fff_exists = pcall(require, 'fff-snacks')
                     if fff_exists then
-                        source = require('fff-snacks').source
+                        source = require('fff-snacks.find_files').source
                         source.formatters = nil
                     else
                         Snacks.notify 'fff unavailable, falling back to builtin smart picker'
