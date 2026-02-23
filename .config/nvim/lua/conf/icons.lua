@@ -48,7 +48,7 @@ return {
         notify = '',
         passed = '',
         failed = '',
-        skipped = '', -- 
+        skipped = '', -- ◌
         running = '', -- FIXME:  symbol rendered incorrectly in Ghostty
         unknown = '',
         watching = '',
@@ -66,7 +66,7 @@ return {
     },
     diagnostics = {
         error = '',
-        warning = '', -- 
+        warning = '', -- ⚠
         info = '',
     },
     kinds = {

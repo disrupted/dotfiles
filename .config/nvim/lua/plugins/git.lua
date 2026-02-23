@@ -941,6 +941,18 @@ return {
                     filetype = 'pipeline',
                 },
             },
+            icons = {
+                workflow_dispatch = '',
+                ---@class pipeline.config.IconConclusion
+                conclusion = {
+                    success = '',
+                    failure = '',
+                    startup_failure = 'X',
+                    cancelled = '',
+                    skipped = '',
+                    action_required = '',
+                },
+            },
         },
     },
     {
