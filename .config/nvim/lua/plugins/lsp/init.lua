@@ -34,7 +34,6 @@ return {
                 'lua-language-server',
                 'prettierd',
                 'pkl-lsp',
-                'rust-analyzer',
                 'shfmt',
                 'stylua',
                 'svelte-language-server',
@@ -499,7 +498,10 @@ return {
         'mrcjkb/rustaceanvim',
         ft = 'rust',
         init = function()
-            require('conf.neotest.adapters').rust = 'rustaceanvim.neotest'
+            require('conf.neotest.adapters').register(
+                'rust',
+                'rustaceanvim.neotest'
+            )
         end,
         ---@module 'rustaceanvim.config'
         ---@type rustaceanvim.Opts
@@ -509,8 +511,7 @@ return {
 
             local adapter = require 'rustaceanvim.neotest'()
             adapter.name = 'Rust'
-            local adapters = require('neotest.config').adapters
-            table.insert(adapters, adapter)
+            require('conf.neotest.adapters').attach(adapter)
         end,
     },
     {

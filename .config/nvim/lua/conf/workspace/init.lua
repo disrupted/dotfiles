@@ -146,7 +146,7 @@ end
 --- Find a managed tab by name, creating it on demand if it doesn't exist
 ---@param name string
 ---@return integer handle tabpage handle
-M.create_tab = function(name)
+local function create_tab(name)
     vim.cmd.tabnew()
     handle = vim.api.nvim_get_current_tabpage()
     vim.api.nvim_tabpage_set_var(handle, 'tabname', name)
@@ -155,6 +155,13 @@ M.create_tab = function(name)
         { title = 'Workspace', level = 'debug' }
     )
     return handle
+end
+M.create_tab = create_tab
+
+---@param name string
+---@return integer handle tabpage handle
+M.find_or_create_tab = function(name)
+    return find_tab(name) or create_tab(name)
 end
 
 --- Get the managed tab name for a tabpage, or nil if unmanaged
@@ -172,23 +179,43 @@ end
 ---@param filepath string
 ---@return boolean
 local function is_test_file(filepath)
-    local filename = vim.fs.basename(filepath):lower()
-    local name_no_ext = filename:match '^(.+)%.' or filename
-    -- test_foo.py, tests_foo.py
-    if name_no_ext:match '^tests?[_%-%.]' then
+    local normalized_path = filepath:gsub('\\', '/')
+    local filename = vim.fs.basename(normalized_path)
+    local name_no_ext = filename:match '^(.+)%.[^%.]+$' or filename
+    local lower_name = name_no_ext:lower()
+
+    -- test_foo.py, tests-foo.py, test.foo.py
+    if lower_name:match '^test[_%-%.]' or lower_name:match '^tests[_%-%.]' then
         return true
     end
-    -- foo_test.py, foo_test.go
-    if name_no_ext:match '[_%-%.]tests?$' then
+
+    -- foo_test.py, foo.spec.lua, foo-tests.go
+    if
+        lower_name:match '[_%-%.]test$'
+        or lower_name:match '[_%-%.]tests$'
+        or lower_name:match '[_%-%.]spec$'
+        or lower_name:match '[_%-%.]specs$'
+    then
         return true
     end
-    -- directory contains /test/ or /tests/
-    local dir = filepath:lower()
-    if dir:match 'tests?[/\\]' then
+
+    -- Java/Kotlin style class names: TestAdapter, AdapterTest
+    if name_no_ext:match '^Test[%u%d]' or name_no_ext:match 'Test$' then
         return true
     end
+
+    -- directory segment is exactly /test/ or /tests/
+    local lower_path = normalized_path:lower()
+    for segment in lower_path:gmatch '[^/]+' do
+        if segment == 'test' or segment == 'tests' then
+            return true
+        end
+    end
+
     return false
 end
+
+M.is_test_file = is_test_file
 
 local moving = false
 

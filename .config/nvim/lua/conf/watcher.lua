@@ -71,7 +71,11 @@ M.watch = function(path)
     end, debounce_ms)
 
     -- Start watching
-    local ok = fs_event:start(path, { recursive = false }, vim.schedule_wrap(on_change))
+    local ok = fs_event:start(
+        path,
+        { recursive = false },
+        vim.schedule_wrap(on_change)
+    )
 
     if ok ~= 0 then
         fs_event:close()

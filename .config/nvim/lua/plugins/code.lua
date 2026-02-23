@@ -490,10 +490,19 @@ return {
             require('neotest').setup(opts)
 
             -- lazy-load adapters
-            local filetypes = require('conf.workspace').project_filetypes()
-            for _, filetype in ipairs(filetypes) do
-                _ = require('conf.neotest.adapters')[filetype]
-            end
+            require('conf.neotest.adapters').load_project()
+
+            vim.api.nvim_create_autocmd('FileType', {
+                group = vim.api.nvim_create_augroup(
+                    'NeotestAdapterOnDemand',
+                    { clear = true }
+                ),
+                callback = function(args)
+                    require('conf.neotest.adapters').load(
+                        vim.bo[args.buf].filetype
+                    )
+                end,
+            })
 
             local function expand_summary_dirs_only()
                 local neotest = require 'neotest'
@@ -565,7 +574,7 @@ return {
         lazy = true,
         dependencies = { 'nvim-neotest/neotest' },
         init = function()
-            require('conf.neotest.adapters').lua = 'neotest-plenary'
+            require('conf.neotest.adapters').register('lua', 'neotest-plenary')
         end,
         ---@module 'neotest-plenary.adapter'
         ---@type neotest-plenary._AdapterConfig
@@ -574,8 +583,7 @@ return {
         config = function(_, opts)
             local adapter = require 'neotest-plenary'(opts)
             adapter.name = 'Plenary'
-            local adapters = require('neotest.config').adapters
-            table.insert(adapters, adapter)
+            require('conf.neotest.adapters').attach(adapter)
         end,
     },
     {
@@ -608,7 +616,10 @@ return {
         },
         dependencies = { 'nvim-neotest/neotest' },
         init = function()
-            require('conf.neotest.adapters').python = 'neotest-python'
+            require('conf.neotest.adapters').register(
+                'python',
+                'neotest-python'
+            )
         end,
         ---@module 'neotest-python.adapter'
         ---@type neotest-python._AdapterConfig
@@ -628,8 +639,7 @@ return {
         config = function(_, opts)
             local adapter = require 'neotest-python'(opts)
             adapter.name = 'Python'
-            local adapters = require('neotest.config').adapters
-            table.insert(adapters, adapter)
+            require('conf.neotest.adapters').attach(adapter)
         end,
     },
     {
@@ -643,7 +653,10 @@ return {
                 'javascriptreact',
                 'typescriptreact',
             } do
-                require('conf.neotest.adapters')[filetype] = 'neotest-jest'
+                require('conf.neotest.adapters').register(
+                    filetype,
+                    'neotest-jest'
+                )
             end
         end,
         opts = {
@@ -656,8 +669,7 @@ return {
         config = function(_, opts)
             local adapter = require 'neotest-jest'(opts)
             adapter.name = 'Jest'
-            local adapters = require('neotest.config').adapters
-            table.insert(adapters, adapter)
+            require('conf.neotest.adapters').attach(adapter)
         end,
     },
     {
