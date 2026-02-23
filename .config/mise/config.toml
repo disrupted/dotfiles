@@ -66,6 +66,7 @@ opencode = "latest"
 "github:lucasgelfond/zerobrew" = "latest"
 "github:Mapika/portview" = "latest"
 "github:topiary/topiary" = "latest"
+"github:pruner-formatter/pruner" = "latest"
 "pipx:pymobiledevice3" = "latest"
 "pipx:visidata" = "latest"
 

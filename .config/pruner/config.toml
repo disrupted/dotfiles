@@ -1,0 +1,36 @@
+[grammars]
+markdown = "https://github.com/tree-sitter-grammars/tree-sitter-markdown"
+http = "https://github.com/rest-nvim/tree-sitter-http"
+
+[formatters]
+dprint-md = { cmd = "dprint", args = ["fmt", "--stdin", "md"] }
+dprint-js = { cmd = "dprint", args = ["fmt", "--stdin", "js"] }
+dprint-ts = { cmd = "dprint", args = ["fmt", "--stdin", "ts"] }
+dprint-json = { cmd = "dprint", args = ["fmt", "--stdin", "json"] }
+dprint-toml = { cmd = "dprint", args = ["fmt", "--stdin", "toml"] }
+dprint-html = { cmd = "dprint", args = ["fmt", "--stdin", "html"] }
+dprint-css = { cmd = "dprint", args = ["fmt", "--stdin", "css"] }
+dprint-yaml = { cmd = "dprint", args = ["fmt", "--stdin", "yaml"] }
+
+ruff_format = { cmd = "ruff", args = ["format", "--stdin-filename", "py"] }
+stylua = { cmd = "stylua", args = ["-"] }
+rustfmt = { cmd = "rustfmt", args = ["--edition=2024", "--emit=stdout"] }
+topiary-nu = { cmd = "topiary-nushell", args = ["format", "--language", "nu"] }
+shfmt = { cmd = "shfmt", args = ["-i", "4", "-ci", "-"] }
+
+[languages]
+markdown = ["dprint-md"]
+javascript = ["dprint-js"]
+typescript = ["dprint-ts"]
+json = ["dprint-json"]
+toml = ["dprint-toml"]
+html = ["dprint-html"]
+css = ["dprint-css"]
+yaml = ["dprint-yaml"]
+
+python = ["ruff_format"]
+lua = ["stylua"]
+rust = ["rustfmt"]
+nu = ["topiary-nu"]
+sh = ["shfmt"]
+bash = ["shfmt"]

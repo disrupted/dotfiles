@@ -249,7 +249,7 @@ return {
                     astro = dprint,
                     json = dprint,
                     jsonc = dprint,
-                    markdown = { 'dprint', 'injected' },
+                    markdown = { 'pruner' },
                     javascript = dprint_prettier_none,
                     javascriptreact = dprint_prettier_none,
                     typescript = dprint_prettier_none,
@@ -266,11 +266,8 @@ return {
                     sql = { 'sleek' }, -- or dprint
                     svelte = dprint,
                     swift = { 'swift' },
-                    nu = { 'topiary_nu' },
-                    http = {
-                        'kulala-fmt',
-                        -- 'injected', -- FIXME: error: vim/shared.lua:0: src: expected table, got nil
-                    },
+                    nu = { 'pruner' },
+                    http = { 'kulala-fmt' },
                     csv = { 'trim_newlines' },
                     tsv = { 'trim_newlines' },
                     ['_'] = {
@@ -360,34 +357,6 @@ return {
                         }
                     end
                 end,
-            }
-            conform.formatters.topiary_nu = {
-                command = 'topiary',
-                args = { 'format', '--language', 'nu' },
-            }
-            conform.formatters.dprint_injected = vim.tbl_deep_extend(
-                'force',
-                require 'conform.formatters.dprint',
-                conform.formatters.dprint,
-                {
-                    args = function(self, ctx)
-                        local extension = vim.fn.fnamemodify(ctx.filename, ':e')
-                        local ret = vim.list_extend(
-                            { 'fmt', '--stdin', extension },
-                            self:prepend_args(ctx)
-                        )
-                        return ret
-                    end,
-                }
-            )
-            conform.formatters.injected = {
-                options = {
-                    ignore_errors = false,
-                    lang_to_formatters = {
-                        json = { 'dprint_injected' },
-                        python = { 'ruff_format' }, -- FIXME: ruff_format deletes content
-                    },
-                },
             }
         end,
     },
