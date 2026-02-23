@@ -111,6 +111,47 @@ return {
                     -- ['<leader>arR'] = { 'diff_restore_snapshot_all' }, -- Restore all files to a restore point
                 },
                 input_window = {
+                    ['<C-a>'] = {
+                        function()
+                            local state = require 'opencode.state'
+                            local config = require 'opencode.config'
+                            local chat_context =
+                                require 'opencode.context.chat_context'
+
+                            local ctx =
+                                vim.deepcopy(state.current_context_config or {})
+                            ctx.current_file = ctx.current_file
+                                or vim.deepcopy(
+                                    config.context.current_file or {}
+                                )
+
+                            local currently_enabled = ctx.current_file.enabled
+                            if currently_enabled == nil then
+                                currently_enabled = vim.tbl_get(
+                                    config,
+                                    'context',
+                                    'current_file',
+                                    'enabled'
+                                )
+                            end
+                            local enabling = currently_enabled == false
+
+                            ctx.current_file.enabled = enabling
+                            state.current_context_config = ctx
+
+                            if not enabling then
+                                chat_context.context.current_file = nil
+                            end
+
+                            Snacks.notify(
+                                'current file context: '
+                                    .. (enabling and 'on' or 'off'),
+                                { title = 'Agent' }
+                            )
+                        end,
+                        desc = 'Toggle current file context',
+                        mode = { 'n', 'i' },
+                    },
                     ['<LocalLeader>n'] = {
                         'open_input_new_session',
                         desc = 'New session',
