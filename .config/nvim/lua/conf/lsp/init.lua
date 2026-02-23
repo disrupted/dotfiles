@@ -271,4 +271,5 @@ vim.lsp.enable {
     'ty',
     -- 'vts_ls',
     'yaml_ls',
+    -- 'zuban',
 }

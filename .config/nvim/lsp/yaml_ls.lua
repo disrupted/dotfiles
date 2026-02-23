@@ -2,8 +2,8 @@
 return {
     cmd = { 'bunx', '--bun', 'yaml-language-server', '--stdio' },
     filetypes = { 'yaml' },
+    ---@type table<vim.lsp.protocol.Methods, lsp.Handler>
     handlers = {
-        ---@type lsp.Handler
         ['textDocument/publishDiagnostics'] = function(err, result, ctx)
             ---@param diagnostic vim.Diagnostic
             result.diagnostics = vim.tbl_filter(function(diagnostic)

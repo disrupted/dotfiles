@@ -4,7 +4,6 @@ return {
     filetypes = { 'json', 'jsonc' },
     ---@type table<vim.lsp.protocol.Methods, lsp.Handler>
     handlers = {
-        ---@type lsp.Handler
         ['textDocument/diagnostic'] = function(err, result, ctx)
             ---@param diagnostic vim.Diagnostic
             result.items = vim.tbl_filter(function(diagnostic)
