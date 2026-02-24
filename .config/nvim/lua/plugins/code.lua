@@ -546,6 +546,15 @@ return {
                 consumers = {
                     overseer = require 'neotest.consumers.overseer',
                 },
+                strategies = {
+                    overseer = {
+                        components = {
+                            'trim_exit_footer',
+                            'default_neotest',
+                        },
+                        strategy = { 'jobstart', use_terminal = true },
+                    },
+                },
             }) --[[@as neotest.Config]]
             require('neotest').setup(opts)
 
@@ -877,6 +886,18 @@ return {
         config = function(_, opts)
             local overseer = require 'overseer'
             overseer.setup(opts)
+
+            -- Monkey-patch the JobstartStrategy to use a fixed width
+            local JobstartStrategy = require 'overseer.strategy.jobstart'
+            local original_start = JobstartStrategy.start
+            JobstartStrategy.start = function(self, task)
+                -- Temporarily override vim.o.columns during jobstart
+                local saved_columns = vim.o.columns
+                vim.o.columns = saved_columns - 40 + 3
+                local result = original_start(self, task)
+                vim.o.columns = saved_columns
+                return result
+            end
 
             vim.api.nvim_create_autocmd('FileType', {
                 pattern = 'OverseerOutput',
