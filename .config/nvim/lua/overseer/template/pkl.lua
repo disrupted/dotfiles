@@ -2,6 +2,7 @@
 ---@type overseer.TemplateFileDefinition
 return {
     name = 'pkl eval',
+    tags = { 'BUILD' },
     builder = function()
         local file = vim.fn.expand '%:p:t'
 
@@ -9,10 +10,18 @@ return {
         return {
             cmd = { 'pkl', 'eval', file },
             components = {
-                'on_complete_dispose',
-                'open_output',
+                'trim_exit_footer',
+                { 'treesitter_highlight', lang = 'pkl' },
+                {
+                    'open_output',
+                    direction = 'vertical',
+                    focus = true,
+                    on_start = 'always',
+                },
+                { 'edgy_size', height = 35 },
                 'default',
             },
+            strategy = { 'jobstart', use_terminal = false },
         }
     end,
     condition = {

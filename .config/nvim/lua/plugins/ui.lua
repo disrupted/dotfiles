@@ -1088,6 +1088,10 @@ return {
                 },
                 {
                     ft = 'OverseerOutput',
+                    filter = function(buf, win)
+                        -- exclude floating windows
+                        return vim.api.nvim_win_get_config(win).relative == ''
+                    end,
                     title = 'Output',
                     size = { height = 20 },
                 },
