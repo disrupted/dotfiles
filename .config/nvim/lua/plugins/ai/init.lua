@@ -92,24 +92,6 @@ return {
             default_global_keymaps = false,
             keymap_prefix = '<leader>a',
             keymap = {
-                editor = {
-                    ['<C-a>'] = { 'open_input', desc = 'Input', mode = 'n' },
-                    ['<C-a>'] = { -- FIXME: should not overwrite normal mode mapping
-                        'add_visual_selection',
-                        desc = 'Add selection',
-                        mode = 'v',
-                    },
-                    -- ['<leader>ad'] = { 'diff_open', desc = 'Open diff' },
-                    -- ['<leader>a]'] = { 'diff_next', desc = 'Next diff' },
-                    -- ['<leader>a['] = { 'diff_prev', desc = 'Prev diff' },
-                    -- ['<leader>ac'] = { 'diff_close', desc = 'Close diff' },
-                    -- ['<leader>ara'] = { 'diff_revert_all_last_prompt' }, -- Revert all file changes since the last opencode prompt
-                    -- ['<leader>art'] = { 'diff_revert_this_last_prompt' }, -- Revert current file changes since the last opencode prompt
-                    -- ['<leader>arA'] = { 'diff_revert_all' }, -- Revert all file changes since the last opencode session
-                    -- ['<leader>arT'] = { 'diff_revert_this' }, -- Revert current file changes since the last opencode session
-                    -- ['<leader>arr'] = { 'diff_restore_snapshot_file' }, -- Restore a file to a restore point
-                    -- ['<leader>arR'] = { 'diff_restore_snapshot_all' }, -- Restore all files to a restore point
-                },
                 input_window = {
                     ['<C-a>'] = {
                         function()
@@ -161,7 +143,7 @@ return {
                         desc = 'Rename session',
                         mode = 'n',
                     },
-                    ['<LocalLeader>S'] = {
+                    ['<LocalLeader>s'] = {
                         'select_session',
                         desc = 'Select session',
                         mode = 'n',
@@ -181,7 +163,7 @@ return {
                     ['<M-r>'] = { 'cycle_variant', mode = { 'n', 'i' } }, -- Cycle through available model variants
                     ['<M-p>'] = {
                         function()
-                            vim.cmd.Opencode 'models'
+                            require('opencode.api').configure_provider()
                         end,
                         desc = 'Pick model',
                         mode = { 'n', 'i' },
@@ -197,7 +179,7 @@ return {
                         desc = 'Rename session',
                         mode = 'n',
                     },
-                    ['<LocalLeader>S'] = {
+                    ['<LocalLeader>s'] = {
                         'select_session',
                         desc = 'Select session',
                         mode = 'n',
@@ -235,12 +217,12 @@ return {
                     ['<M-r>'] = { 'cycle_variant' }, -- Cycle through available model variants
                     ['<M-p>'] = {
                         function()
-                            vim.cmd.Opencode 'models'
+                            require('opencode.api').configure_provider()
                         end,
                         desc = 'Pick model',
                     },
                     ['<M-i>'] = false,
-                    ['<LocalLeader>s'] = {
+                    ['<LocalLeader>S'] = {
                         'select_child_session',
                         desc = 'Select child session',
                     },
@@ -342,15 +324,21 @@ return {
             require('which-key').add {
                 {
                     '<C-a>',
-                    desc = 'Add selection',
-                    mode = 'v',
-                    icon = { icon = '󰐒', color = 'blue' },
+                    function()
+                        require('opencode.api').open_input()
+                    end,
+                    desc = 'Agent input',
+                    mode = 'n',
+                    icon = '󰲔',
                 },
                 {
                     '<C-a>',
-                    desc = 'Input',
-                    mode = 'n',
-                    icon = '󰲔',
+                    function()
+                        require('opencode.api').add_visual_selection()
+                    end,
+                    desc = 'Agent add selection',
+                    mode = 'v',
+                    icon = { icon = '󰐒', color = 'blue' },
                 },
             }
 
@@ -448,16 +436,20 @@ return {
                     if not vim.g.agent_follow_edits then
                         return
                     end
-                    local bufnr = vim.fn.bufnr(abspath, true)
-                    if not vim.api.nvim_buf_is_loaded(bufnr) then
-                        pcall(vim.fn.bufload, bufnr)
-                    end
                     local main_winid = get_main_edit_winid()
                     if not main_winid then
                         return
                     end
-                    local ok =
-                        pcall(vim.api.nvim_win_set_buf, main_winid, bufnr)
+
+                    local bufnr = vim.fn.bufnr(abspath, false)
+                    local ok
+                    if bufnr ~= -1 and vim.api.nvim_buf_is_loaded(bufnr) then
+                        ok = pcall(vim.api.nvim_win_set_buf, main_winid, bufnr)
+                    else
+                        ok = pcall(vim.api.nvim_win_call, main_winid, function()
+                            vim.cmd.edit(vim.fn.fnameescape(abspath))
+                        end)
+                    end
                     if not ok then
                         return
                     end
@@ -488,7 +480,7 @@ return {
                             icon = '󰑕',
                         },
                         {
-                            '<LocalLeader>S',
+                            '<LocalLeader>s',
                             desc = 'Select session',
                             icon = '󱅳',
                         },
@@ -561,12 +553,12 @@ return {
                             icon = '󰑕',
                         },
                         {
-                            '<LocalLeader>S',
+                            '<LocalLeader>s',
                             desc = 'Select session',
                             icon = '󱅳',
                         },
                         {
-                            '<LocalLeader>s',
+                            '<LocalLeader>S',
                             desc = 'Select child session',
                             icon = '󰚩',
                         },
