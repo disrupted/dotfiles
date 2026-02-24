@@ -149,8 +149,36 @@ return {
     { 'tpope/vim-abolish' },
     {
         'okuuva/auto-save.nvim',
-        cmd = 'ASToggle',
         event = { 'InsertLeave', 'TextChanged' },
-        opts = {},
+        opts = {
+            debounce_delay = 1500,
+        },
+        config = function(_, opts)
+            require('auto-save').setup(opts)
+
+            require('which-key').add {
+                {
+                    '<Leader>b',
+                    '<cmd>ASToggle<cr>',
+                    icon = { icon = '', hl = 'DiagnosticInfo' },
+                    desc = 'Toggle autosave',
+                },
+            }
+
+            vim.api.nvim_create_autocmd('User', {
+                pattern = { 'AutoSaveEnable', 'AutoSaveDisable' },
+                group = vim.api.nvim_create_augroup('autosave', {}),
+                callback = function(args)
+                    local enabled = args.match == 'AutoSaveEnable'
+                    Snacks.notify(enabled and 'enabled' or 'disabled', {
+                        id = 'autosave',
+                        title = 'autosave',
+                        history = false,
+                        level = enabled and vim.log.levels.INFO
+                            or vim.log.levels.WARN,
+                    })
+                end,
+            })
+        end,
     },
 }
