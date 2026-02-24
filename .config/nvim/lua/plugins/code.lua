@@ -373,7 +373,7 @@ return {
             {
                 '<Leader>td',
                 function()
-                    _ = require('conf.dap.adapters')[vim.bo.filetype]
+                    require('conf.dap.adapters').load(vim.bo.filetype)
                     require('neotest').run.run {
                         strategy = 'dap',
                         suite = false,

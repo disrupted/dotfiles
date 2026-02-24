@@ -17,11 +17,7 @@ return {
             {
                 '<Leader>dc',
                 function()
-                    local filetypes =
-                        require('conf.workspace').project_filetypes()
-                    for _, filetype in ipairs(filetypes) do
-                        _ = require('conf.dap.adapters')[filetype]
-                    end
+                    require('conf.dap.adapters').load_project()
                     require('dap').continue()
                     vim.opt.signcolumn = 'yes:2'
                     -- load dap-view early to use a smaller terminal window by default
@@ -492,7 +488,7 @@ return {
             },
         },
         init = function()
-            require('conf.dap.adapters').python = 'dap-python'
+            require('conf.dap.adapters').register('python', 'dap-python')
         end,
         ---@module 'dap-python'
         ---@type dap-python.setup.opts
