@@ -154,6 +154,191 @@ return {
             {
                 '<C-f>',
                 function()
+                    ---@param cwd string
+                    ---@return string
+                    local function cwd_title(cwd)
+                        if cwd == vim.g.workspace_root then
+                            return '.'
+                        end
+                        local relpath =
+                            assert(vim.fs.relpath(vim.g.workspace_root, cwd))
+                        return relpath .. '/'
+                    end
+
+                    ---@param picker snacks.Picker
+                    ---@param cwd string
+                    local function refresh_cwd_title(picker, cwd)
+                        picker.title = cwd_title(cwd)
+                        picker:update_titles()
+                    end
+
+                    ---@param picker snacks.Picker
+                    local function dir_up(picker)
+                        local cwd = picker:cwd()
+                        if cwd == vim.g.workspace_root then
+                            return
+                        end
+
+                        cwd = vim.fs.dirname(cwd)
+                        picker:set_cwd(cwd)
+                        refresh_cwd_title(picker, cwd)
+                        picker:find { refresh = true }
+                    end
+
+                    ---@param picker snacks.Picker
+                    ---@param item snacks.picker.Item
+                    ---@return boolean?
+                    local function dir_down(picker, item, action)
+                        item = item or picker:current { resolve = false }
+                        if not item then
+                            return true
+                        end
+
+                        if item.dir then
+                            local target =
+                                vim.fs.normalize(Snacks.picker.util.path(item))
+                            picker:set_cwd(target)
+                            refresh_cwd_title(picker, target)
+                            picker:find { refresh = true }
+                            return true
+                        end
+                    end
+
+                    --- escape Lua pattern chars except *
+                    ---@param glob string
+                    ---@return string
+                    local function glob_to_lua_pattern(glob)
+                        local p =
+                            glob:gsub('([%^%$%(%)%%%.%[%]%+%-%?])', '%%%1')
+                        p = p:gsub('%*', '.*')
+                        return '^' .. p .. '$'
+                    end
+
+                    local include_globs =
+                        { '.github', '.gitlab-ci.yml', '.env*' }
+                    local include_patterns =
+                        vim.tbl_map(glob_to_lua_pattern, include_globs)
+
+                    ---@param name string
+                    ---@return boolean
+                    local function matches_include(name)
+                        for _, p in ipairs(include_patterns) do
+                            if name:match(p) then
+                                return true
+                            end
+                        end
+                        return false
+                    end
+
+                    ---@param path string
+                    ---@return boolean,string
+                    local function is_hidden_name(path)
+                        local name = vim.fs.basename(vim.fs.normalize(path))
+                        return name:sub(1, 1) == '.', name
+                    end
+
+                    ---@return string
+                    local function buf_parent_dir()
+                        local file = vim.api.nvim_buf_get_name(0)
+                        if file == '' then
+                            return vim.g.workspace_root
+                        end
+                        return vim.fs.dirname(file)
+                    end
+
+                    local start_cwd = buf_parent_dir()
+
+                    Snacks.picker.pick {
+                        source = 'files',
+                        hidden = true,
+                        cwd = start_cwd,
+                        title = cwd_title(start_cwd),
+                        -- current level only, include dirs + files
+                        cmd = 'fd',
+                        args = {
+                            '--type',
+                            'd',
+                            '-d',
+                            '1',
+                        },
+                        matcher = {
+                            sort_empty = true,
+                        },
+                        sort = {
+                            fields = { 'score:desc', 'dir', 'file', 'idx' },
+                        },
+                        formatters = {
+                            file = { filename_only = true },
+                        },
+                        transform = function(item)
+                            local path = Snacks.picker.util.path(item)
+                            if not path then
+                                return false
+                            end
+                            path = vim.fs.normalize(path)
+
+                            local is_hidden, name = is_hidden_name(path)
+                            if is_hidden and not matches_include(name) then
+                                return false
+                            end
+
+                            local stat = (vim.uv or vim.loop).fs_stat(path)
+                            item.file = path
+                            item.dir = stat and stat.type == 'directory'
+                                or false
+                            item.open = false
+                            return item
+                        end,
+                        actions = {
+                            dir_up = dir_up,
+                            dir_down = dir_down,
+                            dir_down_or_open = function(...)
+                                return dir_down(...)
+                                    or Snacks.picker.actions.confirm(...)
+                            end,
+                        },
+                        layout = {
+                            preset = 'dropdown',
+                            ---@diagnostic disable-next-line: assign-type-mismatch
+                            preview = false,
+                            layout = {
+                                row = 0.3,
+                                width = 60,
+                                height = 20,
+                            },
+                        },
+                        win = {
+                            input = {
+                                keys = {
+                                    ['<C-h>'] = {
+                                        'dir_up',
+                                        mode = { 'n', 'i' },
+                                    },
+                                    ['<C-l>'] = {
+                                        'dir_down',
+                                        mode = { 'n', 'i' },
+                                    },
+                                    ['<CR>'] = {
+                                        'dir_down_or_open',
+                                        mode = { 'n', 'i' },
+                                    },
+                                },
+                            },
+                            list = {
+                                keys = {
+                                    ['<C-h>'] = 'dir_up',
+                                    ['<C-l>'] = 'dir_down',
+                                    ['<CR>'] = 'dir_down_or_open',
+                                },
+                            },
+                        },
+                    }
+                end,
+                desc = 'Files',
+            },
+            {
+                '<Leader>f',
+                function()
                     ---@type snacks.picker.Config
                     local source = {}
 
