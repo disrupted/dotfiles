@@ -552,11 +552,16 @@ vim.keymap.set('n', 'gV', [['`[' . strpart(getregtype(), 0, 1) . '`]']], expr)
 }) ]]
 
 -- quickfix navigation
-vim.keymap.set('n', ']q', ':cnext<CR>', { desc = 'Next QuickFix entry' })
-vim.keymap.set('n', '[q', ':cprevious<CR>', { desc = 'Prev QuickFix entry' })
+vim.keymap.set('n', ']q', '<cmd>cnext<CR>', { desc = 'Next QuickFix entry' })
+vim.keymap.set(
+    'n',
+    '[q',
+    '<cmd>cprevious<CR>',
+    { desc = 'Prev QuickFix entry' }
+)
 
---  ctrl + / nohighlight
-vim.keymap.set('n', '<C-_>', ':noh<CR>')
+--  alt + / nohighlight
+vim.keymap.set('n', '<M-/>', '<cmd>noh<CR>')
 
 -- cycle tabs
 vim.keymap.set('n', '<esc>', '<esc>') -- distinguish <C-[> from <esc>
