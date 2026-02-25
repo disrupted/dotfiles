@@ -549,10 +549,9 @@ return {
                 strategies = {
                     overseer = {
                         components = {
-                            'trim_exit_footer',
                             'default_neotest',
                         },
-                        strategy = { 'jobstart', use_terminal = true },
+                        strategy = { 'jobstart_no_footer', use_terminal = true },
                     },
                 },
             }) --[[@as neotest.Config]]

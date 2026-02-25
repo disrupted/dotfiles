@@ -10,7 +10,6 @@ return {
         return {
             cmd = { 'pkl', 'eval', file },
             components = {
-                'trim_exit_footer',
                 { 'treesitter_highlight', lang = 'pkl' },
                 {
                     'open_output',
@@ -21,7 +20,7 @@ return {
                 { 'edgy_size', height = 35 },
                 'default',
             },
-            strategy = { 'jobstart', use_terminal = false },
+            strategy = { 'jobstart_no_footer', use_terminal = false },
         }
     end,
     condition = {
