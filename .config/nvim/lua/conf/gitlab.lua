@@ -182,15 +182,16 @@ M.mr.create = function(opts)
         assignee = vim.env.GITLAB_USERNAME,
         draft = false,
     })
-    local git = require('git').async
+    local git = require 'git'
 
     if not opts.target then
         -- if upstream tracking branch was changed we want to
         -- create the MR against that branch instead of main
-        local tracking_branch = git.tracking_branch()
+        local tracking_branch = git.async.tracking_branch()
         if tracking_branch then
-            tracking_branch = tracking_branch:gsub('^origin/', '')
-            if git.current_branch() ~= tracking_branch then
+            local _, branch = git.split_remote_branch(tracking_branch)
+            tracking_branch = branch or tracking_branch
+            if git.async.current_branch() ~= tracking_branch then
                 opts.target = tracking_branch
             end
         end

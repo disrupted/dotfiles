@@ -86,6 +86,18 @@ M.remote_url = function(remote)
     return git { 'remote', 'get-url', remote or 'origin' }
 end
 
+---@param remote_branch string
+---@return string?, string
+M.split_remote_branch = function(remote_branch)
+    local parts = vim.split(remote_branch, '/', { plain = true })
+    if #parts > 1 then
+        local remote = table.remove(parts, 1)
+        return remote, table.concat(parts, '/')
+    end
+
+    return nil, remote_branch
+end
+
 ---@return string name of the current branch
 M.current_branch = function()
     return git { 'branch', '--show-current' }
@@ -395,7 +407,7 @@ M.async.default_branch = function(opts)
     -- Prefer upstream remote when available.
     local upstream = M.async.tracking_branch()
     if upstream then
-        local upstream_remote = upstream:match '^([^/]+)/'
+        local upstream_remote = M.split_remote_branch(upstream)
         if upstream_remote then
             remote = upstream_remote
         end
@@ -422,8 +434,8 @@ M.async.default_branch = function(opts)
         ('refs/remotes/%s/HEAD'):format(remote),
     }
     if short then
-        local branch = short:gsub(('^%s/'):format(vim.pesc(remote)), '')
-        if branch ~= '' then
+        local _, branch = M.split_remote_branch(short)
+        if branch and branch ~= '' then
             return branch
         end
     end

@@ -47,6 +47,28 @@ local function reset_signal()
     signal.labels = {}
 end
 
+---@param stderr string?
+---@return string?
+local function extract_gh_error(stderr)
+    if stderr == nil or stderr == '' then
+        return nil
+    end
+
+    local lines = {}
+    for line in stderr:gmatch '[^\r\n]+' do
+        local trimmed = vim.trim(line)
+        if trimmed ~= '' and not trimmed:match '^Warning: ' then
+            table.insert(lines, trimmed)
+        end
+    end
+
+    if #lines == 0 then
+        return nil
+    end
+
+    return table.concat(lines, '\n')
+end
+
 ---@class octo.pr.create.form.Opts
 ---@field title? string
 ---@field labels? Label[]
@@ -78,7 +100,7 @@ local create_pr_form = function(opts)
                         renderer:get_component_by_id('body'):get_current_value()
                     )
 
-                    local out = M.pr.create {
+                    local out, err = M.pr.create {
                         title = title,
                         body = body,
                         label = vim.iter(signal.labels:get_value())
@@ -93,6 +115,8 @@ local create_pr_form = function(opts)
                         require('coop.uv-utils').sleep(500)
                         require('gh').pr.refresh()
                         M.pr.open()
+                    elseif err == nil then
+                        Snacks.notify.error 'Failed to create PR. Run :messages for details.'
                     end
                 end)
             end,
@@ -206,22 +230,23 @@ end
 
 ---@async
 ---@param opts gh.pr.create.Opts
----@return string?
+---@return string?, string?
 M.pr.create = function(opts)
     ---@type gh.pr.create.Opts
     opts = vim.tbl_extend('keep', opts, {
         -- assignee = '@me',
         draft = true,
     })
-    local git = require('git').async
+    local git = require 'git'
 
     if opts.base == nil then
         -- if upstream tracking branch was changed we want to
         -- create the PR against that branch instead of main
-        local tracking_branch = git.tracking_branch()
+        local tracking_branch = git.async.tracking_branch()
         if tracking_branch then
-            tracking_branch = tracking_branch:gsub('^origin/', '')
-            if git.current_branch() ~= tracking_branch then
+            local _, branch = git.split_remote_branch(tracking_branch)
+            tracking_branch = branch or tracking_branch
+            if git.async.current_branch() ~= tracking_branch then
                 opts.base = tracking_branch
             end
         end
@@ -230,13 +255,16 @@ M.pr.create = function(opts)
     local stdout, stderr = require('gh').pr.create(opts)
     reset_signal()
 
-    if stderr and stderr ~= '' and not stderr:match '^Warning: ' then
-        Snacks.notify.error(stderr)
+    local err = extract_gh_error(stderr)
+    if err then
+        Snacks.notify.error(err)
     end
 
     if stdout and stdout ~= '' then
-        return stdout
+        return stdout, err
     end
+
+    return nil, err
 end
 
 return M
