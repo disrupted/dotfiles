@@ -881,6 +881,15 @@ return {
             routes = {
                 {
                     filter = {
+                        event = 'msg_show',
+                        kind = 'echo',
+                        find = '^[⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏]', -- e.g. Neogit progress spinner
+                    },
+                    view = 'notify',
+                    opts = { replace = true, merge = false },
+                },
+                {
+                    filter = {
                         event = 'cmdline',
                         find = '^%s*[/?]',
                     },
