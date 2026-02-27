@@ -237,13 +237,16 @@ return {
                         return name:sub(1, 1) == '.', name
                     end
 
+                    local current_file = vim.api.nvim_buf_get_name(0)
+                    if current_file == '' then
+                        current_file = nil
+                    end
                     ---@return string
                     local function buf_parent_dir()
-                        local file = vim.api.nvim_buf_get_name(0)
-                        if file == '' then
+                        if not current_file then
                             return vim.g.workspace_root
                         end
-                        return vim.fs.dirname(file)
+                        return vim.fs.dirname(current_file)
                     end
 
                     local start_cwd = buf_parent_dir()
@@ -288,6 +291,27 @@ return {
                                 or false
                             item.open = false
                             return item
+                        end,
+                        on_show = function(picker)
+                            if not current_file then
+                                return
+                            end
+                            if picker._focused_current_file then
+                                return
+                            end
+                            picker._focused_current_file = true
+
+                            for item, idx in picker:iter() do
+                                local path = Snacks.picker.util.path(item)
+                                if
+                                    path
+                                    and vim.fs.normalize(path)
+                                        == current_file
+                                then
+                                    picker.list:view(idx) -- move cursor/selection row to current file
+                                    return
+                                end
+                            end
                         end,
                         actions = {
                             dir_up = dir_up,
