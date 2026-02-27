@@ -28,7 +28,7 @@ local start = function(config)
         string.format('Starting %s', config.name),
         { title = 'LSP' }
     )
-    return vim.lsp.start(config)
+    return vim.lsp.start(config, { attach = false })
 end
 
 ---@type table<string, fun():integer?>

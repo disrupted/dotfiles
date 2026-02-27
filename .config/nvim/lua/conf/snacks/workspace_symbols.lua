@@ -1,15 +1,78 @@
 local lsp_source = require 'snacks.picker.source.lsp'
+local snacks_fuzzy = require 'conf.snacks.fuzzy'
 local workspace_lsp = require 'conf.workspace.lsp'
 
 local M = {}
 
----@param path string?
+---@param root string?
+---@param scope_dir string?
 ---@return string?
-local function normalize(path)
-    if not path or path == '' then
+local function scope_label(root, scope_dir)
+    if not scope_dir then
         return nil
     end
-    return vim.fs.normalize(path)
+    if root then
+        local rel = vim.fs.relpath(root, scope_dir)
+        if rel then
+            return rel == '.' and './' or (rel .. '/')
+        end
+    end
+    return scope_dir
+end
+
+---@param client vim.lsp.Client?
+---@param root string?
+---@param scope_dir string?
+---@return string
+local function picker_title(client, root, scope_dir)
+    local title = 'LSP Workspace Symbols'
+    if client then
+        title = ('%s [%s]'):format(title, client.name)
+    end
+    local label = scope_label(root, scope_dir)
+    if label then
+        title = ('%s [%s]'):format(title, label)
+    end
+    return title
+end
+
+---@param file string?
+---@param scope_dir string?
+---@param root string?
+---@return boolean
+local function in_scope(file, scope_dir, root)
+    if not scope_dir then
+        return true
+    end
+    if not file or file == '' then
+        return false
+    end
+    if file == scope_dir then
+        return true
+    end
+
+    if root then
+        local rel_file = vim.fs.relpath(root, file)
+        local rel_scope = vim.fs.relpath(root, scope_dir)
+        if rel_file and rel_scope then
+            if rel_file == rel_scope then
+                return true
+            end
+            local rel_prefix = rel_scope
+            if not rel_prefix:match '/$' then
+                rel_prefix = rel_prefix .. '/'
+            end
+            if vim.startswith(rel_file, rel_prefix) then
+                return true
+            end
+        end
+    end
+
+    local prefix = scope_dir
+    if not prefix:match '/$' then
+        prefix = prefix .. '/'
+    end
+    return vim.startswith(file, prefix)
 end
 
 ---@param client vim.lsp.Client
@@ -27,13 +90,13 @@ local function client_matches_root(client, root)
         return false
     end
 
-    local config_root = normalize(client.config and client.config.root_dir)
+    local config_root = client.config and client.config.root_dir
     if config_root == root then
         return true
     end
 
     for _, folder in ipairs(client.workspace_folders or {}) do
-        local folder_root = normalize(vim.uri_to_fname(folder.uri))
+        local folder_root = vim.uri_to_fname(folder.uri)
         if folder_root == root then
             return true
         end
@@ -83,8 +146,14 @@ end
 ---@param root string?
 ---@param project_filetype string?
 ---@param selected_client vim.lsp.Client?
+---@param scope_dir string?
 ---@return snacks.picker.finder
-local function workspace_symbols_finder(root, project_filetype, selected_client)
+local function workspace_symbols_finder(
+    root,
+    project_filetype,
+    selected_client,
+    scope_dir
+)
     ---@param opts snacks.picker.lsp.symbols.Config
     ---@param ctx snacks.picker.finder.ctx
     return function(opts, ctx)
@@ -118,6 +187,7 @@ local function workspace_symbols_finder(root, project_filetype, selected_client)
             lsp_source.request(selected_client, 'workspace/symbol', function()
                 return { query = ctx.filter.search }
             end, function(request_client, result)
+                local query = ctx.filter.search
                 local items =
                     lsp_source.results_to_items(request_client, result, {
                         text_with_file = true,
@@ -125,6 +195,19 @@ local function workspace_symbols_finder(root, project_filetype, selected_client)
                             return want(lsp_source.symbol_kind(item.kind))
                         end,
                     })
+
+                if scope_dir then
+                    items = vim.tbl_filter(function(item)
+                        return in_scope(item.file, scope_dir, root)
+                    end, items)
+                end
+
+                items = snacks_fuzzy.rank_items(items, query, {
+                    smartcase = true,
+                    strict_smartcase = true,
+                }, function(item)
+                    return item.name or item.text or ''
+                end)
 
                 for _, item in ipairs(items) do
                     item.tree = opts.tree
@@ -135,53 +218,90 @@ local function workspace_symbols_finder(root, project_filetype, selected_client)
     end
 end
 
+---@param opts? {search?:string,scope_dir?:string}
 ---@return snacks.Picker?
-function M.pick()
-    local root = normalize(vim.g.workspace_root)
+function M.pick(opts)
+    opts = opts or {}
+    local root = vim.g.workspace_root
     local project_filetype = vim.g.project_filetype
+    local scope_dir = opts.scope_dir
     local client = workspace_symbol_client(root, project_filetype)
 
     if not client then
         workspace_lsp.start_project_clients()
-        client = workspace_symbol_client(root, project_filetype)
     end
 
-    local title = 'LSP Workspace Symbols'
-    if client then
-        title = ('%s [%s]'):format(title, client.name)
-    end
+    local title = picker_title(client, root, scope_dir)
 
     local picker = Snacks.picker.lsp_workspace_symbols {
         title = title,
-        finder = workspace_symbols_finder(root, project_filetype, client),
+        finder = workspace_symbols_finder(
+            root,
+            project_filetype,
+            client,
+            scope_dir
+        ),
+        search = opts.search,
         matcher = {
             fuzzy = true,
             ignorecase = false,
             smartcase = true,
         },
-        layout = {
-            preset = 'dropdown',
-            layout = { width = 0.5 },
-        },
         actions = {
-            toggle_live_match = function(self, _)
-                if self.opts.live then
-                    local search = self.input:get()
-                    self.input:set(search)
+            pick_scope_dir = function(self, _)
+                local current_search = self.input:get()
+                Snacks.picker.dirs {
+                    title = 'Pick Symbol Scope Directory',
+                    cwd = root or vim.uv.cwd(),
+                    confirm = function(dir_picker, item)
+                        if not item then
+                            return
+                        end
+
+                        local dir = item.file
+                        local cwd = root or item.cwd
+                        if dir and cwd then
+                            dir = vim.fs.joinpath(cwd, dir)
+                        end
+                        dir_picker:close()
+                        self:close()
+                        M.pick {
+                            search = current_search,
+                            scope_dir = dir,
+                        }
+                    end,
+                }
+            end,
+            clear_scope_dir = function(self, _)
+                if not scope_dir then
+                    return
                 end
-                self:action 'toggle_live'
+                local current_search = self.input:get()
+                self:close()
+                M.pick {
+                    search = current_search,
+                }
             end,
         },
         win = {
             input = {
                 keys = {
-                    ['<C-g>'] = {
-                        'toggle_live_match',
+                    ['<C-d>'] = {
+                        'pick_scope_dir',
                         mode = { 'i', 'n' },
-                        desc = 'Toggle live, apply live search as match pattern',
+                        desc = 'Pick symbol scope directory',
+                    },
+                    ['<C-b>'] = {
+                        'clear_scope_dir',
+                        mode = { 'i', 'n' },
+                        desc = 'Clear symbol scope directory',
                     },
                 },
             },
+        },
+        layout = {
+            preset = 'dropdown',
+            layout = { width = 0.5 },
         },
     }
 
@@ -189,26 +309,18 @@ function M.pick()
         return nil
     end
 
-    picker.input.win:on({ 'TextChangedI', 'TextChanged' }, function(win)
-        if not win:valid() then
-            return
-        end
-        if picker.opts.live then
-            picker.input.filter.pattern = picker.input.filter.search
-        end
-    end, { buf = true })
-
-    vim.defer_fn(function()
-        local current_client = workspace_symbol_client(root, project_filetype)
-        if not current_client then
-            Snacks.notify.warn 'No client supporting workspace symbols'
-            return
-        end
-        picker.title = ('LSP Workspace Symbols [%s]'):format(
-            current_client.name
-        )
-        picker:update_titles()
-    end, 1000)
+    if not client then
+        vim.defer_fn(function()
+            local current_client =
+                workspace_symbol_client(root, project_filetype)
+            if not current_client then
+                Snacks.notify.warn 'No client supporting workspace symbols'
+                return
+            end
+            picker.title = picker_title(current_client, root, scope_dir)
+            picker:update_titles()
+        end, 500)
+    end
 
     return picker
 end

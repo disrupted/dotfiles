@@ -4,6 +4,10 @@ return {
     'nvim-lua/plenary.nvim',
     { 'gregorias/coop.nvim', lazy = true }, -- concurrency with coroutines
     {
+        'disrupted/frizbee.nvim',
+        build = 'cargo build --release',
+    },
+    {
         'folke/snacks.nvim',
         priority = 1000,
         lazy = false,
