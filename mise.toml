@@ -1,0 +1,8 @@
+[plugins]
+fnox-env = "https://github.com/jdx/mise-env-fnox"
+
+[env]
+_.source = [
+  { path = "~/.local/state/fnox/global.env", redact = true },
+  { path = ".fnox.env", redact = true },
+]

@@ -1,0 +1,2 @@
+[providers]
+op = { type = "1password", vault = "Personal" }

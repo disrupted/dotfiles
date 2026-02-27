@@ -16,6 +16,8 @@ java = "latest" # only needed for pkl-lsp https://github.com/apple/pkl-lsp/issue
 uv = "latest"
 "pipx:poetry" = "latest" # for legacy projects
 
+fnox = "latest"
+1password = "latest"
 bat = "latest"
 delta = "latest"
 dust = "latest"
@@ -24,6 +26,7 @@ eza = "latest"
 fd = "latest"
 glow = "latest"
 helm = "latest"
+telepresence = "latest"
 hyperfine = "latest"
 jq = "latest"
 just = "latest"

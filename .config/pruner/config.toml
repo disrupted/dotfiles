@@ -15,7 +15,7 @@ dprint-yaml = { cmd = "dprint", args = ["fmt", "--stdin", "yaml"] }
 ruff_format = { cmd = "ruff", args = ["format", "--stdin-filename", "py"] }
 stylua = { cmd = "stylua", args = ["-"] }
 rustfmt = { cmd = "rustfmt", args = ["--edition=2024", "--emit=stdout"] }
-topiary-nu = { cmd = "topiary-nushell", args = ["format", "--language", "nu"] }
+topiary-nu = { cmd = "topiary", args = ["format", "--language", "nu"] }
 shfmt = { cmd = "shfmt", args = ["-i", "4", "-ci", "-"] }
 
 [languages]
