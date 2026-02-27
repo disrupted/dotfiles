@@ -14,9 +14,9 @@ return {
         ---@type MasonSettings
         opts = {
             ensure_installed = {
-                'astro-language-server',
                 'actionlint',
                 'angular-language-server',
+                'astro-language-server',
                 'bash-language-server',
                 'clangd',
                 'css-lsp',
@@ -32,8 +32,9 @@ return {
                 'html-lsp',
                 'json-lsp',
                 'lua-language-server',
-                'prettierd',
+                'nickel-lang-lsp',
                 'pkl-lsp',
+                'prettierd',
                 'shfmt',
                 'stylua',
                 'svelte-language-server',
@@ -42,6 +43,7 @@ return {
                 'texlab',
                 'tombi',
                 'ts_query_ls',
+                'tsgo',
                 'vale-ls',
                 'vtsls',
                 'yaml-language-server',

@@ -43,13 +43,22 @@ local default_clients = {
         -- check which server is available in venv
         local venv_path = vim.env.VIRTUAL_ENV
         for _, config in ipairs(configs) do
-            if vim.fs.relpath(venv_path, vim.fn.exepath(config.cmd[1])) then
-                return start(config)
+            local exepath = vim.fn.exepath(config.cmd[1])
+            if exepath ~= '' then
+                if vim.fs.relpath(venv_path, exepath) then
+                    return start(config)
+                end
             end
         end
     end,
     rust = function()
-        return require('rustaceanvim.lsp').start()
+        require('rustaceanvim.lsp').start()
+        config = vim.tbl_extend(
+            'keep',
+            vim.lsp.config['rust-analyzer'],
+            { cmd = { 'rust-analyzer' } }
+        )
+        return start(config)
     end,
 }
 
@@ -74,6 +83,28 @@ local clients = setmetatable(default_clients, {
 
 M.start = function(filetype)
     return clients[filetype]()
+end
+
+---@return integer[] started_client_ids
+M.start_project_clients = function()
+    local workspace = require 'conf.workspace'
+    local filetypes = workspace.project_filetypes { buffers = false }
+    local started = {}
+
+    for _, filetype in ipairs(filetypes) do
+        local client_ids = M.start(filetype)
+        if type(client_ids) == 'number' then
+            table.insert(started, client_ids)
+        elseif type(client_ids) == 'table' then
+            for _, id in ipairs(client_ids) do
+                if id then
+                    table.insert(started, id)
+                end
+            end
+        end
+    end
+
+    return started
 end
 
 return M
