@@ -51,7 +51,7 @@ return {
                                     if #files == 0 then
                                         Snacks.notify.warn(
                                             'Please select files to send as context',
-                                            { title = 'Agent' }
+                                            { title = 'Agent', icon = '' }
                                         )
                                         return
                                     end
@@ -128,7 +128,7 @@ return {
                             Snacks.notify(
                                 'current file context: '
                                     .. (enabling and 'on' or 'off'),
-                                { title = 'Agent' }
+                                { title = 'Agent', icon = '' }
                             )
                         end,
                         desc = 'Toggle current file context',
@@ -158,6 +158,7 @@ return {
                     ['#'] = { 'context_items', mode = 'i' }, -- Manage context items (current file, selection, diagnostics, mentioned files)
                     ['<tab>'] = false,
                     ['<S-tab>'] = { 'switch_mode', mode = { 'n', 'i' } }, -- Switch between modes (build/plan)
+                    ['<M-m>'] = { 'select_agent', mode = { 'n', 'i' } }, -- Select agent
                     ['<up>'] = { 'prev_prompt_history', mode = 'n' }, -- Navigate to previous prompt in history
                     ['<down>'] = { 'next_prompt_history', mode = 'n' }, -- Navigate to next prompt in history
                     ['<M-r>'] = { 'cycle_variant', mode = { 'n', 'i' } }, -- Cycle through available model variants
@@ -314,7 +315,7 @@ return {
             },
             hooks = {
                 on_done_thinking = function()
-                    Snacks.notify('Finished', { title = 'Agent' })
+                    Snacks.notify('Finished', { title = 'Agent', icon = '' })
                 end,
             },
         },
@@ -404,11 +405,6 @@ return {
             end
 
             local function get_main_edit_winid()
-                local current_winid = vim.api.nvim_get_current_win()
-                if is_main_edit_win(current_winid) then
-                    return current_winid
-                end
-
                 for _, winid in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
                     if is_main_edit_win(winid) then
                         return winid
@@ -418,6 +414,7 @@ return {
 
             vim.api.nvim_create_autocmd('User', {
                 pattern = 'OpencodeEvent:file.edited',
+                nested = true,
                 callback = function(args)
                     ---@type string
                     local abspath = args.data.event.properties.file
@@ -431,9 +428,15 @@ return {
                     end
                     Snacks.notify(
                         string.format('edit %s', relpath),
-                        { title = 'Agent' }
+                        { title = 'Agent', icon = '' }
                     )
-                    if not vim.g.agent_follow_edits then
+                    if
+                        not vim.g.agent_follow_edits
+                        or not vim.tbl_contains(
+                            { 'opencode', 'opencode_output' },
+                            vim.bo.filetype
+                        )
+                    then
                         return
                     end
                     local main_winid = get_main_edit_winid()
@@ -441,18 +444,12 @@ return {
                         return
                     end
 
-                    local bufnr = vim.fn.bufnr(abspath, false)
-                    local ok
-                    if bufnr ~= -1 and vim.api.nvim_buf_is_loaded(bufnr) then
-                        ok = pcall(vim.api.nvim_win_set_buf, main_winid, bufnr)
-                    else
-                        ok = pcall(vim.api.nvim_win_call, main_winid, function()
-                            vim.cmd.edit(vim.fn.fnameescape(abspath))
+                    local escaped = vim.fn.fnameescape(abspath)
+                    vim.schedule(function()
+                        pcall(vim.api.nvim_win_call, main_winid, function()
+                            vim.cmd('drop ' .. escaped)
                         end)
-                    end
-                    if not ok then
-                        return
-                    end
+                    end)
                 end,
             })
 
