@@ -4,24 +4,22 @@ local workspace_lsp = require 'conf.workspace.lsp'
 
 local M = {}
 
----@param root string?
+---@param root string
 ---@param scope_dir string?
 ---@return string?
 local function scope_label(root, scope_dir)
     if not scope_dir then
         return nil
     end
-    if root then
-        local rel = vim.fs.relpath(root, scope_dir)
-        if rel then
-            return rel == '.' and './' or (rel .. '/')
-        end
+    local rel = vim.fs.relpath(root, scope_dir)
+    if rel then
+        return rel == '.' and './' or (rel .. '/')
     end
     return scope_dir
 end
 
 ---@param client vim.lsp.Client?
----@param root string?
+---@param root string
 ---@param scope_dir string?
 ---@return string
 local function picker_title(client, root, scope_dir)
@@ -37,34 +35,29 @@ local function picker_title(client, root, scope_dir)
 end
 
 ---@param file string?
----@param scope_dir string?
----@param root string?
+---@param scope_dir string
+---@param root string
 ---@return boolean
 local function in_scope(file, scope_dir, root)
-    if not scope_dir then
-        return true
-    end
-    if not file or file == '' then
+    if type(file) ~= 'string' or file == '' then
         return false
     end
     if file == scope_dir then
         return true
     end
 
-    if root then
-        local rel_file = vim.fs.relpath(root, file)
-        local rel_scope = vim.fs.relpath(root, scope_dir)
-        if rel_file and rel_scope then
-            if rel_file == rel_scope then
-                return true
-            end
-            local rel_prefix = rel_scope
-            if not rel_prefix:match '/$' then
-                rel_prefix = rel_prefix .. '/'
-            end
-            if vim.startswith(rel_file, rel_prefix) then
-                return true
-            end
+    local rel_file = vim.fs.relpath(root, file)
+    local rel_scope = vim.fs.relpath(root, scope_dir)
+    if rel_file and rel_scope then
+        if rel_file == rel_scope then
+            return true
+        end
+        local rel_prefix = rel_scope
+        if not rel_prefix:match '/$' then
+            rel_prefix = rel_prefix .. '/'
+        end
+        if vim.startswith(rel_file, rel_prefix) then
+            return true
         end
     end
 
@@ -83,13 +76,9 @@ local function supports_workspace_symbols(client)
 end
 
 ---@param client vim.lsp.Client
----@param root string?
+---@param root string
 ---@return boolean
 local function client_matches_root(client, root)
-    if not root then
-        return false
-    end
-
     local config_root = client.config and client.config.root_dir
     if config_root == root then
         return true
@@ -105,7 +94,7 @@ local function client_matches_root(client, root)
     return false
 end
 
----@param root string?
+---@param root string
 ---@param filetype string?
 ---@return vim.lsp.Client?
 local function workspace_symbol_client(root, filetype)
@@ -143,11 +132,11 @@ local function workspace_symbol_client(root, filetype)
     return best_client
 end
 
----@param root string?
+---@param root string
 ---@param project_filetype string?
 ---@param selected_client vim.lsp.Client?
 ---@param scope_dir string?
----@return snacks.picker.finder
+---@return fun(opts: snacks.picker.lsp.symbols.Config, ctx: snacks.picker.finder.ctx): fun(cb: async fun(item: snacks.picker.finder.Item))
 local function workspace_symbols_finder(
     root,
     project_filetype,
@@ -178,16 +167,18 @@ local function workspace_symbols_finder(
         ---@async
         ---@param cb async fun(item: snacks.picker.finder.Item)
         return function(cb)
-            selected_client = selected_client
+            local active_client = selected_client
                 or workspace_symbol_client(root, project_filetype)
-            if not selected_client then
+            if not active_client then
                 return
             end
+            selected_client = active_client
 
-            lsp_source.request(selected_client, 'workspace/symbol', function()
-                return { query = ctx.filter.search }
+            local query = ctx.filter.search or ''
+
+            lsp_source.request(active_client, 'workspace/symbol', function()
+                return { query = query }
             end, function(request_client, result)
-                local query = ctx.filter.search
                 local items =
                     lsp_source.results_to_items(request_client, result, {
                         text_with_file = true,
@@ -196,11 +187,10 @@ local function workspace_symbols_finder(
                         end,
                     })
 
-                if scope_dir then
-                    items = vim.tbl_filter(function(item)
-                        return in_scope(item.file, scope_dir, root)
-                    end, items)
-                end
+                local effective_scope = scope_dir or root
+                items = vim.tbl_filter(function(item)
+                    return in_scope(item.file, effective_scope, root)
+                end, items)
 
                 items = snacks_fuzzy.rank_items(items, query, {
                     smartcase = true,
@@ -222,7 +212,7 @@ end
 ---@return snacks.Picker?
 function M.pick(opts)
     opts = opts or {}
-    local root = vim.g.workspace_root
+    local root = vim.g.workspace_root or vim.uv.cwd()
     local project_filetype = vim.g.project_filetype
     local scope_dir = opts.scope_dir
     local client = workspace_symbol_client(root, project_filetype)
@@ -235,6 +225,7 @@ function M.pick(opts)
 
     local picker = Snacks.picker.lsp_workspace_symbols {
         title = title,
+        cwd = root,
         finder = workspace_symbols_finder(
             root,
             project_filetype,
@@ -252,14 +243,14 @@ function M.pick(opts)
                 local current_search = self.input:get()
                 Snacks.picker.dirs {
                     title = 'Pick Symbol Scope Directory',
-                    cwd = root or vim.uv.cwd(),
+                    cwd = root,
                     confirm = function(dir_picker, item)
                         if not item then
                             return
                         end
 
                         local dir = item.file
-                        local cwd = root or item.cwd
+                        local cwd = root
                         if dir and cwd then
                             dir = vim.fs.joinpath(cwd, dir)
                         end
