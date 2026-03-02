@@ -464,7 +464,7 @@ return {
                         vim.schedule_wrap(function()
                             for symbol in vim.iter(picker:items()):rev() do
                                 if
-                                    require('conf.snacks.lsp_symbols').cursor_in_range(
+                                    require('conf.snacks.lsp.symbols').cursor_in_range(
                                         cursor,
                                         symbol.range
                                     )
@@ -481,7 +481,7 @@ return {
             {
                 '<Leader>s',
                 function()
-                    require('conf.snacks.workspace_symbols').pick()
+                    require('conf.snacks.lsp.workspace_symbols').pick()
                 end,
                 desc = 'LSP workspace symbols',
             },
@@ -782,14 +782,87 @@ return {
                             reverse = true,
                         },
                     },
+                    lsp_supertypes = {
+                        title = 'LSP Supertypes',
+                        finder = require('conf.snacks.lsp.type_hierarchy').supertypes,
+                        format = require('conf.snacks.lsp.type_hierarchy').format_lsp_symbol,
+                        workspace = true,
+                        jump = { tagstack = true, reuse_win = true },
+                        layout = {
+                            preset = 'select',
+                            layout = { max_height = 14 },
+                        },
+                    },
+                    lsp_declarations = {
+                        title = 'LSP Declarations',
+                        layout = {
+                            preset = 'select',
+                            layout = { max_height = 14 },
+                        },
+                    },
+                    lsp_definitions = {
+                        title = 'LSP Definitions',
+                        finder = require('conf.snacks.lsp').definitions_filtered,
+                        layout = {
+                            preset = 'select',
+                            layout = { max_height = 14 },
+                        },
+                    },
+                    lsp_implementations = {
+                        title = 'LSP Implementation',
+                        layout = {
+                            preset = 'select',
+                            layout = { max_height = 14 },
+                        },
+                    },
+                    lsp_references = {
+                        title = 'LSP References',
+                        layout = {
+                            preset = 'select',
+                            layout = { max_height = 14 },
+                        },
+                    },
+                    lsp_type_definitions = {
+                        title = 'LSP Type Definitions',
+                        layout = {
+                            preset = 'select',
+                            layout = { max_height = 14 },
+                        },
+                    },
+                    lsp_incoming_calls = {
+                        title = 'LSP Incoming Calls',
+                        layout = {
+                            preset = 'select',
+                            layout = { max_height = 14 },
+                        },
+                    },
+                    lsp_outgoing_calls = {
+                        title = 'LSP Outgoing Calls',
+                        layout = {
+                            preset = 'select',
+                            layout = { max_height = 14 },
+                        },
+                    },
+                    lsp_subtypes = {
+                        title = 'LSP Subtypes',
+                        finder = require('conf.snacks.lsp.type_hierarchy').subtypes,
+                        format = require('conf.snacks.lsp.type_hierarchy').format_lsp_symbol,
+                        workspace = true,
+                        jump = { tagstack = true, reuse_win = true },
+                        layout = {
+                            preset = 'select',
+                            layout = { max_height = 14 },
+                        },
+                    },
                 },
                 layouts = {
                     select = {
                         layout = {
                             relative = 'cursor',
-                            width = 70,
-                            min_width = 0,
+                            width = 130,
+                            max_width = 180,
                             row = 1,
+                            col = -10,
                         },
                     },
                 },

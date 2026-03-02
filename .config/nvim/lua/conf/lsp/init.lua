@@ -25,34 +25,21 @@ vim.api.nvim_create_autocmd('LspAttach', {
     group = au,
     desc = 'LSP keymaps',
     callback = function(args)
-        require('which-key').add {
-            buffer = args.buf,
-            {
-                '<Leader>r',
-                function()
-                    require('conf.lsp.nui').rename()
-                end,
-                desc = 'LSP: Rename symbol',
-                icon = '󰏫',
-            },
-            {
-                'gd',
-                function()
-                    require('trouble').open {
-                        mode = 'lsp_definitions_filtered',
-                        auto_jump = true,
-                    }
-                end,
-                desc = 'LSP: Go to definition',
-            },
-            {
-                'gr',
-                function()
-                    require('trouble').open { mode = 'lsp_references' }
-                end,
-                desc = 'LSP: References',
-            },
-            { 'K', vim.lsp.buf.hover, desc = 'LSP: Hover' },
+        local buffer = args.buf
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if not client then
+            return
+        end
+
+        Snacks.notify(('attached to buffer %i'):format(args.buf), {
+            level = vim.log.levels.DEBUG,
+            title = 'LSP: ' .. client.name,
+        })
+
+        local mappings = {
+            buffer = buffer,
+            { 'gt', group = 'LSP: Type hierarchy', icon = '󰙅' },
+            { 'gl', group = 'LSP: List calls', icon = '󰅲' },
             { '<Leader>w', group = 'LSP workspace', icon = '' },
             {
                 '<Leader>wa',
@@ -74,27 +61,129 @@ vim.api.nvim_create_autocmd('LspAttach', {
                 end,
                 desc = 'List folders',
             },
-            -- TODO: current Trouble-based solution only goes one layer deep
-            -- replace with something like https://github.com/jmacadie/telescope-hierarchy.nvim
-            -- hopefully for Snacks or Trouble
-            { '<Leader>l', group = 'LSP: List calls', icon = '󰅲' },
-            {
-                '<Leader>li',
+        }
+
+        if client:supports_method 'textDocument/codeAction' then
+            mappings[#mappings + 1] = {
+                '<Leader>c',
+                vim.lsp.buf.code_action,
+                mode = { 'n', 'v' },
+                desc = 'LSP: Code action',
+                icon = { icon = '', hl = 'LightBulb' },
+            }
+        end
+
+        if client:supports_method('textDocument/rename', buffer) then
+            mappings[#mappings + 1] = {
+                '<Leader>r',
                 function()
-                    require('trouble').open { mode = 'lsp_incoming_calls' }
+                    require('conf.lsp.nui').rename()
+                end,
+                desc = 'LSP: Rename symbol',
+                icon = '󰏫',
+            }
+        end
+
+        if client:supports_method('textDocument/definition', buffer) then
+            mappings[#mappings + 1] = {
+                'gd',
+                function()
+                    Snacks.picker.lsp_definitions()
+                end,
+                desc = 'LSP: Go to definition',
+            }
+        end
+        if client:supports_method('textDocument/declaration', buffer) then
+            mappings[#mappings + 1] = {
+                'gD',
+                function()
+                    Snacks.picker.lsp_declarations()
+                end,
+                desc = 'LSP: Go to declaration',
+            }
+        end
+        if client:supports_method('textDocument/implementation', buffer) then
+            mappings[#mappings + 1] = {
+                'gi',
+                function()
+                    Snacks.picker.lsp_implementations()
+                end,
+                desc = 'LSP: Go to implementation',
+            }
+        end
+        if client:supports_method('textDocument/typeDefinition', buffer) then
+            mappings[#mappings + 1] = {
+                'gy',
+                function()
+                    Snacks.picker.lsp_type_definitions()
+                end,
+                desc = 'LSP: Go to type definition',
+            }
+        end
+        if client:supports_method('textDocument/references', buffer) then
+            mappings[#mappings + 1] = {
+                'gr',
+                function()
+                    Snacks.picker.lsp_references()
+                end,
+                desc = 'LSP: References',
+            }
+        end
+        if client:supports_method('textDocument/hover', buffer) then
+            mappings[#mappings + 1] =
+                { 'K', vim.lsp.buf.hover, desc = 'LSP: Hover' }
+        end
+
+        if
+            client:supports_method('textDocument/prepareCallHierarchy', buffer)
+        then
+            mappings[#mappings + 1] = {
+                'gli',
+                function()
+                    Snacks.picker.lsp_incoming_calls()
                 end,
                 desc = 'Incoming (call sites)',
                 icon = '󰃺',
-            },
-            {
-                '<Leader>lo',
+            }
+        end
+        if
+            client:supports_method('textDocument/prepareCallHierarchy', buffer)
+        then
+            mappings[#mappings + 1] = {
+                'glo',
                 function()
-                    require('trouble').open { mode = 'lsp_outgoing_calls' }
+                    Snacks.picker.lsp_outgoing_calls()
                 end,
                 desc = 'Outgoing (called functions)',
                 icon = '󰃷',
-            },
-        }
+            }
+        end
+        if
+            client:supports_method('textDocument/prepareTypeHierarchy', buffer)
+        then
+            mappings[#mappings + 1] = {
+                'gts',
+                function()
+                    Snacks.picker.lsp_supertypes()
+                end,
+                desc = 'Supertypes',
+                icon = '󰫧',
+            }
+        end
+        if
+            client:supports_method('textDocument/prepareTypeHierarchy', buffer)
+        then
+            mappings[#mappings + 1] = {
+                'gtb',
+                function()
+                    Snacks.picker.lsp_subtypes()
+                end,
+                desc = 'Subtypes',
+                icon = '󰫤',
+            }
+        end
+
+        require('which-key').add(mappings)
         vim.opt.shortmess:append 'c'
     end,
 })
@@ -179,27 +268,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end,
 })
 
-vim.api.nvim_create_autocmd('LspAttach', {
-    group = au,
-    desc = 'LSP code actions',
-    callback = function(args)
-        local bufnr = args.buf
-        local client = vim.lsp.get_client_by_id(args.data.client_id)
-        if client and client:supports_method 'textDocument/codeAction' then
-            require('which-key').add {
-                {
-                    '<Leader>c',
-                    vim.lsp.buf.code_action,
-                    buffer = bufnr,
-                    mode = { 'n', 'v' },
-                    desc = 'LSP: Code action',
-                    icon = { icon = '', hl = 'LightBulb' },
-                },
-            }
-        end
-    end,
-})
-
 --[[ vim.api.nvim_create_autocmd('LspAttach', {
                 group = au,
                 desc = 'LSP signature help',
@@ -216,20 +284,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
                     end
                 end,
             }) ]]
-
-vim.api.nvim_create_autocmd('LspAttach', {
-    group = au,
-    desc = 'LSP notify',
-    callback = function(args)
-        local client = vim.lsp.get_client_by_id(args.data.client_id)
-        if client then
-            Snacks.notify(('attached to buffer %i'):format(args.buf), {
-                level = vim.log.levels.DEBUG,
-                title = 'LSP: ' .. client.name,
-            })
-        end
-    end,
-})
 
 vim.lsp.on_type_formatting.enable()
 vim.lsp.codelens.enable()
