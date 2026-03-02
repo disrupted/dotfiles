@@ -1023,10 +1023,12 @@ return {
     },
     {
         'Hdoc1509/gh-actions.nvim',
+        ft = 'yaml.github',
         dependencies = { 'nvim-treesitter/nvim-treesitter' },
         config = function()
             require('gh-actions.tree-sitter').setup()
             require('nvim-treesitter').install 'gh_actions_expressions'
+            pcall(vim.treesitter.start, 0, 'gh_actions_expressions')
         end,
     },
     {
