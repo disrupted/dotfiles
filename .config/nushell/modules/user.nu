@@ -351,59 +351,6 @@ export def gh-ci-retry [max_retries: int = 20] {
   }
 }
 
-# Refresh global secrets cache consumed by mise (_.file)
-export def fnox-refresh-global [] {
-  let config = ($env.HOME | path join ".config" "fnox" "global-secrets.toml")
-  if not ($config | path exists) {
-    print $"No global fnox secrets config found at ($config)"
-    return
-  }
-
-  let out = ($env.HOME | path join ".local" "state" "fnox" "global.env")
-  mkdir ($out | path dirname)
-  fnox --config $config export --output $out
-  chmod 600 $out
-  print $"Refreshed secrets cache: ($out)"
-}
-
-# Refresh project-local secrets cache consumed by project mise.toml (_.file = ".fnox.env")
-export def fnox-refresh-project [--dir: path] {
-  let target = (($dir | default $env.PWD) | path expand)
-  let config_main = ($target | path join "fnox.toml")
-  let config_dot = ($target | path join ".fnox.toml")
-  let config = if ($config_main | path exists) {
-    $config_main
-  } else if ($config_dot | path exists) {
-    $config_dot
-  } else {
-    null
-  }
-
-  if $config == null {
-    print $"No project fnox config found in ($target)"
-    return
-  }
-
-  let out = ($target | path join ".fnox.env")
-  do {
-    cd $target
-    fnox export --output $out
-  }
-
-  chmod 600 $out
-  print $"Refreshed project secrets cache: ($out)"
-}
-
-# Refresh both global and current project caches
-export def fnox-refresh [--dir: path] {
-  fnox-refresh-global
-  if $dir == null {
-    fnox-refresh-project
-  } else {
-    fnox-refresh-project --dir $dir
-  }
-}
-
 # dl - download a file
 export def dl [url: string output?: path] {
   if ($output == null) {

@@ -74,6 +74,8 @@ $env.LS_COLORS = "rs=0:fi=0:di=34:ln=36:so=33:pi=33:ex=32:bd=33;1:cd=33;1:su=31:
 if $nu.is-interactive {
   $env.GPG_TTY = (tty)
 }
+const local_secrets = "~/.config/nushell/local/secrets.nu"
+if ($local_secrets | path exists) { source $local_secrets }
 
 # Theme colors
 const FZF_COLORS_DARK = '

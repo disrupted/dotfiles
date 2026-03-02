@@ -17,6 +17,7 @@ uv = "latest"
 "pipx:poetry" = "latest" # for legacy projects
 
 fnox = "latest"
+age = "latest"
 1password = "latest"
 bat = "latest"
 delta = "latest"

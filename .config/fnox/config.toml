@@ -1,2 +1,6 @@
-[providers]
-op = { type = "1password", vault = "Personal" }
+[providers.op]
+type = "1password"
+
+[providers.age]
+type = "age"
+recipients = ["age1k2a4fd7l946ygxl88v8gsxhjcumx5jpl3m4k9uawqe03l3at2shsafd076"]
