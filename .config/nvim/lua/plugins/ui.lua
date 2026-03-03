@@ -1018,7 +1018,7 @@ return {
                         return vim.api.nvim_win_get_config(win).relative == ''
                     end,
                     wo = {
-                        wraps = false,
+                        winbar = false,
                     },
                 },
                 {
@@ -1057,6 +1057,7 @@ return {
                     size = { height = 10 },
                     wo = {
                         winbar = false,
+                        signcolumn = 'yes',
                         winhighlight = 'Normal:OpencodeBackground',
                         statuscolumn = '',
                     },

@@ -82,6 +82,7 @@ return {
                     },
                 },
             },
+            yaml = { enabled = false },
         },
     },
 }

@@ -97,38 +97,37 @@ return {
                         function()
                             local state = require 'opencode.state'
                             local config = require 'opencode.config'
-                            local chat_context =
-                                require 'opencode.context.chat_context'
+                            local context = require 'opencode.context'
 
                             local ctx =
                                 vim.deepcopy(state.current_context_config or {})
-                            ctx.current_file = ctx.current_file
-                                or vim.deepcopy(
-                                    config.context.current_file or {}
-                                )
+                            ctx.current_file = vim.tbl_deep_extend(
+                                'force',
+                                {},
+                                config.context.current_file or {},
+                                ctx.current_file or {}
+                            )
 
                             local currently_enabled = ctx.current_file.enabled
                             if currently_enabled == nil then
-                                currently_enabled = vim.tbl_get(
-                                    config,
-                                    'context',
-                                    'current_file',
-                                    'enabled'
-                                )
+                                currently_enabled =
+                                    context.is_context_enabled 'current_file'
                             end
-                            local enabling = currently_enabled == false
 
+                            local enabling = not currently_enabled
                             ctx.current_file.enabled = enabling
                             state.current_context_config = ctx
 
-                            if not enabling then
-                                chat_context.context.current_file = nil
-                            end
+                            context.load()
 
                             Snacks.notify(
                                 'current file context: '
                                     .. (enabling and 'on' or 'off'),
-                                { title = 'Agent', icon = '' }
+                                {
+                                    id = 'agent-context-current-file',
+                                    title = 'Agent',
+                                    icon = '',
+                                }
                             )
                         end,
                         desc = 'Toggle current file context',
@@ -250,6 +249,19 @@ return {
                     },
                     rendering = {
                         markdown_debounce_ms = 100,
+                    },
+                },
+                picker = {
+                    ---@module "snacks"
+                    ---@type snacks.picker.layout.Config?
+                    snacks_layout = {
+                        preset = 'dropdown',
+                        preview = false,
+                        layout = {
+                            row = 0.2,
+                            width = 105,
+                            height = 0.4,
+                        },
                     },
                 },
                 window_highlight = 'Normal:OpencodeBackground,FloatBorder:OpencodeBorder,SignColumn:OpencodeSignColumn,WinSeparator:OpencodeWinSeparator',
