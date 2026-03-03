@@ -64,8 +64,7 @@ M.project_filetypes = function(opts)
         project_filetypes = vim.iter(vim.api.nvim_list_bufs())
             :filter(vim.api.nvim_buf_is_loaded)
             :filter(function(buf)
-                return vim.bo[buf].buftype ~= 'nofile'
-                    and vim.bo[buf].filetype ~= ''
+                return vim.bo[buf].buftype == '' and vim.bo[buf].filetype ~= ''
             end)
             :map(function(buf)
                 return vim.bo[buf].filetype
@@ -555,38 +554,45 @@ M.setup = function()
     ---@param backward boolean  true for <C-o>, false for <C-i>
     local function native_jump_filtered(backward)
         local current_name = get_tab_name(vim.api.nvim_get_current_tabpage())
-        local key_code = vim.api.nvim_replace_termcodes(
-            backward and '<C-o>' or '<C-i>',
+        local jumplist, pos = unpack(vim.fn.getjumplist())
+        local step = backward and -1 or 1
+        local idx = pos + (backward and 0 or 1)
+        local skips = 0
+
+        -- Scan ahead through the jumplist to find the first entry that
+        -- belongs in the current tab (or is unassigned).
+        while idx >= 1 and idx <= #jumplist do
+            local entry = jumplist[idx]
+            if
+                entry
+                and current_name
+                and vim.api.nvim_buf_is_valid(entry.bufnr)
+                and buf_tab_assignment[entry.bufnr]
+                and buf_tab_assignment[entry.bufnr] ~= current_name
+            then
+                -- This entry belongs in another tab — skip it
+                skips = skips + 1
+                idx = idx + step
+            else
+                -- Found a valid entry to land on
+                break
+            end
+        end
+
+        if idx < 1 or idx > #jumplist then
+            return -- nothing valid in this direction
+        end
+
+        -- Execute (skips + 1) jumps: skip the cross-tab entries, land
+        -- on the valid one.
+        local count = skips + 1
+        local key = vim.api.nvim_replace_termcodes(
+            count .. (backward and '<C-o>' or '<C-i>'),
             true,
             false,
             true
         )
-        -- Try up to 100 times to skip cross-tab entries
-        for _ = 1, 100 do
-            local jumplist, pos = unpack(vim.fn.getjumplist())
-            local idx = pos + (backward and 0 or 1)
-            if idx < 1 or idx > #jumplist then
-                return -- nothing left in this direction
-            end
-            local target_entry = jumplist[idx]
-            if not target_entry then
-                return
-            end
-            -- If the target buffer belongs in a different tab, silently
-            -- advance the jumplist pointer past it and try again
-            if
-                current_name
-                and vim.api.nvim_buf_is_valid(target_entry.bufnr)
-                and buf_tab_assignment[target_entry.bufnr]
-                and buf_tab_assignment[target_entry.bufnr] ~= current_name
-            then
-                vim.api.nvim_feedkeys(key_code, 'x', false)
-            else
-                -- Safe to land here
-                vim.api.nvim_feedkeys(key_code, 'n', false)
-                return
-            end
-        end
+        vim.api.nvim_feedkeys(key, 'n', false)
     end
 
     vim.keymap.set('n', '<C-o>', function()
