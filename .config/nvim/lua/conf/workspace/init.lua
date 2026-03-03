@@ -216,6 +216,13 @@ end
 
 M.is_test_file = is_test_file
 
+--- Get the managed tab name a file should be routed to
+---@param filepath string
+---@return 'code'|'tests'
+M.get_tab_for_file = function(filepath)
+    return is_test_file(filepath) and 'tests' or 'code'
+end
+
 local moving = false
 
 --- Track which tab each buffer has been assigned to (by name).
@@ -521,7 +528,7 @@ M.setup = function()
             end
 
             if managed_buffers[args.buf] then
-                local dest_name = is_test_file(args.file) and 'tests' or 'code'
+                local dest_name = M.get_tab_for_file(args.file)
                 local already_assigned = buf_tab_assignment[args.buf] ~= nil
                 -- Record the assignment so TabEnter can clean up later,
                 -- even if we can't move right now.

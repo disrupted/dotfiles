@@ -451,6 +451,19 @@ return {
                     then
                         return
                     end
+                    if vim.g.project_tabs then
+                        local ok, current_tab_name = pcall(
+                            vim.api.nvim_tabpage_get_var,
+                            vim.api.nvim_get_current_tabpage(),
+                            'tabname'
+                        )
+                        if ok then
+                            local workspace = require 'conf.workspace'
+                            if workspace.get_tab_for_file(abspath) ~= current_tab_name then
+                                return
+                            end
+                        end
+                    end
                     local main_winid = get_main_edit_winid()
                     if not main_winid then
                         return
