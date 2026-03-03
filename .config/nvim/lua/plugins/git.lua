@@ -351,12 +351,12 @@ return {
     },
     {
         'sindrets/diffview.nvim',
-        enabled = false, -- Disabled in favor of codediff.nvim
+        enabled = true, -- disable in favor of codediff.nvim
         cmd = { 'DiffviewOpen', 'DiffviewFileHistory' },
         init = function()
             require('which-key').add {
                 {
-                    '<Leader>gd',
+                    '<Leader>gD',
                     group = 'Diffview',
                     icon = icons.git.diff,
                 },
@@ -364,7 +364,7 @@ return {
         end,
         keys = {
             {
-                '<Leader>gdr',
+                '<Leader>gDr',
                 function()
                     vim.ui.input(
                         { prompt = 'Diffview Revision' },
@@ -380,15 +380,15 @@ return {
                 desc = 'Revision',
             },
             {
-                '<Leader>gdf',
+                '<Leader>gDf',
                 '<cmd>DiffviewFileHistory %<CR>',
                 desc = 'File history',
             },
             {
-                '<Leader>gdb',
+                '<Leader>gDb',
                 function()
                     vim.cmd.DiffviewOpen 'origin/HEAD...HEAD -- .'
-                    require('gitsigns').change_base('origin/HEAD', true)
+                    -- require('gitsigns').change_base('origin/HEAD', true)
                 end,
                 desc = 'Review branch changes',
             },
@@ -460,13 +460,13 @@ return {
             },
             {
                 '<Leader>gdf',
-                '<cmd>CodeDiff history %<CR>',
+                '<cmd>CodeDiff history HEAD~20 %<CR>',
                 desc = 'File history',
             },
             {
                 '<Leader>gdb',
                 function()
-                    vim.cmd 'CodeDiff history origin/HEAD..HEAD'
+                    vim.cmd { cmd = 'CodeDiff', args = { 'origin/HEAD...HEAD' } }
                     -- require('gitsigns').change_base('origin/HEAD', true)
                 end,
                 desc = 'Review branch changes',
@@ -487,9 +487,10 @@ return {
                 explorer = {
                     position = 'left',
                     width = 40,
-                    view_mode = 'list',
+                    view_mode = 'tree',
                     initial_focus = 'explorer',
                     indent_markers = true,
+                    focus_on_select = false,
                 },
                 history = {
                     position = 'bottom',
@@ -501,8 +502,8 @@ return {
                     view = {
                         quit = 'q',
                         toggle_explorer = '<C-e>',
-                        next_hunk = ']c',
-                        prev_hunk = '[c',
+                        next_hunk = ']g',
+                        prev_hunk = '[g',
                         next_file = ']q',
                         prev_file = '[q',
                         diff_get = 'do',

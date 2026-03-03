@@ -1017,6 +1017,9 @@ return {
                         -- exclude floating windows
                         return vim.api.nvim_win_get_config(win).relative == ''
                     end,
+                    wo = {
+                        wraps = false,
+                    },
                 },
                 {
                     ft = 'neotest-summary',
@@ -1030,6 +1033,14 @@ return {
                 {
                     ft = 'pipeline',
                     title = 'CI',
+                },
+                {
+                    ft = 'codediff-explorer',
+                    title = 'CodeDiff Explorer',
+                    wo = {
+                        winbar = false,
+                        listchars = 'extends: ',
+                    },
                 },
             },
             right = {
@@ -1103,6 +1114,14 @@ return {
                     end,
                     title = 'Output',
                     size = { height = 20 },
+                },
+                {
+                    ft = 'codediff-history',
+                    title = 'Commit History',
+                    wo = {
+                        winbar = false,
+                        listchars = 'extends: ',
+                    },
                 },
             },
         },
