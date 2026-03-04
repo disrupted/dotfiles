@@ -605,6 +605,9 @@ return {
             default_merge_method = 'squash',
             default_delete_branch = true,
             date_format = '%Y %b %d %H:%M',
+            poll = {
+                enabled = true,
+            },
             mappings = {
                 issue = {
                     close_issue = { desc = 'Close' },
