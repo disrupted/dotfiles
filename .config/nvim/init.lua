@@ -512,7 +512,8 @@ vim.keymap.set(
 vim.keymap.set('n', '<C-6>', '<C-^>', { desc = 'Alternate buffer' })
 
 -- sensible defaults
-vim.keymap.set('', 'Q', '') -- disable
+vim.keymap.set('', 'Q', '<Nop>') -- disable
+vim.keymap.set('', 'q:', '<Nop>') -- disable
 vim.keymap.set('n', 'x', '"_x') -- delete char without yank
 vim.keymap.set('x', 'x', '"_x') -- delete visual selection without yank
 vim.keymap.set('n', '<C-S-z>', '<Nop>') -- disable suspend
