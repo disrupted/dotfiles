@@ -1,6 +1,6 @@
 ---@type vim.lsp.Config
 return {
-    cmd = { 'bunx', '--bun', 'astro-ls', '--stdio' },
+    cmd = { 'bunx', '--bun', '--no-install', 'astro-ls', '--stdio' },
     filetypes = { 'astro' },
     root_markers = { 'package.json', 'tsconfig.json', 'jsconfig.json', '.git' },
     workspace_required = true,

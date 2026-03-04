@@ -3,6 +3,7 @@ local project_library_path = assert(vim.uv.cwd())
 local cmd = {
     'bunx',
     '--bun',
+    '--no-install',
     'ngserver',
     '--stdio',
     '--tsProbeLocations',

@@ -1,5 +1,5 @@
 ---@type vim.lsp.Config
 return {
-    cmd = { 'bunx', '--bun', 'docker-langserver', '--stdio' },
+    cmd = { 'bunx', '--bun', '--no-install', 'docker-langserver', '--stdio' },
     filetypes = { 'dockerfile' },
 }

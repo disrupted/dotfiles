@@ -1,6 +1,6 @@
 ---@type vim.lsp.Config
 return {
-    cmd = { 'bunx', '--bun', 'svelteserver', '--stdio' },
+    cmd = { 'bunx', '--bun', '--no-install', 'svelteserver', '--stdio' },
     filetypes = { 'svelte' },
     root_dir = function(bufnr, on_dir)
         local filename = vim.api.nvim_buf_get_name(bufnr)

@@ -21,7 +21,7 @@ local inlayHints = {
 
 ---@type vim.lsp.Config
 return {
-    cmd = { 'bunx', '--bun', 'tsgo', '--lsp', '--stdio' },
+    cmd = { 'bunx', '--bun', '--no-install', 'tsgo', '--lsp', '--stdio' },
     filetypes = {
         'javascript',
         'javascriptreact',

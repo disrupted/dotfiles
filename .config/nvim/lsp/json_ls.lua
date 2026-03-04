@@ -1,6 +1,12 @@
 ---@type vim.lsp.Config
 return {
-    cmd = { 'bunx', '--bun', 'vscode-json-language-server', '--stdio' },
+    cmd = {
+        'bunx',
+        '--bun',
+        '--no-install',
+        'vscode-json-language-server',
+        '--stdio',
+    },
     filetypes = { 'json', 'jsonc' },
     ---@type table<vim.lsp.protocol.Methods, lsp.Handler>
     handlers = {
