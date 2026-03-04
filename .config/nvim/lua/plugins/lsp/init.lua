@@ -646,22 +646,6 @@ return {
         },
     },
     {
-        'smjonas/inc-rename.nvim',
-        enabled = false, -- FIXME: causes segfault
-        cmd = 'IncRename',
-        keys = {
-            {
-                '<Leader>r',
-                function()
-                    return ':IncRename ' .. vim.fn.expand '<cword>'
-                end,
-                desc = 'LSP: rename (incremental)',
-                expr = true,
-            },
-        },
-        opts = {},
-    },
-    {
         'qvalentin/helm-ls.nvim',
         ft = 'helm',
         opts = {},
