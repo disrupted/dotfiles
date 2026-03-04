@@ -515,6 +515,7 @@ vim.keymap.set('n', '<C-6>', '<C-^>', { desc = 'Alternate buffer' })
 vim.keymap.set('', 'Q', '') -- disable
 vim.keymap.set('n', 'x', '"_x') -- delete char without yank
 vim.keymap.set('x', 'x', '"_x') -- delete visual selection without yank
+vim.keymap.set('n', '<C-S-z>', '<Nop>') -- disable suspend
 
 -- paste and adjust indentation
 -- vim.keymap.set('n', 'p', ']p')
