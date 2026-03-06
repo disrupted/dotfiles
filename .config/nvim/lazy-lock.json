@@ -88,7 +88,6 @@
   "sniprun": { "branch": "master", "commit": "c091976ec5dbb0c6587f621657892174fe3dd691" },
   "tabout.nvim": { "branch": "master", "commit": "9a3499480a8e53dcaa665e2836f287e3b7764009" },
   "text-case.nvim": { "branch": "main", "commit": "e898cfd46fa6cde0e83abb624a16e67d2ffc6457" },
-  "tiny-inline-diagnostic.nvim": { "branch": "main", "commit": "ca50af9dc3cd88647077330b4728f4d0a7e754c4" },
   "todo-comments.nvim": { "branch": "main", "commit": "31e3c38ce9b29781e4422fc0322eb0a21f4e8668" },
   "tree-sitter-ghostty": { "branch": "main", "commit": "c14d6cb4dd36ff9dd569978491aa52e4726cbe86" },
   "treesitter-modules.nvim": { "branch": "main", "commit": "0cc09da40061051b0186479203faa75052cddab6" },

@@ -816,7 +816,6 @@ return {
             selected_interpreters = { 'Lua_nvim', 'Python3_fifo' },
         },
     },
-    { 'hkupty/iron.nvim', enabled = false },
     {
         'stevearc/overseer.nvim',
         cmd = {
