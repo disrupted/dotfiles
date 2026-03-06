@@ -9,6 +9,7 @@ return {
         lazy = vim.fn.argc(-1) == 0, -- load Treesitter early when opening a file from the cmdline
         opts = {
             ensure_installed = {
+                'angular',
                 'bash',
                 'bibtex',
                 'c',
@@ -40,6 +41,7 @@ return {
                 'json',
                 'json5',
                 'just',
+                'kdl',
                 'kotlin',
                 'latex',
                 'llvm',

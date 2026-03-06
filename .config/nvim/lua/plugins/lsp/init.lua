@@ -6,9 +6,8 @@ return {
         cmd = 'Mason',
         init = function()
             -- add Mason packages to $PATH; allows lazy-loading
-            vim.env.PATH = vim.fn.stdpath 'data'
-                .. '/mason/bin:'
-                .. vim.env.PATH
+            vim.env.MASON = vim.fn.stdpath 'data' .. '/mason'
+            vim.env.PATH = vim.env.MASON .. '/bin:' .. vim.env.PATH
         end,
         ---@module 'mason.settings'
         ---@type MasonSettings
