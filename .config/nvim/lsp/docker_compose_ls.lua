@@ -8,4 +8,7 @@ return {
         '--stdio',
     },
     filetypes = { 'yaml.docker-compose' },
+    on_attach = function(client)
+        client.server_capabilities.codeLensProvider = nil
+    end,
 }
