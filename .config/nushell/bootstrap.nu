@@ -5,6 +5,6 @@ mkdir $autoload
 starship init nu | save -f ($autoload | path join "starship.nu")
 zoxide init nushell | save -f ($autoload | path join "zoxide.nu")
 carapace _carapace nushell | save -f ($autoload | path join "carapace.nu")
-fnox activate nu | save -f ($autoload | path join "fnox.nu")
 # mise integration is intentionally maintained in ~/.config/nushell/mise-hooks.nu
+# fnox integration is intentionally maintained in ~/.config/nushell/fnox-hooks.nu
 # tv init nu | save -f ($autoload | path join "tv.nu")
