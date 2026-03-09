@@ -95,34 +95,11 @@ return {
                 input_window = {
                     ['<C-a>'] = {
                         function()
-                            local state = require 'opencode.state'
-                            local config = require 'opencode.config'
-                            local context = require 'opencode.context'
-
-                            local ctx =
-                                vim.deepcopy(state.current_context_config or {})
-                            ctx.current_file = vim.tbl_deep_extend(
-                                'force',
-                                {},
-                                config.context.current_file or {},
-                                ctx.current_file or {}
-                            )
-
-                            local currently_enabled = ctx.current_file.enabled
-                            if currently_enabled == nil then
-                                currently_enabled =
-                                    context.is_context_enabled 'current_file'
-                            end
-
-                            local enabling = not currently_enabled
-                            ctx.current_file.enabled = enabling
-                            state.current_context_config = ctx
-
-                            context.load()
-
+                            local enabled =
+                                require('opencode.context').toggle_context 'current_file'
                             Snacks.notify(
                                 'current file context: '
-                                    .. (enabling and 'on' or 'off'),
+                                    .. (enabled and 'on' or 'off'),
                                 {
                                     id = 'agent-context-current-file',
                                     title = 'Agent',
@@ -459,7 +436,10 @@ return {
                         )
                         if ok then
                             local workspace = require 'conf.workspace'
-                            if workspace.get_tab_for_file(abspath) ~= current_tab_name then
+                            if
+                                workspace.get_tab_for_file(abspath)
+                                ~= current_tab_name
+                            then
                                 return
                             end
                         end
