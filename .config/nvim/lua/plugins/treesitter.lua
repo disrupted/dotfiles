@@ -73,6 +73,7 @@ return {
                 'tmux',
                 'tsx',
                 'typescript',
+                'typst',
                 'vim',
                 'vimdoc',
                 'xml',

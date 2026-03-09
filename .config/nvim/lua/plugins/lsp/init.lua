@@ -43,6 +43,7 @@ return {
                 'tombi',
                 'ts_query_ls',
                 'tsgo',
+                'tinymist',
                 'vale-ls',
                 'vtsls',
                 'yaml-language-server',

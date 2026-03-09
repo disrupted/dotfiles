@@ -837,6 +837,7 @@ return {
                 'pkl',
                 'python.poetry',
                 'python.uv',
+                'typst',
             },
             keymaps = {
                 ['<C-u>'] = 'keymap.scroll_output_up',
