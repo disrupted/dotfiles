@@ -570,6 +570,22 @@ vim.keymap.set('n', '<esc>', '<esc>') -- distinguish <C-[> from <esc>
 vim.keymap.set('n', '<C-]>', '<cmd>tabnext<CR>', { desc = 'Next tabpage' })
 vim.keymap.set('n', '<C-[>', '<cmd>tabprevious<CR>', { desc = 'Prev tabpage' })
 
+-- Treesitter incremental selection
+vim.keymap.set({ 'n', 'x' }, '<CR>', function()
+    if vim.treesitter.get_parser(nil, nil, { error = false }) then
+        require('vim.treesitter._select').select_parent(vim.v.count1)
+    else
+        vim.lsp.buf.selection_range(vim.v.count1)
+    end
+end, { desc = 'Increment selection' })
+vim.keymap.set({ 'x' }, '<BS>', function()
+    if vim.treesitter.get_parser(nil, nil, { error = false }) then
+        require('vim.treesitter._select').select_child(vim.v.count1)
+    else
+        vim.lsp.buf.selection_range(-vim.v.count1)
+    end
+end, { desc = 'Decrement selection' })
+
 -----------------------------------------------------------------------------//
 -- Commands {{{1
 -----------------------------------------------------------------------------//

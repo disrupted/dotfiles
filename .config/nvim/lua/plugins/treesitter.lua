@@ -84,11 +84,6 @@ return {
             local treesitter = require 'nvim-treesitter'
             treesitter.install(opts.ensure_installed)
 
-            require('which-key').add {
-                { '<CR>', desc = 'Increment selection', mode = { 'x', 'n' } },
-                { '<BS>', desc = 'Decrement selection', mode = 'x' },
-            }
-
             -- the filetype on the RHS will use the parser and queries on the LHS
             vim.treesitter.language.register('terraform', 'terraform-vars')
 
@@ -127,25 +122,6 @@ return {
                 desc = 'Enable Treesitter for installed languages',
             })
         end,
-    },
-    {
-        'MeanderingProgrammer/treesitter-modules.nvim',
-        dependencies = { 'nvim-treesitter/nvim-treesitter' },
-        event = { 'BufReadPost', 'BufNewFile', 'FileType' },
-        ---@module 'treesitter-modules'
-        ---@type ts.mod.UserConfig
-        opts = {
-            incremental_selection = {
-                enable = true,
-                disable = {},
-                keymaps = {
-                    init_selection = '<CR>', -- maps in normal mode to init the node/scope selection
-                    node_incremental = '<CR>', -- increment to the upper named parent
-                    -- scope_incremental = '<nop>', -- increment to the upper scope (as defined in locals.scm)
-                    node_decremental = '<BS>', -- decrement to the previous node
-                },
-            },
-        },
     },
     {
         'nvim-treesitter/nvim-treesitter-textobjects',
