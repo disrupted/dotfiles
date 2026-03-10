@@ -143,15 +143,31 @@ return {
                     }
 
                     picker.list.win:on(
-                        'BufEnter',
+                        { 'BufEnter', 'WinEnter' },
                         require('conf.ui').cursor.hide,
                         { buf = true, desc = 'Hide cursor' }
                     )
                     picker.list.win:on(
-                        'BufLeave',
+                        { 'BufLeave', 'WinLeave' },
                         require('conf.ui').cursor.show,
                         { buf = true, desc = 'Show cursor' }
                     )
+                    local augroup = vim.api.nvim_create_augroup(
+                        'ExplorerCmdline',
+                        { clear = true }
+                    )
+                    vim.api.nvim_create_autocmd('CmdlineLeave', {
+                        group = augroup,
+                        callback = function()
+                            if
+                                vim.api.nvim_get_current_win()
+                                == picker.list.win.win
+                            then
+                                require('conf.ui').cursor.hide()
+                            end
+                        end,
+                        desc = 'Re-hide cursor when leaving cmdline back to explorer',
+                    })
                 end,
                 desc = 'Explorer',
             },
@@ -429,7 +445,12 @@ return {
                 '<Leader>/',
                 function()
                     ---@diagnostic disable-next-line: undefined-field
-                    Snacks.picker.grep_interactive()
+                    Snacks.picker.grep_interactive {
+                        multi = {
+                            vim.g.git_repo and 'git_grep' or 'grep',
+                            'dirs',
+                        },
+                    }
                 end,
                 desc = 'Grep',
             },
@@ -693,6 +714,7 @@ return {
                     },
                     grep_interactive = {
                         multi = { 'grep', 'dirs' },
+                        untracked = true,
                         glob = {},
                         dirs = {},
                         filter = {
@@ -819,6 +841,7 @@ return {
                         title = 'LSP References',
                         layout = {
                             preset = 'select',
+                            preview = 'main',
                             layout = { max_height = 14 },
                         },
                     },

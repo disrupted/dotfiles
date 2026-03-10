@@ -618,21 +618,41 @@ return {
                 end,
             })
 
+            local augroup = vim.api.nvim_create_augroup(
+                'NeotestSummaryCursor',
+                { clear = true }
+            )
             vim.api.nvim_create_autocmd('FileType', {
-                group = vim.api.nvim_create_augroup(
-                    'NeotestSummaryCursor',
-                    { clear = true }
-                ),
+                group = augroup,
                 pattern = 'neotest-summary',
                 callback = function(args)
-                    vim.api.nvim_create_autocmd('WinEnter', {
+                    vim.api.nvim_create_autocmd({ 'BufEnter', 'WinEnter' }, {
                         buffer = args.buf,
                         callback = require('conf.ui').cursor.hide,
                     })
-                    vim.api.nvim_create_autocmd('WinLeave', {
+                    vim.api.nvim_create_autocmd({ 'BufLeave', 'WinLeave' }, {
                         buffer = args.buf,
                         callback = require('conf.ui').cursor.show,
                     })
+                    vim.schedule(function()
+                        for _, win in ipairs(vim.api.nvim_list_wins()) do
+                            if vim.api.nvim_win_get_buf(win) == args.buf then
+                                vim.api.nvim_create_autocmd('CmdlineLeave', {
+                                    buffer = args.buf,
+                                    callback = function()
+                                        if
+                                            vim.api.nvim_get_current_win()
+                                            == win
+                                        then
+                                            require('conf.ui').cursor.hide()
+                                        end
+                                    end,
+                                    desc = 'Re-hide cursor when leaving cmdline back to window',
+                                })
+                                return
+                            end
+                        end
+                    end)
                 end,
             })
         end,
@@ -913,21 +933,41 @@ return {
                 end,
             })
 
+            local augroup = vim.api.nvim_create_augroup(
+                'OverseerListCursor',
+                { clear = true }
+            )
             vim.api.nvim_create_autocmd('FileType', {
-                group = vim.api.nvim_create_augroup(
-                    'OverseerListCursor',
-                    { clear = true }
-                ),
+                group = augroup,
                 pattern = 'OverseerList',
                 callback = function(args)
-                    vim.api.nvim_create_autocmd('WinEnter', {
+                    vim.api.nvim_create_autocmd({ 'BufEnter', 'WinEnter' }, {
                         buffer = args.buf,
                         callback = require('conf.ui').cursor.hide,
                     })
-                    vim.api.nvim_create_autocmd('WinLeave', {
+                    vim.api.nvim_create_autocmd({ 'BufLeave', 'WinLeave' }, {
                         buffer = args.buf,
                         callback = require('conf.ui').cursor.show,
                     })
+                    vim.schedule(function()
+                        for _, win in ipairs(vim.api.nvim_list_wins()) do
+                            if vim.api.nvim_win_get_buf(win) == args.buf then
+                                vim.api.nvim_create_autocmd('CmdlineLeave', {
+                                    buffer = args.buf,
+                                    callback = function()
+                                        if
+                                            vim.api.nvim_get_current_win()
+                                            == win
+                                        then
+                                            require('conf.ui').cursor.hide()
+                                        end
+                                    end,
+                                    desc = 'Re-hide cursor when leaving cmdline back to window',
+                                })
+                                return
+                            end
+                        end
+                    end)
                 end,
             })
 

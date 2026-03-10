@@ -161,6 +161,11 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 --     end,
 -- })
 
+vim.api.nvim_create_autocmd('CmdlineEnter', {
+    callback = require('conf.ui').cursor.show,
+    desc = 'Show cursor when entering cmdline',
+})
+
 vim.api.nvim_create_autocmd('QuitPre', {
     callback = function()
         local invalid_wins = {}
