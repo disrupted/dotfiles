@@ -14,7 +14,6 @@ return {
         opts = {
             ensure_installed = {
                 'actionlint',
-                'angular-language-server',
                 'astro-language-server',
                 'bash-language-server',
                 'clangd',

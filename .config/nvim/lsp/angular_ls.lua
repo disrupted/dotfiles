@@ -58,6 +58,17 @@ local function collect_node_modules(root_dir)
     return results
 end
 
+--- Returns the local ngserver binary path if available, otherwise falls back to PATH
+---@param root_dir string
+---@return string
+local function resolve_ngserver(root_dir)
+    local local_bin = fs.joinpath(root_dir, 'node_modules/.bin/ngserver')
+    if uv.fs_stat(local_bin) then
+        return local_bin
+    end
+    return 'ngserver'
+end
+
 ---@return string
 local function get_angular_core_version(root_dir)
     local package_json = fs.joinpath(root_dir, 'package.json')
@@ -97,10 +108,7 @@ return {
             ','
         )
         local cmd = {
-            'bunx',
-            '--bun',
-            '--no-install',
-            'ngserver',
+            resolve_ngserver(root_dir),
             '--stdio',
             '--tsProbeLocations',
             ts_probe,
