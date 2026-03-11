@@ -445,12 +445,7 @@ return {
                 '<Leader>/',
                 function()
                     ---@diagnostic disable-next-line: undefined-field
-                    Snacks.picker.grep_interactive {
-                        multi = {
-                            vim.g.git_repo and 'git_grep' or 'grep',
-                            'dirs',
-                        },
-                    }
+                    Snacks.picker.grep_interactive()
                 end,
                 desc = 'Grep',
             },
@@ -714,7 +709,6 @@ return {
                     },
                     grep_interactive = {
                         multi = { 'grep', 'dirs' },
-                        untracked = true,
                         glob = {},
                         dirs = {},
                         filter = {
