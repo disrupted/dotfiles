@@ -5,18 +5,7 @@ local command = vim.api.nvim_create_user_command
 require 'conf.filetype'
 require 'conf.diagnostics'
 
-local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
-if not vim.uv.fs_stat(lazypath) then
-    vim.system({
-        'git',
-        'clone',
-        '--filter=blob:none',
-        'https://github.com/folke/lazy.nvim.git',
-        '--branch=stable',
-        lazypath,
-    }, { text = true }):wait()
-end
-vim.opt.rtp:prepend(lazypath)
+vim.pack.add { 'https://github.com/folke/lazy.nvim' }
 
 vim.g.mapleader = ' ' -- set leader to space
 vim.g.maplocalleader = ','
