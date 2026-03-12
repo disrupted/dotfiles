@@ -456,6 +456,7 @@ return {
                     -- alternative: Trouble symbols open pinned=true auto_refresh=true win.relative=win win.position=left
                     local picker = Snacks.picker.lsp_symbols {
                         title = 'LSP Document Symbols',
+                        keep_parents = true,
                         filter = {
                             nickel = true,
                         },
