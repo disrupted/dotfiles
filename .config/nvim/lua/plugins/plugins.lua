@@ -1,3 +1,4 @@
+local icons = require 'conf.icons'
 ---@module 'lazy.types'
 ---@type LazySpec[]
 return {
@@ -21,56 +22,149 @@ return {
             vim.print = _G.dd
 
             require('which-key').add {
-                { '<Leader>h', icon = '?' },
-                { '<Leader><Leader>', icon = '' },
-                { '<Leader>/', icon = '󱎸' },
-                { '<Leader>n', icon = '' },
-                { '<Leader>s', icon = '󰙅' },
+                {
+                    '<Leader>h',
+                    function()
+                        Snacks.picker.help { layout = { preset = 'dropdown' } }
+                    end,
+                    desc = 'Help',
+                    icon = '?',
+                },
+                {
+                    '<Leader><Leader>',
+                    function()
+                        local picker = Snacks.picker.buffers {
+                            current = true,
+                            sort_lastused = true,
+                            layout = {
+                                preset = 'dropdown',
+                                ---@diagnostic disable-next-line: assign-type-mismatch
+                                preview = false, -- disable preview because it messes up lastused sorting
+                                layout = {
+                                    row = 0.1,
+                                    width = 0.4,
+                                    min_width = 80,
+                                    height = 0.4,
+                                },
+                            },
+                            actions = {
+                                calculate_file_truncate_width = function(self)
+                                    local width = self.list.win:size().width
+                                    self.opts.formatters.file.truncate = width
+                                        - 18
+                                end,
+                            },
+                            win = {
+                                list = {
+                                    on_buf = function(self)
+                                        self:execute 'calculate_file_truncate_width'
+                                    end,
+                                },
+                            },
+                        }
+
+                        if not picker then
+                            return
+                        end
+
+                        picker.list.win:on('VimResized', function()
+                            picker:action 'calculate_file_truncate_width'
+                        end)
+                    end,
+                    desc = 'Buffers',
+                    icon = '',
+                },
+                {
+                    '<Leader>f',
+                    function()
+                        ---@type snacks.picker.Config
+                        local source = {}
+
+                        local fff_exists = pcall(require, 'fff-snacks')
+                        if fff_exists then
+                            source = require('fff-snacks.find_files').source
+                            source.formatters = nil
+                        else
+                            Snacks.notify 'fff unavailable, falling back to builtin smart picker'
+                            source = {
+                                source = 'smart',
+                                finders = {
+                                    'buffers',
+                                    'recent',
+                                    vim.g.git_repo and 'git_files' or 'files',
+                                },
+                                hidden = true,
+                                matcher = { sort_empty = true },
+                                filter = { cwd = true },
+                            }
+                        end
+
+                        source = vim.tbl_deep_extend('force', source, {
+                            title = 'Files',
+                            actions = {
+                                calculate_file_truncate_width = function(self)
+                                    local width = self.list.win:size().width
+                                    self.opts.formatters.file.truncate = width
+                                        - 6
+                                end,
+                            },
+                            win = {
+                                list = {
+                                    on_buf = function(self)
+                                        self:execute 'calculate_file_truncate_width'
+                                    end,
+                                },
+                                preview = {
+                                    on_buf = function(self)
+                                        self:execute 'calculate_file_truncate_width'
+                                    end,
+                                    on_close = function(self)
+                                        self:execute 'calculate_file_truncate_width'
+                                    end,
+                                },
+                            },
+                        })
+                        local picker = Snacks.picker(source)
+
+                        if not picker then
+                            return -- abort if picker was closed
+                        end
+
+                        picker.list.win:on('VimResized', function()
+                            picker:action 'calculate_file_truncate_width'
+                        end)
+                    end,
+                    desc = 'Files',
+                    icon = icons.documents.files,
+                },
+                {
+                    '<Leader>/',
+                    function()
+                        ---@diagnostic disable-next-line: undefined-field
+                        Snacks.picker.grep_interactive()
+                    end,
+                    desc = 'Grep',
+                    icon = '󱎸',
+                },
+                {
+                    '<Leader>n',
+                    function()
+                        Snacks.notifier.show_history()
+                    end,
+                    desc = 'Notification history',
+                    icon = '',
+                },
+                {
+                    '<Leader>s',
+                    function()
+                        require('conf.snacks.lsp.workspace_symbols').pick()
+                    end,
+                    desc = 'LSP workspace symbols',
+                    icon = '󰙅',
+                },
             }
         end,
         keys = {
-            {
-                '<Leader><Leader>',
-                function()
-                    local picker = Snacks.picker.buffers {
-                        current = true,
-                        sort_lastused = true,
-                        layout = {
-                            preset = 'dropdown',
-                            ---@diagnostic disable-next-line: assign-type-mismatch
-                            preview = false, -- disable preview because it messes up lastused sorting
-                            layout = {
-                                row = 0.1,
-                                width = 0.4,
-                                min_width = 80,
-                                height = 0.4,
-                            },
-                        },
-                        actions = {
-                            calculate_file_truncate_width = function(self)
-                                local width = self.list.win:size().width
-                                self.opts.formatters.file.truncate = width - 18
-                            end,
-                        },
-                        win = {
-                            list = {
-                                on_buf = function(self)
-                                    self:execute 'calculate_file_truncate_width'
-                                end,
-                            },
-                        },
-                    }
-
-                    if not picker then
-                        return
-                    end
-
-                    picker.list.win:on('VimResized', function()
-                        picker:action 'calculate_file_truncate_width'
-                    end)
-                end,
-                desc = 'Buffers',
-            },
             {
                 '<C-e>',
                 function()
@@ -381,75 +475,6 @@ return {
                 desc = 'Files',
             },
             {
-                '<Leader>f',
-                function()
-                    ---@type snacks.picker.Config
-                    local source = {}
-
-                    local fff_exists = pcall(require, 'fff-snacks')
-                    if fff_exists then
-                        source = require('fff-snacks.find_files').source
-                        source.formatters = nil
-                    else
-                        Snacks.notify 'fff unavailable, falling back to builtin smart picker'
-                        source = {
-                            source = 'smart',
-                            finders = {
-                                'buffers',
-                                'recent',
-                                vim.g.git_repo and 'git_files' or 'files',
-                            },
-                            hidden = true,
-                            matcher = { sort_empty = true },
-                            filter = { cwd = true },
-                        }
-                    end
-
-                    source = vim.tbl_deep_extend('force', source, {
-                        title = 'Files',
-                        actions = {
-                            calculate_file_truncate_width = function(self)
-                                local width = self.list.win:size().width
-                                self.opts.formatters.file.truncate = width - 6
-                            end,
-                        },
-                        win = {
-                            list = {
-                                on_buf = function(self)
-                                    self:execute 'calculate_file_truncate_width'
-                                end,
-                            },
-                            preview = {
-                                on_buf = function(self)
-                                    self:execute 'calculate_file_truncate_width'
-                                end,
-                                on_close = function(self)
-                                    self:execute 'calculate_file_truncate_width'
-                                end,
-                            },
-                        },
-                    })
-                    local picker = Snacks.picker(source)
-
-                    if not picker then
-                        return -- abort if picker was closed
-                    end
-
-                    picker.list.win:on('VimResized', function()
-                        picker:action 'calculate_file_truncate_width'
-                    end)
-                end,
-                desc = 'Files',
-            },
-            {
-                '<Leader>/',
-                function()
-                    ---@diagnostic disable-next-line: undefined-field
-                    Snacks.picker.grep_interactive()
-                end,
-                desc = 'Grep',
-            },
-            {
                 '<C-s>',
                 function()
                     local cursor = vim.api.nvim_win_get_cursor(0)
@@ -496,13 +521,6 @@ return {
                 desc = 'LSP symbols',
             },
             {
-                '<Leader>s',
-                function()
-                    require('conf.snacks.lsp.workspace_symbols').pick()
-                end,
-                desc = 'LSP workspace symbols',
-            },
-            {
                 '<C-g>',
                 function()
                     if vim.g.git_repo == require('yadm').config.repo then
@@ -517,13 +535,6 @@ return {
                 desc = 'Git/YADM status',
             },
             {
-                '<Leader>h',
-                function()
-                    Snacks.picker.help { layout = { preset = 'dropdown' } }
-                end,
-                desc = 'Help',
-            },
-            {
                 '<C-x>',
                 function()
                     if
@@ -536,13 +547,6 @@ return {
                     end
                 end,
                 desc = 'Delete buffer',
-            },
-            {
-                '<Leader>n',
-                function()
-                    Snacks.notifier.show_history()
-                end,
-                desc = 'Notification history',
             },
             {
                 '<C-Bslash>',
@@ -680,7 +684,7 @@ return {
                                 keys = {
                                     ['<Esc>'] = {
                                         'toggle_focus',
-                                        mode = { 'i', 'n' },
+                                        mode = { 'i' },
                                     },
                                     ['<CR>'] = {
                                         { 'pick_win', 'jump' },
@@ -690,7 +694,7 @@ return {
                             },
                             list = {
                                 keys = {
-                                    ['<Esc>'] = 'toggle_focus',
+                                    ['<Esc>'] = { 'explorer_update' },
                                 },
                             },
                         },
@@ -835,30 +839,34 @@ return {
                     lsp_references = {
                         title = 'LSP References',
                         layout = {
-                            preset = 'select',
-                            preview = 'main',
-                            layout = { max_height = 14 },
+                            preset = 'dropdown',
+                            preview = true,
+                            layout = {
+                                relative = 'cursor',
+                                width = 130,
+                                max_width = 180,
+                                max_height = 20,
+                                row = 1,
+                                col = -10,
+                            },
                         },
                     },
                     lsp_type_definitions = {
                         title = 'LSP Type Definitions',
                         layout = {
                             preset = 'select',
-                            layout = { max_height = 14 },
                         },
                     },
                     lsp_incoming_calls = {
                         title = 'LSP Incoming Calls',
                         layout = {
                             preset = 'select',
-                            layout = { max_height = 14 },
                         },
                     },
                     lsp_outgoing_calls = {
                         title = 'LSP Outgoing Calls',
                         layout = {
                             preset = 'select',
-                            layout = { max_height = 14 },
                         },
                     },
                     lsp_subtypes = {
@@ -879,6 +887,7 @@ return {
                             relative = 'cursor',
                             width = 130,
                             max_width = 180,
+                            max_height = 14,
                             row = 1,
                             col = -10,
                         },
@@ -960,16 +969,6 @@ return {
     },
     {
         'folke/which-key.nvim',
-        event = 'VeryLazy',
-        keys = {
-            {
-                '<Leader>?',
-                function()
-                    require('which-key').show { global = false }
-                end,
-                desc = 'Buffer-local keymaps (which-key)',
-            },
-        },
         init = function()
             vim.o.timeout = true
             vim.o.timeoutlen = 500
@@ -1010,6 +1009,21 @@ return {
                 },
             },
         },
+        config = function(_, opts)
+            local wk = require 'which-key'
+            wk.setup(opts)
+
+            wk.add {
+                {
+                    '<Leader>?',
+                    function()
+                        wk.show { global = false }
+                    end,
+                    desc = 'Buffer keymaps',
+                    icon = '󰘳',
+                },
+            }
+        end,
     },
     {
         'rest-nvim/rest.nvim',
