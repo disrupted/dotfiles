@@ -162,6 +162,22 @@ return {
                     desc = 'LSP workspace symbols',
                     icon = '󰙅',
                 },
+                {
+                    '<Leader>gi',
+                    function()
+                        Snacks.picker.gh_issue()
+                    end,
+                    desc = 'List issues',
+                    icon = icons.git.issue,
+                },
+                {
+                    '<Leader>gp',
+                    function()
+                        Snacks.picker.gh_pr()
+                    end,
+                    desc = 'List PRs',
+                    icon = icons.git.pull_request,
+                },
             }
         end,
         keys = {
@@ -673,6 +689,121 @@ return {
             picker = {
                 ui_select = true,
                 sources = {
+                    gh_issue = {
+                        layout = {
+                            layout = {
+                                backdrop = false,
+                                row = 1,
+                                width = 0.4,
+                                min_width = 80,
+                                height = 0.8,
+                                border = 'none',
+                                box = 'vertical',
+                                {
+                                    win = 'preview',
+                                    title = '{preview}',
+                                    height = 0.7,
+                                    border = false,
+                                },
+                                {
+                                    box = 'vertical',
+                                    border = true,
+                                    title = '{title} {flags}',
+                                    title_pos = 'center',
+                                    {
+                                        win = 'input',
+                                        height = 1,
+                                        border = 'bottom',
+                                    },
+                                    { win = 'list', border = 'none' },
+                                },
+                            },
+                        },
+                        actions = {
+                            toggle_assignee = function(picker)
+                                picker.opts.assignee = picker.opts.assignee
+                                            ~= '@me'
+                                        and '@me'
+                                    or nil
+                                local base = '  Issues'
+                                picker.title = picker.opts.assignee
+                                        and base .. ' · @me'
+                                    or base
+                                picker:update_titles()
+                                picker:find()
+                            end,
+                        },
+                        win = {
+                            input = {
+                                keys = {
+                                    ['<A-a>'] = {
+                                        'toggle_assignee',
+                                        mode = { 'n', 'i' },
+                                        desc = 'Toggle assigned to me',
+                                    },
+                                    ['<C-o>'] = {
+                                        'gh_develop',
+                                        mode = { 'n', 'i' },
+                                    },
+                                },
+                            },
+                            list = {
+                                keys = {
+                                    ['<A-a>'] = {
+                                        'toggle_assignee',
+                                        desc = 'Toggle assigned to me',
+                                    },
+                                    ['<C-o>'] = { 'gh_develop' },
+                                },
+                            },
+                        },
+                    },
+                    gh_pr = {
+                        layout = {
+                            layout = {
+                                backdrop = false,
+                                row = 1,
+                                width = 0.4,
+                                min_width = 80,
+                                height = 0.8,
+                                border = 'none',
+                                box = 'vertical',
+                                {
+                                    win = 'preview',
+                                    title = '{preview}',
+                                    height = 0.7,
+                                    border = false,
+                                },
+                                {
+                                    box = 'vertical',
+                                    border = true,
+                                    title = '{title} {flags}',
+                                    title_pos = 'center',
+                                    {
+                                        win = 'input',
+                                        height = 1,
+                                        border = 'bottom',
+                                    },
+                                    { win = 'list', border = 'none' },
+                                },
+                            },
+                        },
+                        win = {
+                            input = {
+                                keys = {
+                                    ['<C-o>'] = {
+                                        'gh_checkout_pr',
+                                        mode = { 'n', 'i' },
+                                    },
+                                },
+                            },
+                            list = {
+                                keys = {
+                                    ['<C-o>'] = { 'gh_checkout_pr' },
+                                },
+                            },
+                        },
+                    },
                     explorer = {
                         -- layout = {
                         --     fullscreen = true,
@@ -935,6 +1066,48 @@ return {
                 },
             },
         },
+        config = function(_, opts)
+            require('snacks').setup(opts)
+
+            local gh_actions = require 'snacks.gh.actions'
+            gh_actions.actions.gh_merge_rebase = {
+                enabled = function()
+                    return false
+                end,
+            }
+            gh_actions.actions.gh_merge = {
+                enabled = function()
+                    return false
+                end,
+            }
+            gh_actions.actions.gh_develop = gh_actions.cli_action {
+                cmd = 'develop',
+                icon = icons.git.branch .. ' ',
+                type = 'issue',
+                args = { '--checkout' },
+                title = 'Create branch for issue #{number}',
+                success = 'Created and checked out branch for issue #{number}',
+                enabled = function(item)
+                    return item.state == 'open'
+                end,
+            }
+            gh_actions.actions.gh_checkout_pr = {
+                title = 'Checkout PR #{number}',
+                icon = gh_actions.cli_actions.gh_checkout.icon,
+                type = 'pr',
+                action = function(item, ctx)
+                    -- checkout PR without confirmation dialog
+                    local checkout = gh_actions.cli_actions.gh_checkout
+                    gh_actions.run(item, {
+                        cmd = checkout.cmd,
+                        icon = checkout.icon,
+                        type = checkout.type,
+                        title = checkout.title,
+                        success = checkout.success,
+                    }, ctx)
+                end,
+            }
+        end,
     },
     {
         'dmtrKovalenko/fff.nvim',

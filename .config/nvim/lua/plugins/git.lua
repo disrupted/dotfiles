@@ -317,7 +317,9 @@ return {
             ---@type diffs.Config
             vim.g.diffs = {
                 hide_prefix = true,
-                neogit = {},
+                integrations = {
+                    neogit = {},
+                },
                 extra_filetypes = { 'diff' },
                 conflict = {
                     keymaps = {
@@ -571,18 +573,16 @@ return {
                             if not existing_pr then
                                 pr.form_create()
                             else
-                                pr.open { number = existing_pr.number }
+                                pr.open {
+                                    number = existing_pr.number,
+                                    octo = false,
+                                    browser = true,
+                                }
                             end
                         end)
                     end,
                     desc = 'View or create PR',
                     icon = icons.git.pull_request,
-                },
-                {
-                    '<Leader>goi',
-                    '<cmd>Octo issue list<cr>',
-                    desc = 'List issues',
-                    icon = icons.git.issue,
                 },
                 {
                     '<Leader>gor',
@@ -592,10 +592,36 @@ return {
                 },
                 {
                     '<Leader>gos',
-                    '<cmd>Octo search assignee:disrupted<cr>', -- FIXME: not implemented for Snacks picker yet
+                    '<cmd>Octo search assignee:disrupted<cr>',
                     desc = 'Search assigned issues & PRs',
                     icon = '',
                 },
+            }
+
+            -- register in the Snacks gh picker actions menu
+            local gh_actions = require 'snacks.gh.actions'
+            ---@type snacks.gh.Action
+            gh_actions.actions.gh_open_octo = {
+                title = 'Open {type} #{number} in Octo',
+                icon = icons.git.github .. ' ',
+                action = function(item, ctx)
+                    if ctx.picker then
+                        ctx.picker:close()
+                    end
+                    local kind = item.type == 'pr' and 'pull' or 'issue'
+                    require 'octo'
+                    vim.cmd {
+                        cmd = 'edit',
+                        args = {
+                            string.format(
+                                'octo://%s/%s/%s',
+                                item.repo,
+                                kind,
+                                item.number
+                            ),
+                        },
+                    }
+                end,
             }
         end,
         ---@module 'octo.config'
