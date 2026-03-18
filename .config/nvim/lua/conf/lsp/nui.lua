@@ -8,6 +8,7 @@ local function nui_lsp_rename()
         or vim.fn.expand '<cword>'
 
     local params = vim.lsp.util.make_position_params(0, 'utf-16')
+    local buf = vim.api.nvim_get_current_buf()
 
     -- preview state
     ---@type table<integer, table<integer, {start_col: integer, end_col: integer, orig_text: string}[]>>?
@@ -61,57 +62,54 @@ local function nui_lsp_rename()
         if not cached_refs then
             return
         end
-        for bufnr, lines in pairs(cached_refs) do
-            if vim.api.nvim_buf_is_valid(bufnr) then
-                for line_nr, infos in pairs(lines) do
-                    -- restore original line text
-                    local orig = infos[1].orig_text
-                    vim.api.nvim_buf_set_lines(
-                        bufnr,
-                        line_nr,
-                        line_nr + 1,
-                        false,
-                        { orig }
-                    )
-                end
+        if cached_refs[buf] then
+            for line_nr, infos in pairs(cached_refs[buf]) do
+                -- restore original line text
+                local orig = infos[1].orig_text
+                vim.api.nvim_buf_set_lines(
+                    buf,
+                    line_nr,
+                    line_nr + 1,
+                    false,
+                    { orig }
+                )
             end
         end
     end
 
-    -- apply preview highlights for new_name across all cached reference sites
+    -- apply preview for new_name in the current buffer only.
+    -- mutating other buffers would advance their LSP document version
+    -- (buf_versions tracks changedtick via nvim_buf_attach on_lines), causing
+    -- apply_workspace_edit to consider them "newer than edits" and skip them.
     local function apply_preview(new_name)
         if not cached_refs then
             return
         end
         -- first restore originals so we always apply from a clean slate
         clear_preview()
-        for bufnr, lines in pairs(cached_refs) do
-            if not vim.api.nvim_buf_is_valid(bufnr) then
-                goto continue_bufnr
+        local lines = cached_refs[buf]
+        if not lines then
+            return
+        end
+        for line_nr, infos in pairs(lines) do
+            -- sort ascending so offsets accumulate correctly
+            table.sort(infos, function(a, b)
+                return a.start_col < b.start_col
+            end)
+            local offset = 0
+            for _, info in ipairs(infos) do
+                local s = info.start_col + offset
+                local e = info.end_col + offset
+                vim.api.nvim_buf_set_text(
+                    buf,
+                    line_nr,
+                    s,
+                    line_nr,
+                    e,
+                    { new_name }
+                )
+                offset = offset + #new_name - (info.end_col - info.start_col)
             end
-            for line_nr, infos in pairs(lines) do
-                -- sort ascending so offsets accumulate correctly
-                table.sort(infos, function(a, b)
-                    return a.start_col < b.start_col
-                end)
-                local offset = 0
-                for _, info in ipairs(infos) do
-                    local s = info.start_col + offset
-                    local e = info.end_col + offset
-                    vim.api.nvim_buf_set_text(
-                        bufnr,
-                        line_nr,
-                        s,
-                        line_nr,
-                        e,
-                        { new_name }
-                    )
-                    offset = offset
-                        + #new_name
-                        - (info.end_col - info.start_col)
-                end
-            end
-            ::continue_bufnr::
         end
     end
 
@@ -259,6 +257,15 @@ local function nui_lsp_rename()
     vim.schedule(function()
         vim.api.nvim_command 'stopinsert'
     end)
+
+    -- submit on <CR> in normal mode
+    input:map('n', '<CR>', function()
+        vim.api.nvim_feedkeys(
+            vim.api.nvim_replace_termcodes('i<CR>', true, false, true),
+            'n',
+            false
+        )
+    end, { noremap = true })
 
     -- close on <esc> in normal mode
     input:map('n', '<esc>', function()
