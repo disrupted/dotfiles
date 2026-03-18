@@ -473,7 +473,7 @@ return {
                     init = function(self)
                         local success, tabname = pcall(
                             vim.api.nvim_tabpage_get_var,
-                            self.tabnr,
+                            self.tabpage,
                             'tabname'
                         )
                         self.tabname = success and tabname or nil
