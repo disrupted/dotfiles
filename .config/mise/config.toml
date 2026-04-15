@@ -1,20 +1,21 @@
-# :schema https://mise.jdx.dev/schema/mise.json
+#:schema https://mise.jdx.dev/schema/mise.json
+
 [tools]
 neovim = "nightly"
 starship = "latest"
 tmux = "latest"
 
-rust = "stable"
+rust = "nightly"
 python = "latest"
 bun = "latest"
 deno = "latest"
 erlang = "latest"
 elixir = "latest"
 go = "latest"
-java = "latest" # only needed for pkl-lsp https://github.com/apple/pkl-lsp/issues/60
+java = "latest"  # only needed for pkl-lsp https://github.com/apple/pkl-lsp/issues/60
 
 uv = "latest"
-"pipx:poetry" = "latest" # for legacy projects
+"pipx:poetry" = "latest"  # for legacy projects
 
 fnox = "latest"
 age = "latest"
@@ -71,7 +72,7 @@ opencode = "latest"
 "github:lucasgelfond/zerobrew" = "latest"
 "github:Mapika/portview" = "latest"
 "github:topiary/topiary" = "latest"
-"github:pruner-formatter/pruner" = "latest"
+"github:pruner-formatter/pruner" = "v1.0.0-alpha.10"
 "pipx:pymobiledevice3" = "latest"
 "pipx:visidata" = "latest"
 
@@ -97,7 +98,7 @@ uvx = true
 package_manager = "bun"
 
 [tasks."docker:stop-all"]
-description = 'Docker stop all containers'
+description = "Docker stop all containers"
 run = """
 if [ -z "$(docker ps -q)" ]; then
   echo "No running containers"
@@ -108,7 +109,7 @@ fi
 """
 
 [tasks."docker:prune"]
-description = 'Docker prune'
+description = "Docker prune"
 depends = ["docker:stop-all"]
 run = """
 docker system prune -f

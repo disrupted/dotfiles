@@ -254,7 +254,6 @@ return {
                     javascriptreact = dprint_prettier_none,
                     typescript = dprint_prettier_none,
                     typescriptreact = dprint_prettier_none,
-                    toml = dprint,
                     dockerfile = dprint,
                     css = dprint,
                     html = dprint,
