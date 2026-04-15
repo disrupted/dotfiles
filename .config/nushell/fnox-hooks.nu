@@ -33,7 +33,7 @@ def --env --wrapped fnox [...rest] {
 
 def --env _fnox_hook [] {
   let result = (do -i { ^fnox hook-env -s nu } | complete)
-  if $result.exit_code != 0 and ($result.stderr | str trim | is-not-empty) {
+  if ($result.stderr | str trim | is-not-empty) {
     print -e $result.stderr
   }
   if $result.exit_code == 0 and ($result.stdout | str trim | is-not-empty) {
@@ -43,6 +43,7 @@ def --env _fnox_hook [] {
 
 export-env {
   $env.FNOX_SHELL = "nu"
+  $env.FNOX_SHELL_OUTPUT = "normal"
   ($env.config | upsert hooks.pre_prompt ($env.config.hooks.pre_prompt? | default [] | append {|| _fnox_hook }))
   _fnox_hook
 }
