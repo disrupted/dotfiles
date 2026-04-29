@@ -147,7 +147,7 @@ return {
                 )
                 map(
                     'n',
-                    '<Leader>gp',
+                    '<Leader>gh',
                     gs.preview_hunk,
                     { desc = 'Preview hunk' }
                 )
@@ -276,6 +276,36 @@ return {
         end,
     },
     {
+        'NicholasZolton/neojj',
+        lazy = true,
+        keys = {
+            {
+                '<Leader>gj',
+                function()
+                    require('neojj').open { kind = 'tab' }
+                    vim.cmd.tabmove()
+                end,
+                desc = 'Neojj',
+            },
+        },
+        ---@module 'neojj.config'
+        ---@type NeojjConfig
+        opts = {
+            disable_hint = true,
+            disable_signs = true,
+            integrations = {
+                codediff = true,
+                snacks = true,
+            },
+            diff_viewer = 'codediff',
+            graph_style = 'kitty',
+            status = {
+                recent_commit_count = 50,
+            },
+            process_spinner = true,
+        },
+    },
+    {
         'barrettruth/diffs.nvim',
         lazy = false, -- lazy-loads itself
         keys = {
@@ -316,9 +346,23 @@ return {
             ---@module 'diffs'
             ---@type diffs.Config
             vim.g.diffs = {
-                hide_prefix = true,
+                view = {
+                    prefix = false,
+                },
+                highlights = {
+                    overrides = {
+                        DiffsAddRailNr = { link = 'LineNr' },
+                        DiffsDeleteRailNr = { link = 'LineNr' },
+                        DiffsRailNr = { link = 'LineNr' },
+                        -- make hunk header less prominent
+                        ['@attribute.diff'] = { link = 'Comment' },
+                        ['@function.diff'] = { link = 'Comment' },
+                        ['@keyword.diff'] = { link = 'Comment' },
+                        ['@constant.diff'] = { link = 'Comment' },
+                    },
+                },
                 integrations = {
-                    neogit = {},
+                    neogit = true,
                 },
                 extra_filetypes = { 'diff' },
                 conflict = {
@@ -333,7 +377,7 @@ return {
                 },
                 highlights = {
                     background = true,
-                    gutter = false,
+                    -- gutter = false,
                     blend_alpha = 0.30,
                     intra = {
                         enabled = true,

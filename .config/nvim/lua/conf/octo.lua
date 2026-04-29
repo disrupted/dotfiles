@@ -114,7 +114,10 @@ local create_pr_form = function(opts)
                         Snacks.notify({ 'PR created', out }, { title = 'Octo' })
                         require('coop.uv-utils').sleep(500)
                         require('gh').pr.refresh()
-                        M.pr.open()
+                        M.pr.open {
+                            octo = false,
+                            browser = true,
+                        }
                     elseif err == nil then
                         Snacks.notify.error 'Failed to create PR. Run :messages for details.'
                     end

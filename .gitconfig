@@ -230,5 +230,11 @@
 [includeIf "gitdir:~/bakdata/"]
     path = ~/bakdata/.gitconfig
 
+[includeIf "gitdir:~/bayer/"]
+    path = ~/bakdata/.gitconfig
+
+[includeIf "gitdir:~/spectrumk/"]
+    path = ~/bakdata/.gitconfig
+
 [include]
     path = ~/.gitconfig_private

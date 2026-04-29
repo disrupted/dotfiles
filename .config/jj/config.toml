@@ -1,0 +1,17 @@
+#:schema https://docs.jj-vcs.dev/latest/config-schema.json
+
+[user]
+name = "disrupted"
+email = "hi@salomonpopp.me"
+
+[signing]
+behavior = "own"
+backend = "ssh"
+key = "~/.ssh/github.pub"
+
+[[--scope]]
+--when.repositories = ["~/bakdata", "~/bayer", "~/spectrumk"]
+
+[--scope.user]
+name = "Salomon Popp"
+email = "salomon.popp@bakdata.com"

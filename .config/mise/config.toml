@@ -4,6 +4,7 @@
 neovim = "nightly"
 starship = "latest"
 tmux = "latest"
+jj = "latest"
 
 rust = "nightly"
 python = "latest"
