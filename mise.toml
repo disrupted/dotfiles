@@ -1,3 +1,5 @@
+#:schema https://mise.jdx.dev/schema/mise.json
+
 [plugins]
 fnox-env = "https://github.com/jdx/mise-env-fnox"
 

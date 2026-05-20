@@ -31,7 +31,6 @@ return {
                 'json-lsp',
                 'lua-language-server',
                 'nickel-lang-lsp',
-                'pkl-lsp',
                 'prettierd',
                 'shfmt',
                 'stylua',

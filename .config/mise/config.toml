@@ -13,7 +13,6 @@ deno = "latest"
 erlang = "latest"
 elixir = "latest"
 go = "latest"
-java = "latest"  # only needed for pkl-lsp https://github.com/apple/pkl-lsp/issues/60
 
 uv = "latest"
 "pipx:poetry" = "latest"  # for legacy projects
@@ -74,6 +73,7 @@ opencode = "latest"
 "github:Mapika/portview" = "latest"
 "github:topiary/topiary" = "latest"
 "github:pruner-formatter/pruner" = "v1.0.0-alpha.10"
+"github:colelawrence/pkl-lsp" = "latest"
 "pipx:pymobiledevice3" = "latest"
 "pipx:visidata" = "latest"
 
