@@ -128,13 +128,23 @@ vim.api.nvim_create_autocmd('BufReadPost', {
 
 vim.api.nvim_create_autocmd('TextYankPost', {
     callback = function()
-        vim.highlight.on_yank {
+        vim.hl.hl_op {
             higroup = 'Search',
             timeout = 250,
             on_visual = true,
         }
     end,
     desc = 'highlight yanked text briefly',
+})
+vim.api.nvim_create_autocmd('TextPutPost', {
+    callback = function()
+        vim.hl.hl_op {
+            higroup = 'Search',
+            timeout = 250,
+            on_visual = true,
+        }
+    end,
+    desc = 'highlight pasted text briefly',
 })
 
 -- FIXME: disabled because it causes weird side effects, e.g. in opencode.nvim
