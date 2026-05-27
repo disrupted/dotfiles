@@ -245,9 +245,9 @@ opt.shortmess:append 'I' -- disable :intro startup screen
 -----------------------------------------------------------------------------//
 -- Title {{{1
 -----------------------------------------------------------------------------//
-opt.titlestring = '❐ %t'
-opt.title = true
-opt.titlelen = 70
+-- opt.titlestring = '❐ %t'
+-- opt.title = true
+-- opt.titlelen = 70
 
 -----------------------------------------------------------------------------//
 -- Folds {{{1
@@ -297,12 +297,13 @@ opt.splitright = true -- Put new windows right of current
 opt.splitkeep = 'screen'
 opt.fillchars = {
     vert = '│',
-    fold = ' ',
     diff = '╱', -- alternatives: ⣿ ░
     msgsep = '‾',
-    foldopen = '▾',
-    foldsep = '│',
-    foldclose = '▸',
+    fold = ' ',
+    foldopen = '', --▾
+    foldclose = '', --▸
+    foldsep = ' ',
+    foldinner = ' ',
 }
 
 -----------------------------------------------------------------------------//

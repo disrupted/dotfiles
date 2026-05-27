@@ -992,7 +992,7 @@ return {
             },
             wo = {
                 winbar = true,
-                fillchars = 'eob: ',
+                fillchars = 'eob: ,fold: ,foldopen:,foldclose:,foldsep: ,foldinner: ',
                 winhighlight = 'WinBar:EdgyWinBar,WinBarNC:EdgyWinBarNC,Normal:EdgyNormal,WinSeparator:EdgyWinSeparator',
             },
             ---@type table<string, fun(win:Edgy.Window)|false>
