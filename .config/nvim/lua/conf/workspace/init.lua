@@ -146,8 +146,7 @@ end
 ---@param name string
 ---@return integer handle tabpage handle
 local function create_tab(name)
-    vim.cmd.tabnew()
-    handle = vim.api.nvim_get_current_tabpage()
+    local handle = vim.api.nvim_open_tabpage(0, true, {})
     vim.api.nvim_tabpage_set_var(handle, 'tabname', name)
     Snacks.notify(
         { ('created tab %q'):format(name) },
@@ -343,7 +342,7 @@ local function move_buf_to_tab(bufnr, dest_name)
         scope_core.cache[source_tab] = scope_utils.get_valid_buffers()
 
         -- 3. find or create the target tab
-        --    NOTE: tabnew() will inherit currently listed buffers — we
+        --    NOTE: nvim_open_tabpage() will inherit currently listed buffers — we
         --    clean those up after switching instead of unlisting them
         --    beforehand (unlisting causes cascading wipeouts)
         local target = find_tab(dest_name) or M.create_tab(dest_name)
