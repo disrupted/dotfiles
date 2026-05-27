@@ -57,7 +57,7 @@ return {
                                     end
                                     picker:close()
 
-                                    require('opencode.core').open {
+                                    require('opencode.services.session_runtime').open {
                                         new_session = false,
                                         focus = 'input',
                                         start_insert = true,
@@ -134,7 +134,12 @@ return {
                     ['#'] = { 'context_items', mode = 'i' }, -- Manage context items (current file, selection, diagnostics, mentioned files)
                     ['<tab>'] = false,
                     ['<S-tab>'] = { 'switch_mode', mode = { 'n', 'i' } }, -- Switch between modes (build/plan)
-                    ['<M-m>'] = { 'select_agent', mode = { 'n', 'i' } }, -- Select agent
+                    ['<M-m>'] = {
+                        function()
+                            require('opencode.api').agent.select_agent()
+                        end,
+                        mode = { 'n', 'i' },
+                    }, -- Select agent
                     ['<up>'] = { 'prev_prompt_history', mode = 'n' }, -- Navigate to previous prompt in history
                     ['<down>'] = { 'next_prompt_history', mode = 'n' }, -- Navigate to next prompt in history
                     ['<M-r>'] = { 'cycle_variant', mode = { 'n', 'i' } }, -- Cycle through available model variants
@@ -186,21 +191,32 @@ return {
                         end,
                         mode = 'n',
                     },
-                    ['a'] = { 'permission_accept', mode = 'n' },
-                    ['A'] = { 'permission_accept_all', mode = 'n' },
-                    ['d'] = { 'permission_deny', mode = 'n' },
+                    ['a'] = {
+                        function()
+                            require('opencode.api').permission_accept()
+                        end,
+                        mode = 'n',
+                    },
+                    ['A'] = {
+                        function()
+                            require('opencode.api').permission_accept_all()
+                        end,
+                        mode = 'n',
+                    },
+                    ['d'] = {
+                        function()
+                            require('opencode.api').permission_deny()
+                        end,
+                        mode = 'n',
+                    },
                     ['<tab>'] = false,
                     ['<S-tab>'] = { 'switch_mode' }, -- Switch between modes (build/plan)
                     ['<M-r>'] = { 'cycle_variant' }, -- Cycle through available model variants
-                    ['<M-p>'] = {
-                        function()
-                            require('opencode.api').configure_provider()
-                        end,
-                        desc = 'Pick model',
-                    },
+                    ['<M-p>'] = { 'configure_provider', desc = 'Pick model' },
                     ['<M-i>'] = false,
                     ['<LocalLeader>S'] = {
-                        'select_child_session',
+                        'navigate_session_tree',
+                        { 'child', 'picker' },
                         desc = 'Select child session',
                     },
                     [']]'] = { 'next_message', desc = 'Next message' },

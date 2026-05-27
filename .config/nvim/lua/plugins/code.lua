@@ -1056,6 +1056,11 @@ return {
         },
         ---@module 'grug-far'
         ---@type grug.far.OptionsOverride
-        opts = {},
+        opts = {
+            keymaps = {
+                nextInput = { n = '<C-n>', i = '<C-n>' },
+                prevInput = { n = '<C-p>', i = '<C-p>' },
+            },
+        },
     },
 }
