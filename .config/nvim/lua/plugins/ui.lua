@@ -577,6 +577,7 @@ return {
                         not vim.api.nvim_buf_is_valid(buf)
                         or not vim.api.nvim_win_is_valid(win)
                         or vim.fn.win_gettype(win) ~= ''
+                        or vim.bo[buf].filetype == ''
                         or vim.bo[buf].buftype ~= ''
                         or vim.wo[win].winbar ~= ''
                         or vim.tbl_contains(
@@ -632,11 +633,11 @@ return {
                 end,
                 update_events = {
                     buf = {
-                        'BufModifiedSet',
+                        -- 'BufModifiedSet', -- TODO: replace with OptionSet 'modified'
                         'FileChangedShellPost',
                         'TextChanged',
                         'ModeChanged',
-                        'BufWritePost', -- HACK: BufModifiedSet is only fired for current buffer, e.g. when running `:wa` other buffers do not get refreshed https://github.com/neovim/neovim/issues/32817
+                        'BufWritePost', -- HACK: OptionSet 'modified' is only fired for current buffer, e.g. when running `:wa` other buffers do not get refreshed https://github.com/neovim/neovim/issues/32817
                     },
                     -- global = {
                     --     'DirChanged',
