@@ -418,8 +418,6 @@ M.setup = function()
         return
     end
 
-    require('conf.hotreload').setup()
-
     vim.g.project_tabs = true
     if not vim.g.project_tabs or not vim.g.workspace_type then
         return

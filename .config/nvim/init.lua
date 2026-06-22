@@ -608,12 +608,7 @@ command('Debug', function(opts)
         return
     end
 
-    if target == 'hotreload' then
-        require('conf.hotreload').debug_command(action)
-        return
-    end
-
-    Snacks.notify('Usage: :Debug [git|hotreload] [reset]', {
+    Snacks.notify('Usage: :Debug [git] [reset]', {
         title = 'Debug',
     })
 end, {
@@ -621,7 +616,7 @@ end, {
     complete = function(_, cmdline)
         local args = vim.split(vim.trim(cmdline), '%s+')
         if #args <= 2 then
-            return { 'git', 'hotreload' }
+            return { 'git' }
         end
         return { 'reset' }
     end,
