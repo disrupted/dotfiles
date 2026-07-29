@@ -13,6 +13,7 @@ deno = "latest"
 erlang = "latest"
 elixir = "latest"
 go = "latest"
+zig = "latest"
 
 uv = "latest"
 "pipx:poetry" = "latest"  # for legacy projects
