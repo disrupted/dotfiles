@@ -611,10 +611,37 @@ return {
                                 Snacks.notify.error 'PR is not possible on default branch'
                                 return
                             end
+                            local unpushed = git.unpushed_commits()
+                            if unpushed == nil then
+                                Snacks.notify.warn(
+                                    'Branch has no upstream, push it with -u first',
+                                    { title = 'GitHub' }
+                                )
+                            elseif unpushed > 0 then
+                                Snacks.notify.warn(
+                                    ('%d unpushed commit(s)'):format(unpushed),
+                                    { title = 'GitHub' }
+                                )
+                            end
                             local pr = require('conf.octo').pr
                             local existing_pr =
                                 require('gh').pr.json { 'number' }
                             if not existing_pr then
+                                local unpushed = git.unpushed_commits()
+                                if unpushed == nil then
+                                    Snacks.notify.error(
+                                        'Branch has no upstream, push it with -u first',
+                                        { title = 'GitHub' }
+                                    )
+                                    return
+                                elseif unpushed > 0 then
+                                    Snacks.notify.warn(
+                                        ('%d unpushed commit(s)'):format(
+                                            unpushed
+                                        ),
+                                        { title = 'GitHub' }
+                                    )
+                                end
                                 pr.form_create()
                             else
                                 pr.open {
@@ -1051,21 +1078,45 @@ return {
                                 require('git').match_remote_type(remote_url)
                                 ~= 'gitlab'
                             then
-                                Snacks.notify.error 'Only GitLab supported'
+                                Snacks.notify.error(
+                                    'Only GitLab supported',
+                                    { title = 'GitLab' }
+                                )
                                 return
                             end
                             local branch = git.current_branch()
                             if branch == '' then
-                                Snacks.notify.error 'Current ref is not a valid branch'
+                                Snacks.notify.error(
+                                    'Current ref is not a valid branch',
+                                    { title = 'GitLab' }
+                                )
                                 return
                             end
                             if branch == git.default_branch() then
-                                Snacks.notify.error 'MR is not possible on default branch'
+                                Snacks.notify.error(
+                                    'MR is not possible on default branch',
+                                    { title = 'GitLab' }
+                                )
                                 return
                             end
 
                             local mr = require('glab').mr
                             if not mr.exists() then
+                                local unpushed = git.unpushed_commits()
+                                if unpushed == nil then
+                                    Snacks.notify.error(
+                                        'Branch has no upstream, push it with -u first',
+                                        { title = 'GitLab' }
+                                    )
+                                    return
+                                elseif unpushed > 0 then
+                                    Snacks.notify.warn(
+                                        ('%d unpushed commit(s)'):format(
+                                            unpushed
+                                        ),
+                                        { title = 'GitLab' }
+                                    )
+                                end
                                 require('conf.gitlab').mr.form_create()
                             else
                                 require('conf.gitlab').mr.open()

@@ -3,11 +3,12 @@ local M = {}
 local glab = {
     ---@async
     ---@param args string[]
-    ---@return string out
+    ---@return string? out
     run = function(args)
         local out = require('coop.vim').system { 'glab', unpack(args) }
-        -- assert(out.code == 0)
-        return vim.trim(out.stdout or '')
+        if out.code == 0 then
+            return vim.trim(out.stdout or '')
+        end
     end,
 }
 
@@ -17,7 +18,7 @@ M.mr = {}
 ---@return table<string, any>?
 M.mr.json = function()
     local out = glab.run { 'mr', 'view', '--output', 'json' }
-    if out ~= '' then
+    if out and out ~= '' then
         return vim.json.decode(out)
     end
 end

@@ -386,6 +386,18 @@ M.async.head = function()
 end
 
 ---@async
+---@return integer? number of commits ahead of the upstream, or nil when no upstream
+M.async.unpushed_commits = function()
+    if not M.async.tracking_branch() then
+        return nil
+    end
+    local count = git_async { 'rev-list', '--count', '@{u}..HEAD' }
+    if count then
+        return tonumber(count)
+    end
+end
+
+---@async
 ---@return string? name of the upstream tracking branch 'origin/...'
 ---errors: fatal: no upstream configured for branch '...'
 M.async.tracking_branch = function()
