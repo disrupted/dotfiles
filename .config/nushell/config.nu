@@ -158,27 +158,6 @@ $env.config.keybindings ++= [
     #   ]
     # }
   }
-  # Tab to open/navigate completion menu
-  {
-    name: completion_menu
-    modifier: none
-    keycode: tab
-    mode: [emacs vi_normal vi_insert]
-    event: {
-      until: [
-        {send: Menu name: completion_menu}
-        {send: MenuNext}
-      ]
-    }
-  }
-  # Shift+Tab to navigate backwards in menu
-  {
-    name: completion_previous
-    modifier: shift
-    keycode: backtab
-    mode: [emacs vi_insert vi_normal]
-    event: {send: MenuPrevious}
-  }
   {
     name: project_history
     modifier: alt
