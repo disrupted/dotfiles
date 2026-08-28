@@ -96,8 +96,11 @@ const FZF_COLORS_LIGHT = '
 def --env update-theme [] {
   const dark_theme = 1
   const light_theme = 2
-  let system_theme = term query "\e[?996n" --prefix "\e[?997;" --terminator "n" | decode | into int
+  let system_theme = (try {
+    term query "\e[?996n" --prefix "\e[?997;" --terminator "n" | decode | into int
+  } catch { null })
 
+  if $system_theme == null { return }
   if $system_theme != $env.THEME? {
     $env.THEME = if $system_theme == $dark_theme { "dark" } else { "light" }
     $env.BAT_THEME = if $system_theme == $dark_theme { "OneHalfDark" } else { "OneHalfLight" }
