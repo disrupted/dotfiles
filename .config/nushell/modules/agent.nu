@@ -132,7 +132,7 @@ export def ask [
 
   mut tick = 0
   let frames = ["·" "✻" "✽" "✶" "✳" "✢"]
-  mut result = null
+  mut result: record<exit_code: int, stdout: string, stderr: string> = {exit_code: 0, stdout: "", stderr: ""}
   mut spinner_shown = false
   loop {
     let msg = (
