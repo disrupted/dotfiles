@@ -1,5 +1,8 @@
 local M = {}
 
+local async = vim.async
+local system = async.wrap(3, vim.system)
+
 local refresh_timer = assert(vim.uv.new_timer())
 local refresh_debounce_ms = 150
 local refresh_running = false
@@ -126,7 +129,7 @@ M.refresh = function()
     metrics.refresh_started = metrics.refresh_started + 1
     last_refresh_started_ms = now_ms()
     metrics.last_refresh_started_at = now_localtime()
-    require('coop').spawn(function()
+    async.run(function()
         local remote_url = M.async.remote_url()
         if remote_url and remote_url ~= '' then
             vim.g.git_remote_type = M.match_remote_type(remote_url)
@@ -358,7 +361,7 @@ local function git_async(args, opts)
     local cmd = { 'git', '--git-dir', vim.g.git_repo }
     vim.list_extend(cmd, args)
     local merged_opts = vim.tbl_extend('force', default_opts, opts or {})
-    local out = require('coop.vim').system(cmd, merged_opts)
+    local out = system(cmd, merged_opts)
     if out.code == 0 and out.stdout and out.stdout ~= '' then
         return vim.trim(out.stdout)
     end

@@ -3,7 +3,6 @@ local icons = require 'conf.icons'
 ---@type LazySpec[]
 return {
     'nvim-lua/plenary.nvim',
-    { 'gregorias/coop.nvim', lazy = true }, -- concurrency with coroutines
     {
         'disrupted/frizbee.nvim',
         build = 'cargo build --release',

@@ -85,7 +85,7 @@ local create_pr_form = function(opts)
             id = 'form',
             submit_key = '<S-CR>',
             on_submit = function(is_valid)
-                require('coop').spawn(function()
+                vim.async.run(function()
                     if not is_valid then
                         Snacks.notify.error 'Title is required'
                         return
@@ -112,7 +112,7 @@ local create_pr_form = function(opts)
                     if out then
                         renderer:close()
                         Snacks.notify({ 'PR created', out }, { title = 'Octo' })
-                        require('coop.uv-utils').sleep(500)
+                        vim.async.sleep(500)
                         require('gh').pr.refresh()
                         M.pr.open {
                             octo = false,

@@ -1,11 +1,14 @@
 local M = {}
 
+local async = vim.async
+local system = async.wrap(3, vim.system)
+
 local glab = {
     ---@async
     ---@param args string[]
     ---@return string? out
     run = function(args)
-        local out = require('coop.vim').system { 'glab', unpack(args) }
+        local out = system { 'glab', unpack(args) }
         if out.code == 0 then
             return vim.trim(out.stdout or '')
         end
@@ -62,7 +65,7 @@ M.mr.create = function(opts)
     table.insert(cmd, '--squash-before-merge')
     table.insert(cmd, '--yes') -- skip confirm
 
-    local out = require('coop.vim').system(cmd)
+    local out = system(cmd)
     -- assert(out.code == 0)
     return vim.trim(out.stdout or ''),
         out.stderr and vim.trim(out.stderr) or nil

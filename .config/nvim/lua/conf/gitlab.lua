@@ -52,7 +52,7 @@ local create_mr_form = function(opts)
             id = 'form',
             submit_key = '<S-CR>',
             on_submit = function(is_valid)
-                require('coop').spawn(function()
+                vim.async.run(function()
                     if not is_valid then
                         Snacks.notify.error(
                             'Title is required',
@@ -79,7 +79,7 @@ local create_mr_form = function(opts)
                             { 'MR created', out },
                             { title = 'GitLab' }
                         )
-                        require('coop.uv-utils').sleep(500)
+                        vim.async.sleep(500)
                         require('glab').mr.refresh()
                         M.mr.open()
                     end

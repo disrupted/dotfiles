@@ -1,11 +1,14 @@
 local M = {}
 
+local async = vim.async
+local system = async.wrap(3, vim.system)
+
 ---@async
 ---@param args string[]
 ---@return string? out
 M.run = function(args)
     local cmd = { 'gh', unpack(args) }
-    local out = require('coop.vim').system(cmd)
+    local out = system(cmd)
     return vim.trim(out.stdout or '')
 end
 
@@ -84,7 +87,7 @@ M.pr.create = function(opts)
         table.insert(cmd, opts.base)
     end
 
-    local out = require('coop.vim').system(cmd)
+    local out = system(cmd)
     -- assert(out.code == 0)
     return out.stdout or '', out.stderr
 end

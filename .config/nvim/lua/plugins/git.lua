@@ -592,7 +592,7 @@ return {
                 {
                     '<Leader>gop',
                     function()
-                        require('coop').spawn(function()
+                        vim.async.run(function()
                             local git = require('git').async
                             local remote_url = git.remote_url()
                             if
@@ -699,6 +699,49 @@ return {
         ---@type OctoConfig
         opts = {
             picker = 'snacks',
+            -- enable_builtin = true,
+            -- picker_config = {
+            --     snacks = {
+            --         actions = {
+            --             issues = {
+            --                 {
+            --                     name = 'confirm',
+            --                     fn = open_in_tab,
+            --                     lhs = '<CR>',
+            --                     desc = 'Open in tab',
+            --                     mode = { 'n', 'i' },
+            --                 },
+            --             },
+            --             pull_requests = {
+            --                 {
+            --                     name = 'confirm',
+            --                     fn = open_in_tab,
+            --                     lhs = '<CR>',
+            --                     desc = 'Open in tab',
+            --                     mode = { 'n', 'i' },
+            --                 },
+            --             },
+            --             notifications = {
+            --                 {
+            --                     name = 'confirm',
+            --                     fn = open_in_tab,
+            --                     lhs = '<CR>',
+            --                     desc = 'Open in tab',
+            --                     mode = { 'n', 'i' },
+            --                 },
+            --             },
+            --             search = {
+            --                 {
+            --                     name = 'confirm',
+            --                     fn = open_in_tab,
+            --                     lhs = '<CR>',
+            --                     desc = 'Open in tab',
+            --                     mode = { 'n', 'i' },
+            --                 },
+            --             },
+            --         },
+            --     },
+            -- },
             default_merge_method = 'squash',
             default_delete_branch = true,
             date_format = '%Y %b %d %H:%M',
@@ -1071,7 +1114,7 @@ return {
                 {
                     '<Leader>gap',
                     function()
-                        require('coop').spawn(function()
+                        vim.async.run(function()
                             local git = require('git').async
                             local remote_url = git.remote_url()
                             if
