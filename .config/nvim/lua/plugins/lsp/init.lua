@@ -40,7 +40,6 @@ return {
                 'texlab',
                 'tombi',
                 'ts_query_ls',
-                'tsgo',
                 'tinymist',
                 'vale-ls',
                 'vtsls',

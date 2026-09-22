@@ -320,7 +320,7 @@ vim.lsp.enable {
     'tailwindcss',
     'terraform_ls',
     'tombi',
-    'tsgo',
+    'tsc',
     'ts_query_ls',
     'ty',
     -- 'vts_ls',
