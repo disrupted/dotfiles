@@ -1,7 +1,6 @@
 local M = {}
 
-local async = vim.async
-local system = async.wrap(3, vim.system)
+local system = require('conf.async').system
 
 ---@async
 ---@param args string[]

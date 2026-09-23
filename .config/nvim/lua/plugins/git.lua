@@ -306,7 +306,7 @@ return {
         },
     },
     {
-        'barrettruth/diffs.nvim',
+        'https://forge.barrettruth.com/barrettruth/diffs.nvim',
         lazy = false, -- lazy-loads itself
         keys = {
             {
@@ -592,7 +592,7 @@ return {
                 {
                     '<Leader>gop',
                     function()
-                        vim.async.run(function()
+                        local task = vim.async.run(function()
                             local git = require('git').async
                             local remote_url = git.remote_url()
                             if
@@ -651,6 +651,7 @@ return {
                                 }
                             end
                         end)
+                        task:raise_on_error()
                     end,
                     desc = 'View or create PR',
                     icon = icons.git.pull_request,
@@ -1114,7 +1115,7 @@ return {
                 {
                     '<Leader>gap',
                     function()
-                        vim.async.run(function()
+                        local task = vim.async.run(function()
                             local git = require('git').async
                             local remote_url = git.remote_url()
                             if
@@ -1165,6 +1166,7 @@ return {
                                 require('conf.gitlab').mr.open()
                             end
                         end)
+                        task:raise_on_error()
                     end,
                     desc = 'View or create MR',
                     icon = icons.git.pull_request,

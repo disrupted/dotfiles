@@ -85,7 +85,7 @@ local create_pr_form = function(opts)
             id = 'form',
             submit_key = '<S-CR>',
             on_submit = function(is_valid)
-                vim.async.run(function()
+                local task = vim.async.run(function()
                     if not is_valid then
                         Snacks.notify.error 'Title is required'
                         return
@@ -122,6 +122,7 @@ local create_pr_form = function(opts)
                         Snacks.notify.error 'Failed to create PR. Run :messages for details.'
                     end
                 end)
+                task:raise_on_error()
             end,
         },
         n.text_input {

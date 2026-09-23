@@ -1,7 +1,7 @@
 local M = {}
 
 local async = vim.async
-local system = async.wrap(3, vim.system)
+local system = require('conf.async').system
 
 local refresh_timer = assert(vim.uv.new_timer())
 local refresh_debounce_ms = 150
@@ -129,7 +129,7 @@ M.refresh = function()
     metrics.refresh_started = metrics.refresh_started + 1
     last_refresh_started_ms = now_ms()
     metrics.last_refresh_started_at = now_localtime()
-    async.run(function()
+    local task = async.run(function()
         local remote_url = M.async.remote_url()
         if remote_url and remote_url ~= '' then
             vim.g.git_remote_type = M.match_remote_type(remote_url)
@@ -188,6 +188,7 @@ M.refresh = function()
             vim.schedule(M.refresh)
         end
     end)
+    task:raise_on_error()
 end
 
 local function schedule_refresh()

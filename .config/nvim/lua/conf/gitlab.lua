@@ -52,7 +52,7 @@ local create_mr_form = function(opts)
             id = 'form',
             submit_key = '<S-CR>',
             on_submit = function(is_valid)
-                vim.async.run(function()
+                local task = vim.async.run(function()
                     if not is_valid then
                         Snacks.notify.error(
                             'Title is required',
@@ -84,6 +84,7 @@ local create_mr_form = function(opts)
                         M.mr.open()
                     end
                 end)
+                task:raise_on_error()
             end,
         },
         n.text_input {
