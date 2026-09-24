@@ -527,14 +527,28 @@ return {
             {
                 '<Leader>xx',
                 function()
+                    local started_clients =
+                        require('conf.workspace.lsp').start_project_clients()
                     require('conf.trouble').diagnostics.toggle 'workspace_diagnostics_severe'
+                    if not vim.tbl_isempty(started_clients) then
+                        vim.defer_fn(function()
+                            require('trouble').refresh 'workspace_diagnostics_severe'
+                        end, 500)
+                    end
                 end,
                 desc = 'Workspace diagnostics (most severe)',
             },
             {
                 '<Leader>xw',
                 function()
+                    local started_clients =
+                        require('conf.workspace.lsp').start_project_clients()
                     require('conf.trouble').diagnostics.toggle 'workspace_diagnostics'
+                    if not vim.tbl_isempty(started_clients) then
+                        vim.defer_fn(function()
+                            require('trouble').refresh 'workspace_diagnostics'
+                        end, 500)
+                    end
                 end,
                 desc = 'Workspace diagnostics',
             },
@@ -562,7 +576,23 @@ return {
             fold_closed = '',
             indent_lines = false,
             padding = false,
-            action_keys = { jump = { '<cr>' }, toggle_fold = { '<tab>' } },
+            keys = {
+                ['<cr>'] = 'jump',
+                ['<tab>'] = 'fold_toggle',
+                s = {
+                    action = function(view)
+                        local f = view:get_filter 'severity'
+                        local severity = ((f and f.filter.severity or 0) + 1)
+                            % 5
+                        view:filter({ severity = severity }, {
+                            id = 'severity',
+                            template = '{hl:Title}Filter:{hl} {severity}',
+                            del = severity == 0,
+                        })
+                    end,
+                    desc = 'Toggle Severity Filter',
+                },
+            },
             modes = {
                 buffer_diagnostics = {
                     mode = 'diagnostics',
@@ -576,12 +606,8 @@ return {
                     title = 'Workspace Diagnostics',
                     auto_refresh = true,
                     auto_close = false,
-                    filter = {
-                        severity = {
-                            vim.diagnostic.severity.ERROR,
-                            vim.diagnostic.severity.WARN,
-                        },
-                    },
+                    warn_no_results = false,
+                    open_no_results = true,
                 },
                 workspace_diagnostics_severe = {
                     mode = 'diagnostics',
@@ -589,6 +615,8 @@ return {
                     title = 'Workspace Diagnostics (most severe)',
                     auto_refresh = true,
                     auto_close = false,
+                    warn_no_results = false,
+                    open_no_results = true,
                     -- only the most severe diagnostics, min warning
                     filter = function(items)
                         local severity = vim.diagnostic.severity.WARN

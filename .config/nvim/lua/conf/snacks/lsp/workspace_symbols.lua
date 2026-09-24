@@ -306,10 +306,12 @@ function M.pick(opts)
                 workspace_symbol_client(root, project_filetype)
             if not current_client then
                 Snacks.notify.warn 'No client supporting workspace symbols'
+                picker:close()
                 return
             end
             picker.title = picker_title(current_client, root, scope_dir)
             picker:update_titles()
+            picker:refresh()
         end, 500)
     end
 
