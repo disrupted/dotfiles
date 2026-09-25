@@ -70,13 +70,15 @@ hk = "latest"
 lefthook = "latest"
 typst = "latest"
 opencode = "latest"
+rtk = "latest"
 "github:lucasgelfond/zerobrew" = "latest"
 "github:Mapika/portview" = "latest"
 "github:topiary/topiary" = "latest"
-"github:pruner-formatter/pruner" = "v1.0.0-alpha.10"
-"github:colelawrence/pkl-lsp" = "latest"
+"github:pruner-formatter/pruner" = "v1.0.0-alpha.11"
 "pipx:pymobiledevice3" = "latest"
 "pipx:visidata" = "latest"
+"github:tontinton/maki" = "latest"
+"aqua:nklmilojevic/sofka" = "latest"
 
 [settings]
 experimental = true
