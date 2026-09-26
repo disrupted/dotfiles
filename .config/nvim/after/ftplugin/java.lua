@@ -1,5 +1,5 @@
 vim.opt.formatoptions:remove 'o' -- disable comment leader when opening new line
-vim.opt_local.shiftwidth = 4
-vim.opt_local.tabstop = 4
-vim.opt_local.softtabstop = 4
-vim.opt_local.colorcolumn = '120'
+vim.bo.shiftwidth = 4
+vim.bo.tabstop = 4
+vim.bo.softtabstop = 4
+vim.wo[0][0].colorcolumn = '120'

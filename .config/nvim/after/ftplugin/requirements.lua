@@ -1,2 +1,2 @@
 -- Python requirements.txt
-vim.opt.commentstring = '# %s'
+vim.bo.commentstring = '# %s'

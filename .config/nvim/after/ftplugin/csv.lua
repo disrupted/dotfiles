@@ -1,1 +1,1 @@
-vim.opt_local.wrap = false -- FIXME: vim.wo is applied globally
+vim.wo[0][0].wrap = false
