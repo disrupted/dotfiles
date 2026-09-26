@@ -1,0 +1,14 @@
+;; vim: ft=scheme
+;; ---------------------------------------------------------------------------
+;; disable the OpenCode v2 shared background service
+;; ---------------------------------------------------------------------------
+;; OpenCode v2 discovers/registers its user-wide shared service through these
+;; files. Denying read and write makes it impossible for a sandboxed OpenCode
+;; process to discover or create that service, so a bare `opencode` without
+;; --standalone fails instead of silently running tools outside the sandbox.
+;; `--standalone` and a foreground `serve` do not read these files.
+(deny file-read* file-write*
+    (home-literal "/.local/state/opencode/service.json")   ;; service discovery/registration
+    (home-literal "/.config/opencode/service.json")        ;; service settings
+    (home-literal "/.config/opencode/service.json.tmp")
+)

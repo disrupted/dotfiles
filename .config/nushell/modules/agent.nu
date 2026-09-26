@@ -1,7 +1,5 @@
 const SYSTEM_PROMPT = "You are a shell command generator. Your ONLY job is to output a single nushell command that accomplishes the user's request. Output ONLY the raw nushell command - no markdown, no code blocks, no explanations, no comments, no backticks. Just the executable command itself on a single line. If you need to look up command syntax, you may use web search. ALWAYS prefer idiomatic native nushell best-practices over external tools (e.g. `open sqlite.db | schema`)."
-const DEFAULT_API_MODEL = "google/gemini-3-flash-preview"
-const DEFAULT_OPENCODE_MODEL = "openai/gpt-5.2"
-const DEFAULT_OPENCODE_URL = "http://127.0.0.1:4096"
+const DEFAULT_API_MODEL = "google/gemini-3.8-flash"
 
 def extract-response-text [response: record]: nothing -> string {
   let completion_text = ($response.choices.0.message.content? | default "")
@@ -73,7 +71,6 @@ def ask-openai [query: string model: string api_key: string]: nothing -> string 
 export def ask [
   query: string # What you want to do in natural language
 ]: nothing -> string {
-  let prompt = $"($SYSTEM_PROMPT) user prompt: ($query)"
   let loading_texts = [
     "here we go again…"
     "asking the command oracle…"
@@ -95,26 +92,17 @@ export def ask [
       let worker_result = (
         try {
           let api_key = ($env.OPENROUTER_API_KEY? | default "")
+          if (($api_key | str length) == 0) {
+            error make --unspanned {msg: "ask: OPENROUTER_API_KEY is not set"}
+          }
 
-          if (($api_key | str length) > 0) {
-            let model = ($env.AGENT_API_MODEL? | default $DEFAULT_API_MODEL)
-            let api_result = (ask-openai $query $model $api_key)
+          let model = ($env.AGENT_API_MODEL? | default $DEFAULT_API_MODEL)
+          let api_result = (ask-openai $query $model $api_key)
 
-            {
-              exit_code: 0
-              stdout: $api_result
-              stderr: ""
-            }
-          } else {
-            let model = ($env.AGENT_MODEL? | default $DEFAULT_OPENCODE_MODEL)
-            let attach_url = ($env.AGENT_OPENCODE_URL? | default $DEFAULT_OPENCODE_URL)
-
-            let attached = (^opencode run --attach $attach_url --model $model $prompt | complete)
-            if $attached.exit_code == 0 {
-              $attached
-            } else {
-              ^opencode run --model $model $prompt | complete
-            }
+          {
+            exit_code: 0
+            stdout: $api_result
+            stderr: ""
           }
         } catch {|worker_err|
           let worker_err_msg = ($worker_err.msg? | default ($worker_err | to nuon))
@@ -132,7 +120,7 @@ export def ask [
 
   mut tick = 0
   let frames = ["·" "✻" "✽" "✶" "✳" "✢"]
-  mut result: record<exit_code: int, stdout: string, stderr: string> = {exit_code: 0, stdout: "", stderr: ""}
+  mut result: record<exit_code: int, stdout: string, stderr: string> = {exit_code: 0 stdout: "" stderr: ""}
   mut spinner_shown = false
   loop {
     let msg = (

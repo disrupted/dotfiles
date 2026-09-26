@@ -5,6 +5,7 @@ local icons = require 'conf.icons'
 return {
     {
         'sudo-tee/opencode.nvim',
+        branch = 'v2',
         lazy = true,
         name = 'opencode-native',
         cmd = 'Opencode',
@@ -87,6 +88,31 @@ return {
         ---@module 'opencode'
         ---@type OpencodeConfig
         opts = {
+            server = {
+                url = '127.0.0.1',
+                port = 'auto',
+                timeout = 30,
+                retry_delay = 3000,
+                auto_kill = true,
+                -- deterministic per-directory credential so a second nvim in the same
+                -- project can reconnect to the already-running project server
+                password = function()
+                    return vim.fn.sha256(assert(vim.uv.cwd())):sub(1, 32)
+                end,
+                spawn_command = function(port, url, env)
+                    local job = vim.fn.jobstart({
+                        vim.fs.normalize '~/.config/opencode/safehouse_opencode.sh',
+                        'serve',
+                        '--port',
+                        tostring(port),
+                    }, {
+                        env = env,
+                    })
+                    if job > 0 then
+                        return vim.fn.jobpid(job)
+                    end
+                end,
+            },
             preferred_picker = 'snacks',
             preferred_completion = 'blink',
             default_global_keymaps = false,
@@ -225,7 +251,6 @@ return {
             },
             ui = {
                 position = 'right',
-                keep_buffers_on_toggle = true,
                 zoom_width = 0.6,
                 input = {
                     min_height = 0.10,
@@ -241,7 +266,10 @@ return {
                         show_reasoning_output = false,
                     },
                     rendering = {
-                        markdown_debounce_ms = 100,
+                        markdown_on_idle = true,
+                        markdown_on_idle_threshold = 100,
+                        markdown_debounce_ms = 300,
+                        -- event_throttle_ms = 80,
                     },
                 },
                 picker = {
@@ -315,7 +343,7 @@ return {
             },
             debug = {
                 enabled = true,
-                capture_streamed_events = true,
+                capture_streamed_events = false,
                 show_ids = false,
             },
             hooks = {
@@ -326,6 +354,107 @@ return {
         },
         config = function(_, opts)
             require('opencode').setup(opts)
+
+            local function add_quickfix_to_context()
+                local context = require 'opencode.context'
+
+                if not context.is_context_enabled 'selection' then
+                    Snacks.notify.warn(
+                        'Selection context is disabled (context.selection)',
+                        { title = 'Agent', icon = '' }
+                    )
+                    return
+                end
+
+                local items = vim.fn.getqflist()
+                if #items == 0 then
+                    Snacks.notify.warn('Quickfix list is empty', {
+                        title = 'Agent',
+                        icon = '',
+                    })
+                    return
+                end
+
+                -- Seed with selections already attached so re-running the
+                -- keymap does not report duplicates as new additions.
+                local seen = {}
+                for _, sel in ipairs(context.get_context().selections or {}) do
+                    if sel.file and sel.file.path then
+                        seen[sel.file.path .. ':' .. (sel.lines or '')] = true
+                    end
+                end
+
+                local added, skipped = 0, 0
+                for _, item in ipairs(items) do
+                    local path = item.bufnr > 0
+                            and vim.api.nvim_buf_get_name(item.bufnr)
+                        or item.filename
+                    local last = (item.end_lnum or 0) > item.lnum
+                            and item.end_lnum
+                        or item.lnum
+                    local range = item.lnum .. ', ' .. last
+                    local key = (path or '') .. ':' .. range
+
+                    local lines
+                    if item.lnum < 1 or not path or path == '' then
+                        lines = nil
+                    elseif
+                        item.bufnr > 0
+                        and vim.api.nvim_buf_is_loaded(item.bufnr)
+                    then
+                        lines = vim.api.nvim_buf_get_lines(
+                            item.bufnr,
+                            item.lnum - 1,
+                            last,
+                            false
+                        )
+                    elseif vim.fn.filereadable(path) == 1 then
+                        lines = vim.list_slice(
+                            vim.fn.readfile(path, '', last),
+                            item.lnum,
+                            last
+                        )
+                    end
+                    lines = lines
+                        or vim.split(item.text or '', '\n', { plain = true })
+
+                    local content = table.concat(lines, '\n')
+                    if not content:match '%S' or seen[key] then
+                        skipped = skipped + 1
+                    else
+                        seen[key] = true
+                        context.add_selection(context.new_selection({
+                            path = path,
+                            name = vim.fn.fnamemodify(path, ':t'),
+                            extension = vim.fn.fnamemodify(path, ':e'),
+                        }, content, range))
+                        added = added + 1
+                    end
+                end
+
+                if added == 0 then
+                    Snacks.notify.warn(
+                        'No new quickfix entries to add to context',
+                        { title = 'Agent', icon = '' }
+                    )
+                    return
+                end
+
+                require('opencode.services.session_runtime').open {
+                    new_session = false,
+                    focus = 'input',
+                    start_insert = true,
+                }
+
+                Snacks.notify(
+                    string.format(
+                        'Added %d quickfix location(s) to context%s',
+                        added,
+                        skipped > 0 and (' (' .. skipped .. ' skipped)') or ''
+                    ),
+                    { title = 'Agent', icon = '' }
+                )
+            end
 
             require('which-key').add {
                 {
@@ -346,7 +475,31 @@ return {
                     mode = 'v',
                     icon = { icon = '󰐒', color = 'blue' },
                 },
+                {
+                    '<leader>aq',
+                    add_quickfix_to_context,
+                    desc = 'Add quickfix list to context',
+                    icon = { icon = icons.misc.quickfix, hl = 'DiagnosticInfo' },
+                },
             }
+
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = { 'qf' },
+                callback = function(args)
+                    require('which-key').add {
+                        buffer = args.buf,
+                        {
+                            '<C-a>',
+                            add_quickfix_to_context,
+                            desc = 'Add quickfix list to context',
+                            icon = {
+                                icon = icons.misc.quickfix,
+                                hl = 'DiagnosticInfo',
+                            },
+                        },
+                    }
+                end,
+            })
 
             vim.api.nvim_create_autocmd('User', {
                 pattern = 'OpencodeEvent:permission.asked',
@@ -585,24 +738,6 @@ return {
                             desc = 'Timeline',
                             icon = '󱇼',
                         },
-                        {
-                            '<S-BS>',
-                            function()
-                                local win = (
-                                    require('opencode.state').windows or {}
-                                ).output_win
-                                if win and vim.api.nvim_win_is_valid(win) then
-                                    if vim.w[win]['edgy_width'] == nil then
-                                        vim.w[win]['edgy_width'] = 110
-                                    else
-                                        vim.w[win]['edgy_width'] = nil
-                                    end
-                                    require('edgy.layout').update()
-                                end
-                            end,
-                            desc = 'Zoom window',
-                            icon = icons.misc.window,
-                        },
                     }
 
                     require('which-key').add {
@@ -645,10 +780,10 @@ return {
                     opencode = true,
                 },
                 on_ready = function(port)
-                    print('MCP bridge ready on port ' .. port)
+                    Snacks.notify('MCP bridge ready on port ' .. port)
                 end,
                 on_stop = function()
-                    print 'MCP bridge stopped'
+                    Snacks.notify 'MCP bridge stopped'
                 end,
             }
         end,

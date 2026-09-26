@@ -1,4 +1,3 @@
 #:schema https://mise.jdx.dev/schema/mise.json
 
 [env]
-OPENCODE_EXPERIMENTAL_LSP_TOOL = "true"

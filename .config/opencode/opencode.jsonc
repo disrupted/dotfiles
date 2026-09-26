@@ -1,77 +1,22 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "autoupdate": false,
+  "update": "disable",
   "share": "disabled",
-  "enabled_providers": ["anthropic", "github-copilot", "opencode", "openai"],
-  "model": "openai/gpt-5.3-codex",
-  "small_model": "anthropic/claude-haiku-4-5",
-  "permission": {
-    "read": {
-      "~/.config/opencode/get-shit-done/*": "allow",
-    },
-    // "edit": "ask",
-    "bash": {
-      "*": "ask",
-      "git *": "allow",
-      "git commit *": "deny",
-      "git push *": "deny",
-      "sudo *": "deny",
-      "rm *": "deny", // strictly deny all deletions for now
-      // "rm -rf /": "deny",
-      // "rm -rf /*": "deny",
-      // "rm -rf ~": "deny",
-      // "rm -rf ~/*": "deny",
-      ":(){:|:&};:": "deny", // fork bomb, just in case
-    },
-    "lsp": "allow",
-    "skill": "allow",
-    "webfetch": "allow",
-    "question": "allow",
-    "external_directory": {
-      "*": "ask",
-      "~/.config/opencode/get-shit-done/*": "allow",
-    },
-  },
-  "agent": {
-    "general": {
-      "model": "openai/gpt-5.3-codex",
-    },
-    "build": {
-      "permission": {
-        "bash": {
-          "*": "ask",
-          "git *": "allow",
-          "git commit *": "ask",
-          "git push *": "deny",
-        },
-      },
-    },
-    "plan": {
-      "model": "anthropic/claude-opus-4-6",
-    },
-    "explore": {
-      "description": "Fast codebase exploration and file search",
-      "mode": "subagent",
-      "model": "anthropic/claude-haiku-4-5",
-      "temperature": 0.1,
-      "maxSteps": 20,
-      "tools": {
-        "read": true,
-        "write": false,
-        "edit": false,
-        "bash": false,
-        "grep": true,
-        "glob": true,
-        "list": true,
-      },
+  "disabled_providers": ["opencode", "github-copilot"],
+  "model": "openrouter/deepseek/deepseek-v4.1-flash",
+  "agents": {
+    "title": {
+      "model": "openrouter/deepseek/deepseek-v4.1-flash",
     },
   },
   "lsp": false,
   "mcp": {
-    "context7": {
-      "enabled": true,
-      "type": "remote",
-      "url": "https://mcp.context7.com/mcp",
+    "servers": {
+      "context7": {
+        "type": "remote",
+        "url": "https://mcp.context7.com/mcp",
+        "disabled": false,
+      },
     },
   },
   "formatter": {
@@ -81,15 +26,14 @@
   "watcher": {
     "ignore": ["node_modules/**", "dist/**", ".git/**", ".jj/**"],
   },
-  "server": {
-    "hostname": "localhost",
-  },
   "compaction": {
     "auto": false,
-    "prune": true,
   },
-  "plugin": [
-    "opencode-anthropic-auth@latest",
+  "snapshots": false,
+  "permissions": [
+    { "action": "external_directory", "resource": "*", "effect": "allow" },
+    { "action": "read", "resource": "*.env", "effect": "deny" },
+    { "action": "read", "resource": "*.env.*", "effect": "deny" },
+    { "action": "read", "resource": "*.env.example", "effect": "allow" },
   ],
-  "snapshot": false,
 }
