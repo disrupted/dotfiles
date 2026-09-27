@@ -350,6 +350,7 @@ return {
                     prefix = false,
                 },
                 highlights = {
+                    warn_max_lines = false,
                     overrides = {
                         DiffsAddRailNr = { link = 'LineNr' },
                         DiffsDeleteRailNr = { link = 'LineNr' },
@@ -1065,6 +1066,7 @@ return {
     },
     {
         'topaxi/pipeline.nvim',
+        enabled = false,
         cmd = 'Pipeline',
         init = function()
             require('which-key').add { { '<Leader>gc', group = 'CI' } }
@@ -1101,6 +1103,20 @@ return {
         },
     },
     {
+        'https://forge.barrettruth.com/barrettruth/ci.nvim',
+        cmd = 'CI',
+        init = function()
+            require('which-key').add { { '<Leader>gc', group = 'CI' } }
+        end,
+        keys = {
+            {
+                '<Leader>gci',
+                '<cmd>CI<CR>',
+                desc = 'CI',
+            },
+        },
+    },
+    {
         'harrisoncramer/gitlab.nvim',
         -- enabled = false, -- incompatible with codediff.nvim https://github.com/harrisoncramer/gitlab.nvim/issues/517
         lazy = true,
@@ -1115,58 +1131,59 @@ return {
                 {
                     '<Leader>gap',
                     function()
-                        local task = vim.async.run(function()
-                            local git = require('git').async
-                            local remote_url = git.remote_url()
-                            if
-                                require('git').match_remote_type(remote_url)
-                                ~= 'gitlab'
-                            then
-                                Snacks.notify.error(
-                                    'Only GitLab supported',
-                                    { title = 'GitLab' }
-                                )
-                                return
-                            end
-                            local branch = git.current_branch()
-                            if branch == '' then
-                                Snacks.notify.error(
-                                    'Current ref is not a valid branch',
-                                    { title = 'GitLab' }
-                                )
-                                return
-                            end
-                            if branch == git.default_branch() then
-                                Snacks.notify.error(
-                                    'MR is not possible on default branch',
-                                    { title = 'GitLab' }
-                                )
-                                return
-                            end
-
-                            local mr = require('glab').mr
-                            if not mr.exists() then
-                                local unpushed = git.unpushed_commits()
-                                if unpushed == nil then
+                        local task = vim.async
+                            .run(function()
+                                local git = require('git').async
+                                local remote_url = git.remote_url()
+                                if
+                                    require('git').match_remote_type(remote_url)
+                                    ~= 'gitlab'
+                                then
                                     Snacks.notify.error(
-                                        'Branch has no upstream, push it with -u first',
+                                        'Only GitLab supported',
                                         { title = 'GitLab' }
                                     )
                                     return
-                                elseif unpushed > 0 then
-                                    Snacks.notify.warn(
-                                        ('%d unpushed commit(s)'):format(
-                                            unpushed
-                                        ),
+                                end
+                                local branch = git.current_branch()
+                                if branch == '' then
+                                    Snacks.notify.error(
+                                        'Current ref is not a valid branch',
                                         { title = 'GitLab' }
                                     )
+                                    return
                                 end
-                                require('conf.gitlab').mr.form_create()
-                            else
-                                require('conf.gitlab').mr.open()
-                            end
-                        end)
-                        task:raise_on_error()
+                                if branch == git.default_branch() then
+                                    Snacks.notify.error(
+                                        'MR is not possible on default branch',
+                                        { title = 'GitLab' }
+                                    )
+                                    return
+                                end
+
+                                local mr = require('glab').mr
+                                if not mr.exists() then
+                                    local unpushed = git.unpushed_commits()
+                                    if unpushed == nil then
+                                        Snacks.notify.error(
+                                            'Branch has no upstream, push it with -u first',
+                                            { title = 'GitLab' }
+                                        )
+                                        return
+                                    elseif unpushed > 0 then
+                                        Snacks.notify.warn(
+                                            ('%d unpushed commit(s)'):format(
+                                                unpushed
+                                            ),
+                                            { title = 'GitLab' }
+                                        )
+                                    end
+                                    require('conf.gitlab').mr.form_create()
+                                else
+                                    require('conf.gitlab').mr.open()
+                                end
+                            end)
+                            :raise_on_error()
                     end,
                     desc = 'View or create MR',
                     icon = icons.git.pull_request,

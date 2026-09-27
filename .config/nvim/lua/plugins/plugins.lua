@@ -1112,7 +1112,7 @@ return {
         'dmtrKovalenko/fff.nvim',
         lazy = false, -- plugin already lazy
         build = function()
-            require('fff.download').download_binary()
+            require('fff.download').download_or_build_binary()
         end,
         opts = {},
     },

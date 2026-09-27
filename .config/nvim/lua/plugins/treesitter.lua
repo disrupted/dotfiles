@@ -70,7 +70,6 @@ return {
                 'swift',
                 'terraform',
                 'toml',
-                'tmux',
                 'tsx',
                 'typescript',
                 'typst',

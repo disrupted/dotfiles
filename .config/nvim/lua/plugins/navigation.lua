@@ -34,6 +34,7 @@ return {
     },
     {
         'folke/flash.nvim',
+        enabled = false,
         keys = {
             'f',
             'F',

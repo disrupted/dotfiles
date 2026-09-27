@@ -788,11 +788,4 @@ return {
             }
         end,
     },
-    {
-        'linw1995/nvim-mcp',
-        enabled = false,
-        event = 'VeryLazy',
-        build = 'cargo install --path .',
-        opts = {},
-    },
 }

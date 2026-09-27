@@ -1,3 +1,4 @@
+local icons = require 'conf.icons'
 ---@module 'lazy.types'
 ---@type LazySpec[]
 return {
@@ -524,7 +525,7 @@ return {
                     jumpto = '<CR>',
                 },
             },
-            icons = vim.tbl_extend('force', require('conf.icons').test, {
+            icons = vim.tbl_extend('force', icons.test, {
                 running_animated = {
                     '⠋',
                     '⠙',
@@ -930,6 +931,26 @@ return {
                             end
                         end
                     end)
+
+                    require('which-key').add {
+                        {
+                            '|',
+                            function()
+                                local win =
+                                    require('overseer.window').get_win_id()
+                                if win and vim.api.nvim_win_is_valid(win) then
+                                    if vim.w[win]['edgy_height'] == nil then
+                                        vim.w[win]['edgy_height'] = 80
+                                    else
+                                        vim.w[win]['edgy_height'] = nil
+                                    end
+                                    require('edgy.layout').update()
+                                end
+                            end,
+                            desc = 'Zoom window',
+                            icon = icons.misc.window,
+                        },
+                    }
                 end,
             })
 
@@ -997,9 +1018,9 @@ return {
                 end
             end
 
-            vim.keymap.set('n', '|', function()
-                toggle_runner 'float'
-            end, { desc = 'Overseer: open task in floating window' })
+            -- vim.keymap.set('n', '|', function()
+            --     toggle_runner 'float'
+            -- end, { desc = 'Overseer: open task in floating window' })
         end,
     },
     {

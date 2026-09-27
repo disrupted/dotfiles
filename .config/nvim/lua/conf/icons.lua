@@ -1,5 +1,8 @@
 return {
     cmp_sources = setmetatable({
+        Git = '󰊢',
+        ['Conventional Commits'] = '󰜘',
+        LazyDev = '',
         LSP = '',
         Snippets = '󰐱', -- 󰩫  󱡄 󰐱
         Buffer = '󰈙',
@@ -45,6 +48,7 @@ return {
         diff = '',
     },
     test = {
+        test = '',
         notify = '',
         passed = '',
         failed = '',
@@ -60,6 +64,9 @@ return {
         final_child_indent = ' ',
 
         -- node icon shown after connector
+        dir = '󰉋',
+        file = '',
+        namespace = '',
         expanded = '┐',
         collapsed = '─',
         non_collapsible = '',

@@ -199,6 +199,33 @@ return {
                         ---@module 'blink-cmp-git'
                         ---@type blink-cmp-git.Options
                         opts = {
+                            kind_highlight = function()
+                                return 'BlinkCmpKind'
+                            end,
+                            kind_icon_highlight = function()
+                                return 'BlinkCmpKind'
+                            end,
+                            -- Mirror blink.cmp's default label rendering: the whole
+                            -- label in BlinkCmpLabel, fuzzy matches in BlinkCmpLabelMatch.
+                            label_highlight = function(context)
+                                local highlights = {
+                                    {
+                                        0,
+                                        #context.label,
+                                        group = 'BlinkCmpLabel',
+                                    },
+                                }
+                                for _, idx in
+                                    ipairs(context.label_matched_indices)
+                                do
+                                    table.insert(highlights, {
+                                        idx,
+                                        idx + 1,
+                                        group = 'BlinkCmpLabelMatch',
+                                    })
+                                end
+                                return highlights
+                            end,
                             git_centers = {
                                 gitlab = {
                                     issue = {

@@ -1,13 +1,9 @@
 ---@type vim.lsp.Config
 return {
     cmd = { 'pkl-lsp' },
-    filetypes = { 'pkl' },
+    filetypes = { 'pkl', 'pcf' },
     root_markers = {
         'PklProject',
         '.git',
-    },
-    workspace_required = false,
-    settings = {
-        ['pkl.cli.path'] = 'pkl',
     },
 }

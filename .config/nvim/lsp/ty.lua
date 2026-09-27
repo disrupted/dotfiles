@@ -12,6 +12,9 @@ return {
     settings = {
         ty = {
             diagnosticMode = 'workspace',
+            completions = {
+                completeFunctionParentheses = true,
+            },
         },
     },
     trace = 'messages',
