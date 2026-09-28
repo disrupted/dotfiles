@@ -74,8 +74,6 @@ $env.LS_COLORS = "rs=0:fi=0:di=34:ln=36:so=33:pi=33:ex=32:bd=33;1:cd=33;1:su=31:
 if $nu.is-interactive {
   $env.GPG_TTY = (tty)
 }
-const local_secrets = "~/.config/nushell/local/secrets.nu"
-if ($local_secrets | path exists) { source $local_secrets }
 
 # Theme colors
 const FZF_COLORS_DARK = '
@@ -96,9 +94,11 @@ const FZF_COLORS_LIGHT = '
 def --env update-theme [] {
   const dark_theme = 1
   const light_theme = 2
-  let system_theme = (try {
-    term query "\e[?996n" --prefix "\e[?997;" --terminator "n" | decode | into int
-  } catch { null })
+  let system_theme = (
+    try {
+      term query "\e[?996n" --prefix "\e[?997;" --terminator "n" | decode | into int
+    } catch { null }
+  )
 
   if $system_theme == null { return }
   if $system_theme != $env.THEME? {
