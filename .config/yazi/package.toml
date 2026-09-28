@@ -1,5 +1,29 @@
-[plugin]
-deps = [{ use = "boydaihungst/mediainfo", rev = "ddfd5ec" }, { use = "yazi-rs/plugins:max-preview", rev = "71c4fc2" }, { use = "yazi-rs/plugins:full-border", rev = "71c4fc2" }, { use = "yazi-rs/plugins:hide-preview", rev = "71c4fc2" }, { use = "yazi-rs/plugins:mime-ext", rev = "71c4fc2" }]
+[[plugin.deps]]
+use = "boydaihungst/mediainfo"
+rev = "f1cec0b"
+hash = "fd9312e974c63438b1f8737711462d52"
 
-[flavor]
-deps = [{ use = "sanjinso/monokai-vibrant", rev = "8b68223" }, { use = "dangooddd/kanagawa", rev = "240194c" }]
+[[plugin.deps]]
+use = "yazi-rs/plugins:full-border"
+rev = "03cdd4b"
+hash = "3996fc74044bc44144b323686f887e1"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:hide-preview"
+rev = "03cdd4b"
+hash = "99aa06d3014798d86001c324468d497f"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:mime-ext"
+rev = "03cdd4b"
+hash = "48a77ab785d1ee73bc2d7bbe2a4c2090"
+
+[[flavor.deps]]
+use = "sanjinso/monokai-vibrant"
+rev = "8b68223"
+hash = "7cf995e2185a45b5141ce807b7eced60"
+
+[[flavor.deps]]
+use = "dangooddd/kanagawa"
+rev = "04985d1"
+hash = "c69a63981e254a3a06a11c2bf0e6af1d"

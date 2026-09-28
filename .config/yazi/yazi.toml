@@ -1,4 +1,4 @@
-"$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
+#:schema https://yazi-rs.github.io/schemas/yazi.json
 
 [mgr]
 ratio = [0, 4, 3]
@@ -12,7 +12,7 @@ suppress_preload = true
 
 [plugin]
 prepend_fetchers = [
-  { id = "mime", if = "!(mime|dummy)", name = "*", run = "mime-ext", prio = "high" },
+  { group = "mime", url = "*", run = "mime-ext", if = "!(mime|dummy)", prio = "high" },
 ]
 prepend_previewers = [
   { mime = "{audio,video}/*", run = "mediainfo" },
