@@ -106,24 +106,12 @@ return {
                             else
                                 return {
                                     { 'kind_icon' },
-                                    {
-                                        'label',
-                                        'label_description',
-                                        'space', -- HACK: try to right-align source_icon
-                                        'source_icon',
-                                        gap = 1,
-                                    },
+                                    { 'label', 'label_description', gap = 1 },
+                                    { 'source_icon' },
                                 }
                             end
                         end,
                         components = {
-                            label_description = {
-                                width = {
-                                    -- make component after it in the same group right-aligned
-                                    -- FIXME: does not seem to work reliably
-                                    fill = true,
-                                },
-                            },
                             source_icon = {
                                 width = { fixed = 1 },
                                 ellipsis = false,
@@ -131,12 +119,6 @@ return {
                                     return require('conf.icons').cmp_sources[ctx.source_name]
                                 end,
                                 highlight = 'BlinkCmpSource',
-                            },
-                            space = {
-                                width = { fixed = 1, fill = true },
-                                text = function()
-                                    return ' '
-                                end,
                             },
                         },
                     },
