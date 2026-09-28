@@ -5,8 +5,19 @@
   "disabled_providers": ["opencode", "github-copilot"],
   "model": "openrouter/deepseek/deepseek-v4.1-flash",
   "agents": {
-    "title": {
-      "model": "openrouter/deepseek/deepseek-v4.1-flash",
+    "title": { "model": "openrouter/deepseek/deepseek-v4.1-flash#none" },
+    "plan": {
+      "permissions": [
+        { "action": "shell", "resource": "gh issue create *", "effect": "deny" },
+        { "action": "shell", "resource": "gh issue close *", "effect": "deny" },
+        { "action": "shell", "resource": "gh issue comment *", "effect": "deny" },
+        { "action": "shell", "resource": "gh pr create *", "effect": "deny" },
+        { "action": "shell", "resource": "gh pr merge *", "effect": "deny" },
+        { "action": "shell", "resource": "gh pr comment *", "effect": "deny" },
+        { "action": "shell", "resource": "gh release *", "effect": "deny" },
+        { "action": "shell", "resource": "git commit *", "effect": "deny" },
+        { "action": "shell", "resource": "git push *", "effect": "deny" },
+      ],
     },
   },
   "lsp": false,
