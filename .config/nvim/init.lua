@@ -576,17 +576,23 @@ vim.keymap.set('n', '<C-]>', '<cmd>tabnext<CR>', { desc = 'Next tabpage' })
 vim.keymap.set('n', '<C-[>', '<cmd>tabprevious<CR>', { desc = 'Prev tabpage' })
 
 -- Treesitter incremental selection
+local function selection_range_supported()
+    return not vim.tbl_isempty(vim.lsp.get_clients {
+        bufnr = 0,
+        method = 'textDocument/selectionRange',
+    })
+end
 vim.keymap.set({ 'n', 'x' }, '<CR>', function()
     if vim.treesitter.get_parser(nil, nil, { error = false }) then
         require('vim.treesitter._select').select_parent(vim.v.count1)
-    else
+    elseif selection_range_supported() then
         vim.lsp.buf.selection_range(vim.v.count1)
     end
 end, { desc = 'Increment selection' })
 vim.keymap.set({ 'x' }, '<BS>', function()
     if vim.treesitter.get_parser(nil, nil, { error = false }) then
         require('vim.treesitter._select').select_child(vim.v.count1)
-    else
+    elseif selection_range_supported() then
         vim.lsp.buf.selection_range(-vim.v.count1)
     end
 end, { desc = 'Decrement selection' })
