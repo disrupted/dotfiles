@@ -124,6 +124,3 @@ $env.FZF_ALT_C_OPTS = '--preview="eza --no-quotes -1 --icons --git --git-ignore 
 
 # Carapace completions
 $env.CARAPACE_BRIDGES = "zsh,fish,bash,inshellisense"
-
-# HACK: docker-py not supporting current context https://github.com/docker/docker-py/issues/3146
-$env.DOCKER_HOST = $"unix://($env.HOME)/.colima/default/docker.sock"
