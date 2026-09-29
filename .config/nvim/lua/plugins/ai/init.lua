@@ -488,6 +488,7 @@ return {
                 callback = function(args)
                     require('which-key').add {
                         buffer = args.buf,
+                        remap = true,
                         {
                             '<C-a>',
                             add_quickfix_to_context,
@@ -499,6 +500,18 @@ return {
                         },
                     }
                 end,
+            })
+
+            vim.api.nvim_create_autocmd('User', {
+                pattern = {
+                    'OpencodeEvent:permission.asked',
+                    'OpencodeEvent:question.asked',
+                },
+                callback = function(args)
+                    io.stdout:write '\a'
+                    io.stdout:flush()
+                end,
+                desc = 'Ring terminal bell when agent needs attention',
             })
 
             vim.api.nvim_create_autocmd('User', {
@@ -526,6 +539,7 @@ return {
                     }
                 end,
             })
+
             vim.api.nvim_create_autocmd('User', {
                 pattern = 'OpencodeEvent:permission.replied',
                 callback = function(args)
