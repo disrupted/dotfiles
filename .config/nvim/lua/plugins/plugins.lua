@@ -79,7 +79,7 @@ return {
                         ---@type snacks.picker.Config
                         local source = {}
 
-                        local fff_exists = pcall(require, 'fff-snacks')
+                        local fff_exists = pcall(require, 'fff')
                         if fff_exists then
                             source = require('fff-snacks.find_files').source
                             source.formatters = nil
@@ -536,7 +536,7 @@ return {
                 desc = 'LSP symbols',
             },
             {
-                '<C-g>',
+                '<leader>gl',
                 function()
                     if vim.g.git_repo == require('yadm').config.repo then
                         Snacks.picker.git_status {
@@ -548,6 +548,13 @@ return {
                     end
                 end,
                 desc = 'Git/YADM status',
+            },
+            {
+                '<C-g>',
+                function()
+                    Snacks.picker.git_diff()
+                end,
+                desc = 'Git hunks',
             },
             {
                 '<C-x>',
@@ -1110,9 +1117,10 @@ return {
     },
     {
         'dmtrKovalenko/fff.nvim',
+        tag = 'v0.11.0',
         lazy = false, -- plugin already lazy
         build = function()
-            require('fff.download').download_or_build_binary()
+            require('fff.download').download_binary()
         end,
         opts = {},
     },
