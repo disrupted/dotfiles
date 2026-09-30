@@ -24,7 +24,7 @@ end
 
 ---@param items table[]
 ---@param query string
----@param opts? {smartcase?:boolean,strict_smartcase?:boolean,max_typos?:integer,limit?:integer,with_positions?:boolean,case_sensitive?:boolean}
+---@param opts? {max_typos?:integer,limit?:integer,with_positions?:boolean,casing?:string,matching?:string,unicode?:string}
 ---@param text_fn? fun(item:table):string
 ---@return table[]
 function M.rank_items(items, query, opts, text_fn)

@@ -192,10 +192,7 @@ local function workspace_symbols_finder(
                     return in_scope(item.file, effective_scope, root)
                 end, items)
 
-                items = snacks_fuzzy.rank_items(items, query, {
-                    smartcase = true,
-                    strict_smartcase = true,
-                }, function(item)
+                items = snacks_fuzzy.rank_items(items, query, nil, function(item)
                     return item.name or item.text or ''
                 end)
 

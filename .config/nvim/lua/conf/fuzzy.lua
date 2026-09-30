@@ -146,14 +146,8 @@ end
 ---@param candidates {key:string,text:string}[]
 ---@param query string
 ---@param case_sensitive boolean
----@param strict_smartcase boolean
 ---@return {key:string,score:number}[]
-local function fallback_match(
-    candidates,
-    query,
-    case_sensitive,
-    strict_smartcase
-)
+local function fallback_match(candidates, query, case_sensitive)
     local matches = {}
 
     for index, candidate in ipairs(candidates) do
@@ -180,37 +174,23 @@ local function fallback_match(
         match._index = nil
     end
 
-    if strict_smartcase and has_uppercase(query) then
-        local filtered = {}
-        for _, match in ipairs(matches) do
-            local idx = tonumber(match.key)
-            local text = idx and candidates[idx] and candidates[idx].text or ''
-            if is_subsequence(text, query, true) then
-                filtered[#filtered + 1] = match
-            end
-        end
-        return post_rank(filtered, query, candidates, case_sensitive)
-    end
-
     return post_rank(matches, query, candidates, case_sensitive)
 end
 
 ---@param query string
 ---@param candidates {key:string,text:string,payload?:any}[]
----@param opts? {smartcase?:boolean,strict_smartcase?:boolean,max_typos?:integer,limit?:integer,with_positions?:boolean,case_sensitive?:boolean}
+---@param opts? {max_typos?:integer,limit?:integer,with_positions?:boolean,casing?:string,matching?:string,unicode?:string}
 ---@return {key:string,score:number,positions?:integer[]}[]
 function M.match(query, candidates, opts)
     opts = vim.tbl_deep_extend('force', {
-        smartcase = true,
-        strict_smartcase = true,
+        casing = 'smart',
         with_positions = false,
     }, opts or {})
 
-    local strict_smartcase = opts.strict_smartcase ~= false
-    local case_sensitive = opts.case_sensitive
-    if case_sensitive == nil then
-        case_sensitive = opts.smartcase ~= false and has_uppercase(query)
-    end
+    local casing = opts.casing
+
+    local case_sensitive = casing == 'respect'
+        or (casing == 'smart' and has_uppercase(query))
 
     local mod, err = get_backend()
     if not mod then
@@ -219,8 +199,7 @@ function M.match(query, candidates, opts)
                 err
             )
         )
-        local fallback =
-            fallback_match(candidates, query, case_sensitive, strict_smartcase)
+        local fallback = fallback_match(candidates, query, case_sensitive)
         if opts.limit and opts.limit > 0 and #fallback > opts.limit then
             return vim.list_slice(fallback, 1, opts.limit)
         end
@@ -236,19 +215,16 @@ function M.match(query, candidates, opts)
         max_typos = opts.max_typos,
         limit = opts.limit,
         with_positions = opts.with_positions,
-        case_sensitive = case_sensitive,
+        casing = casing,
+        matching = opts.matching,
+        unicode = opts.unicode,
     })
 
     if not ok then
         warn_once(
             ('frizbee match failed, using fallback matcher (%s)'):format(native)
         )
-        return fallback_match(
-            candidates,
-            query,
-            case_sensitive,
-            strict_smartcase
-        )
+        return fallback_match(candidates, query, case_sensitive)
     end
 
     local matches = {}
@@ -256,17 +232,11 @@ function M.match(query, candidates, opts)
         local index = item.index
         local candidate = candidates[index]
         if candidate then
-            local keep = true
-            if strict_smartcase and has_uppercase(query) then
-                keep = is_subsequence(candidate.text or '', query, true)
-            end
-            if keep then
-                matches[#matches + 1] = {
-                    key = candidate.key,
-                    score = item.score or 0,
-                    positions = item.positions,
-                }
-            end
+            matches[#matches + 1] = {
+                key = candidate.key,
+                score = item.score or 0,
+                positions = item.positions,
+            }
         end
     end
 
