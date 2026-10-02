@@ -59,11 +59,7 @@
     format = ssh
 
 [gpg "ssh"]
-    program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
     allowedSignersFile = ~/.ssh/allowed_signers
-
-[commit]
-    gpgsign = true
 
 [core]
     pager = delta  # or bat
@@ -168,14 +164,8 @@
     # Auto-add `--autosquash` to `git rebase`
     autoSquash = true
 
-[url "git@github.com:"]
-    # Use SSH for GitHub instead of https://
-    # Enable this in networks where https:// has issues.
-    insteadOf = https://github.com/
-
-[credential]
-    # Use macOS Keychain to store HTTP passwords.
-    helper = osxkeychain
+[credential "https://github.com"]
+    helper = fnox
 
 [hub]
     # Use HTTPS rather than SSH protocol in Hub
@@ -238,3 +228,5 @@
 
 [include]
     path = ~/.gitconfig_private
+    # OS-specific
+    path = ~/.gitconfig_os
