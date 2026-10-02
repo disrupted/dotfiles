@@ -90,29 +90,62 @@ const FZF_COLORS_LIGHT = '
 --color=marker:#5f8700,spinner:#d7005f,header:#5f8700
 --color=gutter:#e8e8e8'
 
-# Theme update helper
-def --env update-theme [] {
-  const dark_theme = 1
-  const light_theme = 2
-  let system_theme = (
+# Probe the terminal color scheme once per session. `term query` has no timeout,
+# so a terminal that ignores CSI ?996n would block until a keypress. Appending a
+# DSR CSI 6n guarantees a reply to stop on. Returns "dark", "light" or null.
+def theme-query-safe [] {
+  if not $nu.is-interactive { return null }
+  if ($env.TERM? | default "") == "dumb" { return null }
+
+  let reply = (
     try {
-      term query "\e[?996n" --prefix "\e[?997;" --terminator "n" | decode | into int
+      term query "\e[?996n\e[6n" --prefix "\e[" --terminator "R" | decode
     } catch { null }
   )
+  if $reply == null { return null }
+
+  if ($reply | str contains "?997;1n") { "dark" } else if ($reply | str contains "?997;2n") { "light" } else { null }
+}
+
+# Fast probe for in-session updates; only used once support is known.
+def theme-query-fast [] {
+  let code = (
+    try {
+      term query "\e[?996n" --prefix "\e[?997;" --terminator "n" | decode | str trim
+    } catch { null }
+  )
+  match $code {
+    "1" => "dark"
+    "2" => "light"
+    _ => null
+  }
+}
+
+# Theme update helper
+def --env update-theme [] {
+  let supported = ($env.__THEME_QUERY_SUPPORTED? | default false)
+
+  let system_theme = if ($env.__THEME_PROBED? | default false) {
+    if $supported { theme-query-fast } else { null }
+  } else {
+    let probed = (theme-query-safe)
+    $env.__THEME_PROBED = true
+    $env.__THEME_QUERY_SUPPORTED = ($probed != null)
+    $probed
+  }
 
   if $system_theme == null { return }
-  if $system_theme != $env.THEME? {
-    $env.THEME = if $system_theme == $dark_theme { "dark" } else { "light" }
-    $env.BAT_THEME = if $system_theme == $dark_theme { "OneHalfDark" } else { "OneHalfLight" }
-    $env.DELTA_FEATURES = $env.THEME
-    $env.FZF_DEFAULT_OPTS = $"
+
+  $env.THEME = $system_theme
+  $env.BAT_THEME = if $system_theme == "dark" { "OneHalfDark" } else { "OneHalfLight" }
+  $env.DELTA_FEATURES = $system_theme
+  $env.FZF_DEFAULT_OPTS = $"
 --style=minimal
 --no-separator
 --info=hidden
 --ansi 
-  (if $system_theme == $dark_theme { $FZF_COLORS_DARK } else { $FZF_COLORS_LIGHT })"
-    $env._ZO_FZF_OPTS = $"($env.FZF_DEFAULT_OPTS)\n--height=7"
-  }
+  (if $system_theme == "dark" { $FZF_COLORS_DARK } else { $FZF_COLORS_LIGHT })"
+  $env._ZO_FZF_OPTS = $"($env.FZF_DEFAULT_OPTS)\n--height=7"
 }
 
 # FZF settings
