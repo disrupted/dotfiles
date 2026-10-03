@@ -123,15 +123,15 @@ def theme-query-fast [] {
 
 # Theme update helper
 def --env update-theme [] {
-  let supported = ($env.__THEME_QUERY_SUPPORTED? | default false)
-
-  let system_theme = if ($env.__THEME_PROBED? | default false) {
-    if $supported { theme-query-fast } else { null }
-  } else {
+  let system_theme = if ($env.__THEME_PROBED? | is-empty) {
+    $env.__THEME_PROBED = "1"
     let probed = (theme-query-safe)
-    $env.__THEME_PROBED = true
-    $env.__THEME_QUERY_SUPPORTED = ($probed != null)
+    if $probed != null { $env.__THEME_SUPPORTED = "1" }
     $probed
+  } else if ($env.__THEME_SUPPORTED? | is-not-empty) {
+    theme-query-fast
+  } else {
+    null
   }
 
   if $system_theme == null { return }
