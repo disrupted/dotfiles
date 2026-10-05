@@ -1,18 +1,66 @@
-[flavor]
-light = "kanagawa"
-dark = "kanagawa"
+#:schema https://yazi-rs.github.io/schemas/theme.json
 
-# [filetype]
-# rules = [
-#   { mime = "image/*", fg = "#e6c384" },
-#   { mime = "{audio,video}/*", fg = "#957fb8" },
-#   { mime = "application/{,g}zip", fg = "#e46876" },
-#   { mime = "application/x-{tar,bzip*,7z-compressed,xz,rar}", fg = "#e46876" },
-#   { mime = "application/{pdf,doc,rtf,vnd.*}", fg = "#6a9589" },
-#   { name = "*", is = "orphan", fg = "#e46876" },
-#   { name = "*", is = "exec", fg = "#957fb8" },
-#   { name = "*/", fg = "#7e9cd8" },
-# ]
+# Minimal, ranger-like theme. All colors are Yazi's named ANSI colors, so they
+# follow whatever palette your terminal is using.
+
+[mgr]
+cwd = { bold = true }
+border_symbol = "│"
+border_style = { fg = "gray", dim = true }
+
+# Remove the rounded Powerline "pill" around the current file; keep a
+# ranger-style reverse-video highlight instead.
+[indicator]
+parent = { reversed = true }
+current = { reversed = true }
+preview = { reversed = true }
+padding = { open = " ", close = " " }
+
+# Flat status bar: no Powerline caps, no colored pills.
+[status]
+overall = {}
+sep_left = { open = "", close = "" }
+sep_right = { open = "", close = "" }
+
+[mode]
+normal_main = {}
+normal_alt = {}
+select_main = { fg = "black", bg = "red", bold = true }
+select_alt = { fg = "red" }
+unset_main = { fg = "black", bg = "magenta", bold = true }
+unset_alt = { fg = "magenta" }
+
+# Ranger-style tabs: the active tab gets a yellow background, inactive tabs are
+# plain. Both stay bold.
+[tabs]
+active = { fg = "#000000", bg = "yellow", bold = true }
+inactive = { bold = true }
+sep_inner = { open = "", close = "" }
+sep_outer = { open = "", close = "" }
+
+# The which-key popup (shown after a partial keybinding like `t`). Keep the
+# candidate keys and descriptions plain instead of the default colored ones.
+[which]
+border = { fg = "gray", dim = true }
+cand = { bold = true }
+rest = {}
+desc = {}
+separator = " "
+
+# Directory labels in bold; other rules mirror Yazi's defaults (ANSI colors).
+[filetype]
+rules = [
+	{ mime = "**/image/*", fg = "yellow" },
+	{ mime = "**/{audio,video}/*", fg = "magenta" },
+	{ mime = "**/application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", fg = "red" },
+	{ mime = "**/application/{pdf,doc,rtf}", fg = "cyan" },
+	{ mime = "vfs/{absent,stale}", fg = "gray" },
+	{ url = "*", is = "orphan", bg = "red" },
+	{ url = "*", is = "exec", fg = "green" },
+	{ url = "*", is = "dummy", bg = "red" },
+	{ url = "*/", is = "dummy", bg = "red" },
+	{ url = "*/", fg = "blue", bold = true },
+]
 
 [icon]
 prepend_exts = [

@@ -1,0 +1,5 @@
+# Third-party plugins are restored via `ya pkg install` from package.toml.
+/plugins/full-border.yazi/
+/plugins/mediainfo.yazi/
+/plugins/mime-ext.yazi/
+/plugins/toggle-pane.yazi/

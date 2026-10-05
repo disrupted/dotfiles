@@ -7,12 +7,31 @@ prepend_keymap = [
 
 [mgr]
 prepend_keymap = [
+  # `q` closes the current tab (remembered for restore) and never quits.
+  # Quit Yazi explicitly with `Q`.
+  { on = "q", run = "plugin tab-restore close", desc = "Close current tab" },
+  { on = "Q", run = "quit", desc = "Quit Yazi" },
+
+  # Ranger-style tab restore: `u q` recreates the last closed tab, including
+  # its name and working directory.
+  { on = ["u", "q"], run = "plugin tab-restore restore", desc = "Restore last closed tab" },
+  { on = "<C-c>", run = "plugin tab-restore close", desc = "Close current tab" },
+
+  { on = "R", run = "refresh", desc = "Refresh" },
+
+  # fzf jump (moved off `z`, which is now the toggle prefix group)
+  { on = "<C-g>", run = "plugin fzf", desc = "Jump to a file/directory via fzf" },
+
   # toggle visibility
   { on = ["z", "h"], run = "hidden toggle", desc = "Toggle hidden files" },
-  { on = ["z", "p"], run = "plugin hide-preview", desc = "Toggle previewer" },
+  { on = ["z", "p"], run = "plugin toggle-pane min-preview", desc = "Toggle previewer" },
+
+  # media preview (mediainfo plugin)
+  { on = ["z", "m"], run = "plugin mediainfo -- toggle-metadata", desc = "Toggle media metadata" },
+  { on = ["z", "v"], run = "plugin mediainfo -- toggle-preview", desc = "Toggle media preview image" },
 
   # rename
-  { on = "i", run = "plugin max-preview", desc = "Maximize or restore preview" },
+  { on = "i", run = "plugin toggle-pane max-preview", desc = "Maximize or restore preview" },
   { on = "r", run = "rename --empty=all", desc = "Rename selected file(s)" },
   { on = "I", run = "rename --cursor=start", desc = "Rename selected file(s)" },
   { on = "a", run = "rename --cursor=before_ext", desc = "Rename selected file(s)" },
@@ -22,7 +41,7 @@ prepend_keymap = [
   { on = ["y", "y"], run = "yank", desc = "Yank selected files" },
   { on = ["y", "c"], run = "unyank", desc = "Cancel the yank status" },
   { on = ["y", "p"], run = "copy path", desc = "Copy the file path" },
-  { on = ["y", "d"], run = "copy dirname", desc = "Copy the directory path" },
+  { on = ["y", "d"], run = "copy dirpath", desc = "Copy the directory path" },
   { on = ["y", "f"], run = "copy filename", desc = "Copy the filename" },
   { on = ["y", "n"], run = "copy name_without_ext", desc = "Copy the filename without extension" },
   { on = ["d", "d"], run = "yank --cut", desc = "Cut selected files" },
@@ -34,10 +53,10 @@ prepend_keymap = [
   { on = ["p", "h"], run = "hardlink", desc = "Hardlink yanked files" },
 
   # sort
-  { on = ["o", "M"], run = ["sort modified --reverse=no", "linemode mtime"], desc = "Sort by modified time" },
-  { on = ["o", "m"], run = ["sort modified --reverse", "linemode mtime"], desc = "Sort by modified time (reverse)" },
-  { on = ["o", "C"], run = ["sort created --reverse=no", "linemode ctime"], desc = "Sort by created time" },
-  { on = ["o", "c"], run = ["sort created --reverse", "linemode ctime"], desc = "Sort by created time (reverse)" },
+  { on = ["o", "M"], run = ["sort mtime --reverse=no", "linemode mtime"], desc = "Sort by modified time" },
+  { on = ["o", "m"], run = ["sort mtime --reverse", "linemode mtime"], desc = "Sort by modified time (reverse)" },
+  { on = ["o", "C"], run = ["sort btime --reverse=no", "linemode btime"], desc = "Sort by created time" },
+  { on = ["o", "c"], run = ["sort btime --reverse", "linemode btime"], desc = "Sort by created time (reverse)" },
   { on = ["o", "E"], run = "sort extension --reverse=no", desc = "Sort by extension" },
   { on = ["o", "e"], run = "sort extension --reverse", desc = "Sort by extension (reverse)" },
   { on = ["o", "a"], run = "sort alphabetical --reverse=no", desc = "Sort alphabetically" },
@@ -46,4 +65,9 @@ prepend_keymap = [
   { on = ["o", "N"], run = "sort natural --reverse", desc = "Sort naturally (reverse)" },
   { on = ["o", "s"], run = ["sort size --reverse=no", "linemode size"], desc = "Sort by size" },
   { on = ["o", "S"], run = ["sort size --reverse", "linemode size"], desc = "Sort by size (reverse)" },
+
+  # quick navigation to media folders
+  { on = ["g", "d"], run = "cd /union/downloads", desc = "Go to /union/downloads" },
+  { on = ["g", "t"], run = "cd /union/tvshows", desc = "Go to /union/tvshows" },
+  { on = ["g", "m"], run = "cd /union/movies", desc = "Go to /union/movies" },
 ]

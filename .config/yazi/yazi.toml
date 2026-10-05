@@ -2,6 +2,7 @@
 
 [mgr]
 ratio = [0, 4, 3]
+linemode = "size"
 
 [preview]
 max_width = 4000
