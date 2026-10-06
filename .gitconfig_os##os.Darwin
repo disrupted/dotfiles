@@ -1,3 +1,4 @@
+# vim: ft=gitconfig commentstring=#%s
 # macOS
 [gpg "ssh"]
     program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"

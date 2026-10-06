@@ -164,6 +164,11 @@
     # Auto-add `--autosquash` to `git rebase`
     autoSquash = true
 
+[credential]
+    # Reset credential helpers inherited from system config.
+    # Homebrew sets credential.helper=osxkeychain in /opt/homebrew/etc/gitconfig
+    helper =
+
 [credential "https://github.com"]
     helper = fnox
 

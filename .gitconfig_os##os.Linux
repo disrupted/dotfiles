@@ -1,3 +1,4 @@
+# vim: ft=gitconfig commentstring=#%s
 # Linux
 [commit]
     gpgsign = false
