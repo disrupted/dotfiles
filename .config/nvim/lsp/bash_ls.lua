@@ -1,6 +1,6 @@
 ---@type vim.lsp.Config
 return {
-    cmd = { 'bunx', '--bun', '--no-install', 'bash-language-server', 'start' },
+    cmd = { 'bash-language-server', 'start' },
     filetypes = { 'bash', 'sh' },
     settings = {
         bashIde = {

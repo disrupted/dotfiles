@@ -1,14 +1,6 @@
 ---@type vim.lsp.Config
 return {
-    cmd = {
-        'bunx',
-        '--bun',
-        '--package',
-        '@typescript/native',
-        'tsc',
-        '--lsp',
-        '--stdio',
-    },
+    cmd = { 'tsc', '--lsp', '--stdio' },
     filetypes = {
         'javascript',
         'javascriptreact',

@@ -1,6 +1,30 @@
+--- Resolve the mise-managed `npm:typescript-svelte-plugin` install.
+---@return string|nil
+local function svelte_ts_plugin()
+    local roots = {
+        vim.env.MISE_DATA_DIR,
+        vim.fs.joinpath(vim.env.HOME or '', '.local/share/mise'),
+    }
+    local patterns = {
+        'installs/npm-typescript-svelte-plugin/*/node_modules/typescript-svelte-plugin',
+        'installs/npm-svelte-language-server/*/node_modules/typescript-svelte-plugin',
+    }
+    for _, root in ipairs(roots) do
+        if root and root ~= '' then
+            for _, pattern in ipairs(patterns) do
+                local matches =
+                    vim.fn.glob(vim.fs.joinpath(root, pattern), true, true)
+                if matches[1] then
+                    return matches[1]
+                end
+            end
+        end
+    end
+end
+
 ---@type vim.lsp.Config
-return {
-    cmd = { 'bunx', '--bun', '--no-install', 'svelteserver', '--stdio' },
+local config = {
+    cmd = { 'svelteserver', '--stdio' },
     filetypes = { 'svelte' },
     root_dir = function(bufnr, on_dir)
         local filename = vim.api.nvim_buf_get_name(bufnr)
@@ -64,19 +88,19 @@ return {
     settings = {
         vtsls = {
             tsserver = {
-                globalPlugins = {
-                    {
-                        name = 'typescript-svelte-plugin',
-                        location = vim.fs.normalize(
-                            vim.fn.stdpath 'data'
-                                .. '/mason/packages/'
-                                .. 'svelte-language-server'
-                                .. '/node_modules/typescript-svelte-plugin'
-                        ),
-                        enableForWorkspaceTypeScriptVersions = true,
-                    },
-                },
+                globalPlugins = {},
             },
         },
     },
 }
+
+local plugin = svelte_ts_plugin()
+if plugin then
+    table.insert(config.settings.vtsls.tsserver.globalPlugins, {
+        name = 'typescript-svelte-plugin',
+        location = plugin,
+        enableForWorkspaceTypeScriptVersions = true,
+    })
+end
+
+return config

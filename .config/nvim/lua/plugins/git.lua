@@ -1242,13 +1242,7 @@ return {
                 callback(vim.env.GITHUB_TOKEN)
             end,
             lsp = {
-                cmd = {
-                    'bunx',
-                    '--bun',
-                    '--no-install',
-                    'gh-actions-language-server',
-                    '--stdio',
-                },
+                cmd = { 'actions-languageserver', '--stdio' },
             },
         },
     },

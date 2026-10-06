@@ -465,28 +465,8 @@ return {
         },
     },
     {
-        'jay-babu/mason-nvim-dap.nvim',
-        lazy = true,
-        dependencies = 'mason.nvim',
-        cmd = { 'DapInstall', 'DapUninstall' },
-        opts = {
-            automatic_installation = true,
-            handlers = {},
-            ensure_installed = {},
-        },
-    },
-    {
         'mfussenegger/nvim-dap-python',
         lazy = true,
-        dependencies = {
-            {
-                'mason-nvim-dap.nvim',
-                opts = function(_, opts)
-                    opts.ensure_installed = opts.ensure_installed or {}
-                    table.insert(opts.ensure_installed, 'python')
-                end,
-            },
-        },
         init = function()
             require('conf.dap.adapters').register('python', 'dap-python')
         end,
@@ -498,7 +478,30 @@ return {
         },
         config = function(_, opts)
             local py = require 'dap-python'
-            py.setup(vim.env.MASON .. '/packages/debugpy/venv/bin/python', opts)
+            local function debugpy_python()
+                local roots = {
+                    vim.env.MISE_DATA_DIR,
+                    vim.fs.joinpath(vim.env.HOME or '', '.local/share/mise'),
+                }
+                for _, root in ipairs(roots) do
+                    if root and root ~= '' then
+                        local matches = vim.fn.glob(
+                            vim.fs.joinpath(
+                                root,
+                                'installs/pipx-debugpy/*/debugpy/bin/python'
+                            ),
+                            true,
+                            true
+                        )
+                        if matches[1] then
+                            return matches[1]
+                        end
+                    end
+                end
+                return 'python'
+            end
+
+            py.setup(debugpy_python(), opts)
             py.test_runner = 'pytest'
             local dap = require 'dap'
             local configs = dap.configurations.python or {}

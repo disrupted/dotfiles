@@ -6,12 +6,7 @@ return {
     settings = {
         ['helm-ls'] = {
             yamlls = {
-                path = {
-                    'bunx',
-                    '--bun',
-                    '--no-install',
-                    'yaml-language-server',
-                },
+                path = { 'yaml-language-server' },
             },
         },
     },

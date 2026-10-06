@@ -6,14 +6,12 @@ starship = "latest"
 tmux = "latest"
 jj = "latest"
 
-rust = "nightly"
+rust = "latest"
 python = "latest"
 bun = "latest"
 deno = "latest"
 erlang = "latest"
 elixir = "latest"
-go = "latest"
-zig = "latest"
 
 uv = "latest"
 "pipx:poetry" = "latest"  # for legacy projects
@@ -69,9 +67,8 @@ usage = "latest"
 hk = "latest"
 lefthook = "latest"
 typst = "latest"
-opencode = "latest"
+# opencode = "latest" # v2 available through Homebrew
 rtk = "latest"
-"github:lucasgelfond/zerobrew" = "latest"
 "github:Mapika/portview" = "latest"
 "github:topiary/topiary" = "latest"
 "github:pruner-formatter/pruner" = "v1.0.0-alpha.11"
@@ -79,6 +76,38 @@ rtk = "latest"
 "pipx:visidata" = "latest"
 "github:tontinton/maki" = "latest"
 "aqua:nklmilojevic/sofka" = "latest"
+"cargo:https://github.com/nushell/nufmt" = "latest"
+
+# language servers, formatters, linters
+"github:rhysd/actionlint" = "latest"
+"aqua:expert-lsp/expert" = "latest"
+"aqua:mrjosh/helm-ls" = "latest"
+"aqua:LuaLS/lua-language-server" = "latest"
+"aqua:hashicorp/terraform-ls" = "latest"
+"aqua:Myriad-Dreamin/tinymist" = "latest"
+"github:tombi-toml/tombi" = "latest"
+"aqua:mvdan/sh" = "latest"
+"github:clangd/clangd" = "latest"
+"github:latex-lsp/texlab" = "latest"
+"github:ribru17/ts_query_ls" = "latest"
+"github:errata-ai/vale-ls" = "latest"
+"cargo:emmylua_ls" = "latest"
+"cargo:gitlab-ci-ls" = "latest"
+"cargo:nickel-lang-lsp" = "latest"
+"pipx:debugpy" = "latest"
+"npm:@astrojs/language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
+"npm:bash-language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
+"npm:vscode-langservers-extracted" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
+"npm:@microsoft/compose-language-service" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
+"npm:dockerfile-language-server-nodejs" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
+"npm:@actions/languageserver" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
+"npm:@fsouza/prettierd" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
+"npm:svelte-language-server" = { version = "latest", trust_policy_excludes = ["svelte@4.2.20"], postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
+"npm:@tailwindcss/language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
+"npm:@vtsls/language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
+"npm:yaml-language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
+"npm:@mistweaverco/kulala-fmt" = { version = "latest", allow_low_downloads = true, postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
+"npm:typescript-svelte-plugin" = "latest"  # library plugin, no bin/ -> no runtime to patch
 
 [settings]
 experimental = true
@@ -86,7 +115,6 @@ idiomatic_version_file_enable_tools = [
   "python",
   "rust",
   "elixir",
-  "go",
   "node",
 ]
 
@@ -95,11 +123,7 @@ compile = false
 uv_venv_auto = true
 
 [settings.pipx]
-# use uvx instead of pipx
-uvx = true
-
-[settings.npm]
-package_manager = "bun"
+uvx = true  # use uvx instead of pipx
 
 [tasks."docker:stop-all"]
 description = "Docker stop all containers"

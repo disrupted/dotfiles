@@ -2,86 +2,6 @@
 ---@type LazySpec[]
 return {
     {
-        'williamboman/mason.nvim',
-        cmd = 'Mason',
-        init = function()
-            -- add Mason packages to $PATH; allows lazy-loading
-            vim.env.MASON = vim.fn.stdpath 'data' .. '/mason'
-            vim.env.PATH = vim.env.MASON .. '/bin:' .. vim.env.PATH
-        end,
-        ---@module 'mason.settings'
-        ---@type MasonSettings
-        opts = {
-            ensure_installed = {
-                'actionlint',
-                'astro-language-server',
-                'bash-language-server',
-                'clangd',
-                'css-lsp',
-                'debugpy',
-                'docker-compose-language-service',
-                'dockerfile-language-server',
-                'emmylua_ls',
-                'expert',
-                'gh-actions-language-server',
-                'gitlab-ci-ls',
-                'gopls',
-                'helm-ls',
-                'html-lsp',
-                'json-lsp',
-                'lua-language-server',
-                'nickel-lang-lsp',
-                'prettierd',
-                'shfmt',
-                'stylua',
-                'svelte-language-server',
-                'tailwindcss-language-server',
-                'terraform-ls',
-                'texlab',
-                'tombi',
-                'ts_query_ls',
-                'tinymist',
-                'vale-ls',
-                'vtsls',
-                'yaml-language-server',
-            },
-            registries = {
-                'github:mason-org/mason-registry',
-                -- 'github:mistweaverco/zana-registry',
-                -- 'lua:plugins.lsp.custom',
-            },
-        },
-        config = function(_, opts)
-            require('mason').setup(opts)
-
-            local registry = require 'mason-registry'
-            registry:on('package:install:success', function()
-                vim.defer_fn(function()
-                    -- trigger FileType event to possibly load this newly installed LSP server
-                    require('lazy.core.handler.event').trigger {
-                        event = 'FileType',
-                        buf = vim.api.nvim_get_current_buf(),
-                    }
-                end, 100)
-            end)
-
-            local function ensure_installed()
-                for _, tool in ipairs(opts.ensure_installed) do
-                    local package = registry.get_package(tool)
-                    if not package:is_installed() then
-                        package:install()
-                    end
-                end
-            end
-
-            if registry.refresh then
-                registry.refresh(ensure_installed)
-            else
-                ensure_installed()
-            end
-        end,
-    },
-    {
         'folke/neoconf.nvim',
         cmd = 'Neoconf',
         opts = {},
@@ -131,22 +51,6 @@ return {
         end,
     },
     {
-        'disrupted/pylance.nvim',
-        enabled = false,
-        dependencies = {
-            {
-                'williamboman/mason.nvim',
-                opts = function(_, opts)
-                    opts.ensure_installed = opts.ensure_installed or {}
-                    table.insert(opts.ensure_installed, 'pylance')
-                end,
-            },
-        },
-        ft = 'python',
-        ---@type vim.lsp.Config
-        opts = {},
-    },
-    {
         'disrupted/kpops.nvim',
         dir = require('conf.utils').dir '~/bakdata/kpops.nvim',
         dev = require('conf.utils').dev '~/bakdata/kpops.nvim',
@@ -160,19 +64,6 @@ return {
         'stevearc/conform.nvim',
         event = 'BufWritePre',
         cmd = 'ConformInfo',
-        dependencies = {
-            {
-                'williamboman/mason.nvim',
-                opts = function(_, opts)
-                    opts.ensure_installed = opts.ensure_installed or {}
-                    vim.list_extend(opts.ensure_installed, {
-                        'stylua',
-                        'prettierd',
-                        'shfmt',
-                    })
-                end,
-            },
-        },
         opts = function()
             local dprint = {
                 'dprint',
@@ -389,15 +280,6 @@ return {
     {
         'mfussenegger/nvim-lint',
         ft = { 'yaml.github' },
-        dependencies = {
-            {
-                'williamboman/mason.nvim',
-                opts = function(_, opts)
-                    opts.ensure_installed = opts.ensure_installed or {}
-                    vim.list_extend(opts.ensure_installed, { 'actionlint' })
-                end,
-            },
-        },
         opts = {
             events = { 'BufWritePost', 'BufReadPost', 'InsertLeave' },
             linters_by_ft = {
