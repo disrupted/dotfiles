@@ -999,7 +999,7 @@ return {
             ---@type table<string, fun(win:Edgy.Window)|false>
             keys = {
                 -- toggle width
-                ['<C-w>z'] = function(win)
+                ['<S-BS>'] = function(win)
                     if vim.w[win.win]['edgy_width'] == nil then
                         vim.w[win.win]['edgy_width'] = 120
                     else
@@ -1007,6 +1007,16 @@ return {
                     end
                     require('edgy.layout').update()
                 end,
+                -- toggle height
+                ['|'] = function(win)
+                    if vim.w[win.win]['edgy_height'] == nil then
+                        vim.w[win.win]['edgy_height'] = 80
+                    else
+                        vim.w[win.win]['edgy_height'] = nil
+                    end
+                    require('edgy.layout').update()
+                end,
+                -- TODO: consider using window-scoped keymaps, e.g. '<C-w>z'
             },
             left = {
                 {

@@ -753,27 +753,6 @@ return {
                             icon = '󱇼',
                         },
                     }
-
-                    require('which-key').add {
-                        {
-                            '<S-BS>',
-                            function()
-                                local win = (
-                                    require('opencode.state').windows or {}
-                                ).output_win
-                                if win and vim.api.nvim_win_is_valid(win) then
-                                    if vim.w[win]['edgy_width'] == nil then
-                                        vim.w[win]['edgy_width'] = 110
-                                    else
-                                        vim.w[win]['edgy_width'] = nil
-                                    end
-                                    require('edgy.layout').update()
-                                end
-                            end,
-                            desc = 'Zoom window',
-                            icon = icons.misc.window,
-                        },
-                    }
                 end,
             })
         end,
