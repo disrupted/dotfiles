@@ -1,0 +1,8 @@
+(allow file-read* file-write*
+    ;; aube
+    (home-subpath "/.local/share/aube")
+    (home-subpath "/.cache/aube")
+
+    ; hk
+    (home-subpath "/Library/Caches/hk")
+)

@@ -1,5 +1,7 @@
 local icons = require 'conf.icons'
 
+local server_spawn_attempted = false
+
 ---@module 'lazy.types'
 ---@type LazySpec[]
 return {
@@ -100,6 +102,12 @@ return {
                     return vim.fn.sha256(assert(vim.uv.cwd())):sub(1, 32)
                 end,
                 spawn_command = function(port, url, env)
+                    -- Spawn at most once per session
+                    if server_spawn_attempted then
+                        error 'opencode server spawn already attempted this session; not retrying'
+                    end
+                    server_spawn_attempted = true
+
                     local job = vim.fn.jobstart({
                         vim.fs.normalize '~/.config/opencode/safehouse_opencode.sh',
                         'serve',
@@ -108,9 +116,11 @@ return {
                     }, {
                         env = env,
                     })
-                    if job > 0 then
-                        return vim.fn.jobpid(job)
+                    if job <= 0 then
+                        Snacks.notify.error 'opencode server failed to start'
+                        error 'failed to start opencode server'
                     end
+                    return vim.fn.jobpid(job)
                 end,
             },
             preferred_picker = 'snacks',

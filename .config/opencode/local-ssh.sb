@@ -1,4 +1,7 @@
-;; vim: ft=scheme
 (allow file-read*
     (home-literal "/.ssh/github.pub")
+)
+
+(allow file-read* file-write*
+    (home-literal "/.1password/agent.sock")
 )

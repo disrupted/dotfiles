@@ -4,6 +4,7 @@ vim.filetype.add {
         jinja2 = 'htmldjango',
         pkl = 'pkl',
         nuon = 'nu',
+        sb = 'scheme',
     },
     filename = {
         ['poetry.lock'] = 'toml',

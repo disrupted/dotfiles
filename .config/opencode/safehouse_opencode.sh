@@ -12,9 +12,11 @@ launch_dir="$(pwd -P)"
 extra_grants=()
 
 case "$launch_dir" in
-    "$home_dir/.config" | "$home_dir/.config/"*)
+    "$home_dir/.config" | "$home_dir/.config/"* | "$home_dir/dev/" | "$home_dir/dev/"*)
         extra_grants+=(--add-dirs="$home_dir/.config")
+        extra_grants+=(--add-dirs="$home_dir/dev")
         extra_grants+=(--add-dirs-ro="$home_dir/.local")
+        extra_grants+=(--add-dirs="$home_dir/.local/share/nvim")
         ;;
 esac
 
@@ -25,6 +27,7 @@ for _client in spectrumk bayer bakdata; do
         "$home_dir/$_client" | "$home_dir/$_client/"*)
             extra_grants+=(--add-dirs="$home_dir/$_client")
             extra_grants+=(--add-dirs-ro="$home_dir/bakdata")
+            extra_grants+=(--add-dirs-ro="$home_dir/Downloads")
             break
             ;;
     esac
@@ -68,6 +71,7 @@ safehouse_args=(
     --append-profile="$home_dir/.config/opencode/opencode.sb"
     --append-profile="$home_dir/.config/opencode/local-opencode.sb"
     --append-profile="$home_dir/.config/opencode/local-ssh.sb"
+    --append-profile="$home_dir/.config/opencode/local-dev.sb"
 )
 if [ "${#extra_grants[@]}" -gt 0 ]; then
     safehouse_args+=("${extra_grants[@]}")
