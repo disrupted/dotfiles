@@ -296,7 +296,7 @@ return {
                         edit = '',
                         write = '',
                         plan = '󰝖',
-                        search = '',
+                        search = icons.misc.search,
                         web = '󰖟',
                         list = '󱎸',
                         tool = '',

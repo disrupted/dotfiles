@@ -667,7 +667,7 @@ return {
                     '<Leader>gos',
                     '<cmd>Octo search assignee:disrupted<cr>',
                     desc = 'Search assigned issues & PRs',
-                    icon = '',
+                    icon = icons.misc.search,
                 },
             }
 
@@ -845,9 +845,21 @@ return {
                 wk.add {
                     buffer = buf,
                     { 'q', vim.cmd.tabclose, desc = 'Close Octo' },
-                    { '<LocalLeader>a', group = 'Assignee', icon = '' },
-                    { '<LocalLeader>aa', desc = 'Add', icon = '' },
-                    { '<LocalLeader>ad', desc = 'Remove', icon = '' },
+                    {
+                        '<LocalLeader>a',
+                        group = 'Assignee',
+                        icon = icons.misc.user,
+                    },
+                    {
+                        '<LocalLeader>aa',
+                        desc = 'Add',
+                        icon = icons.misc.user_plus,
+                    },
+                    {
+                        '<LocalLeader>ad',
+                        desc = 'Remove',
+                        icon = icons.misc.user_minus,
+                    },
                     {
                         '<LocalLeader>c',
                         group = 'Comment/Thread', -- TODO: makes sense to split?

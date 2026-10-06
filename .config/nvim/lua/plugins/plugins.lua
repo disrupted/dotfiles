@@ -1,4 +1,6 @@
 local icons = require 'conf.icons'
+local gh = require 'conf.snacks.gh'
+
 ---@module 'lazy.types'
 ---@type LazySpec[]
 return {
@@ -80,7 +82,8 @@ return {
                         local source = {}
 
                         local fff_exists = pcall(require, 'fff')
-                        if fff_exists then
+                        local fff_snacks_exists = pcall(require, 'fff-snacks')
+                        if fff_exists and fff_snacks_exists then
                             source = require('fff-snacks.find_files').source
                             source.formatters = nil
                         else
@@ -695,7 +698,7 @@ return {
             picker = {
                 ui_select = true,
                 sources = {
-                    gh_issue = {
+                    gh_issue = vim.tbl_deep_extend('force', gh.issue, {
                         layout = {
                             layout = {
                                 backdrop = false,
@@ -725,28 +728,9 @@ return {
                                 },
                             },
                         },
-                        actions = {
-                            toggle_assignee = function(picker)
-                                picker.opts.assignee = picker.opts.assignee
-                                            ~= '@me'
-                                        and '@me'
-                                    or nil
-                                local base = '  Issues'
-                                picker.title = picker.opts.assignee
-                                        and base .. ' · @me'
-                                    or base
-                                picker:update_titles()
-                                picker:find()
-                            end,
-                        },
                         win = {
                             input = {
                                 keys = {
-                                    ['<A-a>'] = {
-                                        'toggle_assignee',
-                                        mode = { 'n', 'i' },
-                                        desc = 'Toggle assigned to me',
-                                    },
                                     ['<C-o>'] = {
                                         'gh_develop',
                                         mode = { 'n', 'i' },
@@ -755,16 +739,12 @@ return {
                             },
                             list = {
                                 keys = {
-                                    ['<A-a>'] = {
-                                        'toggle_assignee',
-                                        desc = 'Toggle assigned to me',
-                                    },
                                     ['<C-o>'] = { 'gh_develop' },
                                 },
                             },
                         },
-                    },
-                    gh_pr = {
+                    }),
+                    gh_pr = vim.tbl_deep_extend('force', gh.pr, {
                         layout = {
                             layout = {
                                 backdrop = false,
@@ -809,7 +789,7 @@ return {
                                 },
                             },
                         },
-                    },
+                    }),
                     explorer = {
                         -- layout = {
                         --     fullscreen = true,
@@ -1113,25 +1093,37 @@ return {
                     }, ctx)
                 end,
             }
+
+            -- Snacks hardcodes a list of commit types (chore, bot, build, ci,
+            -- style, test) whose subject is rendered with `SnacksPickerDimmed`.
+            -- Neutralize it so no commit type is dimmed. Covers gh pickers,
+            -- `git log`, diff headers and the gh preview.
+            local format = require 'snacks.picker.format'
+            local commit_message = format.commit_message
+            ---@param item snacks.picker.Item
+            ---@param picker snacks.Picker
+            format.commit_message = function(item, picker)
+                local ret = commit_message(item, picker)
+                for _, span in ipairs(ret) do
+                    if span[2] == 'SnacksPickerDimmed' then
+                        span[2] = 'SnacksPickerGitMsg'
+                    end
+                end
+                return ret
+            end
         end,
     },
     {
-        'dmtrKovalenko/fff.nvim',
-        tag = 'v0.11.0',
+        'dmtrKovalenko/fff',
+        -- tag = 'v0.11.0',
         lazy = false, -- plugin already lazy
-        build = function()
-            require('fff.download').download_binary()
-        end,
+        -- build = function()
+        --     require('fff.download').download_binary()
+        -- end,
+        build = 'cargo build --release --lib',
         opts = {},
     },
-    {
-        'madmaxieee/fff-snacks.nvim',
-        lazy = true,
-        dependencies = {
-            'dmtrKovalenko/fff.nvim',
-            'folke/snacks.nvim',
-        },
-    },
+    { 'madmaxieee/fff-snacks.nvim', lazy = true },
     {
         'tpope/vim-repeat',
         event = 'VeryLazy',

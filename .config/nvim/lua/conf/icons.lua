@@ -127,6 +127,9 @@ return {
         -- right = '',
     },
     misc = {
+        user = '',
+        user_plus = '',
+        user_minus = '',
         quickfix = '󱡠',
         bug = '',
         ellipsis = '…',
