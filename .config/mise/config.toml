@@ -94,6 +94,7 @@ rtk = "latest"
 "cargo:emmylua_ls" = "latest"
 "cargo:gitlab-ci-ls" = "latest"
 "cargo:nickel-lang-lsp" = "latest"
+"cargo:vimdoc-language-server" = "latest"
 "pipx:debugpy" = "latest"
 "npm:@astrojs/language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:bash-language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }

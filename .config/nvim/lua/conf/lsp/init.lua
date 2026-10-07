@@ -323,6 +323,7 @@ vim.lsp.enable {
     'tsc',
     'ts_query_ls',
     'ty',
+    'vimdoc_ls',
     -- 'vts_ls',
     'yaml_ls',
     -- 'zuban',
