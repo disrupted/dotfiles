@@ -222,6 +222,29 @@ M.get_tab_for_file = function(filepath)
     return is_test_file(filepath) and 'tests' or 'code'
 end
 
+--- Check whether a buffer is backed by a real file rather than a virtual
+--- or URI buffer (e.g. terminals, octo://).  This must
+--- not rely on `buftype` alone: plugins like Octo only set `buftype=acwrite`
+--- in their own BufEnter handler, which runs after this module's handler
+--- because these autocmds are registered earlier.
+---@param bufnr integer
+---@return boolean
+local function is_real_file(bufnr)
+    if vim.bo[bufnr].buftype ~= '' then
+        return false
+    end
+    local name = vim.api.nvim_buf_get_name(bufnr)
+    if name == '' then
+        return false
+    end
+    -- URI-style buffers are not files; routing them as 'code'/'tests' would
+    -- drag them into the wrong tab.
+    if name:match '^%a[%w+.-]*://' then
+        return false
+    end
+    return true
+end
+
 local moving = false
 
 --- Track which tab each buffer has been assigned to (by name).
@@ -440,7 +463,7 @@ M.setup = function()
                 return
             end
             -- skip non-file buffers
-            if vim.bo[args.buf].buftype ~= '' then
+            if not is_real_file(args.buf) then
                 return
             end
 
@@ -513,7 +536,7 @@ M.setup = function()
         group = tabmanager_augroup,
         callback = function(args)
             -- skip non-file buffers
-            if vim.bo[args.buf].buftype ~= '' then
+            if not is_real_file(args.buf) then
                 return
             end
 

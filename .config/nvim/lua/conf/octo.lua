@@ -212,7 +212,7 @@ M.pr.open = function(opts)
     })
     if opts.octo then
         local number = opts.number or require('gh').pr.json({ 'number' }).number
-        Snacks.notify('Opening PR' .. number .. '...', { title = 'Octo' })
+        Snacks.notify('Opening PR #' .. number .. '...', { title = 'Octo' })
         require('conf.workspace').create_tab('PR ' .. number)
         vim.cmd 'Octo pr'
     end

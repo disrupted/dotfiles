@@ -15,7 +15,7 @@ require('lazy').setup {
         { import = 'plugins' },
     },
     install = { colorscheme = { 'one' } },
-    checker = { enabled = true },
+    checker = { enabled = false },
     diff = {
         cmd = 'codediff.nvim',
     },

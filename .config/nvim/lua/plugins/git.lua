@@ -647,8 +647,8 @@ return {
                             else
                                 pr.open {
                                     number = existing_pr.number,
-                                    octo = false,
-                                    browser = true,
+                                    octo = true,
+                                    browser = false,
                                 }
                             end
                         end)
