@@ -1094,6 +1094,23 @@ return {
                 end,
             }
 
+            -- remap submit for consistency and to avoid conflict with blink.cmp
+            local scratch = require 'snacks.scratch'
+            local scratch_open = scratch.open
+            ---@param scratch_opts snacks.scratch.Config
+            scratch.open = function(scratch_opts, ...)
+                local win = scratch_opts.win
+                if win and win.keys and win.keys.submit then
+                    win.keys.submit[1] = '<S-CR>'
+                    for i, key in ipairs(win.footer_keys or {}) do
+                        if key == '<c-s>' then
+                            win.footer_keys[i] = '<S-CR>'
+                        end
+                    end
+                end
+                return scratch_open(scratch_opts, ...)
+            end
+
             -- Snacks hardcodes a list of commit types (chore, bot, build, ci,
             -- style, test) whose subject is rendered with `SnacksPickerDimmed`.
             -- Neutralize it so no commit type is dimmed. Covers gh pickers,
