@@ -63,6 +63,9 @@ yazi = "latest"
 "aqua:nextest-rs/nextest/cargo-nextest" = "latest"
 dprint = "latest"
 pkl = "latest"
+# HACK: prebuilt nickel releases are Nix-linked (broken libiconv), so build from source
+# https://github.com/nickel-lang/nickel/issues/2608
+"cargo:nickel-lang-cli" = "latest"
 usage = "latest"
 hk = "latest"
 lefthook = "latest"
