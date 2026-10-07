@@ -160,7 +160,7 @@ return {
                         desc = 'Select session',
                         mode = 'n',
                     },
-                    ['<cr>'] = { 'submit_input_prompt', mode = 'n' },
+                    ['<cr>'] = false, -- use <S-CR> instead
                     ['<esc>'] = false,
                     ['<C-c>'] = { 'cancel', mode = { 'n', 'i' } },
                     ['q'] = { 'toggle_pane' }, -- Toggle between input and output panes
