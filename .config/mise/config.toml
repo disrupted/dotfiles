@@ -67,8 +67,8 @@ usage = "latest"
 hk = "latest"
 lefthook = "latest"
 typst = "latest"
-# opencode = "latest" # v2 available through Homebrew
-rtk = "latest"
+# force postinstall using bun
+"npm:@opencode/cli" = { version = "latest", postinstall = { run = "bun \"$MISE_TOOL_INSTALL_PATH/node_modules/@opencode/cli/postinstall.mjs\"", when = "always" } }
 "github:Mapika/portview" = "latest"
 "github:topiary/topiary" = "latest"
 "github:pruner-formatter/pruner" = "v1.0.0-alpha.11"
