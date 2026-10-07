@@ -95,6 +95,9 @@ typst = "latest"
 "cargo:gitlab-ci-ls" = "latest"
 "cargo:nickel-lang-lsp" = "latest"
 "cargo:vimdoc-language-server" = "latest"
+# Native pkl-lsp binary, temporarily pulled from a GitHub Actions CI artifact (expires 2026-11-02)
+# TODO: switch to `github:apple/pkl-lsp` once a release ships the native executable
+"http:pkl-lsp" = { version = "0.8.0-native", url = "https://api.github.com/repos/apple/pkl-lsp/actions/artifacts/8879496175/zip", format = "zip", strip_components = 1, bin_path = "executable", rename_exe = "pkl-lsp" }
 "pipx:debugpy" = "latest"
 "npm:@astrojs/language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:bash-language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
