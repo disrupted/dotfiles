@@ -35,7 +35,6 @@ copy-on-select                 = true
 macos-auto-secure-input        = true
 macos-secure-input-indication  = true
 quit-after-last-window-closed  = false
-command                        = direct:/opt/homebrew/bin/nu --login
 shell-integration-features     = no-cursor,sudo,title
 
 # Key bindings

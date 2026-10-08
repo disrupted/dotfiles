@@ -14,7 +14,7 @@ erlang = "latest"
 elixir = "latest"
 
 uv = "latest"
-"pipx:poetry" = "latest"  # for legacy projects
+"pypi:poetry" = "latest"  # for legacy projects
 
 fnox = "latest"
 age = "latest"
@@ -25,12 +25,10 @@ dust = "latest"
 duf = "latest"
 eza = "latest"
 fd = "latest"
-glow = "latest"
 helm = "latest"
 telepresence = "latest"
 hyperfine = "latest"
 jq = "latest"
-just = "latest"
 kubectl = "latest"
 k9s = "latest"
 kubeconform = "latest"
@@ -70,13 +68,28 @@ usage = "latest"
 hk = "latest"
 lefthook = "latest"
 typst = "latest"
+fzf = "latest"
+"conda:curl" = "latest"
+"aqua:zaghaghi/openapi-tui" = "latest"
+"github:ouch-org/ouch" = "latest"
+"aqua:ms-jpq/sad" = "latest"
+skim = "latest"
+"cargo:sleek" = "latest"
+"cargo:somo" = "latest"
+"aqua:TheLocehiliosan/yadm" = "latest"
+lima = "latest"
+colima = { version = "latest", depends = ["lima"] }
+docker-cli = "latest"
+docker-compose = { version = "latest", depends = ["docker-cli"] }
+"aqua:docker/buildx" = { version = "latest", depends = ["docker-cli"] }
+"github:eugene1g/agent-safehouse" = { version = "latest", asset_pattern = "safehouse.sh", bin = "safehouse" }
 # force postinstall using bun
 "npm:@opencode/cli" = { version = "latest", postinstall = { run = "bun \"$MISE_TOOL_INSTALL_PATH/node_modules/@opencode/cli/postinstall.mjs\"", when = "always" } }
 "github:Mapika/portview" = "latest"
 "github:topiary/topiary" = "latest"
 "github:pruner-formatter/pruner" = "v1.0.0-alpha.11"
-"pipx:pymobiledevice3" = "latest"
-"pipx:visidata" = "latest"
+"pypi:pymobiledevice3" = "latest"
+"pypi:visidata" = "latest"
 "github:tontinton/maki" = "latest"
 "aqua:nklmilojevic/sofka" = "latest"
 "cargo:https://github.com/nushell/nufmt" = "latest"
@@ -101,7 +114,7 @@ typst = "latest"
 # Native pkl-lsp binary, temporarily pulled from a GitHub Actions CI artifact (expires 2026-11-02)
 # TODO: switch to `github:apple/pkl-lsp` once a release ships the native executable
 "http:pkl-lsp" = { version = "0.8.0-native", url = "https://api.github.com/repos/apple/pkl-lsp/actions/artifacts/8879496175/zip", format = "zip", strip_components = 1, bin_path = "executable", rename_exe = "pkl-lsp" }
-"pipx:debugpy" = "latest"
+"pypi:debugpy" = "latest"
 "npm:@astrojs/language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:bash-language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:vscode-langservers-extracted" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
@@ -116,7 +129,20 @@ typst = "latest"
 "npm:@mistweaverco/kulala-fmt" = { version = "latest", allow_low_downloads = true, postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:typescript-svelte-plugin" = "latest"  # library plugin, no bin/ -> no runtime to patch
 
+# Tinycast: installed straight from the GitHub release zip via the `http`
+# backend + a postinstall hook (no Homebrew cask, no Ruby). The hook copies
+# Tinycast.app into /Applications and strips quarantine.
+[tools."http:tinycast"]
+version = "latest"
+url = "https://github.com/abue-ammar/tinycast/releases/download/v{{ version }}/Tinycast-Universal-{{ version }}.zip"
+format = "zip"
+strip_components = 0
+version_list_url = "https://api.github.com/repos/abue-ammar/tinycast/releases/latest"
+version_json_path = ".tag_name"
+postinstall = { run = "$HOME/.config/mise/scripts/install-tinycast.sh", when = "always" }
+
 [settings]
+auto_update = true
 experimental = true
 idiomatic_version_file_enable_tools = [
   "python",
@@ -128,9 +154,6 @@ idiomatic_version_file_enable_tools = [
 [settings.python]
 compile = false
 uv_venv_auto = true
-
-[settings.pipx]
-uvx = true  # use uvx instead of pipx
 
 [tasks."docker:stop-all"]
 description = "Docker stop all containers"
@@ -152,3 +175,49 @@ docker image prune -a -f
 docker builder prune -a -f
 docker buildx prune -a -f
 """
+
+[bootstrap.packages]
+# nushell stays on the brew backend (not native)
+# nushell is the login shell and needs a stable real binary at /opt/homebrew/bin/nu.
+# a versioned path from the native backend breaks on upgrade.
+# mise shims reject the `-nu` argv0 that login(1) uses.
+"brew:nushell" = "latest"
+"brew:wget" = "latest"
+"brew:pv" = "latest"
+"brew:gnupg" = "latest"
+"brew:bzip2" = "latest"
+"brew:zlib" = "latest"
+"brew:llvm" = "latest"
+"brew:cmake" = "latest"
+"brew:automake" = "latest"
+"brew:pkgconf" = "latest"
+"brew:htop" = "latest"
+"brew:prettyping" = "latest"
+"brew:macos-trash" = "latest"
+"brew:duti" = "latest"
+
+"brew-cask:ghostty" = "latest"
+"brew-cask:sf-symbols" = "latest"
+"brew-cask:1password" = "latest"
+# "brew-cask:affinity" = "latest"
+"brew-cask:arc" = "latest"
+"brew-cask:betterdisplay" = "latest"
+"brew-cask:coconutbattery" = "latest"
+"brew-cask:datagrip" = "latest"
+"brew-cask:deskpad" = "latest"
+"brew-cask:font-meslo-lg-nerd-font" = "latest"
+"brew-cask:home-assistant" = "latest"
+"brew-cask:iina" = "latest"
+# "brew-cask:keka" = "latest"
+"brew-cask:mimestream" = "latest"
+"brew-cask:otty" = "latest"
+"brew-cask:pearcleaner" = "latest"
+# "brew-cask:pictogram" = "latest"
+"brew-cask:plexamp" = "latest"
+"brew-cask:proxyman" = "latest"
+"brew-cask:rapidapi" = "latest"
+"brew-cask:slack" = "latest"
+"brew-cask:thingsmacsandboxhelper" = "latest"
+"brew-cask:timemachineeditor" = "latest"
+"brew-cask:yaak" = "latest"
+# "brew-cask:zen" = "latest"

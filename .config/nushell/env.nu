@@ -9,22 +9,37 @@ def --env prepend-path [paths: list<string>] {
   }
 }
 
-# Homebrew setup
-def --env setup-homebrew [hb: string] {
-  $env.HOMEBREW_HOME = $hb
-  $env.HOMEBREW_CASK_OPTS = "--no-quarantine"
+# brew-prefix setup
+# mise's brew backend pours formulae into /opt/homebrew, so this configures the
+# prefix that remains after Homebrew itself is uninstalled.
+def --env setup-brew-prefix [hb: string] {
   prepend-path [
     ($hb | path join "bin")
     ($hb | path join "sbin")
     ($hb | path join "opt" "llvm" "bin")
   ]
 
-  $env.LDFLAGS = $" -L($hb)/opt/zlib/lib -L($hb)/opt/bzip2/lib -L($hb)/opt/llvm/lib -Wl,-rpath,($hb)/opt/llvm/lib -L($hb)/opt/freetds/lib -L($hb)/opt/openssl@3/lib"
-  $env.CFLAGS = $" -I($hb)/opt/freetds/include"
-  $env.CPPFLAGS = $" -I($hb)/opt/zlib/include -I($hb)/opt/bzip2/include -I($hb)/opt/llvm/include -I($hb)/opt/openssl@3/include"
+  $env.LDFLAGS = $" -L($hb)/opt/zlib/lib -L($hb)/opt/bzip2/lib -L($hb)/opt/llvm/lib -Wl,-rpath,($hb)/opt/llvm/lib -L($hb)/opt/openssl@4/lib"
+  $env.CFLAGS = $" -I($hb)/opt/openssl@4/include"
+  $env.CPPFLAGS = $" -I($hb)/opt/zlib/include -I($hb)/opt/bzip2/include -I($hb)/opt/llvm/include -I($hb)/opt/openssl@4/include"
   $env.PKG_CONFIG_PATH = ($env.PKG_CONFIG_PATH? | default "" | str trim | $"($in) ($hb)/opt/zlib/lib/pkgconfig" | str trim)
-  $env.DYLD_LIBRARY_PATH = ([$env.DYLD_LIBRARY_PATH? "/opt/homebrew/lib"] | where {|it| ($it | default "") != "" } | str join ":")
 }
+
+# Prefer a known prefix instead of shelling out to a `brew` binary.
+let brew_prefix = match $nu.os-info.name {
+  "macos" => "/opt/homebrew"
+  "linux" => "/home/linuxbrew/.linuxbrew"
+  _ => null
+}
+
+# The prefix (not a `brew` executable) is what matters: mise pours packages into
+# /opt/homebrew, so configure it whenever the prefix exists.
+if ($brew_prefix != null and (($brew_prefix | path join "opt") | path exists)) {
+  setup-brew-prefix $brew_prefix
+}
+
+# Fallback paths
+prepend-path [/usr/local/bin]
 
 let user_bin_paths = [
   ($env.HOME | path join ".local" "bin")
@@ -34,22 +49,6 @@ let user_bin_paths = [
   ($env.HOME | path join ".luarocks" "bin")
 ]
 prepend-path $user_bin_paths
-
-# Prefer known Homebrew prefixes to avoid startup subprocess calls.
-let homebrew_prefix = match $nu.os-info.name {
-  "macos" => "/opt/homebrew"
-  "linux" => "/home/linuxbrew/.linuxbrew"
-  _ => null
-}
-
-if ($homebrew_prefix != null and (($homebrew_prefix | path join "bin" "brew") | path exists)) {
-  setup-homebrew $homebrew_prefix
-} else if (which brew | is-not-empty) {
-  setup-homebrew (brew --prefix | str trim)
-}
-
-# Fallback paths
-prepend-path [/usr/local/bin]
 
 # Core environment
 $env.SHELL = $nu.current-exe

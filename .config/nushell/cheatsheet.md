@@ -141,7 +141,7 @@ mkdir -p ~/.config/nushell/vendor
 echo "source ~/.config/nushell/env.nu" > ~/.config/nushell/login.nu
 
 # Regenerate mise integration (machine-specific)
-/opt/homebrew/bin/mise activate nu > ~/.config/nushell/vendor/mise.nu
+~/.local/bin/mise activate nu > ~/.config/nushell/vendor/mise.nu
 
 # Generate carapace completions
 mkdir -p "$(nu -c '$nu.cache-dir')"
