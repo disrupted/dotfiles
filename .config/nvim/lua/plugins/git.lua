@@ -349,19 +349,6 @@ return {
                 view = {
                     prefix = false,
                 },
-                highlights = {
-                    warn_max_lines = false,
-                    overrides = {
-                        DiffsAddRailNr = { link = 'LineNr' },
-                        DiffsDeleteRailNr = { link = 'LineNr' },
-                        DiffsRailNr = { link = 'LineNr' },
-                        -- make hunk header less prominent
-                        ['@attribute.diff'] = { link = 'Comment' },
-                        ['@function.diff'] = { link = 'Comment' },
-                        ['@keyword.diff'] = { link = 'Comment' },
-                        ['@constant.diff'] = { link = 'Comment' },
-                    },
-                },
                 integrations = {
                     neogit = true,
                 },
@@ -377,12 +364,15 @@ return {
                     },
                 },
                 highlights = {
-                    background = true,
-                    -- gutter = false,
-                    blend_alpha = 0.30,
+                    warn_max_lines = false,
+                    blend_alpha = 0.6,
                     intra = {
                         enabled = true,
                         algorithm = 'vscode',
+                    },
+                    overrides = {
+                        DiffsAddText = { link = 'OneDiffAddText' },
+                        DiffsDeleteText = { link = 'OneDiffDeleteText' },
                     },
                 },
             }
@@ -522,9 +512,10 @@ return {
         config = function()
             require('codediff').setup {
                 highlights = {
-                    line_insert = 'DiffAdd',
-                    line_delete = 'DiffDelete',
-                    char_brightness = nil, -- Auto-detect based on background
+                    line_insert = 'OneDiffAddLine',
+                    line_delete = 'OneDiffDeleteLine',
+                    char_insert = 'OneDiffAddText',
+                    char_delete = 'OneDiffDeleteText',
                 },
                 diff = {
                     disable_inlay_hints = true,
@@ -838,6 +829,42 @@ return {
         config = function(_, opts)
             require('octo').setup(opts)
             vim.treesitter.language.register('markdown', 'octo')
+
+            local constants = require 'octo.constants'
+            local function apply_octo_diff_bg()
+                local add = vim.api.nvim_get_hl(
+                    0,
+                    { name = 'OneDiffAddLine', link = false }
+                ).bg
+                local delete = vim.api.nvim_get_hl(
+                    0,
+                    { name = 'OneDiffDeleteLine', link = false }
+                ).bg
+                if not add then
+                    add = vim.api.nvim_get_hl(
+                        0,
+                        { name = 'DiffAdd', link = false }
+                    ).bg
+                end
+                if not delete then
+                    delete = vim.api.nvim_get_hl(
+                        0,
+                        { name = 'DiffDelete', link = false }
+                    ).bg
+                end
+                for _, ns in ipairs {
+                    constants.OCTO_REVIEW_LEFT_HIGHLIGHT_NS,
+                    constants.OCTO_REVIEW_RIGHT_HIGHLIGHT_NS,
+                } do
+                    vim.api.nvim_set_hl(ns, 'DiffAdd', { bg = add })
+                    vim.api.nvim_set_hl(ns, 'DiffDelete', { bg = delete })
+                end
+            end
+            apply_octo_diff_bg()
+            vim.api.nvim_create_autocmd(
+                'ColorScheme',
+                { callback = apply_octo_diff_bg }
+            )
 
             local wk = require 'which-key'
             -- shared keymaps for pull_request & issue
