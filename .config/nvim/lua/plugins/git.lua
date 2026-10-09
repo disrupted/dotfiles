@@ -747,6 +747,12 @@ return {
                     reopen_issue = { desc = 'Reopen' },
                 },
                 pull_request = {
+                    review = {
+                        lhs = '<LocalLeader>vr',
+                        desc = 'Review',
+                    },
+                    review_start = { lhs = '' },
+                    review_resume = { lhs = '' },
                     resolve_thread = {
                         lhs = '<LocalLeader>cr',
                         desc = 'Resolve thread',
@@ -829,42 +835,6 @@ return {
         config = function(_, opts)
             require('octo').setup(opts)
             vim.treesitter.language.register('markdown', 'octo')
-
-            local constants = require 'octo.constants'
-            local function apply_octo_diff_bg()
-                local add = vim.api.nvim_get_hl(
-                    0,
-                    { name = 'OneDiffAddLine', link = false }
-                ).bg
-                local delete = vim.api.nvim_get_hl(
-                    0,
-                    { name = 'OneDiffDeleteLine', link = false }
-                ).bg
-                if not add then
-                    add = vim.api.nvim_get_hl(
-                        0,
-                        { name = 'DiffAdd', link = false }
-                    ).bg
-                end
-                if not delete then
-                    delete = vim.api.nvim_get_hl(
-                        0,
-                        { name = 'DiffDelete', link = false }
-                    ).bg
-                end
-                for _, ns in ipairs {
-                    constants.OCTO_REVIEW_LEFT_HIGHLIGHT_NS,
-                    constants.OCTO_REVIEW_RIGHT_HIGHLIGHT_NS,
-                } do
-                    vim.api.nvim_set_hl(ns, 'DiffAdd', { bg = add })
-                    vim.api.nvim_set_hl(ns, 'DiffDelete', { bg = delete })
-                end
-            end
-            apply_octo_diff_bg()
-            vim.api.nvim_create_autocmd(
-                'ColorScheme',
-                { callback = apply_octo_diff_bg }
-            )
 
             local wk = require 'which-key'
             -- shared keymaps for pull_request & issue
@@ -1004,12 +974,19 @@ return {
                         desc = 'Remove reviewer request',
                         icon = '',
                     },
+                    { '<LocalLeader>vr', desc = 'Review' },
                     {
-                        '<LocalLeader>vr',
-                        desc = 'Resume pending review',
-                        icon = '󰔟',
+                        '<LocalLeader>t',
+                        group = 'Toggle',
                     },
-                    { '<LocalLeader>vs', desc = 'Start review' },
+                    {
+                        '<LocalLeader>tc',
+                        desc = 'Checks',
+                        icon = {
+                            icon = icons.test.passed,
+                            hl = 'DiagnosticInfo',
+                        },
+                    },
                 }
             end
             local function attach_issue(buf)
