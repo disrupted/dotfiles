@@ -44,6 +44,6 @@ def --env _fnox_hook [] {
 export-env {
   $env.FNOX_SHELL = "nu"
   $env.FNOX_SHELL_OUTPUT = "normal"
-  ($env.config | upsert hooks.pre_prompt ($env.config.hooks.pre_prompt? | default [] | append {|| _fnox_hook }))
+  $env.config = ($env.config | upsert hooks.pre_prompt ($env.config.hooks.pre_prompt? | default [] | append {|| _fnox_hook }))
   _fnox_hook
 }
