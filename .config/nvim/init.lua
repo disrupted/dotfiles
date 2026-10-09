@@ -1,5 +1,4 @@
 -- vim: foldmethod=marker
-local opt = vim.opt
 local command = vim.api.nvim_create_user_command
 
 require 'conf.filetype'
@@ -63,7 +62,7 @@ vim.g.health = { style = 'float' }
 -----------------------------------------------------------------------------//
 -- Utils {{{1
 -----------------------------------------------------------------------------//
-opt.sessionoptions = {
+vim.o.sessionoptions = table.concat({
     'blank',
     'buffers',
     'curdir',
@@ -72,7 +71,7 @@ opt.sessionoptions = {
     'terminal',
     'winsize',
     'winpos',
-}
+}, ',')
 
 require('conf.workspace').setup()
 -- disable global shada; create separate shadafile for each workspace
@@ -90,9 +89,9 @@ local shadafile = function()
 end
 vim.o.shadafile = shadafile() or 'NONE'
 
-opt.completeopt = { 'menu', 'menuone', 'noselect' } -- Completion options
-opt.clipboard = 'unnamedplus'
-opt.inccommand = 'nosplit'
+vim.o.completeopt = table.concat({ 'menu', 'menuone', 'noselect' }, ',') -- Completion options
+vim.o.clipboard = 'unnamedplus'
+vim.o.inccommand = 'nosplit'
 
 local executable = function(e)
     return vim.fn.executable(e) > 0
@@ -192,23 +191,23 @@ vim.api.nvim_create_autocmd('QuitPre', {
 -----------------------------------------------------------------------------//
 -- Indentation {{{1
 -----------------------------------------------------------------------------//
-opt.expandtab = true -- Use spaces instead of tabs
-opt.shiftwidth = 4 -- Size of an indent
-opt.smartindent = true -- Insert indents automatically
-opt.tabstop = 4 -- Number of spaces tabs count for
-opt.softtabstop = 4
-opt.shiftround = true -- Round indent
-opt.joinspaces = false -- No double spaces with join after a dot
+vim.o.expandtab = true -- Use spaces instead of tabs
+vim.o.shiftwidth = 4 -- Size of an indent
+vim.o.smartindent = true -- Insert indents automatically
+vim.o.tabstop = 4 -- Number of spaces tabs count for
+vim.o.softtabstop = 4
+vim.o.shiftround = true -- Round indent
+vim.o.joinspaces = false -- No double spaces with join after a dot
 
 -----------------------------------------------------------------------------//
 -- Display {{{1
 -----------------------------------------------------------------------------//
-opt.number = true -- line numbers
-opt.relativenumber = false -- relative line numbers
-opt.numberwidth = 2
-opt.signcolumn = 'auto:1-2' -- 'auto:1-2', 'yes:1'
-opt.laststatus = 3 -- global statusline
-opt.cursorline = false -- use autocmd below to only enable it for the focused window
+vim.o.number = true -- line numbers
+vim.o.relativenumber = false -- relative line numbers
+vim.o.numberwidth = 2
+vim.o.signcolumn = 'auto:1-2' -- 'auto:1-2', 'yes:1'
+vim.o.laststatus = 3 -- global statusline
+vim.o.cursorline = false -- use autocmd below to only enable it for the focused window
 local au_cursorline = vim.api.nvim_create_augroup('cursorline_focus', {})
 vim.api.nvim_create_autocmd({ 'InsertLeave', 'WinEnter' }, {
     group = au_cursorline,
@@ -232,80 +231,74 @@ vim.api.nvim_create_autocmd({ 'InsertEnter', 'WinLeave' }, {
     desc = 'Hide cursorline in insert mode and inactive windows',
 })
 vim.go.tabclose = 'left'
-opt.wrap = true
-opt.linebreak = true -- wrap, but on words, not randomly
--- opt.textwidth = 80
+vim.o.wrap = true
+vim.o.linebreak = true -- wrap, but on words, not randomly
+-- vim.o.textwidth = 80
 -- vim.cmd.syntax 'off' -- disable legacy syntax highlighting
-opt.synmaxcol = 1024 -- don't syntax highlight long lines
+vim.o.synmaxcol = 1024 -- don't syntax highlight long lines
 vim.g.vimsyn_embed = 'lPr' -- allow embedded syntax highlighting for lua, python, ruby
 vim.g.no_plugin_maps = 1
-opt.showmode = false
-opt.emoji = false -- turn off as they are treated as double width characters
-opt.virtualedit = 'onemore' -- allow cursor to move past end of line in visual block mode, needed for my custom paste mapping
-opt.list = true -- show invisible characters
-opt.listchars = {
-    eol = ' ', -- ¬↴
-    tab = '→ ',
-    extends = '…',
-    precedes = '…',
-    trail = '·',
-}
-opt.shortmess:append 'I' -- disable :intro startup screen
+vim.o.showmode = false
+vim.o.emoji = false -- turn off as they are treated as double width characters
+vim.o.virtualedit = 'onemore' -- allow cursor to move past end of line in visual block mode, needed for my custom paste mapping
+vim.o.list = true -- show invisible characters
+vim.o.listchars = 'eol: ,tab:→ ,extends:…,precedes:…,trail:·'
+vim.opt.shortmess:append 'I' -- disable :intro startup screen
 
 -----------------------------------------------------------------------------//
 -- Title {{{1
 -----------------------------------------------------------------------------//
--- opt.titlestring = '❐ %t'
--- opt.title = true
--- opt.titlelen = 70
+-- vim.o.titlestring = '❐ %t'
+-- vim.o.title = true
+-- vim.o.titlelen = 70
 
 -----------------------------------------------------------------------------//
 -- Folds {{{1
 -----------------------------------------------------------------------------//
-opt.foldtext = 'folds#render()'
-opt.foldopen:append { 'search' }
-opt.foldlevelstart = 10
-opt.foldmethod = 'marker' -- or 'syntax'
+vim.o.foldtext = 'folds#render()'
+vim.opt.foldopen:append 'search'
+vim.o.foldlevelstart = 10
+vim.o.foldmethod = 'marker' -- or 'syntax'
 
 -----------------------------------------------------------------------------//
 -- Backup {{{1
 -----------------------------------------------------------------------------//
-opt.swapfile = false
-opt.backup = false
-opt.writebackup = false
-opt.undofile = true -- Save undo history
-opt.confirm = true -- prompt to save before destructive actions
+vim.o.swapfile = false
+vim.o.backup = false
+vim.o.writebackup = false
+vim.o.undofile = true -- Save undo history
+vim.o.confirm = true -- prompt to save before destructive actions
 
 -----------------------------------------------------------------------------//
 -- Search {{{1
 -----------------------------------------------------------------------------//
-opt.ignorecase = true -- Ignore case
-opt.smartcase = true -- Don't ignore case with capitals
-opt.wrapscan = true -- Search wraps at end of file
-opt.scrolloff = 4 -- Lines of context
--- opt.sidescrolloff = 8 -- Columns of context
-opt.showmatch = true
+vim.o.ignorecase = true -- Ignore case
+vim.o.smartcase = true -- Don't ignore case with capitals
+vim.o.wrapscan = true -- Search wraps at end of file
+vim.o.scrolloff = 4 -- Lines of context
+-- vim.o.sidescrolloff = 8 -- Columns of context
+vim.o.showmatch = true
 
 -- Use faster grep alternatives if possible
 if executable 'rg' then
-    opt.grepprg =
+    vim.o.grepprg =
         [[rg --hidden --glob "!.git" --no-heading --smart-case --vimgrep --follow $*]]
-    opt.grepformat:prepend { '%f:%l:%c:%m' }
+    vim.opt.grepformat:prepend '%f:%l:%c:%m'
 end
 
 -----------------------------------------------------------------------------//
 -- Motions & Text Objects {{{1
 -----------------------------------------------------------------------------//
-opt.iskeyword:prepend { '-' } -- treat dash separated words as a word textobject
+vim.opt.iskeyword:prepend '-' -- treat dash separated words as a word textobject
 
 -----------------------------------------------------------------------------//
 -- window splitting and buffers {{{1
 -----------------------------------------------------------------------------//
-opt.hidden = true -- Enable modified buffers in background
-opt.splitbelow = true -- Put new windows below current
-opt.splitright = true -- Put new windows right of current
-opt.splitkeep = 'screen'
-opt.fillchars = {
+vim.o.hidden = true -- Enable modified buffers in background
+vim.o.splitbelow = true -- Put new windows below current
+vim.o.splitright = true -- Put new windows right of current
+vim.o.splitkeep = 'screen'
+vim.o.fillchars = vim.iter({
     vert = '│',
     diff = '╱', -- alternatives: ⣿ ░
     msgsep = '‾',
@@ -314,16 +307,18 @@ opt.fillchars = {
     foldclose = '', --▸
     foldsep = ' ',
     foldinner = ' ',
-}
+}):map(function(k, v)
+    return k .. ':' .. v
+end):join ','
 
 -----------------------------------------------------------------------------//
 -- Wild and file globbing stuff in command mode {{{1
 -----------------------------------------------------------------------------//
-opt.wildignorecase = true -- Ignore case when completing file names and directories
-opt.wildcharm = 26 -- equals set wildcharm=<C-Z>, used in the mapping section
+vim.o.wildignorecase = true -- Ignore case when completing file names and directories
+vim.o.wildcharm = 26 -- equals set wildcharm=<C-Z>, used in the mapping section
 
 -- Binary
-opt.wildignore = {
+vim.o.wildignore = table.concat({
     '*.aux,*.out,*.toc',
     '*.o,*.obj,*.dll,*.jar,*.pyc,__pycache__,*.rbc,*.class',
     -- media
@@ -338,41 +333,33 @@ opt.wildignore = {
     '*.swp,.lock,.DS_Store,._*,tags.lock',
     -- version control
     '.git,.svn',
-}
-opt.wildoptions = 'pum'
-opt.pumblend = 7 -- Make popup window translucent
-opt.pumheight = 20 -- Limit the amount of autocomplete items shown
+}, ',')
+vim.o.wildoptions = 'pum'
+vim.o.pumblend = 7 -- Make popup window translucent
+vim.o.pumheight = 20 -- Limit the amount of autocomplete items shown
 
 -----------------------------------------------------------------------------//
 -- Timings {{{1
 -----------------------------------------------------------------------------//
-opt.updatetime = 100
-opt.timeout = true
-opt.timeoutlen = 1000
-opt.ttimeoutlen = 10
+vim.o.updatetime = 100
+vim.o.timeout = true
+vim.o.timeoutlen = 1000
+vim.o.ttimeoutlen = 10
 
 -----------------------------------------------------------------------------//
 -- Diff {{{1
 -----------------------------------------------------------------------------//
 -- Use in vertical diff mode, blank lines to keep sides aligned, Ignore whitespace changes
-opt.diffopt:prepend {
-    'vertical',
-    'iwhite',
-    'hiddenoff',
-    'foldcolumn:0',
-    'context:4',
-    'algorithm:histogram',
-    'indent-heuristic',
-}
+vim.opt.diffopt:prepend 'vertical,iwhite,hiddenoff,foldcolumn:0,context:4,algorithm:histogram,indent-heuristic'
 
 -----------------------------------------------------------------------------//
 -- Terminal {{{1
 -----------------------------------------------------------------------------//
 vim.api.nvim_create_autocmd('TermOpen', {
     callback = function()
-        vim.opt_local.number = false
-        vim.opt_local.relativenumber = false
-        vim.opt_local.cursorline = false
+        vim.wo.number = false
+        vim.wo.relativenumber = false
+        vim.wo.cursorline = false
     end,
     desc = 'Terminal visual tweaks',
 })
@@ -403,8 +390,8 @@ vim.api.nvim_create_autocmd('TermClose', {
 -----------------------------------------------------------------------------//
 -- Mouse {{{1
 -----------------------------------------------------------------------------//
-opt.mouse = 'a'
-opt.mousemodel = 'extend'
+vim.o.mouse = 'a'
+vim.o.mousemodel = 'extend'
 
 -----------------------------------------------------------------------------//
 -- Netrw {{{1
@@ -415,7 +402,7 @@ vim.g.netrw_banner = 0
 -----------------------------------------------------------------------------//
 -- Colorscheme {{{1
 -----------------------------------------------------------------------------//
-opt.termguicolors = true
+vim.o.termguicolors = true
 
 -----------------------------------------------------------------------------//
 -- Mappings {{{1

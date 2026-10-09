@@ -19,7 +19,7 @@ return {
                 function()
                     require('conf.dap.adapters').load_project()
                     require('dap').continue()
-                    vim.opt.signcolumn = 'yes:2'
+                    vim.o.signcolumn = 'yes:2'
                     -- load dap-view early to use a smaller terminal window by default
                     require 'dap-view'
                     require 'nvim-dap-virtual-text'
@@ -44,7 +44,7 @@ return {
                 '<Leader>dQ',
                 function()
                     require('dap.breakpoints').clear()
-                    vim.opt.signcolumn = 'yes:1'
+                    vim.o.signcolumn = 'yes:1'
                 end,
                 desc = 'Clear breakpoints',
             },
@@ -80,7 +80,7 @@ return {
                 '<Leader>db',
                 function()
                     require('dap').toggle_breakpoint()
-                    vim.opt.signcolumn = 'yes:2'
+                    vim.o.signcolumn = 'yes:2'
                 end,
                 desc = 'Toggle breakpoint',
             },

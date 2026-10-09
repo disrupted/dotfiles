@@ -7,7 +7,6 @@ local server_spawn_attempted = false
 return {
     {
         'sudo-tee/opencode.nvim',
-        branch = 'v2',
         lazy = true,
         name = 'opencode-native',
         cmd = 'Opencode',
