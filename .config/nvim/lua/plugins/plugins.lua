@@ -81,9 +81,10 @@ return {
                         ---@type snacks.picker.Config
                         local source = {}
 
-                        local fff_exists = pcall(require, 'fff')
-                        local fff_snacks_exists = pcall(require, 'fff-snacks')
-                        if fff_exists and fff_snacks_exists then
+                        if
+                            pcall(require, 'fff')
+                            and pcall(require, 'fff-snacks')
+                        then
                             source = require('fff-snacks.find_files').source
                             source.formatters = nil
                         else
