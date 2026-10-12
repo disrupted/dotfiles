@@ -150,7 +150,7 @@ local function create_tab(name)
     vim.api.nvim_tabpage_set_var(handle, 'tabname', name)
     Snacks.notify(
         { ('created tab %q'):format(name) },
-        { title = 'Workspace', level = 'debug' }
+        { title = 'Workspace', level = vim.log.levels.DEBUG }
     )
     return handle
 end
@@ -409,7 +409,7 @@ local function move_buf_to_tab(bufnr, dest_name)
                 source_name,
                 dest_name
             ),
-        }, { title = 'Workspace', level = 'debug' })
+        }, { title = 'Workspace', level = vim.log.levels.DEBUG })
     end)
 end
 
@@ -434,7 +434,7 @@ M.setup = function()
             vim.g.workspace_type,
             vim.g.project_filetype
         ),
-    }, { title = 'Workspace', level = 'debug' })
+    }, { title = 'Workspace', level = vim.log.levels.DEBUG })
 
     local argv = vim.fn.argv(0)
     if type(argv) == 'string' and argv:match '.git/COMMIT_EDITMSG' ~= nil then
@@ -458,7 +458,7 @@ M.setup = function()
             if managed_buffers[args.buf] then
                 Snacks.notify(
                     { 'already managed buffer', vim.inspect(args) },
-                    { title = 'Workspace', level = 'debug' }
+                    { title = 'Workspace', level = vim.log.levels.DEBUG }
                 )
                 return
             end
@@ -473,7 +473,7 @@ M.setup = function()
             then
                 Snacks.notify(
                     { 'add managed buffer', vim.inspect(args) },
-                    { title = 'Workspace', level = 'debug' }
+                    { title = 'Workspace', level = vim.log.levels.DEBUG }
                 )
                 managed_buffers[args.buf] = true
             end
@@ -684,7 +684,7 @@ M.setup = function()
             if managed_buffers[args.buf] then
                 Snacks.notify(
                     { ('wipeout managed buffer %d'):format(args.buf) },
-                    { title = 'Workspace', level = 'debug' }
+                    { title = 'Workspace', level = vim.log.levels.DEBUG }
                 )
             end
             managed_buffers[args.buf] = nil

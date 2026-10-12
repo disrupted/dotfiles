@@ -99,6 +99,7 @@ return {
                 },
                 menu = {
                     auto_show = true,
+                    border = 'none',
                     draw = {
                         columns = function(ctx)
                             if ctx.mode == 'cmdline' then
@@ -286,7 +287,10 @@ return {
                     },
                 },
             },
-            signature = { enabled = true },
+            signature = {
+                enabled = true,
+                window = { border = 'rounded' },
+            },
             cmdline = {
                 completion = {
                     ghost_text = { enabled = false },

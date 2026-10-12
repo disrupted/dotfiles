@@ -219,7 +219,7 @@ local function on_file_change(err, filename, events)
     metrics.file_change_events = metrics.file_change_events + 1
     Snacks.notify(
         { ('%s changed'):format(filename), vim.inspect(events) },
-        { title = 'Git', level = 'debug' }
+        { title = 'Git', level = vim.log.levels.DEBUG }
     )
 
     -- git may replace .git/HEAD atomically; restart watcher after each event
@@ -306,7 +306,7 @@ M.watch = function()
     watcher:start(file_to_watch, {}, vim.schedule_wrap(on_file_change))
     Snacks.notify(
         { ('initialized watcher on %s'):format(file_to_watch) },
-        { title = 'Git', level = 'debug' }
+        { title = 'Git', level = vim.log.levels.DEBUG }
     )
 end
 

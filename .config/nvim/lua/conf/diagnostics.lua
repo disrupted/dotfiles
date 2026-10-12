@@ -28,7 +28,7 @@ vim.diagnostic.config {
         severity = { min = vim.diagnostic.severity.WARN },
         -- prefix = "icons", -- TODO: nvim 0.10.0
     },
-    float = { header = '', source = true },
+    float = { header = '', source = true, border = 'rounded' },
     virtual_text = false,
     virtual_lines = { current_line = true },
     update_in_insert = false,

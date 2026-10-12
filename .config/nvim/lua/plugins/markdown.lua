@@ -8,6 +8,11 @@ return {
         opts = {
             debounce = 50,
             file_types = { 'markdown', 'opencode_output' },
+            -- don't attach to LSP floating previews (hover, etc.)
+            ignore = function(buf)
+                local win = vim.fn.bufwinid(buf)
+                return win ~= -1 and vim.w[win].lsp_floating_bufnr ~= nil
+            end,
             render_modes = { 'n', 'c', 't' },
             anti_conceal = {
                 enabled = false,

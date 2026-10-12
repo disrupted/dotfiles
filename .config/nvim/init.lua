@@ -1,6 +1,7 @@
 -- vim: foldmethod=marker
 local command = vim.api.nvim_create_user_command
 
+require 'conf.ui.ui2'
 require 'conf.filetype'
 require 'conf.diagnostics'
 
@@ -307,9 +308,11 @@ vim.o.fillchars = vim.iter({
     foldclose = '', --▸
     foldsep = ' ',
     foldinner = ' ',
-}):map(function(k, v)
-    return k .. ':' .. v
-end):join ','
+})
+    :map(function(k, v)
+        return k .. ':' .. v
+    end)
+    :join ','
 
 -----------------------------------------------------------------------------//
 -- Wild and file globbing stuff in command mode {{{1
@@ -337,6 +340,7 @@ vim.o.wildignore = table.concat({
 vim.o.wildoptions = 'pum'
 vim.o.pumblend = 7 -- Make popup window translucent
 vim.o.pumheight = 20 -- Limit the amount of autocomplete items shown
+vim.o.pumborder = 'rounded' -- Border for the 'wildoptions=pum' completion menu
 
 -----------------------------------------------------------------------------//
 -- Timings {{{1
@@ -560,6 +564,8 @@ vim.keymap.set('n', '<M-/>', '<cmd>noh<CR>')
 vim.keymap.set('n', '<esc>', '<esc>') -- distinguish <C-[> from <esc>
 vim.keymap.set('n', '<C-]>', '<cmd>tabnext<CR>', { desc = 'Next tabpage' })
 vim.keymap.set('n', '<C-[>', '<cmd>tabprevious<CR>', { desc = 'Prev tabpage' })
+
+vim.keymap.set('n', '<M-i>', vim.show_pos, { desc = 'Inspect' })
 
 -- Treesitter incremental selection
 local function selection_range_supported()

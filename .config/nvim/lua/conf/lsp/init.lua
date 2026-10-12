@@ -4,6 +4,17 @@ local au = vim.api.nvim_create_augroup('LspAttach', { clear = true })
 vim.uv.fs_unlink(vim.lsp.log.get_filename())
 vim.lsp.log.set_level(vim.log.levels.WARN)
 
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'markdown',
+    callback = function(args)
+        local win = vim.fn.bufwinid(args.buf)
+        if win ~= -1 and vim.w[win].lsp_floating_bufnr ~= nil then
+            vim.wo[win].conceallevel = 3
+            vim.wo[win].concealcursor = 'n'
+        end
+    end,
+})
+
 vim.api.nvim_create_user_command('LspFormat', function()
     vim.lsp.buf.format { async = false }
 end, {})
@@ -130,8 +141,17 @@ vim.api.nvim_create_autocmd('LspAttach', {
             }
         end
         if client:supports_method('textDocument/hover', buffer) then
-            mappings[#mappings + 1] =
-                { 'K', vim.lsp.buf.hover, desc = 'LSP: Hover' }
+            mappings[#mappings + 1] = {
+                'K',
+                function()
+                    vim.lsp.buf.hover {
+                        border = 'rounded',
+                        max_width = 80,
+                        max_height = 25,
+                    }
+                end,
+                desc = 'LSP: Hover',
+            }
         end
 
         if
@@ -268,22 +288,23 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end,
 })
 
+-- NOTE: disabled in favor of blink.cmp
 --[[ vim.api.nvim_create_autocmd('LspAttach', {
-                group = au,
-                desc = 'LSP signature help',
-                callback = function(args)
-                    local bufnr = args.buf
-                    local client = vim.lsp.get_client_by_id(args.data.client_id)
-                    if client:supports_method 'textDocument/signatureHelp' then
-                        vim.api.nvim_create_autocmd('CursorHoldI', {
-                            buffer = bufnr,
-                            callback = function()
-                                vim.defer_fn(vim.lsp.buf.signature_help, 200)
-                            end,
-                        })
-                    end
+    group = au,
+    desc = 'LSP signature help',
+    callback = function(args)
+        local bufnr = args.buf
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if client:supports_method 'textDocument/signatureHelp' then
+            vim.api.nvim_create_autocmd('CursorHoldI', {
+                buffer = bufnr,
+                callback = function()
+                    vim.defer_fn(vim.lsp.buf.signature_help, 200)
                 end,
-            }) ]]
+            })
+        end
+    end,
+}) ]]
 
 vim.lsp.on_type_formatting.enable()
 vim.lsp.codelens.enable()
