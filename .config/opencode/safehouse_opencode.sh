@@ -66,7 +66,7 @@ fi
 
 safehouse_args=(
     safehouse
-    --enable="1password,ssh,kubectl,docker,keychain"
+    --enable="1password,ssh,kubectl,docker,keychain,playwright-chrome"
     # local overlays
     --append-profile="$home_dir/.config/opencode/opencode.sb"
     --append-profile="$home_dir/.config/opencode/local-opencode.sb"
