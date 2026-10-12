@@ -149,7 +149,6 @@ return {
                     yaml = dprint,
                     graphql = dprint,
                     pkl = { 'pkl' },
-                    sh = { 'shfmt' },
                     sql = { 'sleek' }, -- or dprint
                     svelte = dprint,
                     swift = { 'swift' },
@@ -228,9 +227,6 @@ return {
             -- conform.formatters.ruff_format = {
             --     prepend_args = { '--silent', '--respect-gitignore' },
             -- }
-            conform.formatters.shfmt = {
-                prepend_args = { '-i', '4', '-ci' },
-            }
             conform.formatters.dprint = {
                 prepend_args = function(self, ctx)
                     if not self:cwd(ctx) then
@@ -283,7 +279,7 @@ return {
         opts = {
             events = { 'BufWritePost', 'BufReadPost', 'InsertLeave' },
             linters_by_ft = {
-                ['yaml.github'] = { 'actionlint' },
+                ['yaml.github'] = { 'jactionlint' },
             },
             -- from LazyVim: https://github.com/LazyVim/LazyVim/blob/bb36f71b77d8e15788a5b62c82a1c9ec7b209e49/lua/lazyvim/plugins/linting.lua#L16
             -- easily override linter options or add custom linters

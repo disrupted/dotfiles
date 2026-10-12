@@ -12,24 +12,24 @@ launch_dir="$(pwd -P)"
 extra_grants=()
 
 case "$launch_dir" in
-    "$home_dir/.config" | "$home_dir/.config/"* | "$home_dir/dev/" | "$home_dir/dev/"*)
-        extra_grants+=(--add-dirs="$home_dir/.config")
-        extra_grants+=(--add-dirs="$home_dir/dev")
-        extra_grants+=(--add-dirs-ro="$home_dir/.local")
-        extra_grants+=(--add-dirs="$home_dir/.local/share/nvim")
-        ;;
+"$home_dir/.config" | "$home_dir/.config/"* | "$home_dir/dev/" | "$home_dir/dev/"*)
+    extra_grants+=(--add-dirs="$home_dir/.config")
+    extra_grants+=(--add-dirs="$home_dir/dev")
+    extra_grants+=(--add-dirs-ro="$home_dir/.local")
+    extra_grants+=(--add-dirs="$home_dir/.local/share/nvim")
+    ;;
 esac
 
 # Work: grant the whole work tree, plus shared bakdata (read-only reference).
 # Launching inside bakdata grants it read-write
 for _client in spectrumk bayer bakdata; do
     case "$launch_dir" in
-        "$home_dir/$_client" | "$home_dir/$_client/"*)
-            extra_grants+=(--add-dirs="$home_dir/$_client")
-            extra_grants+=(--add-dirs-ro="$home_dir/bakdata")
-            extra_grants+=(--add-dirs-ro="$home_dir/Downloads")
-            break
-            ;;
+    "$home_dir/$_client" | "$home_dir/$_client/"*)
+        extra_grants+=(--add-dirs="$home_dir/$_client")
+        extra_grants+=(--add-dirs-ro="$home_dir/bakdata")
+        extra_grants+=(--add-dirs-ro="$home_dir/Downloads")
+        break
+        ;;
     esac
 done
 unset _client
@@ -41,8 +41,8 @@ has_explicit_server=false
 is_exempt=false
 for arg in "$@"; do
     case "$arg" in
-        --standalone | --server | --server=*) has_explicit_server=true ;;
-        serve | auth | models | debug | plugin | mcp | stats | upgrade | update | uninstall | --help | -h | --version | -v) is_exempt=true ;;
+    --standalone | --server | --server=*) has_explicit_server=true ;;
+    serve | auth | models | debug | plugin | mcp | stats | upgrade | update | uninstall | --help | -h | --version | -v) is_exempt=true ;;
     esac
 done
 
@@ -66,7 +66,7 @@ fi
 
 safehouse_args=(
     safehouse
-    --enable=1password,ssh,kubectl,docker,keychain
+    --enable="1password,ssh,kubectl,docker,keychain"
     # local overlays
     --append-profile="$home_dir/.config/opencode/opencode.sb"
     --append-profile="$home_dir/.config/opencode/local-opencode.sb"
@@ -77,7 +77,7 @@ if [ "${#extra_grants[@]}" -gt 0 ]; then
     safehouse_args+=("${extra_grants[@]}")
 fi
 safehouse_args+=(
-    --env-pass=OPENCODE_PASSWORD,OPENCODE_SERVER_PASSWORD,OPENCODE_SERVER_USERNAME,GITHUB_TOKEN,OPENROUTER_API_KEY,OPENAI_API_KEY,ANTHROPIC_API_KEY,GEMINI_API_KEY,VIRTUAL_ENV,REUSE_CONTAINERS
+    --env-pass="OPENCODE_PASSWORD,OPENCODE_SERVER_PASSWORD,OPENCODE_SERVER_USERNAME,GITHUB_TOKEN,OPENROUTER_API_KEY,OPENAI_API_KEY,ANTHROPIC_API_KEY,GEMINI_API_KEY,VIRTUAL_ENV,REUSE_CONTAINERS"
     -- opencode "$@"
 )
 exec "${safehouse_args[@]}"

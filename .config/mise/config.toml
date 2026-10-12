@@ -95,18 +95,18 @@ docker-compose = { version = "latest", depends = ["docker-cli"] }
 "cargo:https://github.com/nushell/nufmt" = "latest"
 
 # language servers, formatters, linters
-"github:rhysd/actionlint" = "latest"
+jactionlint = "latest"
 "aqua:expert-lsp/expert" = "latest"
 "aqua:mrjosh/helm-ls" = "latest"
 "aqua:LuaLS/lua-language-server" = "latest"
 "aqua:hashicorp/terraform-ls" = "latest"
 "aqua:Myriad-Dreamin/tinymist" = "latest"
 "github:tombi-toml/tombi" = "latest"
-"aqua:mvdan/sh" = "latest"
 "github:clangd/clangd" = "latest"
 "github:latex-lsp/texlab" = "latest"
 "github:ribru17/ts_query_ls" = "latest"
 "github:vale-cli/vale-ls" = "latest"
+"github:stubbedev/shell-lsp" = "latest"
 "cargo:emmylua_ls" = "latest"
 "cargo:gitlab-ci-ls" = "latest"
 "cargo:nickel-lang-lsp" = "latest"
@@ -116,7 +116,6 @@ docker-compose = { version = "latest", depends = ["docker-cli"] }
 "http:pkl-lsp" = { version = "0.8.0-native", url = "https://api.github.com/repos/apple/pkl-lsp/actions/artifacts/8879496175/zip", format = "zip", strip_components = 1, bin_path = "executable", rename_exe = "pkl-lsp" }
 "pypi:debugpy" = "latest"
 "npm:@astrojs/language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
-"npm:bash-language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:vscode-langservers-extracted" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:@microsoft/compose-language-service" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:dockerfile-language-server-nodejs" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
