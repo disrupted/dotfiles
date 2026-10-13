@@ -766,28 +766,4 @@ return {
             })
         end,
     },
-    {
-        'guill/mcp-tools.nvim',
-        enabled = false,
-        event = 'VeryLazy',
-        build = 'bun install --cwd ./bridge',
-        config = function()
-            require('mcp-tools').setup {
-                tools = {
-                    dap = true,
-                    diagnostics = true,
-                    lsp = true,
-                },
-                integrations = {
-                    opencode = true,
-                },
-                on_ready = function(port)
-                    Snacks.notify('MCP bridge ready on port ' .. port)
-                end,
-                on_stop = function()
-                    Snacks.notify 'MCP bridge stopped'
-                end,
-            }
-        end,
-    },
 }

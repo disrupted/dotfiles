@@ -383,47 +383,8 @@ return {
         end,
     },
     {
-        'nvim-treesitter/nvim-treesitter-refactor',
-        enabled = false, -- FIXME: incompatible with nvim-treesitter main branch
-        keys = { '<Leader>R' },
-        init = function()
-            require('which-key').add {
-                { '<Leader>R', desc = 'TS: Rename symbol', icon = '󰏫' },
-            }
-        end,
-        opts = {
-            highlight_definitions = { enable = false },
-            highlight_current_scope = { enable = false },
-            smart_rename = {
-                enable = true,
-                keymaps = {
-                    smart_rename = '<Leader>R', -- mapping to rename reference under cursor
-                },
-            },
-            navigation = {
-                enable = false, -- disabled in favor of Snacks.words
-                keymaps = {
-                    goto_definition = 'gnd', -- mapping to go to definition of symbol under cursor
-                    list_definitions = 'gnD', -- mapping to list all definitions in current file
-                    goto_next_usage = '<C-n>',
-                    goto_previous_usage = '<C-p>',
-                },
-            },
-        },
-        config = function(_, opts)
-            ---@diagnostic disable-next-line: missing-fields
-            require('nvim-treesitter.configs').setup { refactor = opts }
-        end,
-    },
-    {
         'bezhermoso/tree-sitter-ghostty',
         ft = 'ghostty',
         build = 'make nvim_install',
-    },
-    {
-        'windwp/nvim-ts-autotag',
-        enabled = false,
-        event = 'InsertEnter',
-        opts = {},
     },
 }

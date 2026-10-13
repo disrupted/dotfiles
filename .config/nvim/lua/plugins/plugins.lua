@@ -1243,7 +1243,6 @@ return {
         ---@type rest.Opts
         opts = {},
     },
-    { 'mrjones2014/op.nvim', build = 'make install', lazy = true },
     {
         -- 'sotte/presenting.nvim',
         'gerazov/presenting.nvim',

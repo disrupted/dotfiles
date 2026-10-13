@@ -7,22 +7,6 @@ return {
         opts = {},
     },
     {
-        'AckslD/nvim-neoclip.lua',
-        enabled = false,
-        event = 'TextYankPost',
-        keys = {
-            {
-                '\'',
-                function()
-                    require 'neoclip'
-                    -- FIXME: open Snacks.picker
-                end,
-                desc = 'Neoclip',
-            },
-        },
-        config = true,
-    },
-    {
         'stevearc/resession.nvim',
         keys = {
             {

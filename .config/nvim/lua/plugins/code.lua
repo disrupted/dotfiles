@@ -304,35 +304,6 @@ return {
         end,
     },
     {
-        'ThePrimeagen/refactoring.nvim',
-        init = function()
-            require('which-key').add {
-                { '<Leader>r', mode = 'v', group = 'Refactor' },
-            }
-        end,
-        keys = {
-            {
-                '<Leader>rr',
-                mode = 'v',
-                function()
-                    require('refactoring').select_refactor {
-                        show_success_message = true,
-                    }
-                end,
-                desc = 'Select refactor',
-            },
-            {
-                '<Leader>re',
-                mode = 'v',
-                function()
-                    require('refactoring').refactor 'Extract Function'
-                end,
-                desc = 'Extract function',
-            },
-        },
-        opts = {},
-    },
-    {
         'nvim-neotest/neotest',
         init = function()
             require('which-key').add {
@@ -827,14 +798,6 @@ return {
                     },
                 },
             },
-        },
-    },
-    {
-        'michaelb/sniprun',
-        build = 'sh install.sh',
-        cmd = { 'SnipRun', 'SnipInfo' },
-        opts = {
-            selected_interpreters = { 'Lua_nvim', 'Python3_fifo' },
         },
     },
     {

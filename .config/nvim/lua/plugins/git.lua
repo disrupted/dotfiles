@@ -1081,44 +1081,6 @@ return {
         end,
     },
     {
-        'topaxi/pipeline.nvim',
-        enabled = false,
-        cmd = 'Pipeline',
-        init = function()
-            require('which-key').add { { '<Leader>gc', group = 'CI' } }
-        end,
-        keys = {
-            {
-                '<Leader>gci',
-                '<cmd>Pipeline<CR>',
-                desc = 'Watch pipeline run',
-            },
-        },
-        build = 'make',
-        dependencies = { 'nvim-lua/plenary.nvim', 'MunifTanjim/nui.nvim' },
-        ---@module 'pipeline.config'
-        ---@type pipeline.Config
-        opts = {
-            split = {
-                buf_options = {
-                    filetype = 'pipeline',
-                },
-            },
-            icons = {
-                workflow_dispatch = '',
-                ---@class pipeline.config.IconConclusion
-                conclusion = {
-                    success = '',
-                    failure = '',
-                    startup_failure = 'X',
-                    cancelled = '',
-                    skipped = '',
-                    action_required = '',
-                },
-            },
-        },
-    },
-    {
         'https://forge.barrettruth.com/barrettruth/ci.nvim',
         cmd = 'CI',
         init = function()

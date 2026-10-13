@@ -860,36 +860,6 @@ return {
         event = 'UIEnter',
         opts = {},
     },
-    {
-        'folke/zen-mode.nvim',
-        cmd = 'ZenMode',
-        dependencies = {
-            {
-                'folke/twilight.nvim',
-                cmd = 'Twilight',
-                opts = { context = 10 },
-            },
-        },
-        opts = {
-            window = {
-                options = {
-                    -- signcolumn = 'no', -- disable signcolumn
-                    list = false, -- disable whitespace characters
-                },
-            },
-            plugins = {
-                options = {
-                    enabled = true,
-                    laststatus = 0, -- turn off the statusline in zen mode
-                },
-                tmux = { enabled = true },
-                kitty = {
-                    enabled = true,
-                    font = '+4',
-                },
-            },
-        },
-    },
     { -- inituitive window splits resizing
         'ian-howell/ripple.nvim',
         keys = {
