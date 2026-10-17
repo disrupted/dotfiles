@@ -1,6 +1,3 @@
-local lsp_source = require 'snacks.picker.source.lsp'
-local picker_format = require 'snacks.picker.format'
-
 local M = {}
 
 local TYPE_NAME_COLUMN = 26
@@ -24,7 +21,7 @@ function M.format_lsp_symbol(item, picker)
     local offset = Snacks.picker.highlight.offset(ret, { char_idx = true })
     local gap = math.max(1, TYPE_NAME_COLUMN - offset)
     ret[#ret + 1] = { Snacks.picker.util.align(' ', gap) }
-    vim.list_extend(ret, picker_format.filename(item, picker))
+    vim.list_extend(ret, require('snacks.picker.format').filename(item, picker))
 
     return ret
 end
@@ -40,6 +37,7 @@ local function type_hierarchy(method, ctx)
     ---@async
     ---@param cb async fun(item: snacks.picker.finder.Item)
     return function(cb)
+        local lsp_source = require 'snacks.picker.source.lsp'
         local prepared = {}
 
         lsp_source.request(

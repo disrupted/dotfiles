@@ -1,5 +1,3 @@
-local lsp_source = require 'snacks.picker.source.lsp'
-
 local M = {}
 
 ---@param item snacks.picker.finder.Item
@@ -20,9 +18,12 @@ end
 ---@param opts snacks.picker.lsp.Config
 ---@param ctx snacks.picker.finder.ctx
 ---@type snacks.picker.finder
-function M.definitions_filtered(opts, ctx)
-    local base =
-        lsp_source.get_locations('textDocument/definition', opts, ctx.filter)
+function M.finder(opts, ctx)
+    local base = require('snacks.picker.source.lsp').get_locations(
+        'textDocument/definition',
+        opts,
+        ctx.filter
+    )
 
     ---@async
     ---@param cb async fun(item: snacks.picker.finder.Item)

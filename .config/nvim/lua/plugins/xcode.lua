@@ -1,5 +1,4 @@
----@module 'lazy.types'
----@type LazySpec[]
+---@type zpack.Spec[]
 return {
     {
         'wojciech-kulik/xcodebuild.nvim',

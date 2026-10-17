@@ -1,6 +1,6 @@
 local icons = require 'conf.icons'
----@module 'lazy.types'
----@type LazySpec[]
+
+---@type zpack.Spec[]
 return {
     {
         'lewis6991/gitsigns.nvim',
@@ -662,31 +662,31 @@ return {
                 },
             }
 
-            -- register in the Snacks gh picker actions menu
-            local gh_actions = require 'snacks.gh.actions'
-            ---@type snacks.gh.Action
-            gh_actions.actions.gh_open_octo = {
-                title = 'Open {type} #{number} in Octo',
-                icon = icons.git.github .. ' ',
-                action = function(item, ctx)
-                    if ctx.picker then
-                        ctx.picker:close()
-                    end
-                    local kind = item.type == 'pr' and 'pull' or 'issue'
-                    require 'octo'
-                    vim.cmd {
-                        cmd = 'edit',
-                        args = {
-                            string.format(
-                                'octo://%s/%s/%s',
-                                item.repo,
-                                kind,
-                                item.number
-                            ),
-                        },
-                    }
-                end,
-            }
+            -- FIXME: register in the Snacks gh picker actions menu
+            -- local gh_actions = require 'snacks.gh.actions'
+            -- ---@type snacks.gh.Action
+            -- gh_actions.actions.gh_open_octo = {
+            --     title = 'Open {type} #{number} in Octo',
+            --     icon = icons.git.github .. ' ',
+            --     action = function(item, ctx)
+            --         if ctx.picker then
+            --             ctx.picker:close()
+            --         end
+            --         local kind = item.type == 'pr' and 'pull' or 'issue'
+            --         require 'octo'
+            --         vim.cmd {
+            --             cmd = 'edit',
+            --             args = {
+            --                 string.format(
+            --                     'octo://%s/%s/%s',
+            --                     item.repo,
+            --                     kind,
+            --                     item.number
+            --                 ),
+            --             },
+            --         }
+            --     end,
+            -- }
         end,
         ---@module 'octo.config'
         ---@type OctoConfig
@@ -1096,7 +1096,7 @@ return {
     },
     {
         'harrisoncramer/gitlab.nvim',
-        -- enabled = false, -- incompatible with codediff.nvim https://github.com/harrisoncramer/gitlab.nvim/issues/517
+        enabled = false, -- incompatible with codediff.nvim https://github.com/harrisoncramer/gitlab.nvim/issues/517
         lazy = true,
         dependencies = {
             'MunifTanjim/nui.nvim',
@@ -1189,10 +1189,15 @@ return {
     {
         'Hdoc1509/gh-actions.nvim',
         ft = 'yaml.github',
+        build = function()
+            require('nvim-treesitter').install(
+                'gh_actions_expressions',
+                { force = true }
+            )
+        end,
         dependencies = { 'nvim-treesitter/nvim-treesitter' },
         config = function()
             require('gh-actions.tree-sitter').setup()
-            require('nvim-treesitter').install 'gh_actions_expressions'
             pcall(vim.treesitter.start, 0, 'gh_actions_expressions')
         end,
     },

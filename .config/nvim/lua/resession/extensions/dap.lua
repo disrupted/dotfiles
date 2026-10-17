@@ -1,7 +1,5 @@
 local M = {}
 
----@module 'resession.types'
-
 ---@alias Breakpoint table
 
 -- Get the saved data for this extension

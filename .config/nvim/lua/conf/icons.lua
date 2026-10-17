@@ -2,7 +2,6 @@ return {
     cmp_sources = setmetatable({
         Git = '󰊢',
         ['Conventional Commits'] = '󰜘',
-        LazyDev = '',
         LSP = '',
         Snippets = '󰐱', -- 󰩫  󱡄 󰐱
         Buffer = '󰈙',

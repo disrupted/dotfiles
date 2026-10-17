@@ -1,4 +1,12 @@
-local first_attach = true
+local library = vim.iter(vim.pack.get(nil, { info = false }))
+    :map(function(plug)
+        return plug.path
+    end)
+    :filter(function(path)
+        return vim.uv.fs_stat(path) ~= nil
+    end)
+    :totable()
+table.insert(library, 1, vim.env.VIMRUNTIME)
 
 ---@type vim.lsp.Config
 return {
@@ -10,21 +18,10 @@ return {
         '.git',
     },
     workspace_required = false,
-    ---@param client vim.lsp.Client
-    on_attach = function(client, bufnr)
-        if first_attach then
-            first_attach = false
-            require 'lazydev'
-            -- HACK: reattach first buffer, workaround for https://github.com/folke/lazydev.nvim/issues/136
-            vim.defer_fn(function()
-                client:on_attach(bufnr)
-            end, 500)
-        end
-    end,
-    on_exit = function()
-        first_attach = true
-    end,
     settings = {
+        emmylua = {
+            workspace = { library = library },
+        },
         Lua = {
             -- NOTE: configured in .emmyrc.json
             -- runtime = {
@@ -38,8 +35,6 @@ return {
             diagnostics = {
                 enable = true,
                 globals = {
-                    'vim',
-                    'Snacks',
                     'it',
                     'describe',
                     'before_each',

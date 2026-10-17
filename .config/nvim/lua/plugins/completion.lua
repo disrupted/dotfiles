@@ -7,13 +7,12 @@ local function is_opencode_completion()
     return item and vim.startswith(item.source_id, 'opencode_')
 end
 
----@module 'lazy.types'
----@type LazySpec[]
+---@type zpack.Spec[]
 return {
     {
         'saghen/blink.cmp',
         event = { 'InsertEnter', 'CmdlineEnter' },
-        version = '*',
+        version = vim.version.range '*',
         ---@module 'blink.cmp'
         ---@type blink.cmp.Config
         opts = {
@@ -153,18 +152,9 @@ return {
                         'buffer',
                         'git',
                     }
-                    if vim.bo.filetype == 'lua' then
-                        table.insert(sources, 'lazydev')
-                    end
                     return sources
                 end,
                 providers = {
-                    lazydev = {
-                        name = 'LazyDev',
-                        module = 'lazydev.integrations.blink',
-                        -- make lazydev completions top priority
-                        score_offset = 100,
-                    },
                     git = {
                         name = 'Git',
                         module = 'blink-cmp-git',

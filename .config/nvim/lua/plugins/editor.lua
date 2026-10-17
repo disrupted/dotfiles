@@ -1,5 +1,4 @@
----@module 'lazy.types'
----@type LazySpec[]
+---@type zpack.Spec[]
 return {
     {
         'tiagovla/scope.nvim', -- tab-scoped buffers
@@ -8,6 +7,7 @@ return {
     },
     {
         'stevearc/resession.nvim',
+        enabled = false, -- FIXME: plugin lazy-load on VimLeavePre broken with zpack.nvim
         keys = {
             {
                 '<Leader>z',

@@ -1,7 +1,3 @@
-local lsp_source = require 'snacks.picker.source.lsp'
-local snacks_fuzzy = require 'conf.snacks.fuzzy'
-local workspace_lsp = require 'conf.workspace.lsp'
-
 local M = {}
 
 ---@param root string
@@ -173,6 +169,7 @@ local function workspace_symbols_finder(
                 return
             end
             selected_client = active_client
+            local lsp_source = require 'snacks.picker.source.lsp'
 
             local query = ctx.filter.search or ''
 
@@ -192,9 +189,14 @@ local function workspace_symbols_finder(
                     return in_scope(item.file, effective_scope, root)
                 end, items)
 
-                items = snacks_fuzzy.rank_items(items, query, nil, function(item)
-                    return item.name or item.text or ''
-                end)
+                items = require('conf.snacks.fuzzy').rank_items(
+                    items,
+                    query,
+                    nil,
+                    function(item)
+                        return item.name or item.text or ''
+                    end
+                )
 
                 for _, item in ipairs(items) do
                     item.tree = opts.tree
@@ -215,7 +217,7 @@ function M.pick(opts)
     local client = workspace_symbol_client(root, project_filetype)
 
     if not client then
-        workspace_lsp.start_project_clients()
+        require('conf.workspace.lsp').start_project_clients()
     end
 
     local title = picker_title(client, root, scope_dir)

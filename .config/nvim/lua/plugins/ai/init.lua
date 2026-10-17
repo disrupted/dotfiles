@@ -2,8 +2,7 @@ local icons = require 'conf.icons'
 
 local server_spawn_attempted = false
 
----@module 'lazy.types'
----@type LazySpec[]
+---@type zpack.Spec[]
 return {
     {
         'sudo-tee/opencode.nvim',

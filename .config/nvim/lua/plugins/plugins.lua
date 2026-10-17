@@ -1,18 +1,77 @@
 local icons = require 'conf.icons'
 local gh = require 'conf.snacks.gh'
 
----@module 'lazy.types'
----@type LazySpec[]
+---@type zpack.Spec[]
 return {
-    'nvim-lua/plenary.nvim',
+    { 'nvim-lua/plenary.nvim', lazy = true },
     {
         'disrupted/frizbee.nvim',
         build = 'cargo build --release',
     },
     {
-        'folke/snacks.nvim',
-        priority = 1000,
+        'folke/which-key.nvim',
         lazy = false,
+        priority = 999,
+        init = function()
+            vim.o.timeout = true
+            vim.o.timeoutlen = 500
+        end,
+        ---@module 'which-key.config'
+        ---@type wk.Opts
+        ---@diagnostic disable-next-line: missing-fields
+        opts = {
+            preset = 'helix',
+            ---@param mapping wk.Mapping
+            filter = function(mapping)
+                -- exclude mappings without a description
+                return mapping.desc and mapping.desc ~= ''
+            end,
+            spec = {
+                { '<Leader>?', hidden = true },
+                -- override motions preset
+                { ',', desc = '' },
+                { ';', desc = '' },
+            },
+            icons = {
+                rules = {
+                    {
+                        plugin = 'opencode-native',
+                        icon = ' ',
+                        color = 'yellow',
+                    },
+                    {
+                        plugin = 'opencode-native',
+                        pattern = 'reasoning',
+                        icon = '󱍎 ',
+                    },
+                    {
+                        plugin = 'opencode-native',
+                        pattern = 'tool',
+                        icon = ' ',
+                    },
+                },
+            },
+        },
+        config = function(_, opts)
+            local wk = require 'which-key'
+            wk.setup(opts)
+
+            wk.add {
+                {
+                    '<Leader>?',
+                    function()
+                        wk.show { global = false }
+                    end,
+                    desc = 'Buffer keymaps',
+                    icon = '󰘳',
+                },
+            }
+        end,
+    },
+    {
+        'folke/snacks.nvim',
+        lazy = false,
+        priority = 998,
         init = function()
             _G.dd = function(...)
                 Snacks.debug.inspect(...)
@@ -941,7 +1000,9 @@ return {
                     },
                     lsp_definitions = {
                         title = 'LSP Definitions',
-                        finder = require('conf.snacks.lsp').definitions_filtered,
+                        finder = require(
+                            'conf.snacks.lsp.definitions_filtered'
+                        ).finder,
                         layout = {
                             preset = 'select',
                             layout = { max_height = 14 },
@@ -1156,64 +1217,6 @@ return {
         cmd = 'GuessIndent',
         event = { 'BufReadPre', 'BufNewFile' },
         opts = {},
-    },
-    {
-        'folke/which-key.nvim',
-        init = function()
-            vim.o.timeout = true
-            vim.o.timeoutlen = 500
-        end,
-        ---@module 'which-key.config'
-        ---@type wk.Opts
-        ---@diagnostic disable-next-line: missing-fields
-        opts = {
-            preset = 'helix',
-            ---@param mapping wk.Mapping
-            filter = function(mapping)
-                -- exclude mappings without a description
-                return mapping.desc and mapping.desc ~= ''
-            end,
-            spec = {
-                { '<Leader>?', hidden = true },
-                -- override motions preset
-                { ',', desc = '' },
-                { ';', desc = '' },
-            },
-            icons = {
-                rules = {
-                    {
-                        plugin = 'opencode-native',
-                        icon = ' ',
-                        color = 'yellow',
-                    },
-                    {
-                        plugin = 'opencode-native',
-                        pattern = 'reasoning',
-                        icon = '󱍎 ',
-                    },
-                    {
-                        plugin = 'opencode-native',
-                        pattern = 'tool',
-                        icon = ' ',
-                    },
-                },
-            },
-        },
-        config = function(_, opts)
-            local wk = require 'which-key'
-            wk.setup(opts)
-
-            wk.add {
-                {
-                    '<Leader>?',
-                    function()
-                        wk.show { global = false }
-                    end,
-                    desc = 'Buffer keymaps',
-                    icon = '󰘳',
-                },
-            }
-        end,
     },
     {
         'rest-nvim/rest.nvim',

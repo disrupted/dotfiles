@@ -1,5 +1,4 @@
----@module 'lazy.types'
----@type LazySpec[]
+---@type zpack.Spec[]
 return {
     {
         'disrupted/one.nvim', -- personal tweaked colorscheme

@@ -1,9 +1,8 @@
----@module 'lazy.types'
----@type LazySpec[]
+---@type zpack.Spec[]
 return {
     {
         'L3MON4D3/LuaSnip',
-        version = 'v2.*',
+        version = vim.version.range 'v2.*',
         lazy = true,
         build = 'make install_jsregexp',
         keys = {

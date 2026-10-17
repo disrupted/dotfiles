@@ -5,58 +5,50 @@ require 'conf.ui.ui2'
 require 'conf.filetype'
 require 'conf.diagnostics'
 
-vim.pack.add { 'https://github.com/folke/lazy.nvim' }
+vim.pack.add { 'https://github.com/folke/which-key.nvim' }
+vim.pack.add { 'https://github.com/zuqini/zpack.nvim' }
 
 vim.g.mapleader = ' ' -- set leader to space
 vim.g.maplocalleader = ','
 
-require('lazy').setup {
-    spec = {
-        { import = 'plugins' },
-    },
-    install = { colorscheme = { 'one' } },
-    checker = { enabled = false },
-    diff = {
-        cmd = 'codediff.nvim',
-    },
-    performance = {
-        rtp = {
-            disabled_plugins = {
-                '2html_plugin',
-                'tohtml',
-                'getscript',
-                'getscriptPlugin',
-                'gzip',
-                'logipat',
-                'netrw',
-                'netrwPlugin',
-                'netrwSettings',
-                'netrwFileHandlers',
-                -- TODO: might get replaced by matchwith plugin
-                -- 'matchit',
-                -- 'matchparen',
-                'tar',
-                'tarPlugin',
-                'rrhelper',
-                'spellfile_plugin',
-                'vimball',
-                'vimballPlugin',
-                'zip',
-                'zipPlugin',
-                'tutor',
-                'rplugin',
-                'syntax',
-                'synmenu',
-                'optwin',
-                'compiler',
-                'bugreport',
-                'python_provider',
-                'ruby_provider',
-                'perl_provider',
-            },
-        },
-    },
+require('zpack').setup { dev = { path = '~/dev' } }
+local disabled_builtin_plugins = {
+    '2html_plugin',
+    'tohtml',
+    'getscript',
+    'getscriptPlugin',
+    'gzip',
+    'logipat',
+    'netrw',
+    'netrwPlugin',
+    'netrwSettings',
+    'netrwFileHandlers',
+    -- TODO: might get replaced by matchwith plugin
+    -- 'matchit',
+    -- 'matchparen',
+    'tar',
+    'tarPlugin',
+    'rrhelper',
+    'spellfile_plugin',
+    'vimball',
+    'vimballPlugin',
+    'zip',
+    'zipPlugin',
+    'tutor',
+    'rplugin',
+    'syntax',
+    'synmenu',
+    'optwin',
+    'compiler',
+    'bugreport',
+    'python3_provider',
+    'ruby_provider',
+    'perl_provider',
 }
+
+for _, plugin in pairs(disabled_builtin_plugins) do
+    vim.g['loaded_' .. plugin] = 1
+end
 require 'conf.lsp'
 vim.o.exrc = true
 vim.g.health = { style = 'float' }

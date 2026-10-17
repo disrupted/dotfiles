@@ -9,9 +9,6 @@ return {
         'stylua.toml',
         '.git',
     },
-    on_attach = function()
-        require 'lazydev'
-    end,
     settings = {
         Lua = {
             completion = {

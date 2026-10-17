@@ -1,22 +1,9 @@
----@module 'lazy.types'
----@type LazySpec[]
+---@type zpack.Spec[]
 return {
     {
         'folke/neoconf.nvim',
         cmd = 'Neoconf',
         opts = {},
-    },
-    {
-        'folke/lazydev.nvim',
-        lazy = true, -- lazy-loaded through LSP require
-        opts = {
-            library = {
-                -- Load luvit types when the `vim.uv` word is found
-                { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
-                { path = 'snacks.nvim', words = { 'Snacks' } },
-                { path = vim.env.VIMRUNTIME, words = { 'vim' } },
-            },
-        },
     },
     {
         'Davidyz/inlayhint-filler.nvim',
@@ -52,8 +39,6 @@ return {
     },
     {
         'disrupted/kpops.nvim',
-        dir = require('conf.utils').dir '~/bakdata/kpops.nvim',
-        dev = require('conf.utils').dev '~/bakdata/kpops.nvim',
         cmd = 'KPOps',
         ft = 'yaml.kpops',
         ---@module 'kpops.config'
@@ -279,12 +264,15 @@ return {
         opts = {
             events = { 'BufWritePost', 'BufReadPost', 'InsertLeave' },
             linters_by_ft = {
-                ['yaml.github'] = { 'jactionlint' },
+                ['yaml.github'] = { 'actionlint' },
             },
             -- from LazyVim: https://github.com/LazyVim/LazyVim/blob/bb36f71b77d8e15788a5b62c82a1c9ec7b209e49/lua/lazyvim/plugins/linting.lua#L16
             -- easily override linter options or add custom linters
             ---@type table<string,table>
             linters = {
+                actionlint = {
+                    cmd = 'jactionlint',
+                },
                 -- Example of using selene only when a selene.toml file is present
                 -- selene = {
                 --   -- dynamically enable/disable linters based on the context.
