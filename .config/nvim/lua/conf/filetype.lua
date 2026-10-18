@@ -4,7 +4,7 @@ vim.filetype.add {
         jinja2 = 'htmldjango',
         pkl = 'pkl',
         nuon = 'nu',
-        sb = 'scheme',
+        sb = 'scheme', -- macOS seatbelt (sandbox) profiles
     },
     filename = {
         ['poetry.lock'] = 'toml',

@@ -9,9 +9,7 @@ jj = "latest"
 rust = "latest"
 python = "latest"
 bun = "latest"
-deno = "latest"
-erlang = "latest"
-elixir = "latest"
+node = "latest"
 
 uv = "latest"
 "pypi:poetry" = "latest"  # for legacy projects
@@ -83,8 +81,9 @@ docker-cli = "latest"
 docker-compose = { version = "latest", depends = ["docker-cli"] }
 "aqua:docker/buildx" = { version = "latest", depends = ["docker-cli"] }
 "github:eugene1g/agent-safehouse" = { version = "latest", asset_pattern = "safehouse.sh", bin = "safehouse" }
-# force postinstall using bun
-"npm:@opencode/cli" = { version = "latest", postinstall = { run = "bun \"$MISE_TOOL_INSTALL_PATH/node_modules/@opencode/cli/postinstall.mjs\"", when = "always" } }
+# "npm:@opencode/cli" = { version = "latest", depends = ["bun"], postinstall = { run = "bun \"$MISE_TOOL_INSTALL_PATH/node_modules/@opencode/cli/postinstall.mjs\"", when = "always" } }
+"npm:@opencode/cli" = { version = "latest", depends = ["node"], allow_builds = ["@opencode/cli"] }
+pi = "latest"
 "github:Mapika/portview" = "latest"
 "github:topiary/topiary" = "latest"
 "github:pruner-formatter/pruner" = "v1.0.0-alpha.11"
@@ -95,12 +94,13 @@ docker-compose = { version = "latest", depends = ["docker-cli"] }
 "cargo:https://github.com/nushell/nufmt" = "latest"
 
 # language servers, formatters, linters
-jactionlint = "latest"
+shellcheck = "latest"
+jactionlint = { version = "latest", depends = ["shellcheck"] }
+tinymist = "latest"
 "aqua:expert-lsp/expert" = "latest"
 "aqua:mrjosh/helm-ls" = "latest"
 "aqua:LuaLS/lua-language-server" = "latest"
 "aqua:hashicorp/terraform-ls" = "latest"
-"aqua:Myriad-Dreamin/tinymist" = "latest"
 "github:tombi-toml/tombi" = "latest"
 "github:clangd/clangd" = "latest"
 "github:latex-lsp/texlab" = "latest"
@@ -126,6 +126,7 @@ jactionlint = "latest"
 "npm:yaml-language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:@mistweaverco/kulala-fmt" = { version = "latest", allow_low_downloads = true, postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:typescript-svelte-plugin" = "latest"  # library plugin, no bin/ -> no runtime to patch
+"github:ewhauser/shuck" = "latest"
 
 # Tinycast: installed straight from the GitHub release zip via the `http`
 # backend + a postinstall hook (no Homebrew cask, no Ruby). The hook copies
@@ -145,7 +146,6 @@ experimental = true
 idiomatic_version_file_enable_tools = [
   "python",
   "rust",
-  "elixir",
   "node",
 ]
 
@@ -219,3 +219,6 @@ docker buildx prune -a -f
 "brew-cask:timemachineeditor" = "latest"
 "brew-cask:yaak" = "latest"
 # "brew-cask:zen" = "latest"
+
+[env]
+PI_CODING_AGENT_DIR = "{{ env.HOME }}/.config/pi"

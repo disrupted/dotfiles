@@ -339,6 +339,7 @@ vim.lsp.enable {
     'svelte',
     'tailwindcss',
     'terraform_ls',
+    'tinymist',
     'tombi',
     'tsc',
     'ts_query_ls',

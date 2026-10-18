@@ -55,6 +55,10 @@ local skip_messages = {
     '; before #%d+',
     'E486: Pattern not found:',
 
+    -- QuickFix
+    'E42: No Errors',
+    'E553: No more items',
+
     -- Edit
     '%d+ less lines',
     '%d+ fewer lines',
