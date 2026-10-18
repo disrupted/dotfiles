@@ -3,10 +3,10 @@ return {
     {
         'MeanderingProgrammer/render-markdown.nvim',
         cmd = 'RenderMarkdown',
-        ft = { 'markdown', 'opencode_output' },
+        ft = { 'markdown', 'opencode_output', 'pi_output' },
         opts = {
             debounce = 50,
-            file_types = { 'markdown', 'opencode_output' },
+            file_types = { 'markdown', 'opencode_output', 'pi_output' },
             -- don't attach to LSP floating previews (hover, etc.)
             ignore = function(buf)
                 local win = vim.fn.bufwinid(buf)
@@ -55,10 +55,11 @@ return {
             },
             code = {
                 sign = false,
-                language_icon = true,
-                language_name = true,
+                language_icon = false,
+                language_name = false,
                 language_info = true,
                 width = 'block',
+                disable_background = { 'diff', 'box' },
             },
             bullet = {
                 icons = {

@@ -201,14 +201,16 @@ vim.o.numberwidth = 2
 vim.o.signcolumn = 'auto:1-2' -- 'auto:1-2', 'yes:1'
 vim.o.laststatus = 3 -- global statusline
 vim.o.cursorline = false -- use autocmd below to only enable it for the focused window
+local cursorline_ignore_buftypes = { 'terminal' }
+local cursorline_ignore_filetypes =
+    { 'opencode', 'opencode_output', 'pi', 'pi_output' }
 local au_cursorline = vim.api.nvim_create_augroup('cursorline_focus', {})
 vim.api.nvim_create_autocmd({ 'InsertLeave', 'WinEnter' }, {
     group = au_cursorline,
-    callback = function(args)
+    callback = function(_)
         if
-            vim.bo[args.buf].buftype == 'terminal'
-            or vim.bo[args.buf].filetype == 'opencode'
-            or vim.bo[args.buf].filetype == 'opencode_output'
+            vim.tbl_contains(cursorline_ignore_buftypes, vim.bo.buftype)
+            or vim.tbl_contains(cursorline_ignore_filetypes, vim.bo.filetype)
         then
             return
         end

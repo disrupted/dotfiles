@@ -35,17 +35,17 @@ return {
             icons = {
                 rules = {
                     {
-                        plugin = 'opencode-native',
+                        plugin = 'opencode.nvim',
                         icon = ' ',
                         color = 'yellow',
                     },
                     {
-                        plugin = 'opencode-native',
+                        plugin = 'opencode.nvim',
                         pattern = 'reasoning',
                         icon = '󱍎 ',
                     },
                     {
-                        plugin = 'opencode-native',
+                        plugin = 'opencode.nvim',
                         pattern = 'tool',
                         icon = ' ',
                     },

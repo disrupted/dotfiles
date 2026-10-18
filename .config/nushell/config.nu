@@ -52,6 +52,7 @@ use ~/.config/nushell/modules/tmux.nu *
 use ~/.config/nushell/mise-hooks.nu *
 use ~/.config/nushell/fnox-hooks.nu *
 use ~/.config/nushell/modules/safehouse-opencode.nu *
+use ~/.config/nushell/modules/safehouse-pi.nu *
 use std/config *
 
 # Pure-style minimal color config

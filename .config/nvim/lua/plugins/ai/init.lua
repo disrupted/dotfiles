@@ -6,7 +6,7 @@ local server_spawn_attempted = false
 return {
     {
         'sudo-tee/opencode.nvim',
-        lazy = true,
+        cond = vim.env.ANTHROPIC_API_KEY ~= nil,
         cmd = 'Opencode',
         init = function()
             require('which-key').add {
@@ -362,6 +362,10 @@ return {
         config = function(_, opts)
             require('opencode').setup(opts)
 
+            -- HACK: monkeypatch for compatibility with edgy.nvim
+            local input_window = require 'opencode.ui.input_window'
+            input_window.schedule_resize = function() end
+
             local function add_quickfix_to_context()
                 local context = require 'opencode.context'
 
@@ -647,9 +651,6 @@ return {
                     end)
                 end,
             })
-
-            local input_window = require 'opencode.ui.input_window'
-            input_window.schedule_resize = function() end
 
             vim.api.nvim_create_autocmd('FileType', {
                 pattern = { 'opencode' },

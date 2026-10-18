@@ -168,8 +168,9 @@
       "src": "https://github.com/MunifTanjim/nui.nvim"
     },
     "nvim-bqf": {
-      "rev": "c282a62bec6c0621a1ef5132aa3f4c9fc4dcc2c7",
-      "src": "https://github.com/kevinhwang91/nvim-bqf"
+      "rev": "9cbabffb1c8717982e34fb5d55b12e12d0c50108",
+      "src": "https://github.com/ofseed/nvim-bqf",
+      "version": "'native-open'"
     },
     "nvim-coverage": {
       "rev": "a939e425e363319d952a6c35fb3f38b34041ded2",
@@ -232,10 +233,6 @@
     "one.nvim": {
       "rev": "df2e169d2f616efaf987de37765d30aab9db54e3",
       "src": "https://github.com/disrupted/one.nvim"
-    },
-    "opencode-native": {
-      "rev": "494e474f58c45218a4cf7c7d2e76b0408de09daa",
-      "src": "https://github.com/sudo-tee/opencode.nvim"
     },
     "opencode.nvim": {
       "rev": "494e474f58c45218a4cf7c7d2e76b0408de09daa",

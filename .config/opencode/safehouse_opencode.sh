@@ -12,7 +12,7 @@ launch_dir="$(pwd -P)"
 extra_grants=()
 
 case "$launch_dir" in
-"$home_dir/.config" | "$home_dir/.config/"* | "$home_dir/dev/" | "$home_dir/dev/"*)
+"$home_dir/.config" | "$home_dir/.config/"* | "$home_dir/dev" | "$home_dir/dev/"* | "$home_dir/.local" | "$home_dir/.local/"*)
 	extra_grants+=(--add-dirs="$home_dir/.config")
 	extra_grants+=(--add-dirs="$home_dir/dev")
 	extra_grants+=(--add-dirs-ro="$home_dir/.local")
@@ -70,14 +70,14 @@ safehouse_args=(
 	# local overlays
 	--append-profile="$home_dir/.config/opencode/opencode.sb"
 	--append-profile="$home_dir/.config/opencode/local-opencode.sb"
-	--append-profile="$home_dir/.config/opencode/local-ssh.sb"
-	--append-profile="$home_dir/.config/opencode/local-dev.sb"
+	--append-profile="$home_dir/.config/safehouse/local-ssh.sb"
+	--append-profile="$home_dir/.config/safehouse/local-dev.sb"
 )
 if [ "${#extra_grants[@]}" -gt 0 ]; then
 	safehouse_args+=("${extra_grants[@]}")
 fi
 safehouse_args+=(
-	--env-pass="OPENCODE_PASSWORD,OPENCODE_SERVER_PASSWORD,OPENCODE_SERVER_USERNAME,GITHUB_TOKEN,OPENROUTER_API_KEY,OPENAI_API_KEY,ANTHROPIC_API_KEY,GEMINI_API_KEY,VIRTUAL_ENV,REUSE_CONTAINERS"
+	--env-pass="OPENCODE_PASSWORD,OPENCODE_SERVER_PASSWORD,OPENCODE_SERVER_USERNAME,CONTEXT7_API_KEY,GITHUB_TOKEN,OPENROUTER_API_KEY,OPENAI_API_KEY,ANTHROPIC_API_KEY,GEMINI_API_KEY,VIRTUAL_ENV,REUSE_CONTAINERS"
 	-- opencode "$@"
 )
 exec "${safehouse_args[@]}"

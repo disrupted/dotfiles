@@ -31,7 +31,9 @@ return {
         },
     },
     {
-        'kevinhwang91/nvim-bqf',
+        -- 'kevinhwang91/nvim-bqf',
+        'ofseed/nvim-bqf',
+        branch = 'native-open',
         ft = 'qf',
         ---@module 'bqf.config'
         ---@type BqfConfig

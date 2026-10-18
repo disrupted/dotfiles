@@ -914,7 +914,7 @@ return {
                 open = '',
                 closed = '',
             },
-            ---@type table<Edgy.Pos, {size:integer | fun():integer, wo?:vim.wo}>
+            ---@type table<Edgy.Pos, {size:integer | fun():integer, wo:vim.wo?}>
             options = {
                 left = { size = 40 },
                 right = { size = 78 },
@@ -996,6 +996,26 @@ return {
                         winbar = false,
                         signcolumn = 'yes',
                         winhighlight = 'Normal:OpencodeBackground',
+                        statuscolumn = '',
+                    },
+                },
+                {
+                    ft = 'pi_output',
+                    wo = {
+                        winbar = false,
+                        signcolumn = 'yes',
+                        winhighlight = 'Normal:PiBackground',
+                        conceallevel = 3,
+                        concealcursor = 'nvc',
+                    },
+                },
+                {
+                    ft = 'pi',
+                    size = { height = 10 },
+                    wo = {
+                        winbar = false,
+                        signcolumn = 'yes',
+                        winhighlight = 'Normal:PiBackground',
                         statuscolumn = '',
                     },
                 },
