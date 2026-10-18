@@ -208,7 +208,7 @@
       "src": "https://github.com/kylechui/nvim-surround"
     },
     "nvim-treesitter": {
-      "rev": "d4a9b23a383266bdb0bfb42d565f31e83f27be5e",
+      "rev": "d3e4a28b63961ba972b0945d66c73b6eec969953",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter",
       "version": "'main'"
     },
@@ -237,13 +237,17 @@
       "rev": "494e474f58c45218a4cf7c7d2e76b0408de09daa",
       "src": "https://github.com/sudo-tee/opencode.nvim"
     },
+    "opencode.nvim": {
+      "rev": "494e474f58c45218a4cf7c7d2e76b0408de09daa",
+      "src": "https://github.com/sudo-tee/opencode.nvim"
+    },
     "overseer.nvim": {
       "rev": "a93d9f6d6defdac4bcd6d2c8ba988650e42e0a0e",
       "src": "https://github.com/stevearc/overseer.nvim"
     },
     "pi.nvim": {
-      "rev": "fb0f6584f1b168f7adbcf31b2e4ae5d49ec9bffa",
-      "src": "https://github.com/gilad-hecht-cyera/pi.nvim"
+      "rev": "caf603dad7a955f57588a9f7d394ee01f00412e3",
+      "src": "https://github.com/disrupted/pi.nvim"
     },
     "plenary.nvim": {
       "rev": "74b06c6c75e4eeb3108ec01852001636d85a932b",
@@ -283,8 +287,8 @@
       "src": "https://github.com/tiagovla/scope.nvim"
     },
     "snacks.nvim": {
-      "rev": "882c996cf28183f4d63640de0b4c02ec886d01f2",
-      "src": "https://github.com/folke/snacks.nvim"
+      "rev": "8277ac8f604b2df0387c2275a1cbed04db8fc910",
+      "src": "https://github.com/disrupted/snacks.nvim"
     },
     "tabout.nvim": {
       "rev": "9a3499480a8e53dcaa665e2836f287e3b7764009",

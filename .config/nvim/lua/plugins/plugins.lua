@@ -69,7 +69,7 @@ return {
         end,
     },
     {
-        'folke/snacks.nvim',
+        'disrupted/snacks.nvim',
         lazy = false,
         priority = 998,
         init = function()

@@ -7,7 +7,6 @@ return {
     {
         'sudo-tee/opencode.nvim',
         lazy = true,
-        name = 'opencode-native',
         cmd = 'Opencode',
         init = function()
             require('which-key').add {
@@ -35,7 +34,7 @@ return {
         end,
         dependencies = {
             {
-                'folke/snacks.nvim',
+                'disrupted/snacks.nvim',
                 opts = {
                     picker = {
                         actions = {
@@ -281,7 +280,7 @@ return {
                     },
                 },
                 picker = {
-                    ---@module "snacks"
+                    ---@module 'snacks'
                     ---@type snacks.picker.layout.Config?
                     snacks_layout = {
                         preset = 'dropdown',
