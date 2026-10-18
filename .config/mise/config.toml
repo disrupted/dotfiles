@@ -118,7 +118,6 @@ jactionlint = "latest"
 "npm:@astrojs/language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:vscode-langservers-extracted" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:@microsoft/compose-language-service" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
-"npm:dockerfile-language-server-nodejs" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:@actions/languageserver" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:@fsouza/prettierd" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:svelte-language-server" = { version = "latest", trust_policy_excludes = ["svelte@4.2.20"], postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }

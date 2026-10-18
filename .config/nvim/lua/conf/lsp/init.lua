@@ -321,7 +321,6 @@ vim.lsp.enable {
     'css_ls',
     -- 'demo_ls',
     'docker_compose_ls',
-    'docker_ls',
     'emmylua_ls',
     'expert',
     'gitlab_ci_ls',
