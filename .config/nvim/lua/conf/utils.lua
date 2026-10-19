@@ -10,16 +10,4 @@ function M.has_width_gt(cols)
     return vim.fn.winwidth(0) / 2 > cols
 end
 
----@param path string
----@return string?
-function M.dir(path)
-    return vim.uv.fs_stat(vim.fs.normalize(path)) and path
-end
-
----@param path string
----@return boolean?
-function M.dev(path)
-    return M.dir(path) and true
-end
-
 return M

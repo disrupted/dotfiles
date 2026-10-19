@@ -83,8 +83,8 @@
       "src": "https://github.com/Hdoc1509/gh-actions.nvim"
     },
     "github-actions.nvim": {
-      "rev": "c362738033436d247e470edf06efa6df2879ccdf",
-      "src": "/Users/disrupted/dev/github-actions.nvim"
+      "rev": "3a811e07810c53b8707c3d080b50abddaac8a440",
+      "src": "https://github.com/disrupted/github-actions.nvim"
     },
     "gitsigns.nvim": {
       "rev": "fd780920613e541cbdfac41bf711583ed49f9249",
@@ -126,10 +126,6 @@
     "mkdir.nvim": {
       "rev": "c55d1dee4f099528a1853b28bb28caa802eba217",
       "src": "https://github.com/jghauser/mkdir.nvim"
-    },
-    "neoconf.nvim": {
-      "rev": "4bf32899a053e052492b452147afead6e7688741",
-      "src": "https://github.com/folke/neoconf.nvim"
     },
     "neogen": {
       "rev": "23e7e9f883d01289ebd90e98025acc860ea26366",

@@ -99,7 +99,6 @@ jactionlint = { version = "latest", depends = ["shellcheck"] }
 tinymist = "latest"
 "aqua:expert-lsp/expert" = "latest"
 "aqua:mrjosh/helm-ls" = "latest"
-"aqua:LuaLS/lua-language-server" = "latest"
 "aqua:hashicorp/terraform-ls" = "latest"
 "github:tombi-toml/tombi" = "latest"
 "github:clangd/clangd" = "latest"

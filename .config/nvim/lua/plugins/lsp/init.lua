@@ -1,11 +1,6 @@
 ---@type zpack.Spec[]
 return {
     {
-        'folke/neoconf.nvim',
-        cmd = 'Neoconf',
-        opts = {},
-    },
-    {
         'Davidyz/inlayhint-filler.nvim',
         lazy = true,
         init = function()
@@ -119,6 +114,7 @@ return {
                 formatters_by_ft = {
                     -- python = { 'ruff', lsp_format = 'last' }, -- provides `ruff check --fix`
                     lua = { 'stylua' },
+                    luau = { 'stylua' },
                     astro = dprint,
                     json = dprint,
                     jsonc = dprint,

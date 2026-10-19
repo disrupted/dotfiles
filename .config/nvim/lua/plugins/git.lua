@@ -1203,8 +1203,6 @@ return {
     },
     {
         'disrupted/github-actions.nvim',
-        dir = require('conf.utils').dir '~/dev/github-actions.nvim',
-        dev = require('conf.utils').dev '~/dev/github-actions.nvim',
         ft = 'yaml.github',
         ---@module 'github-actions.config'
         ---@type github_actions.Opts
@@ -1212,9 +1210,6 @@ return {
             token_provider = function(callback)
                 callback(vim.env.GITHUB_TOKEN)
             end,
-            lsp = {
-                cmd = { 'actions-languageserver', '--stdio' },
-            },
         },
     },
 }

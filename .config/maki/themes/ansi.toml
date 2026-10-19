@@ -1,0 +1,138 @@
+# Minimalist ANSI theme for Maki.
+# Every color is a terminal palette name, so the terminal decides what it
+# looks like and the theme follows light and dark schemes on its own.
+#
+# Brightness based: comments, variables and punctuation sit at the dim
+# `muted` level, while keywords/constants/strings/types/function names use the
+# default foreground.
+
+"comment"                     = { fg = "comment" }
+"constant"                    = { fg = "constant" }
+"constant.builtin"            = { fg = "constant" }
+"constant.character.escape"   = { fg = "constant" }
+"function"                    = { fg = "function" }
+"function.builtin"            = { fg = "function" }
+"function.macro"              = { fg = "function" }
+"keyword"                     = { fg = "keyword" }
+"keyword.storage"             = { fg = "keyword" }
+"keyword.storage.modifier"    = { fg = "keyword" }
+"keyword.storage.type"        = { fg = "type" }
+"keyword.control.import"      = { fg = "keyword" }
+"keyword.control.exception"   = { fg = "keyword" }
+"keyword.return"              = { fg = "keyword" }
+"keyword.directive"           = { fg = "function" }
+"operator"                    = { fg = "muted" }
+"string"                      = { fg = "string" }
+"string.regexp"               = { fg = "string" }
+"type"                        = { fg = "type" }
+"type.builtin"                = { fg = "type" }
+"label"                       = { fg = "type" }
+"namespace"                   = { fg = "muted" }
+"variable"                    = { fg = "muted" }
+"variable.parameter"          = { fg = "muted" }
+"punctuation"                 = { fg = "muted" }
+
+"markup.bold"                 = { modifiers = ["bold"] }
+"markup.italic"               = { modifiers = ["italic"] }
+"markup.heading"              = { fg = "accent", modifiers = ["bold"] }
+"markup.link.text"            = { fg = "accent" }
+"markup.link.url"             = { fg = "accent", modifiers = ["underlined"] }
+"markup.list"                 = { fg = "accent" }
+"markup.quote"                = { fg = "comment", modifiers = ["italic"] }
+"markup.raw"                  = { fg = "keyword" }
+"markup.strikethrough"        = { modifiers = ["crossed_out"] }
+
+"error"                       = { fg = "error" }
+"warning"                     = { fg = "warning" }
+"info"                        = { fg = "info" }
+"hint"                        = { fg = "comment" }
+
+"diff.plus"                   = { fg = "diff_new" }
+"diff.minus"                  = { fg = "diff_old" }
+"diff.delta"                  = { fg = "diff_delta" }
+
+[palette]
+# Base
+background = "default"
+foreground = "default"
+comment    = "light-gray"   # dim level: comments, hints
+muted      = "light-gray"   # dim level: variables, punctuation, operators
+
+# Syntax roles. Point these at any palette name or "default" to retune.
+keyword    = "default"
+constant   = "default"
+string     = "default"
+type       = "default"
+function   = "blue"
+
+# Status
+error      = "red"
+warning    = "yellow"
+success    = "green"
+info       = "blue"
+
+# Chrome
+accent     = "blue"
+mode       = "light-gray"   # input border + mode badge
+diff_old   = "red"
+diff_new   = "green"
+diff_delta = "yellow"
+
+[ui]
+user               = { fg = "green" }
+assistant          = { fg = "foreground" }
+assistant_prefix   = { fg = "accent" }
+thinking           = { fg = "comment" }
+tool               = { fg = "foreground" }
+tool_path          = { fg = "accent" }
+tool_annotation    = { fg = "comment" }
+tool_prefix        = { fg = "muted" }
+tool_success       = { fg = "success" }
+tool_error         = { fg = "error" }
+tool_dim           = { fg = "comment" }
+error              = { fg = "error" }
+status_dim         = { fg = "comment" }
+bold               = { modifiers = ["bold"] }
+italic             = { modifiers = ["italic"] }
+bold_italic        = { modifiers = ["bold", "italic"] }
+inline_code        = { modifiers = ["bold"] }
+code_block         = { fg = "foreground" }
+code_gutter        = { fg = "muted" }
+strikethrough      = { fg = "comment", modifiers = ["crossed_out"] }
+heading            = { fg = "foreground", modifiers = ["bold"] }
+list_marker        = { fg = "foreground" }
+horizontal_rule    = { fg = "comment" }
+plan_rule          = { fg = "muted" }
+table_border       = { fg = "comment" }
+diff_old           = { fg = "diff_old" }
+diff_new           = { fg = "diff_new" }
+diff_old_emphasis  = { fg = "diff_old", modifiers = ["bold"] }
+diff_new_emphasis  = { fg = "diff_new", modifiers = ["bold"] }
+diff_line_nr       = { fg = "muted" }
+todo_completed     = { fg = "success" }
+todo_in_progress   = { fg = "warning" }
+todo_pending       = { fg = "comment" }
+todo_cancelled     = { fg = "comment", modifiers = ["crossed_out"] }
+item_selected      = { modifiers = ["reversed"] }
+item               = { fg = "foreground" }
+item_desc          = { fg = "comment" }
+item_match         = { fg = "accent" }
+item_match_selected = { fg = "accent", modifiers = ["reversed"] }
+panel_border       = { fg = "comment" }
+panel_title        = { fg = "accent" }
+cursor             = { fg = "accent", modifiers = ["reversed"] }
+cursor_unfocused   = { modifiers = ["reversed"] }
+input_border       = { fg = "muted" }
+accent             = { fg = "accent" }
+keybind_key        = { fg = "accent" }
+keybind_desc       = { fg = "foreground" }
+keybind_section    = { fg = "muted" }
+queue              = { fg = "comment" }
+plan_path          = { fg = "accent" }
+status_notice      = { fg = "warning" }
+status_retry_error = { fg = "error" }
+status_retry_info  = { fg = "comment" }
+input_placeholder  = { fg = "comment" }
+queue_delete       = { fg = "error" }
+timestamp          = { fg = "comment" }
+spinner            = { fg = "accent" }

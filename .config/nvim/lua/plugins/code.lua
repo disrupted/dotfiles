@@ -110,7 +110,7 @@ return {
             -- },
             {
                 'ds',
-                '<Plug>{nvim-surround-delete}',
+                '<Plug>(nvim-surround-delete)',
                 desc = 'Delete surrounding pair',
             },
             {
