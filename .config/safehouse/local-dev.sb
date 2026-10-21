@@ -1,3 +1,8 @@
+(allow file-read*
+    ; mise
+    (home-subpath "/.local/bin")
+)
+
 (allow file-read* file-write*
     ; aube
     (home-subpath "/.local/share/aube")
@@ -5,4 +10,7 @@
 
     ; hk
     (home-subpath "/Library/Caches/hk")
+
+    ; dprint
+    (home-subpath "/Library/Caches/dprint")
 )
