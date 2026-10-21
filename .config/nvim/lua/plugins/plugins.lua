@@ -240,6 +240,13 @@ return {
                     desc = 'List PRs',
                     icon = icons.git.pull_request,
                 },
+                {
+                    '<A-d>',
+                    function()
+                        Snacks.scratch { ft = 'lua' }
+                    end,
+                    desc = 'Toggle Scratch Buffer',
+                },
             }
         end,
         keys = {
@@ -673,6 +680,7 @@ return {
         },
         ---@type snacks.Config
         opts = {
+            scratch = {},
             bigfile = { enabled = true },
             explorer = {},
             gitbrowse = {},
@@ -1157,11 +1165,10 @@ return {
             }
 
             -- remap submit for consistency and to avoid conflict with blink.cmp
-            local scratch = require 'snacks.scratch'
-            local scratch_open = scratch.open
-            ---@param scratch_opts snacks.scratch.Config
-            scratch.open = function(scratch_opts, ...)
-                local win = scratch_opts.win
+            local scratch_open = Snacks.scratch.open
+            ---@param scratch_opts? snacks.scratch.Config
+            Snacks.scratch.open = function(scratch_opts)
+                local win = (scratch_opts or {}).win
                 if win and win.keys and win.keys.submit then
                     win.keys.submit[1] = '<S-CR>'
                     for i, key in ipairs(win.footer_keys or {}) do
@@ -1170,7 +1177,7 @@ return {
                         end
                     end
                 end
-                return scratch_open(scratch_opts, ...)
+                return scratch_open(scratch_opts)
             end
 
             -- Snacks hardcodes a list of commit types (chore, bot, build, ci,

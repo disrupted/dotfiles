@@ -145,3 +145,6 @@ scratch_*
 .config/nushell/history.sqlite*
 .config/nushell/vendor/
 .env.secrets
+
+# Agents
+.plans/

@@ -3,10 +3,10 @@ return {
     {
         'MeanderingProgrammer/render-markdown.nvim',
         cmd = 'RenderMarkdown',
-        ft = { 'markdown', 'opencode_output', 'pi_output' },
+        ft = { 'opencode_output', 'pi_output' },
         opts = {
             debounce = 50,
-            file_types = { 'markdown', 'opencode_output', 'pi_output' },
+            file_types = { 'opencode_output', 'pi_output' },
             -- don't attach to LSP floating previews (hover, etc.)
             ignore = function(buf)
                 local win = vim.fn.bufwinid(buf)

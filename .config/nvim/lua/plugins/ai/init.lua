@@ -5,8 +5,7 @@ local server_spawn_attempted = false
 ---@type zpack.Spec[]
 return {
     {
-        'sudo-tee/opencode.nvim',
-        cond = vim.env.ANTHROPIC_API_KEY ~= nil,
+        'disrupted/opencode.nvim',
         cmd = 'Opencode',
         init = function()
             require('which-key').add {
@@ -87,6 +86,10 @@ return {
         ---@module 'opencode'
         ---@type OpencodeConfig
         opts = {
+            backend = 'pi',
+            pi = {
+                executable = vim.fs.normalize '~/.config/pi/safehouse_pi.sh',
+            },
             server = {
                 url = '127.0.0.1',
                 port = 'auto',
@@ -121,7 +124,6 @@ return {
                 end,
             },
             preferred_picker = 'snacks',
-            preferred_completion = 'blink',
             default_global_keymaps = false,
             keymap_prefix = '<leader>a',
             keymap = {

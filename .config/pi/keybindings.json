@@ -1,4 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/earendil-works/pi/main/packages/coding-agent/schemas/keybindings.schema.json",
-  "app.thinking.cycle": "alt+r"
+  "app.model.select": "alt+p",
+  "app.thinking.cycle": "alt+r",
+  "tui.input.newLine": ["shift+enter", "alt+enter"]
 }

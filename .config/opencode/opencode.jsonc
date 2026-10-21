@@ -20,7 +20,6 @@
       ],
     },
   },
-  "lsp": false,
   "mcp": {
     "servers": {
       "context7": {

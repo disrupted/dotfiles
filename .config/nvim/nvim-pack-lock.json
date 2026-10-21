@@ -232,15 +232,11 @@
     },
     "opencode.nvim": {
       "rev": "494e474f58c45218a4cf7c7d2e76b0408de09daa",
-      "src": "https://github.com/sudo-tee/opencode.nvim"
+      "src": "https://github.com/disrupted/opencode.nvim"
     },
     "overseer.nvim": {
       "rev": "a93d9f6d6defdac4bcd6d2c8ba988650e42e0a0e",
       "src": "https://github.com/stevearc/overseer.nvim"
-    },
-    "pi.nvim": {
-      "rev": "caf603dad7a955f57588a9f7d394ee01f00412e3",
-      "src": "https://github.com/disrupted/pi.nvim"
     },
     "plenary.nvim": {
       "rev": "74b06c6c75e4eeb3108ec01852001636d85a932b",
