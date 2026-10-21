@@ -1000,26 +1000,6 @@ return {
                     },
                 },
                 {
-                    ft = 'pi_output',
-                    wo = {
-                        winbar = false,
-                        signcolumn = 'yes',
-                        winhighlight = 'Normal:PiBackground',
-                        conceallevel = 3,
-                        concealcursor = 'nvc',
-                    },
-                },
-                {
-                    ft = 'pi',
-                    size = { height = 10 },
-                    wo = {
-                        winbar = false,
-                        signcolumn = 'yes',
-                        winhighlight = 'Normal:PiBackground',
-                        statuscolumn = '',
-                    },
-                },
-                {
                     ft = 'help',
                     size = { height = 40 },
                     filter = function(buf)
