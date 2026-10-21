@@ -4,9 +4,8 @@
 neovim = "nightly"
 starship = "latest"
 tmux = "latest"
-jj = "latest"
 
-rust = "latest"
+rust = { version = "latest", components = ["rust-analyzer"] }
 python = "latest"
 bun = "latest"
 node = "latest"
@@ -153,6 +152,10 @@ idiomatic_version_file_enable_tools = [
 compile = false
 uv_venv_auto = true
 
+[settings.rust]
+rustup_home = "~/.local/share/mise/rustup"
+cargo_home = "~/.local/share/mise/cargo"
+
 [tasks."docker:stop-all"]
 description = "Docker stop all containers"
 run = """
@@ -182,6 +185,7 @@ docker buildx prune -a -f
 "brew:nushell" = "latest"
 "brew:wget" = "latest"
 "brew:pv" = "latest"
+"brew:gnu-sed" = "latest"
 "brew:gnupg" = "latest"
 "brew:bzip2" = "latest"
 "brew:zlib" = "latest"
@@ -222,3 +226,4 @@ docker buildx prune -a -f
 
 [env]
 PI_CODING_AGENT_DIR = "{{ env.HOME }}/.config/pi"
+_.path = ["/opt/homebrew/opt/gnu-sed/libexec/gnubin"]  # shadow BSD sed with gnu-sed

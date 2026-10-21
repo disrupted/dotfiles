@@ -40,15 +40,7 @@ if ($brew_prefix != null and (($brew_prefix | path join "opt") | path exists)) {
 
 # Fallback paths
 prepend-path [/usr/local/bin]
-
-let user_bin_paths = [
-  ($env.HOME | path join ".local" "bin")
-  ($env.HOME | path join ".cargo" "bin")
-  ($env.HOME | path join ".bun" "bin")
-  ($env.HOME | path join ".deno" "bin")
-  ($env.HOME | path join ".luarocks" "bin")
-]
-prepend-path $user_bin_paths
+prepend-path [($env.HOME | path join ".local" "bin")]
 
 # Core environment
 $env.SHELL = $nu.current-exe
