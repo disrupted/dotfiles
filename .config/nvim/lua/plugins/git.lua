@@ -1188,7 +1188,6 @@ return {
     },
     {
         'Hdoc1509/gh-actions.nvim',
-        ft = 'yaml.github',
         build = function()
             require('nvim-treesitter').install(
                 'gh_actions_expressions',
@@ -1198,12 +1197,10 @@ return {
         dependencies = { 'nvim-treesitter/nvim-treesitter' },
         config = function()
             require('gh-actions.tree-sitter').setup()
-            pcall(vim.treesitter.start, 0, 'gh_actions_expressions')
         end,
     },
     {
         'disrupted/github-actions.nvim',
-        ft = 'yaml.github',
         ---@module 'github-actions.config'
         ---@type github_actions.Opts
         opts = {

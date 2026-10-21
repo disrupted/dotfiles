@@ -987,6 +987,8 @@ return {
                         winbar = false,
                         signcolumn = 'yes',
                         winhighlight = 'Normal:OpencodeBackground',
+                        conceallevel = 3,
+                        concealcursor = 'n',
                     },
                 },
                 {
