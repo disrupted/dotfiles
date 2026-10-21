@@ -1,7 +1,9 @@
----@type zpack.Spec[]
+---@type LazeSpec[]
 return {
     {
         'mfussenegger/nvim-dap',
+        main = 'dap',
+        module = 'dap',
         init = function()
             require('which-key').add {
                 {
@@ -239,7 +241,9 @@ return {
     },
     {
         'igorlfs/nvim-dap-view',
-        cmd = { 'DapViewOpen', 'DapViewToggle', 'DapViewWatch' },
+        main = 'dap-view',
+        module = 'dap-view',
+        dependencies = { 'mfussenegger/nvim-dap' },
         keys = {
             {
                 '<Leader>dv',
@@ -267,21 +271,12 @@ return {
             --     desc = 'Scopes',
             -- },
         },
-        ---@module 'dap-view.config'
-        ---@type Config
-        ---@diagnostic disable-next-line: missing-fields
-        opts = {
-            -- auto_toggle = true,
-            ---@diagnostic disable-next-line: missing-fields
-            windows = {
+        config = function()
+            ---@diagnostic disable-next-line: param-type-mismatch
+            require('dap-view').setup {
                 ---@diagnostic disable-next-line: missing-fields
-                terminal = {
-                    hide = { 'go' },
-                },
-            },
-        },
-        config = function(_, opts)
-            require('dap-view').setup(opts)
+                windows = { terminal = { hide = { 'go' } } },
+            }
 
             vim.api.nvim_create_autocmd('FileType', {
                 pattern = { 'dap-view' },
@@ -327,7 +322,9 @@ return {
     },
     {
         'theHamsta/nvim-dap-virtual-text',
-        lazy = true,
+        main = 'nvim-dap-virtual-text',
+        module = 'nvim-dap-virtual-text',
+        dependencies = { 'mfussenegger/nvim-dap' },
         opts = {
             enabled = true,
             enabled_commands = false,
@@ -364,17 +361,17 @@ return {
     },
     {
         'mfussenegger/nvim-dap-python',
-        lazy = true,
+        main = 'dap-python',
+        module = 'dap-python',
+        dependencies = { 'mfussenegger/nvim-dap' },
         init = function()
             require('conf.dap.adapters').register('python', 'dap-python')
         end,
-        ---@module 'dap-python'
-        ---@type dap-python.setup.opts
-        opts = {
-            include_configs = false,
-            console = 'internalConsole',
-        },
-        config = function(_, opts)
+        config = function()
+            local opts = {
+                include_configs = false,
+                console = 'internalConsole',
+            }
             local py = require 'dap-python'
             local function debugpy_python()
                 local roots = {

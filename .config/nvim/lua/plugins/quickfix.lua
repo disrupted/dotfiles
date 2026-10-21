@@ -1,7 +1,9 @@
----@type zpack.Spec[]
+---@type LazeSpec[]
 return {
     {
         'stevearc/quicker.nvim',
+        main = 'quicker',
+        module = 'quicker',
         ft = 'qf',
         init = function()
             require('which-key').add {
@@ -34,6 +36,8 @@ return {
         -- 'kevinhwang91/nvim-bqf',
         'ofseed/nvim-bqf',
         branch = 'native-open',
+        main = 'bqf',
+        module = 'bqf',
         ft = 'qf',
         ---@module 'bqf.config'
         ---@type BqfConfig

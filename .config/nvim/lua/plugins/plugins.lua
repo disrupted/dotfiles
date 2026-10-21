@@ -1,58 +1,61 @@
 local icons = require 'conf.icons'
 local gh = require 'conf.snacks.gh'
 
----@type zpack.Spec[]
+---@type LazeSpec[]
 return {
-    { 'nvim-lua/plenary.nvim', lazy = true },
+    { 'nvim-lua/plenary.nvim', main = 'plenary', module = 'plenary' },
     {
         'disrupted/frizbee.nvim',
+        main = 'frizbee',
+        module = 'frizbee',
         build = 'cargo build --release',
     },
     {
         'folke/which-key.nvim',
+        main = 'which-key',
+        module = 'which-key',
         lazy = false,
         priority = 999,
         init = function()
             vim.o.timeout = true
             vim.o.timeoutlen = 500
         end,
-        ---@module 'which-key.config'
-        ---@type wk.Opts
-        ---@diagnostic disable-next-line: missing-fields
-        opts = {
-            preset = 'helix',
-            ---@param mapping wk.Mapping
-            filter = function(mapping)
-                -- exclude mappings without a description
-                return mapping.desc and mapping.desc ~= ''
-            end,
-            spec = {
-                { '<Leader>?', hidden = true },
-                -- override motions preset
-                { ',', desc = '' },
-                { ';', desc = '' },
-            },
-            icons = {
-                rules = {
-                    {
-                        plugin = 'opencode.nvim',
-                        icon = ' ',
-                        color = 'yellow',
-                    },
-                    {
-                        plugin = 'opencode.nvim',
-                        pattern = 'reasoning',
-                        icon = '󱍎 ',
-                    },
-                    {
-                        plugin = 'opencode.nvim',
-                        pattern = 'tool',
-                        icon = ' ',
+        config = function()
+            ---@module 'which-key.config'
+            ---@type wk.Opts
+            local opts = {
+                preset = 'helix',
+                ---@param mapping wk.Mapping
+                filter = function(mapping)
+                    -- exclude mappings without a description
+                    return mapping.desc and mapping.desc ~= ''
+                end,
+                spec = {
+                    { '<Leader>?', hidden = true },
+                    -- override motions preset
+                    { ',', desc = '' },
+                    { ';', desc = '' },
+                },
+                icons = {
+                    rules = {
+                        {
+                            plugin = 'opencode.nvim',
+                            icon = ' ',
+                            color = 'yellow',
+                        },
+                        {
+                            plugin = 'opencode.nvim',
+                            pattern = 'reasoning',
+                            icon = '󱍎 ',
+                        },
+                        {
+                            plugin = 'opencode.nvim',
+                            pattern = 'tool',
+                            icon = ' ',
+                        },
                     },
                 },
-            },
-        },
-        config = function(_, opts)
+            }
             local wk = require 'which-key'
             wk.setup(opts)
 
@@ -70,6 +73,8 @@ return {
     },
     {
         'disrupted/snacks.nvim',
+        main = 'snacks',
+        module = 'snacks',
         lazy = false,
         priority = 998,
         init = function()
@@ -679,450 +684,454 @@ return {
             },
         },
         ---@type snacks.Config
-        opts = {
-            scratch = {},
-            bigfile = { enabled = true },
-            explorer = {},
-            gitbrowse = {},
-            indent = {
-                filter = function(buf)
-                    return vim.g.snacks_indent ~= false
-                        and vim.b[buf].snacks_indent ~= false
-                        and vim.bo[buf].buftype == ''
-                        and not vim.tbl_contains({
-                            'markdown',
-                            'gitcommit',
-                        }, vim.bo[buf].filetype)
-                end,
+        config = function()
+            local opts = {
+                scratch = {},
+                bigfile = { enabled = true },
+                explorer = {},
+                gitbrowse = {},
                 indent = {
-                    char = '▏',
-                    hl = {
-                        'Hidden', -- first one blends with background
-                        'Whitespace',
-                        'Whitespace',
-                        'Whitespace',
-                        'Whitespace',
-                        'Whitespace',
-                        'Whitespace',
-                        'Whitespace',
-                        'Whitespace',
-                        'Whitespace',
-                        'Whitespace',
-                        'Whitespace',
-                        'Whitespace',
-                        'Whitespace',
-                        'Whitespace',
-                        'Whitespace',
-                        'Whitespace',
-                        'Whitespace',
-                        'Whitespace',
-                        'Whitespace',
-                        'Whitespace',
+                    filter = function(buf)
+                        return vim.g.snacks_indent ~= false
+                            and vim.b[buf].snacks_indent ~= false
+                            and vim.bo[buf].buftype == ''
+                            and not vim.tbl_contains({
+                                'markdown',
+                                'gitcommit',
+                            }, vim.bo[buf].filetype)
+                    end,
+                    indent = {
+                        char = '▏',
+                        hl = {
+                            'Hidden', -- first one blends with background
+                            'Whitespace',
+                            'Whitespace',
+                            'Whitespace',
+                            'Whitespace',
+                            'Whitespace',
+                            'Whitespace',
+                            'Whitespace',
+                            'Whitespace',
+                            'Whitespace',
+                            'Whitespace',
+                            'Whitespace',
+                            'Whitespace',
+                            'Whitespace',
+                            'Whitespace',
+                            'Whitespace',
+                            'Whitespace',
+                            'Whitespace',
+                            'Whitespace',
+                            'Whitespace',
+                            'Whitespace',
+                        },
+                    },
+                    animate = {
+                        duration = {
+                            step = 15,
+                            total = 300,
+                        },
+                    },
+                    scope = {
+                        enabled = false,
+                        only_current = true,
+                        hl = 'NonText',
+                        char = '▏',
+                    },
+                    chunk = {
+                        enabled = true,
+                        only_current = true,
+                        hl = 'NonText',
+                        char = {
+                            corner_top = '┌',
+                            corner_bottom = '└',
+                            horizontal = '─',
+                            vertical = '│', --│▕
+                            arrow = '󰁔', --   󰁔  
+                        },
                     },
                 },
-                animate = {
-                    duration = {
-                        step = 15,
-                        total = 300,
-                    },
-                },
-                scope = {
+                image = {
                     enabled = false,
-                    only_current = true,
-                    hl = 'NonText',
-                    char = '▏',
+                    markdown = { inline = false, float = true },
                 },
-                chunk = {
+                input = { enabled = true },
+                notifier = {
                     enabled = true,
-                    only_current = true,
-                    hl = 'NonText',
-                    char = {
-                        corner_top = '┌',
-                        corner_bottom = '└',
-                        horizontal = '─',
-                        vertical = '│', --│▕
-                        arrow = '󰁔', --   󰁔  
+                    level = vim.log.levels.INFO,
+                    width = { min = 10, max = 0.4 },
+                    icons = {
+                        error = '',
+                        warn = '',
+                        info = '',
+                        debug = '',
+                        trace = '',
                     },
                 },
-            },
-            image = {
-                enabled = false,
-                markdown = { inline = false, float = true },
-            },
-            input = { enabled = true },
-            notifier = {
-                enabled = true,
-                level = vim.log.levels.INFO,
-                width = { min = 10, max = 0.4 },
-                icons = {
-                    error = '',
-                    warn = '',
-                    info = '',
-                    debug = '',
-                    trace = '',
-                },
-            },
-            statuscolumn = { enabled = true },
-            picker = {
-                ui_select = true,
-                sources = {
-                    gh_issue = vim.tbl_deep_extend('force', gh.issue, {
-                        layout = {
+                statuscolumn = { enabled = true },
+                picker = {
+                    ui_select = true,
+                    sources = {
+                        gh_issue = vim.tbl_deep_extend('force', gh.issue, {
                             layout = {
-                                backdrop = false,
-                                row = 1,
-                                width = 0.4,
-                                min_width = 80,
-                                height = 0.8,
-                                border = 'none',
-                                box = 'vertical',
-                                {
-                                    win = 'preview',
-                                    title = '{preview}',
-                                    height = 0.7,
-                                    border = false,
-                                },
-                                {
+                                layout = {
+                                    backdrop = false,
+                                    row = 1,
+                                    width = 0.4,
+                                    min_width = 80,
+                                    height = 0.8,
+                                    border = 'none',
                                     box = 'vertical',
-                                    border = true,
-                                    title = '{title} {flags}',
-                                    title_pos = 'center',
                                     {
-                                        win = 'input',
-                                        height = 1,
-                                        border = 'bottom',
+                                        win = 'preview',
+                                        title = '{preview}',
+                                        height = 0.7,
+                                        border = false,
                                     },
-                                    { win = 'list', border = 'none' },
-                                },
-                            },
-                        },
-                        win = {
-                            input = {
-                                keys = {
-                                    ['<C-o>'] = {
-                                        'gh_develop',
-                                        mode = { 'n', 'i' },
+                                    {
+                                        box = 'vertical',
+                                        border = true,
+                                        title = '{title} {flags}',
+                                        title_pos = 'center',
+                                        {
+                                            win = 'input',
+                                            height = 1,
+                                            border = 'bottom',
+                                        },
+                                        { win = 'list', border = 'none' },
                                     },
                                 },
                             },
-                            list = {
-                                keys = {
-                                    ['<C-o>'] = { 'gh_develop' },
+                            win = {
+                                input = {
+                                    keys = {
+                                        ['<C-o>'] = {
+                                            'gh_develop',
+                                            mode = { 'n', 'i' },
+                                        },
+                                    },
+                                },
+                                list = {
+                                    keys = {
+                                        ['<C-o>'] = { 'gh_develop' },
+                                    },
                                 },
                             },
-                        },
-                    }),
-                    gh_pr = vim.tbl_deep_extend('force', gh.pr, {
-                        layout = {
+                        }),
+                        gh_pr = vim.tbl_deep_extend('force', gh.pr, {
                             layout = {
-                                backdrop = false,
-                                row = 1,
-                                width = 0.4,
-                                min_width = 80,
-                                height = 0.8,
-                                border = 'none',
-                                box = 'vertical',
-                                {
-                                    win = 'preview',
-                                    title = '{preview}',
-                                    height = 0.7,
-                                    border = false,
-                                },
-                                {
+                                layout = {
+                                    backdrop = false,
+                                    row = 1,
+                                    width = 0.4,
+                                    min_width = 80,
+                                    height = 0.8,
+                                    border = 'none',
                                     box = 'vertical',
-                                    border = true,
-                                    title = '{title} {flags}',
-                                    title_pos = 'center',
                                     {
-                                        win = 'input',
-                                        height = 1,
-                                        border = 'bottom',
+                                        win = 'preview',
+                                        title = '{preview}',
+                                        height = 0.7,
+                                        border = false,
                                     },
-                                    { win = 'list', border = 'none' },
+                                    {
+                                        box = 'vertical',
+                                        border = true,
+                                        title = '{title} {flags}',
+                                        title_pos = 'center',
+                                        {
+                                            win = 'input',
+                                            height = 1,
+                                            border = 'bottom',
+                                        },
+                                        { win = 'list', border = 'none' },
+                                    },
+                                },
+                            },
+                            win = {
+                                input = {
+                                    keys = {
+                                        ['<C-o>'] = {
+                                            'gh_checkout_pr',
+                                            mode = { 'n', 'i' },
+                                        },
+                                    },
+                                },
+                                list = {
+                                    keys = {
+                                        ['<C-o>'] = { 'gh_checkout_pr' },
+                                    },
+                                },
+                            },
+                        }),
+                        explorer = {
+                            -- layout = {
+                            --     fullscreen = true,
+                            --     layout = { backdrop = false, relative = 'win' },
+                            -- },
+                            jump = { close = true },
+                            win = {
+                                input = {
+                                    keys = {
+                                        ['<Esc>'] = {
+                                            'toggle_focus',
+                                            mode = { 'i' },
+                                        },
+                                        ['<CR>'] = {
+                                            { 'pick_win', 'jump' },
+                                            mode = { 'n', 'i' },
+                                        },
+                                    },
+                                },
+                                list = {
+                                    keys = {
+                                        ['<Esc>'] = { 'explorer_update' },
+                                    },
                                 },
                             },
                         },
-                        win = {
-                            input = {
-                                keys = {
-                                    ['<C-o>'] = {
-                                        'gh_checkout_pr',
-                                        mode = { 'n', 'i' },
-                                    },
-                                },
-                            },
-                            list = {
-                                keys = {
-                                    ['<C-o>'] = { 'gh_checkout_pr' },
-                                },
-                            },
-                        },
-                    }),
-                    explorer = {
-                        -- layout = {
-                        --     fullscreen = true,
-                        --     layout = { backdrop = false, relative = 'win' },
-                        -- },
-                        jump = { close = true },
-                        win = {
-                            input = {
-                                keys = {
-                                    ['<Esc>'] = {
-                                        'toggle_focus',
-                                        mode = { 'i' },
-                                    },
-                                    ['<CR>'] = {
-                                        { 'pick_win', 'jump' },
-                                        mode = { 'n', 'i' },
-                                    },
-                                },
-                            },
-                            list = {
-                                keys = {
-                                    ['<Esc>'] = { 'explorer_update' },
-                                },
-                            },
-                        },
-                    },
-                    dirs = {
-                        finder = function(opts, ctx)
-                            local finder = require 'conf.snacks.finder'
-                            return vim.g.git_repo and finder.git_dirs(opts, ctx)
-                                or finder.fd_dirs(opts, ctx)
-                        end,
-                        format = 'file',
-                        show_empty = true,
-                        hidden = false,
-                        ignored = false,
-                        follow = false,
-                        supports_live = true,
-                    },
-                    grep_interactive = {
-                        multi = { 'grep', 'dirs' },
-                        glob = {},
-                        dirs = {},
-                        filter = {
-                            ---@param picker snacks.Picker
-                            ---@param filter snacks.picker.Filter
-                            transform = function(picker, filter)
-                                local source_id = filter.meta.source_id or 1
-                                filter.source_id = source_id
-                                if source_id == 1 then
-                                    picker.title = 'Grep'
-                                    picker.opts.show_empty = true
-                                    picker.opts.live = true
-                                else
-                                    picker.title = 'Grep dirs'
-                                    picker.opts.show_empty = false
-                                    picker.opts.live = false
-                                end
+                        dirs = {
+                            finder = function(opts, ctx)
+                                local finder = require 'conf.snacks.finder'
+                                return vim.g.git_repo
+                                        and finder.git_dirs(opts, ctx)
+                                    or finder.fd_dirs(opts, ctx)
                             end,
+                            format = 'file',
+                            show_empty = true,
+                            hidden = false,
+                            ignored = false,
+                            follow = false,
+                            supports_live = true,
                         },
-                        actions = {
-                            pick_glob = function(self, _)
-                                local default = '*.'
-                                Snacks.input.input({
-                                    prompt = 'Grep glob',
-                                    default = default,
-                                }, function(
-                                    input
-                                )
-                                    if
-                                        not input
-                                        or input == ''
-                                        or input == default
-                                    then
+                        grep_interactive = {
+                            multi = { 'grep', 'dirs' },
+                            glob = {},
+                            dirs = {},
+                            filter = {
+                                ---@param picker snacks.Picker
+                                ---@param filter snacks.picker.Filter
+                                transform = function(picker, filter)
+                                    local source_id = filter.meta.source_id or 1
+                                    filter.source_id = source_id
+                                    if source_id == 1 then
+                                        picker.title = 'Grep'
+                                        picker.opts.show_empty = true
+                                        picker.opts.live = true
+                                    else
+                                        picker.title = 'Grep dirs'
+                                        picker.opts.show_empty = false
+                                        picker.opts.live = false
+                                    end
+                                end,
+                            },
+                            actions = {
+                                pick_glob = function(self, _)
+                                    local default = '*.'
+                                    Snacks.input.input({
+                                        prompt = 'Grep glob',
+                                        default = default,
+                                    }, function(
+                                        input
+                                    )
+                                        if
+                                            not input
+                                            or input == ''
+                                            or input == default
+                                        then
+                                            return
+                                        end
+                                        table.insert(self.opts['glob'], input)
+                                        self:find()
+                                    end)
+                                end,
+                                pick_dirs = function(self, _, _)
+                                    self.input.filter.meta.grep_search =
+                                        self.input:get()
+                                    self.input:set(nil, '')
+                                    self.input.filter.meta.source_id = 2
+                                    self:find()
+                                end,
+                                confirm_custom = function(self, item, _)
+                                    if not item then
                                         return
                                     end
-                                    table.insert(self.opts['glob'], input)
-                                    self:find()
-                                end)
-                            end,
-                            pick_dirs = function(self, _, _)
-                                self.input.filter.meta.grep_search =
-                                    self.input:get()
-                                self.input:set(nil, '')
-                                self.input.filter.meta.source_id = 2
-                                self:find()
-                            end,
-                            confirm_custom = function(self, item, _)
-                                if not item then
-                                    return
-                                end
-                                if item.source_id == 2 then
-                                    table.insert(self.opts['dirs'], item.file)
-                                    self.input.filter.meta.source_id = 1
-                                    self:find()
-                                    self.input:set(
-                                        '',
-                                        self.input.filter.meta.grep_search
-                                    )
-                                else
-                                    self:action 'confirm'
-                                end
-                            end,
-                        },
-                        win = {
-                            input = {
-                                keys = {
-                                    ['<c-e>'] = {
-                                        'pick_glob',
-                                        mode = { 'i', 'n' },
-                                        desc = 'Filter grep extension',
-                                    },
-                                    ['<c-d>'] = {
-                                        'pick_dirs',
-                                        mode = { 'i', 'n' },
-                                        desc = 'Filter grep directory',
-                                    },
-                                    ['<CR>'] = {
-                                        'confirm_custom',
-                                        mode = { 'i', 'n' },
-                                        desc = 'Confirm',
+                                    if item.source_id == 2 then
+                                        table.insert(
+                                            self.opts['dirs'],
+                                            item.file
+                                        )
+                                        self.input.filter.meta.source_id = 1
+                                        self:find()
+                                        self.input:set(
+                                            '',
+                                            self.input.filter.meta.grep_search
+                                        )
+                                    else
+                                        self:action 'confirm'
+                                    end
+                                end,
+                            },
+                            win = {
+                                input = {
+                                    keys = {
+                                        ['<c-e>'] = {
+                                            'pick_glob',
+                                            mode = { 'i', 'n' },
+                                            desc = 'Filter grep extension',
+                                        },
+                                        ['<c-d>'] = {
+                                            'pick_dirs',
+                                            mode = { 'i', 'n' },
+                                            desc = 'Filter grep directory',
+                                        },
+                                        ['<CR>'] = {
+                                            'confirm_custom',
+                                            mode = { 'i', 'n' },
+                                            desc = 'Confirm',
+                                        },
                                     },
                                 },
                             },
+                            layout = {
+                                preset = 'telescope',
+                                reverse = true,
+                            },
                         },
-                        layout = {
-                            preset = 'telescope',
-                            reverse = true,
+                        lsp_supertypes = {
+                            title = 'LSP Supertypes',
+                            finder = require('conf.snacks.lsp.type_hierarchy').supertypes,
+                            format = require('conf.snacks.lsp.type_hierarchy').format_lsp_symbol,
+                            workspace = true,
+                            jump = { tagstack = true, reuse_win = true },
+                            layout = {
+                                preset = 'select',
+                                layout = { max_height = 14 },
+                            },
+                        },
+                        lsp_declarations = {
+                            title = 'LSP Declarations',
+                            layout = {
+                                preset = 'select',
+                                layout = { max_height = 14 },
+                            },
+                        },
+                        lsp_definitions = {
+                            title = 'LSP Definitions',
+                            finder = require(
+                                'conf.snacks.lsp.definitions_filtered'
+                            ).finder,
+                            layout = {
+                                preset = 'select',
+                                layout = { max_height = 14 },
+                            },
+                        },
+                        lsp_implementations = {
+                            title = 'LSP Implementation',
+                            layout = {
+                                preset = 'select',
+                                layout = { max_height = 14 },
+                            },
+                        },
+                        lsp_references = {
+                            title = 'LSP References',
+                            layout = {
+                                preset = 'dropdown',
+                                preview = true,
+                                layout = {
+                                    relative = 'cursor',
+                                    width = 130,
+                                    max_width = 180,
+                                    max_height = 20,
+                                    row = 1,
+                                    col = -10,
+                                },
+                            },
+                        },
+                        lsp_type_definitions = {
+                            title = 'LSP Type Definitions',
+                            layout = {
+                                preset = 'select',
+                            },
+                        },
+                        lsp_incoming_calls = {
+                            title = 'LSP Incoming Calls',
+                            layout = {
+                                preset = 'select',
+                            },
+                        },
+                        lsp_outgoing_calls = {
+                            title = 'LSP Outgoing Calls',
+                            layout = {
+                                preset = 'select',
+                            },
+                        },
+                        lsp_subtypes = {
+                            title = 'LSP Subtypes',
+                            finder = require('conf.snacks.lsp.type_hierarchy').subtypes,
+                            format = require('conf.snacks.lsp.type_hierarchy').format_lsp_symbol,
+                            workspace = true,
+                            jump = { tagstack = true, reuse_win = true },
+                            layout = {
+                                preset = 'select',
+                                layout = { max_height = 14 },
+                            },
                         },
                     },
-                    lsp_supertypes = {
-                        title = 'LSP Supertypes',
-                        finder = require('conf.snacks.lsp.type_hierarchy').supertypes,
-                        format = require('conf.snacks.lsp.type_hierarchy').format_lsp_symbol,
-                        workspace = true,
-                        jump = { tagstack = true, reuse_win = true },
-                        layout = {
-                            preset = 'select',
-                            layout = { max_height = 14 },
-                        },
-                    },
-                    lsp_declarations = {
-                        title = 'LSP Declarations',
-                        layout = {
-                            preset = 'select',
-                            layout = { max_height = 14 },
-                        },
-                    },
-                    lsp_definitions = {
-                        title = 'LSP Definitions',
-                        finder = require(
-                            'conf.snacks.lsp.definitions_filtered'
-                        ).finder,
-                        layout = {
-                            preset = 'select',
-                            layout = { max_height = 14 },
-                        },
-                    },
-                    lsp_implementations = {
-                        title = 'LSP Implementation',
-                        layout = {
-                            preset = 'select',
-                            layout = { max_height = 14 },
-                        },
-                    },
-                    lsp_references = {
-                        title = 'LSP References',
-                        layout = {
-                            preset = 'dropdown',
-                            preview = true,
+                    layouts = {
+                        select = {
                             layout = {
                                 relative = 'cursor',
                                 width = 130,
                                 max_width = 180,
-                                max_height = 20,
+                                max_height = 14,
                                 row = 1,
                                 col = -10,
                             },
                         },
                     },
-                    lsp_type_definitions = {
-                        title = 'LSP Type Definitions',
-                        layout = {
-                            preset = 'select',
-                        },
+                    layout = {
+                        cycle = true,
+                        preset = function()
+                            return vim.o.columns >= 120 and 'telescope'
+                                or 'dropdown'
+                        end,
                     },
-                    lsp_incoming_calls = {
-                        title = 'LSP Incoming Calls',
-                        layout = {
-                            preset = 'select',
-                        },
-                    },
-                    lsp_outgoing_calls = {
-                        title = 'LSP Outgoing Calls',
-                        layout = {
-                            preset = 'select',
-                        },
-                    },
-                    lsp_subtypes = {
-                        title = 'LSP Subtypes',
-                        finder = require('conf.snacks.lsp.type_hierarchy').subtypes,
-                        format = require('conf.snacks.lsp.type_hierarchy').format_lsp_symbol,
-                        workspace = true,
-                        jump = { tagstack = true, reuse_win = true },
-                        layout = {
-                            preset = 'select',
-                            layout = { max_height = 14 },
-                        },
-                    },
-                },
-                layouts = {
-                    select = {
-                        layout = {
-                            relative = 'cursor',
-                            width = 130,
-                            max_width = 180,
-                            max_height = 14,
-                            row = 1,
-                            col = -10,
-                        },
-                    },
-                },
-                layout = {
-                    cycle = true,
-                    preset = function()
-                        return vim.o.columns >= 120 and 'telescope'
-                            or 'dropdown'
-                    end,
-                },
-                win = {
-                    input = {
-                        keys = {
-                            ['<Esc>'] = {
-                                'close',
-                                mode = { 'i', 'n' },
-                                desc = 'Close',
+                    win = {
+                        input = {
+                            keys = {
+                                ['<Esc>'] = {
+                                    'close',
+                                    mode = { 'i', 'n' },
+                                    desc = 'Close',
+                                },
                             },
                         },
+                        preview = { minimal = true },
                     },
-                    preview = { minimal = true },
-                },
-                ---@diagnostic disable-next-line: missing-fields
-                icons = {
-                    git = require('conf.icons').git,
-                    diagnostics = { Hint = '' },
-                    kinds = require('conf.icons').kinds,
-                },
-            },
-            terminal = {
-                -- keys = { ['\\'] = 'hide' },
-                win = {
-                    wo = {
-                        winbar = '',
+                    ---@diagnostic disable-next-line: missing-fields
+                    icons = {
+                        git = require('conf.icons').git,
+                        diagnostics = { Hint = '' },
+                        kinds = require('conf.icons').kinds,
                     },
                 },
-            },
-            words = { enabled = true },
-            styles = {
-                ---@diagnostic disable-next-line: missing-fields
-                notification_history = {
-                    keys = { ['<Esc>'] = 'close' },
+                terminal = {
+                    -- keys = { ['\\'] = 'hide' },
+                    win = {
+                        wo = {
+                            winbar = '',
+                        },
+                    },
                 },
-            },
-        },
-        config = function(_, opts)
+                words = { enabled = true },
+                styles = {
+                    ---@diagnostic disable-next-line: missing-fields
+                    notification_history = {
+                        keys = { ['<Esc>'] = 'close' },
+                    },
+                },
+            }
             require('snacks').setup(opts)
 
             local gh_actions = require 'snacks.gh.actions'
@@ -1201,26 +1210,28 @@ return {
     },
     {
         'dmtrKovalenko/fff',
-        -- tag = 'v0.11.0',
-        lazy = false, -- plugin already lazy
-        -- build = function()
-        --     require('fff.download').download_binary()
-        -- end,
+        main = 'fff',
+        module = 'fff',
+        lazy = false,
         build = 'cargo build --release --lib',
         opts = {},
     },
-    { 'madmaxieee/fff-snacks.nvim', lazy = true },
     {
-        'tpope/vim-repeat',
-        event = 'VeryLazy',
-        keys = {
-            { '<Nop>', '<Plug>(RepeatUndo)' },
-            { '<Nop>', '<Plug>(RepeatUndoLine)' },
-        },
+        'madmaxieee/fff-snacks.nvim',
+        main = 'fff-snacks',
+        module = 'fff-snacks',
     },
-    { 'jghauser/mkdir.nvim', event = 'BufWritePre' },
+    { 'tpope/vim-repeat', event = 'VeryLazy' },
+    {
+        'jghauser/mkdir.nvim',
+        main = 'mkdir',
+        module = 'mkdir',
+        event = 'BufWritePre',
+    },
     {
         'NMAC427/guess-indent.nvim',
+        main = 'guess-indent',
+        module = 'guess-indent',
         cmd = 'GuessIndent',
         event = { 'BufReadPre', 'BufNewFile' },
         opts = {},
@@ -1228,6 +1239,7 @@ return {
     {
         'rest-nvim/rest.nvim',
         main = 'rest-nvim',
+        module = 'rest-nvim',
         cmd = 'Rest',
         keys = {
             { -- which-key group
@@ -1257,6 +1269,8 @@ return {
         -- 'sotte/presenting.nvim',
         'gerazov/presenting.nvim',
         branch = 'add_title_to_footer',
+        main = 'presenting',
+        module = 'presenting',
         cmd = 'Presenting',
         opts = {},
     },

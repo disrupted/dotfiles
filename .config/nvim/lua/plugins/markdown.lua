@@ -1,7 +1,9 @@
----@type zpack.Spec[]
+---@type LazeSpec[]
 return {
     {
         'MeanderingProgrammer/render-markdown.nvim',
+        main = 'render-markdown',
+        module = 'render-markdown',
         cmd = 'RenderMarkdown',
         ft = { 'opencode_output' },
         opts = {

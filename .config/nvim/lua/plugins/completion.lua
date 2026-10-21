@@ -7,10 +7,12 @@ local function is_opencode_completion()
     return item and vim.startswith(item.source_id, 'opencode_')
 end
 
----@type zpack.Spec[]
+---@type LazeSpec[]
 return {
     {
         'saghen/blink.cmp',
+        main = 'blink.cmp',
+        module = 'blink.cmp',
         event = { 'InsertEnter', 'CmdlineEnter' },
         version = vim.version.range '*',
         ---@module 'blink.cmp'
@@ -310,8 +312,13 @@ return {
     },
     {
         'Kaiser-Yang/blink-cmp-git',
+        main = 'blink-cmp-git',
+        module = 'blink-cmp-git',
         dependencies = { 'nvim-lua/plenary.nvim' },
-        lazy = true,
     },
-    { 'disrupted/blink-cmp-conventional-commits', lazy = true },
+    {
+        'disrupted/blink-cmp-conventional-commits',
+        main = 'blink-cmp-conventional-commits',
+        module = 'blink-cmp-conventional-commits',
+    },
 }

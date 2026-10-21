@@ -86,6 +86,10 @@
       "rev": "3a811e07810c53b8707c3d080b50abddaac8a440",
       "src": "https://github.com/disrupted/github-actions.nvim"
     },
+    "gitlab.nvim": {
+      "rev": "0228b3b9aad2bf091fc72534c23a2751e7d649de",
+      "src": "https://github.com/harrisoncramer/gitlab.nvim"
+    },
     "gitsigns.nvim": {
       "rev": "fd780920613e541cbdfac41bf711583ed49f9249",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
@@ -119,9 +123,17 @@
       "rev": "8d7f98bef496c2a9af3dd3646448222b055b6cba",
       "src": "https://github.com/disrupted/kpops.nvim"
     },
+    "laze": {
+      "rev": "573d7461fab05e94181051b22d195955668c2521",
+      "src": "https://github.com/sys9kdr/laze"
+    },
     "lsp-format-modifications.nvim": {
       "rev": "1b307ec983f5e312d2ad9ff22b5e8084afea848f",
       "src": "https://github.com/joechrisellis/lsp-format-modifications.nvim"
+    },
+    "matchwith.nvim": {
+      "rev": "70bde09e0c1c89375b1fd89a6800973fe8798ec6",
+      "src": "https://github.com/tar80/matchwith.nvim"
     },
     "mkdir.nvim": {
       "rev": "c55d1dee4f099528a1853b28bb28caa802eba217",
@@ -146,10 +158,6 @@
     "neotest-jest": {
       "rev": "0e7979d51301dfae5ef839d771bd28cf593fde3f",
       "src": "https://github.com/haydenmeade/neotest-jest"
-    },
-    "neotest-plenary": {
-      "rev": "3523adcf9ffaad1911960c5813b0136c1b63a2ec",
-      "src": "https://github.com/nvim-neotest/neotest-plenary"
     },
     "neotest-python": {
       "rev": "1b56ca4ba51c6014f986d6548ee629bdc95589d1",
@@ -327,10 +335,6 @@
     "xcodebuild.nvim": {
       "rev": "45cd4a8daabcc1c4716388fadc036e06732756bd",
       "src": "https://github.com/wojciech-kulik/xcodebuild.nvim"
-    },
-    "zpack.nvim": {
-      "rev": "ec09994ca68fc36bad89a7782c5e6b244b154e10",
-      "src": "https://github.com/zuqini/zpack.nvim"
     }
   }
 }

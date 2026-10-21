@@ -1,7 +1,9 @@
----@type zpack.Spec[]
+---@type LazeSpec[]
 return {
     {
         'numToStr/Navigator.nvim',
+        main = 'Navigator',
+        module = 'Navigator',
         cond = vim.env.TMUX ~= nil,
         keys = {
             {
@@ -34,6 +36,8 @@ return {
     {
         -- move through camelCase, snake_case words better
         'chrisgrieser/nvim-spider',
+        main = 'spider',
+        module = 'spider',
         keys = {
             {
                 'w',
@@ -87,6 +91,8 @@ return {
     },
     {
         'aaronik/treewalker.nvim',
+        main = 'treewalker',
+        module = 'treewalker',
         cmd = 'Treewalker',
         keys = {
             {

@@ -1,9 +1,10 @@
----@type zpack.Spec[]
+---@type LazeSpec[]
 return {
     {
         'L3MON4D3/LuaSnip',
+        main = 'luasnip',
+        module = 'luasnip',
         version = vim.version.range 'v2.*',
-        lazy = true,
         build = 'make install_jsregexp',
         keys = {
             {
@@ -40,9 +41,9 @@ return {
                 desc = 'Snippet: cycle choice node',
             },
         },
-        opts = function()
+        config = function()
             local types = require 'luasnip.util.types'
-            return {
+            require('luasnip').config.set_config {
                 enable_autosnippets = true,
                 keep_roots = true,
                 link_roots = true,
@@ -64,9 +65,6 @@ return {
                     },
                 },
             }
-        end,
-        config = function(_, opts)
-            require('luasnip').config.set_config(opts)
 
             vim.api.nvim_set_hl(
                 0,

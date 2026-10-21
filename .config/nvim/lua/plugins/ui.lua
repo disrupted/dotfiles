@@ -1,11 +1,13 @@
 local icons = require 'conf.icons'
 
----@type zpack.Spec[]
+---@type LazeSpec[]
 return {
     {
         'rebelot/heirline.nvim',
+        main = 'heirline',
+        module = 'heirline',
         event = 'UIEnter',
-        opts = function()
+        config = function()
             local conditions = require 'heirline.conditions'
             local utils = require 'heirline.utils'
             local lazy_require = require('utils').lazy_require
@@ -517,7 +519,7 @@ return {
                 Space,
             }
 
-            return {
+            require('heirline').setup {
                 statusline = {
                     init = function(self)
                         self.bufnr = vim.api.nvim_get_current_buf()
@@ -565,249 +567,252 @@ return {
     },
     {
         'Bekaboo/dropbar.nvim',
+        main = 'dropbar',
+        module = 'dropbar',
         event = 'FileType',
-        ---@module 'dropbar.configs'
-        ---@type dropbar_configs_t
-        opts = {
-            bar = {
-                ---@type boolean|fun(buf: integer, win: integer, info: table?): boolean
-                enable = function(buf, win, _)
-                    if
-                        not vim.api.nvim_buf_is_valid(buf)
-                        or not vim.api.nvim_win_is_valid(win)
-                        or vim.fn.win_gettype(win) ~= ''
-                        or vim.bo[buf].filetype == ''
-                        or vim.bo[buf].buftype ~= ''
-                        or vim.wo[win].winbar ~= ''
-                        or vim.tbl_contains(
-                            { 'gitcommit', 'gitrebase' },
-                            vim.bo[buf].ft
-                        )
-                    then
-                        return false
-                    end
+        config = function()
+            ---@module 'dropbar.configs'
+            ---@type dropbar_configs_t
+            local opts = {
+                bar = {
+                    ---@type boolean|fun(buf: integer, win: integer, info: table?): boolean
+                    enable = function(buf, win, _)
+                        if
+                            not vim.api.nvim_buf_is_valid(buf)
+                            or not vim.api.nvim_win_is_valid(win)
+                            or vim.fn.win_gettype(win) ~= ''
+                            or vim.bo[buf].filetype == ''
+                            or vim.bo[buf].buftype ~= ''
+                            or vim.wo[win].winbar ~= ''
+                            or vim.tbl_contains(
+                                { 'gitcommit', 'gitrebase' },
+                                vim.bo[buf].ft
+                            )
+                        then
+                            return false
+                        end
 
-                    local stat = vim.uv.fs_stat(vim.api.nvim_buf_get_name(buf))
-                    if stat and stat.size > 1024 * 1024 then
-                        return false
-                    end
+                        local stat =
+                            vim.uv.fs_stat(vim.api.nvim_buf_get_name(buf))
+                        if stat and stat.size > 1024 * 1024 then
+                            return false
+                        end
 
-                    return vim.bo[buf].ft == 'markdown'
-                        or pcall(vim.treesitter.get_parser, buf)
-                        or not vim.tbl_isempty(vim.lsp.get_clients {
+                        return vim.bo[buf].ft == 'markdown'
+                            or pcall(vim.treesitter.get_parser, buf)
+                            or not vim.tbl_isempty(vim.lsp.get_clients {
+                                bufnr = buf,
+                                method = 'textDocument/documentSymbol',
+                            })
+                    end,
+                    ---@type dropbar_source_t[]|fun(buf: integer, win: integer): dropbar_source_t[]
+                    sources = function(buf, _)
+                        local sources = require 'dropbar.sources'
+                        if vim.bo[buf].ft == 'markdown' then
+                            return {
+                                sources.path,
+                                sources.markdown,
+                            }
+                        end
+                        if vim.bo[buf].buftype == 'terminal' then
+                            return {
+                                sources.terminal,
+                            }
+                        end
+
+                        local clients = vim.lsp.get_clients {
                             bufnr = buf,
                             method = 'textDocument/documentSymbol',
-                        })
-                end,
-                ---@type dropbar_source_t[]|fun(buf: integer, win: integer): dropbar_source_t[]
-                sources = function(buf, _)
-                    local sources = require 'dropbar.sources'
-                    if vim.bo[buf].ft == 'markdown' then
-                        return {
-                            sources.path,
-                            sources.markdown,
                         }
-                    end
-                    if vim.bo[buf].buftype == 'terminal' then
-                        return {
-                            sources.terminal,
-                        }
-                    end
-
-                    local clients = vim.lsp.get_clients {
-                        bufnr = buf,
-                        method = 'textDocument/documentSymbol',
-                    }
-                    if not vim.tbl_isempty(clients) then
-                        return {
-                            sources.path,
-                            sources.lsp,
-                        }
-                    else
-                        return {
-                            sources.path,
-                            sources.treesitter,
-                        }
-                    end
-                end,
-                update_events = {
-                    buf = {
-                        -- 'BufModifiedSet', -- TODO: replace with OptionSet 'modified'
-                        'FileChangedShellPost',
-                        'TextChanged',
-                        'ModeChanged',
-                        'BufWritePost', -- HACK: OptionSet 'modified' is only fired for current buffer, e.g. when running `:wa` other buffers do not get refreshed https://github.com/neovim/neovim/issues/32817
-                    },
-                    -- global = {
-                    --     'DirChanged',
-                    --     'VimResized',
-                    -- },
-                },
-            },
-            sources = {
-                path = {
-                    ---@type dropbar_source_t[]|fun(sym: dropbar_symbol_t): dropbar_symbol_t
-                    modified = function(sym)
-                        return sym:merge {
-                            name = string.format(
-                                '%s %s ',
-                                sym.name,
-                                icons.documents.file_modified
-                            ),
-                        }
+                        if not vim.tbl_isempty(clients) then
+                            return {
+                                sources.path,
+                                sources.lsp,
+                            }
+                        else
+                            return {
+                                sources.path,
+                                sources.treesitter,
+                            }
+                        end
                     end,
-                },
-                treesitter = {
-                    valid_types = {
-                        -- 'array',
-                        -- 'boolean',
-                        -- 'break_statement',
-                        -- 'call',
-                        -- 'case_statement',
-                        'class',
-                        -- 'constant',
-                        'constructor',
-                        -- 'continue_statement',
-                        -- 'delete',
-                        -- 'do_statement',
-                        -- 'element',
-                        -- 'enum',
-                        -- 'enum_member',
-                        'event',
-                        -- 'for_statement',
-                        'function',
-                        'h1_marker',
-                        'h2_marker',
-                        'h3_marker',
-                        'h4_marker',
-                        'h5_marker',
-                        'h6_marker',
-                        -- 'if_statement',
-                        'interface',
-                        -- 'keyword',
-                        -- 'macro',
-                        'method',
-                        'namespace',
-                        -- 'null',
-                        -- 'number',
-                        -- 'operator',
-                        'package',
-                        -- 'pair',
-                        'property',
-                        -- 'reference',
-                        -- 'repeat',
-                        -- 'rule_set',
-                        -- 'scope',
-                        -- 'specifier',
-                        'struct',
-                        -- 'switch_statement',
-                        'table',
-                        -- 'type',
-                        -- 'type_parameter',
-                        -- 'unit',
-                        -- 'value',
-                        -- -- 'variable',
-                        -- 'while_statement',
-                        'declaration',
-                        -- 'field',
-                        -- 'identifier',
-                        'object',
-                        -- 'statement',
+                    update_events = {
+                        buf = {
+                            -- 'BufModifiedSet', -- TODO: replace with OptionSet 'modified'
+                            'FileChangedShellPost',
+                            'TextChanged',
+                            'ModeChanged',
+                            'BufWritePost', -- HACK: OptionSet 'modified' is only fired for current buffer, e.g. when running `:wa` other buffers do not get refreshed https://github.com/neovim/neovim/issues/32817
+                        },
+                        -- global = {
+                        --     'DirChanged',
+                        --     'VimResized',
+                        -- },
                     },
                 },
-                lsp = {
-                    valid_symbols = {
-                        'File',
-                        -- 'Module',
-                        -- 'Namespace',
-                        -- 'Package',
-                        'Class',
-                        'Method',
-                        'Constructor',
-                        'Interface',
-                        'Function',
+                sources = {
+                    path = {
+                        ---@type dropbar_source_t[]|fun(sym: dropbar_symbol_t): dropbar_symbol_t
+                        modified = function(sym)
+                            return sym:merge {
+                                name = string.format(
+                                    '%s %s ',
+                                    sym.name,
+                                    icons.documents.file_modified
+                                ),
+                            }
+                        end,
+                    },
+                    treesitter = {
+                        valid_types = {
+                            -- 'array',
+                            -- 'boolean',
+                            -- 'break_statement',
+                            -- 'call',
+                            -- 'case_statement',
+                            'class',
+                            -- 'constant',
+                            'constructor',
+                            -- 'continue_statement',
+                            -- 'delete',
+                            -- 'do_statement',
+                            -- 'element',
+                            -- 'enum',
+                            -- 'enum_member',
+                            'event',
+                            -- 'for_statement',
+                            'function',
+                            'h1_marker',
+                            'h2_marker',
+                            'h3_marker',
+                            'h4_marker',
+                            'h5_marker',
+                            'h6_marker',
+                            -- 'if_statement',
+                            'interface',
+                            -- 'keyword',
+                            -- 'macro',
+                            'method',
+                            'namespace',
+                            -- 'null',
+                            -- 'number',
+                            -- 'operator',
+                            'package',
+                            -- 'pair',
+                            'property',
+                            -- 'reference',
+                            -- 'repeat',
+                            -- 'rule_set',
+                            -- 'scope',
+                            -- 'specifier',
+                            'struct',
+                            -- 'switch_statement',
+                            'table',
+                            -- 'type',
+                            -- 'type_parameter',
+                            -- 'unit',
+                            -- 'value',
+                            -- -- 'variable',
+                            -- 'while_statement',
+                            'declaration',
+                            -- 'field',
+                            -- 'identifier',
+                            'object',
+                            -- 'statement',
+                        },
+                    },
+                    lsp = {
+                        valid_symbols = {
+                            'File',
+                            -- 'Module',
+                            -- 'Namespace',
+                            -- 'Package',
+                            'Class',
+                            'Method',
+                            'Constructor',
+                            'Interface',
+                            'Function',
+                        },
                     },
                 },
-            },
-            icons = {
-                kinds = {
-                    symbols = {
-                        Array = '󰅪 ',
-                        Boolean = '◩ ',
-                        BreakStatement = '󰙧 ',
-                        Call = '󰃷 ',
-                        CaseStatement = '󱃙 ',
-                        Class = '󰙅 ',
-                        Color = '󰏘 ',
-                        Constant = '󰏿 ',
-                        Constructor = ' ',
-                        ContinueStatement = '→ ',
-                        Copilot = ' ',
-                        Declaration = '󰙠 ',
-                        Delete = '󰩺 ',
-                        DoStatement = '󰑖 ',
-                        Enum = ' ',
-                        EnumMember = ' ',
-                        Event = ' ',
-                        Field = ' ',
-                        File = '󰈙 ',
-                        Folder = '󰉋 ',
-                        ForStatement = '󰑖 ',
-                        Function = '󰊕 ',
-                        H1Marker = '󰉫 ', -- Used by markdown treesitter parser
-                        H2Marker = '󰉬 ',
-                        H3Marker = '󰉭 ',
-                        H4Marker = '󰉮 ',
-                        H5Marker = '󰉯 ',
-                        H6Marker = '󰉰 ',
-                        Identifier = '󰀫 ',
-                        IfStatement = '󰇉 ',
-                        Interface = '󰕘 ',
-                        Keyword = '󰌋 ',
-                        List = '󰅪 ',
-                        Log = '󰦪 ',
-                        Lsp = ' ',
-                        Macro = '󰁌 ',
-                        MarkdownH1 = '󰉫 ', -- Used by builtin markdown source
-                        MarkdownH2 = '󰉬 ',
-                        MarkdownH3 = '󰉭 ',
-                        MarkdownH4 = '󰉮 ',
-                        MarkdownH5 = '󰉯 ',
-                        MarkdownH6 = '󰉰 ',
-                        Method = ' ',
-                        Module = ' ',
-                        Namespace = '󰌗 ',
-                        Null = '󰢤 ',
-                        Number = '󰎠 ',
-                        Object = ' ',
-                        Operator = '󰆕 ',
-                        Package = '󰆦 ',
-                        Pair = ' ',
-                        Property = ' ',
-                        Reference = '󰋺 ',
-                        Regex = ' ',
-                        Repeat = '󰑖 ',
-                        Scope = ' ', -- FIXME: 󰅩 symbol rendered incorrectly in Ghostty
-                        Snippet = '󱡄 ',
-                        Specifier = '󰦪 ',
-                        Statement = ' ',
-                        String = '󰉾 ',
-                        Struct = '󱡠 ',
-                        SwitchStatement = '󰺟 ',
-                        Table = '󰠵 ',
-                        Terminal = ' ',
-                        Text = ' ',
-                        Type = ' ',
-                        TypeParameter = '󰊄 ',
-                        Unit = ' ',
-                        Value = ' ',
-                        Variable = '󰀫 ',
-                        WhileStatement = '󰑖 ',
+                icons = {
+                    kinds = {
+                        symbols = {
+                            Array = '󰅪 ',
+                            Boolean = '◩ ',
+                            BreakStatement = '󰙧 ',
+                            Call = '󰃷 ',
+                            CaseStatement = '󱃙 ',
+                            Class = '󰙅 ',
+                            Color = '󰏘 ',
+                            Constant = '󰏿 ',
+                            Constructor = ' ',
+                            ContinueStatement = '→ ',
+                            Copilot = ' ',
+                            Declaration = '󰙠 ',
+                            Delete = '󰩺 ',
+                            DoStatement = '󰑖 ',
+                            Enum = ' ',
+                            EnumMember = ' ',
+                            Event = ' ',
+                            Field = ' ',
+                            File = '󰈙 ',
+                            Folder = '󰉋 ',
+                            ForStatement = '󰑖 ',
+                            Function = '󰊕 ',
+                            H1Marker = '󰉫 ', -- Used by markdown treesitter parser
+                            H2Marker = '󰉬 ',
+                            H3Marker = '󰉭 ',
+                            H4Marker = '󰉮 ',
+                            H5Marker = '󰉯 ',
+                            H6Marker = '󰉰 ',
+                            Identifier = '󰀫 ',
+                            IfStatement = '󰇉 ',
+                            Interface = '󰕘 ',
+                            Keyword = '󰌋 ',
+                            List = '󰅪 ',
+                            Log = '󰦪 ',
+                            Lsp = ' ',
+                            Macro = '󰁌 ',
+                            MarkdownH1 = '󰉫 ', -- Used by builtin markdown source
+                            MarkdownH2 = '󰉬 ',
+                            MarkdownH3 = '󰉭 ',
+                            MarkdownH4 = '󰉮 ',
+                            MarkdownH5 = '󰉯 ',
+                            MarkdownH6 = '󰉰 ',
+                            Method = ' ',
+                            Module = ' ',
+                            Namespace = '󰌗 ',
+                            Null = '󰢤 ',
+                            Number = '󰎠 ',
+                            Object = ' ',
+                            Operator = '󰆕 ',
+                            Package = '󰆦 ',
+                            Pair = ' ',
+                            Property = ' ',
+                            Reference = '󰋺 ',
+                            Regex = ' ',
+                            Repeat = '󰑖 ',
+                            Scope = ' ', -- FIXME: 󰅩 symbol rendered incorrectly in Ghostty
+                            Snippet = '󱡄 ',
+                            Specifier = '󰦪 ',
+                            Statement = ' ',
+                            String = '󰉾 ',
+                            Struct = '󱡠 ',
+                            SwitchStatement = '󰺟 ',
+                            Table = '󰠵 ',
+                            Terminal = ' ',
+                            Text = ' ',
+                            Type = ' ',
+                            TypeParameter = '󰊄 ',
+                            Unit = ' ',
+                            Value = ' ',
+                            Variable = '󰀫 ',
+                            WhileStatement = '󰑖 ',
+                        },
                     },
                 },
-            },
-        },
-        config = function(_, opts)
+            }
             require('dropbar').setup(opts)
             require('which-key').add {
                 {
@@ -847,20 +852,29 @@ return {
             })
         end,
     },
-    { 'kyazdani42/nvim-web-devicons', lazy = true },
-    { 'MunifTanjim/nui.nvim', lazy = true },
+    {
+        'kyazdani42/nvim-web-devicons',
+        main = 'nvim-web-devicons',
+        module = 'nvim-web-devicons',
+    },
+    { 'MunifTanjim/nui.nvim', lazy = false },
     {
         'grapp-dev/nui-components.nvim',
+        main = 'nui-components',
+        module = 'nui-components',
         dependencies = { 'MunifTanjim/nui.nvim' },
-        lazy = true,
     },
     {
         'rachartier/tiny-cmdline.nvim',
+        main = 'tiny-cmdline',
+        module = 'tiny-cmdline',
         event = 'UIEnter',
         opts = {},
     },
     { -- inituitive window splits resizing
         'ian-howell/ripple.nvim',
+        main = 'ripple',
+        module = 'ripple',
         keys = {
             {
                 '<C-S-k>',
@@ -903,6 +917,8 @@ return {
     },
     {
         'folke/edgy.nvim',
+        main = 'edgy',
+        module = 'edgy',
         event = 'VeryLazy',
         ---@module 'edgy'
         ---@type Edgy.Config

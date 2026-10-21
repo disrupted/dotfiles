@@ -1,13 +1,16 @@
----@type zpack.Spec[]
+---@type LazeSpec[]
 return {
     {
         'tiagovla/scope.nvim', -- tab-scoped buffers
+        main = 'scope',
+        module = 'scope',
         event = 'TabNew',
         opts = {},
     },
     {
         'stevearc/resession.nvim',
-        enabled = false, -- FIXME: plugin lazy-load on VimLeavePre broken with zpack.nvim
+        main = 'resession',
+        module = 'resession',
         keys = {
             {
                 '<Leader>z',
@@ -25,28 +28,34 @@ return {
                 desc = 'Save session on quit',
             })
         end,
-        opts = {
-            ---@param bufnr integer
-            ---@return boolean
-            buf_filter = function(bufnr)
-                local buftype = vim.bo[bufnr].buftype
-                if buftype ~= '' and buftype ~= 'acwrite' then
-                    return false
-                end
-                if vim.api.nvim_buf_get_name(bufnr) == '' then
-                    return false
-                end
-                return true
-            end,
-            extensions = {
-                scope = {},
-                dap = {},
-            },
-        },
+        config = function()
+            local extensions = { dap = {} }
+            -- only pull in the scope extension if scope.nvim was actually loaded
+            if package.loaded['scope'] then
+                extensions.scope = {}
+            end
+            require('resession').setup {
+                ---@param bufnr integer
+                ---@return boolean
+                buf_filter = function(bufnr)
+                    local buftype = vim.bo[bufnr].buftype
+                    if buftype ~= '' and buftype ~= 'acwrite' then
+                        return false
+                    end
+                    if vim.api.nvim_buf_get_name(bufnr) == '' then
+                        return false
+                    end
+                    return true
+                end,
+                extensions = extensions,
+            }
+        end,
     },
     {
         'ThePrimeagen/harpoon',
         branch = 'harpoon2',
+        main = 'harpoon',
+        module = 'harpoon',
         dependencies = { 'nvim-lua/plenary.nvim' },
         init = function()
             require('which-key').add { { ';', group = 'Harpoon', icon = '󰤱' } }
@@ -128,52 +137,58 @@ return {
                 desc = 'Select 5',
             },
         },
-        config = true,
+        config = function()
+            require('harpoon').setup()
+        end,
     },
     { 'tpope/vim-abolish' },
     {
         'disrupted/auto-save.nvim',
+        main = 'auto-save',
+        module = 'auto-save',
         event = { 'InsertLeave', 'TextChanged' },
-        opts = {
-            debounce_delay = 2000,
-            trigger_events = {
-                immediate_save = {
-                    'BufLeave',
-                    'FocusLost',
-                    'QuitPre',
-                    'VimSuspend',
+        config = function()
+            require('auto-save').setup {
+                debounce_delay = 2000,
+                trigger_events = {
+                    immediate_save = {
+                        'BufLeave',
+                        'FocusLost',
+                        'QuitPre',
+                        'VimSuspend',
+                    },
+                    defer_save = {
+                        'InsertLeave',
+                        'TextChanged',
+                        { 'User', pattern = 'VisualLeave' },
+                    },
+                    cancel_deferred_save = {
+                        'InsertEnter',
+                        { 'User', pattern = 'VisualEnter' },
+                    },
                 },
-                defer_save = {
-                    'InsertLeave',
-                    'TextChanged',
-                    { 'User', pattern = 'VisualLeave' },
-                },
-                cancel_deferred_save = {
-                    'InsertEnter',
-                    { 'User', pattern = 'VisualEnter' },
-                },
-            },
-            condition = function(buf)
-                local mode = vim.api.nvim_get_mode().mode
-                if vim.tbl_contains({ 'i', 'v', 'V', '\22', 'R' }, mode) then
-                    return false
-                end
+                condition = function(buf)
+                    local mode = vim.api.nvim_get_mode().mode
+                    if
+                        vim.tbl_contains({ 'i', 'v', 'V', '\22', 'R' }, mode)
+                    then
+                        return false
+                    end
 
-                if vim.bo[buf].buftype ~= '' then
-                    return false
-                end
+                    if vim.bo[buf].buftype ~= '' then
+                        return false
+                    end
 
-                if
-                    package.loaded.luasnip and require('luasnip').in_snippet()
-                then
-                    return false
-                end
+                    if
+                        package.loaded.luasnip
+                        and require('luasnip').in_snippet()
+                    then
+                        return false
+                    end
 
-                return true
-            end,
-        },
-        config = function(_, opts)
-            require('auto-save').setup(opts)
+                    return true
+                end,
+            }
 
             require('which-key').add {
                 {

@@ -2,11 +2,22 @@ local icons = require 'conf.icons'
 
 local server_spawn_attempted = false
 
----@type zpack.Spec[]
+---@type LazeSpec[]
 return {
     {
         'disrupted/opencode.nvim',
+        main = 'opencode',
+        module = 'opencode',
         cmd = 'Opencode',
+        keys = {
+            { '<BS>', '<cmd>Opencode<CR>', desc = 'Toggle Agent' },
+            {
+                '<M-BS>',
+                '<cmd>Opencode quick_chat<CR>',
+                desc = 'Quick chat',
+                mode = { 'n', 'x' },
+            },
+        },
         init = function()
             require('which-key').add {
                 {
@@ -17,13 +28,13 @@ return {
                 },
                 {
                     '<BS>',
-                    ':Opencode<CR>',
+                    '<cmd>Opencode<CR>',
                     desc = 'Toggle Agent',
                     icon = icons.misc.window,
                 },
                 {
                     '<M-BS>',
-                    ':Opencode quick_chat<CR>',
+                    '<cmd>Opencode quick_chat<CR>',
                     desc = 'Quick chat',
                     -- Open quick chat input with selection context in visual mode or current line context in normal mode
                     mode = { 'n', 'x' },
@@ -83,285 +94,292 @@ return {
                 },
             },
         },
-        ---@module 'opencode'
-        ---@type OpencodeConfig
-        opts = {
-            backend = 'pi',
-            pi = {
-                executable = vim.fs.normalize '~/.config/pi/safehouse_pi.sh',
-            },
-            server = {
-                url = '127.0.0.1',
-                port = 'auto',
-                timeout = 30,
-                retry_delay = 3000,
-                auto_kill = true,
-                -- deterministic per-directory credential so a second nvim in the same
-                -- project can reconnect to the already-running project server
-                password = function()
-                    return vim.fn.sha256(assert(vim.uv.cwd())):sub(1, 32)
-                end,
-                spawn_command = function(port, url, env)
-                    -- Spawn at most once per session
-                    if server_spawn_attempted then
-                        error 'opencode server spawn already attempted this session; not retrying'
-                    end
-                    server_spawn_attempted = true
+        config = function()
+            ---@module 'opencode'
+            ---@type OpencodeConfig
+            local opts = {
+                -- backend = vim.env.ANTHROPIC_API_KEY and 'opencode' or 'pi',
+                backend = 'pi',
+                pi = {
+                    executable = vim.fs.normalize '~/.config/pi/safehouse_pi.sh',
+                },
+                server = {
+                    url = '127.0.0.1',
+                    port = 'auto',
+                    timeout = 30,
+                    retry_delay = 3000,
+                    auto_kill = true,
+                    -- deterministic per-directory credential so a second nvim in the same
+                    -- project can reconnect to the already-running project server
+                    password = function()
+                        return vim.fn.sha256(assert(vim.uv.cwd())):sub(1, 32)
+                    end,
+                    spawn_command = function(port, url, env)
+                        -- Spawn at most once per session
+                        if server_spawn_attempted then
+                            error 'opencode server spawn already attempted this session; not retrying'
+                        end
+                        server_spawn_attempted = true
 
-                    local job = vim.fn.jobstart({
-                        vim.fs.normalize '~/.config/opencode/safehouse_opencode.sh',
-                        'serve',
-                        '--port',
-                        tostring(port),
-                    }, {
-                        env = env,
-                    })
-                    if job <= 0 then
-                        Snacks.notify.error 'opencode server failed to start'
-                        error 'failed to start opencode server'
-                    end
-                    return vim.fn.jobpid(job)
-                end,
-            },
-            preferred_picker = 'snacks',
-            default_global_keymaps = false,
-            keymap_prefix = '<leader>a',
-            keymap = {
-                input_window = {
-                    ['<C-a>'] = {
-                        function()
-                            local enabled =
-                                require('opencode.context').toggle_context 'current_file'
-                            Snacks.notify(
-                                'current file context: '
-                                    .. (enabled and 'on' or 'off'),
-                                {
-                                    id = 'agent-context-current-file',
-                                    title = 'Agent',
-                                    icon = '',
-                                }
-                            )
-                        end,
-                        desc = 'Toggle current file context',
-                        mode = { 'n', 'i' },
+                        local job = vim.fn.jobstart({
+                            vim.fs.normalize '~/.config/opencode/safehouse_opencode.sh',
+                            'serve',
+                            '--port',
+                            tostring(port),
+                        }, {
+                            env = env,
+                        })
+                        if job <= 0 then
+                            Snacks.notify.error 'opencode server failed to start'
+                            error 'failed to start opencode server'
+                        end
+                        return vim.fn.jobpid(job)
+                    end,
+                },
+                preferred_picker = 'snacks',
+                default_global_keymaps = false,
+                keymap_prefix = '<leader>a',
+                keymap = {
+                    input_window = {
+                        ['<C-a>'] = {
+                            function()
+                                local enabled =
+                                    require('opencode.context').toggle_context 'current_file'
+                                Snacks.notify(
+                                    'current file context: '
+                                        .. (enabled and 'on' or 'off'),
+                                    {
+                                        id = 'agent-context-current-file',
+                                        title = 'Agent',
+                                        icon = '',
+                                    }
+                                )
+                            end,
+                            desc = 'Toggle current file context',
+                            mode = { 'n', 'i' },
+                        },
+                        ['<LocalLeader>n'] = {
+                            'open_input_new_session',
+                            desc = 'New session',
+                        },
+                        ['<LocalLeader>R'] = {
+                            'rename_session',
+                            desc = 'Rename session',
+                            mode = 'n',
+                        },
+                        ['<LocalLeader>s'] = {
+                            'select_session',
+                            desc = 'Select session',
+                            mode = 'n',
+                        },
+                        ['<cr>'] = false, -- use <S-CR> instead
+                        ['<esc>'] = false,
+                        ['<C-c>'] = { 'cancel', mode = { 'n', 'i' } },
+                        ['q'] = { 'toggle_pane' }, -- Toggle between input and output panes
+                        ['~'] = false, -- disabled since I use Snacks file picker instead
+                        ['@'] = { 'mention', mode = 'i' }, -- Insert mention (file/agent)
+                        ['/'] = { 'slash_commands', mode = 'i' },
+                        ['#'] = { 'context_items', mode = 'i' }, -- Manage context items (current file, selection, diagnostics, mentioned files)
+                        ['<tab>'] = false,
+                        ['<S-tab>'] = { 'switch_mode', mode = { 'n', 'i' } }, -- Switch between modes (build/plan)
+                        ['<M-m>'] = {
+                            function()
+                                require('opencode.api').agent.select_agent()
+                            end,
+                            mode = { 'n', 'i' },
+                        }, -- Select agent
+                        ['<up>'] = { 'prev_prompt_history', mode = 'n' }, -- Navigate to previous prompt in history
+                        ['<down>'] = { 'next_prompt_history', mode = 'n' }, -- Navigate to next prompt in history
+                        ['<M-r>'] = { 'cycle_variant', mode = { 'n', 'i' } }, -- Cycle through available model variants
+                        ['<M-p>'] = {
+                            function()
+                                require('opencode.api').configure_provider()
+                            end,
+                            desc = 'Pick model',
+                            mode = { 'n', 'i' },
+                        },
                     },
-                    ['<LocalLeader>n'] = {
-                        'open_input_new_session',
-                        desc = 'New session',
-                    },
-                    ['<LocalLeader>R'] = {
-                        'rename_session',
-                        desc = 'Rename session',
-                        mode = 'n',
-                    },
-                    ['<LocalLeader>s'] = {
-                        'select_session',
-                        desc = 'Select session',
-                        mode = 'n',
-                    },
-                    ['<cr>'] = false, -- use <S-CR> instead
-                    ['<esc>'] = false,
-                    ['<C-c>'] = { 'cancel', mode = { 'n', 'i' } },
-                    ['q'] = { 'toggle_pane' }, -- Toggle between input and output panes
-                    ['~'] = false, -- disabled since I use Snacks file picker instead
-                    ['@'] = { 'mention', mode = 'i' }, -- Insert mention (file/agent)
-                    ['/'] = { 'slash_commands', mode = 'i' },
-                    ['#'] = { 'context_items', mode = 'i' }, -- Manage context items (current file, selection, diagnostics, mentioned files)
-                    ['<tab>'] = false,
-                    ['<S-tab>'] = { 'switch_mode', mode = { 'n', 'i' } }, -- Switch between modes (build/plan)
-                    ['<M-m>'] = {
-                        function()
-                            require('opencode.api').agent.select_agent()
-                        end,
-                        mode = { 'n', 'i' },
-                    }, -- Select agent
-                    ['<up>'] = { 'prev_prompt_history', mode = 'n' }, -- Navigate to previous prompt in history
-                    ['<down>'] = { 'next_prompt_history', mode = 'n' }, -- Navigate to next prompt in history
-                    ['<M-r>'] = { 'cycle_variant', mode = { 'n', 'i' } }, -- Cycle through available model variants
-                    ['<M-p>'] = {
-                        function()
-                            require('opencode.api').configure_provider()
-                        end,
-                        desc = 'Pick model',
-                        mode = { 'n', 'i' },
+                    output_window = {
+                        ['<LocalLeader>n'] = {
+                            'open_input_new_session',
+                            desc = 'New session',
+                        },
+                        ['<LocalLeader>R'] = {
+                            'rename_session',
+                            desc = 'Rename session',
+                            mode = 'n',
+                        },
+                        ['<LocalLeader>s'] = {
+                            'select_session',
+                            desc = 'Select session',
+                            mode = 'n',
+                        },
+                        ['<LocalLeader>T'] = {
+                            'timeline',
+                            desc = 'Timeline',
+                            mode = 'n',
+                        }, -- Display timeline picker to navigate/undo/redo/fork messages
+                        ['<LocalLeader>dm'] = { 'debug_message' },
+                        ['<LocalLeader>do'] = { 'debug_output' },
+                        ['<LocalLeader>ds'] = { 'debug_session' },
+                        ['<LocalLeader>t'] = {
+                            'toggle_tool_output',
+                            desc = 'Toggle tool visibility',
+                        },
+                        ['<LocalLeader>r'] = {
+                            'toggle_reasoning_output',
+                            desc = 'Toggle reasoning visibility',
+                        },
+                        ['q'] = { 'close' },
+                        ['<esc>'] = false,
+                        ['<C-c>'] = { 'cancel', mode = 'n' },
+                        ['i'] = {
+                            function()
+                                require('opencode.ui.ui').focus_input() -- no start_insert
+                            end,
+                            mode = 'n',
+                        },
+                        ['a'] = {
+                            function()
+                                require('opencode.api').permission_accept()
+                            end,
+                            mode = 'n',
+                        },
+                        ['A'] = {
+                            function()
+                                require('opencode.api').permission_accept_all()
+                            end,
+                            mode = 'n',
+                        },
+                        ['d'] = {
+                            function()
+                                require('opencode.api').permission_deny()
+                            end,
+                            mode = 'n',
+                        },
+                        ['<tab>'] = false,
+                        ['<S-tab>'] = { 'switch_mode' }, -- Switch between modes (build/plan)
+                        ['<M-r>'] = { 'cycle_variant' }, -- Cycle through available model variants
+                        ['<M-p>'] = {
+                            'configure_provider',
+                            desc = 'Pick model',
+                        },
+                        ['<M-i>'] = false,
+                        ['<LocalLeader>S'] = {
+                            'navigate_session_tree',
+                            { 'child', 'picker' },
+                            desc = 'Select child session',
+                        },
+                        [']]'] = { 'next_message', desc = 'Next message' },
+                        ['[['] = { 'prev_message', desc = 'Prev message' },
                     },
                 },
-                output_window = {
-                    ['<LocalLeader>n'] = {
-                        'open_input_new_session',
-                        desc = 'New session',
+                ui = {
+                    position = 'right',
+                    zoom_width = 0.6,
+                    input = {
+                        min_height = 0.10,
+                        max_height = 0.35,
+                        text = {
+                            wrap = true,
+                        },
+                        auto_hide = true,
                     },
-                    ['<LocalLeader>R'] = {
-                        'rename_session',
-                        desc = 'Rename session',
-                        mode = 'n',
+                    output = {
+                        tools = {
+                            show_output = true,
+                            show_reasoning_output = false,
+                        },
+                        rendering = {
+                            markdown_on_idle = true,
+                            markdown_on_idle_threshold = 100,
+                            markdown_debounce_ms = 300,
+                            -- event_throttle_ms = 80,
+                        },
                     },
-                    ['<LocalLeader>s'] = {
-                        'select_session',
-                        desc = 'Select session',
-                        mode = 'n',
+                    picker = {
+                        ---@module 'snacks'
+                        ---@type snacks.picker.layout.Config?
+                        snacks_layout = {
+                            preset = 'dropdown',
+                            preview = false,
+                            layout = {
+                                row = 0.2,
+                                width = 105,
+                                height = 0.4,
+                            },
+                        },
                     },
-                    ['<LocalLeader>T'] = {
-                        'timeline',
-                        desc = 'Timeline',
-                        mode = 'n',
-                    }, -- Display timeline picker to navigate/undo/redo/fork messages
-                    ['<LocalLeader>dm'] = { 'debug_message' },
-                    ['<LocalLeader>do'] = { 'debug_output' },
-                    ['<LocalLeader>ds'] = { 'debug_session' },
-                    ['<LocalLeader>t'] = {
-                        'toggle_tool_output',
-                        desc = 'Toggle tool visibility',
-                    },
-                    ['<LocalLeader>r'] = {
-                        'toggle_reasoning_output',
-                        desc = 'Toggle reasoning visibility',
-                    },
-                    ['q'] = { 'close' },
-                    ['<esc>'] = false,
-                    ['<C-c>'] = { 'cancel', mode = 'n' },
-                    ['i'] = {
-                        function()
-                            require('opencode.ui.ui').focus_input() -- no start_insert
-                        end,
-                        mode = 'n',
-                    },
-                    ['a'] = {
-                        function()
-                            require('opencode.api').permission_accept()
-                        end,
-                        mode = 'n',
-                    },
-                    ['A'] = {
-                        function()
-                            require('opencode.api').permission_accept_all()
-                        end,
-                        mode = 'n',
-                    },
-                    ['d'] = {
-                        function()
-                            require('opencode.api').permission_deny()
-                        end,
-                        mode = 'n',
-                    },
-                    ['<tab>'] = false,
-                    ['<S-tab>'] = { 'switch_mode' }, -- Switch between modes (build/plan)
-                    ['<M-r>'] = { 'cycle_variant' }, -- Cycle through available model variants
-                    ['<M-p>'] = { 'configure_provider', desc = 'Pick model' },
-                    ['<M-i>'] = false,
-                    ['<LocalLeader>S'] = {
-                        'navigate_session_tree',
-                        { 'child', 'picker' },
-                        desc = 'Select child session',
-                    },
-                    [']]'] = { 'next_message', desc = 'Next message' },
-                    ['[['] = { 'prev_message', desc = 'Prev message' },
-                },
-            },
-            ui = {
-                position = 'right',
-                zoom_width = 0.6,
-                input = {
-                    min_height = 0.10,
-                    max_height = 0.35,
-                    text = {
-                        wrap = true,
-                    },
-                    auto_hide = true,
-                },
-                output = {
-                    tools = {
-                        show_output = true,
-                        show_reasoning_output = false,
-                    },
-                    rendering = {
-                        markdown_on_idle = true,
-                        markdown_on_idle_threshold = 100,
-                        markdown_debounce_ms = 300,
-                        -- event_throttle_ms = 80,
-                    },
-                },
-                picker = {
-                    ---@module 'snacks'
-                    ---@type snacks.picker.layout.Config?
-                    snacks_layout = {
-                        preset = 'dropdown',
-                        preview = false,
-                        layout = {
-                            row = 0.2,
-                            width = 105,
-                            height = 0.4,
+                    window_highlight = 'Normal:OpencodeBackground,FloatBorder:OpencodeBorder,SignColumn:OpencodeSignColumn,WinSeparator:OpencodeWinSeparator',
+                    icons = {
+                        overrides = {
+                            header_user = '▌',
+                            header_assistant = '',
+                            run = '',
+                            task = '',
+                            read = '',
+                            edit = '',
+                            write = '',
+                            plan = '󰝖',
+                            search = icons.misc.search,
+                            web = '󰖟',
+                            list = '󱎸',
+                            tool = '',
+                            snapshot = '󰻛',
+                            restore_point = '󱗚',
+                            file = icons.documents.file,
+                            folder = icons.documents.folder,
+                            agent = '󰚩',
+                            reference = icons.documents.file_empty .. ' ',
+                            reasoning = '󱍎',
+                            question = '?',
+                            -- statuses
+                            status_on = '',
+                            status_off = '',
+                            guard_on = '',
+                            -- borders and misc
+                            border = '▌',
+                            -- context bar
+                            attached_file = '󰌷 ',
+                            cursor_data = '󰗧 ',
+                            error = ' ',
+                            warning = ' ',
+                            info = ' ',
+                            filter = '/',
+                            selection = '󰫙 ',
+                            command = ' ',
+                            bash = ' ',
+                            preferred = ' ',
+                            last_used = ' ',
                         },
                     },
                 },
-                window_highlight = 'Normal:OpencodeBackground,FloatBorder:OpencodeBorder,SignColumn:OpencodeSignColumn,WinSeparator:OpencodeWinSeparator',
-                icons = {
-                    overrides = {
-                        header_user = '▌',
-                        header_assistant = '',
-                        run = '',
-                        task = '',
-                        read = '',
-                        edit = '',
-                        write = '',
-                        plan = '󰝖',
-                        search = icons.misc.search,
-                        web = '󰖟',
-                        list = '󱎸',
-                        tool = '',
-                        snapshot = '󰻛',
-                        restore_point = '󱗚',
-                        file = icons.documents.file,
-                        folder = icons.documents.folder,
-                        agent = '󰚩',
-                        reference = icons.documents.file_empty .. ' ',
-                        reasoning = '󱍎',
-                        question = '?',
-                        -- statuses
-                        status_on = '',
-                        status_off = '',
-                        guard_on = '',
-                        -- borders and misc
-                        border = '▌',
-                        -- context bar
-                        attached_file = '󰌷 ',
-                        cursor_data = '󰗧 ',
-                        error = ' ',
-                        warning = ' ',
-                        info = ' ',
-                        filter = '/',
-                        selection = '󰫙 ',
-                        command = ' ',
-                        bash = ' ',
-                        preferred = ' ',
-                        last_used = ' ',
+                context = {
+                    diagnostics = {
+                        info = false,
+                        warn = false,
+                        error = false,
+                        only_closest = true,
+                    },
+                    current_file = {
+                        enabled = false,
+                        show_full_path = false,
                     },
                 },
-            },
-            context = {
-                diagnostics = {
-                    info = false,
-                    warn = false,
-                    error = false,
-                    only_closest = true,
+                debug = {
+                    enabled = true,
+                    capture_streamed_events = true,
+                    show_ids = true,
                 },
-                current_file = {
-                    enabled = false,
-                    show_full_path = false,
+                hooks = {
+                    on_done_thinking = function()
+                        Snacks.notify(
+                            'Finished',
+                            { title = 'Agent', icon = '' }
+                        )
+                    end,
                 },
-            },
-            debug = {
-                enabled = true,
-                capture_streamed_events = false,
-                show_ids = false,
-            },
-            hooks = {
-                on_done_thinking = function()
-                    Snacks.notify('Finished', { title = 'Agent', icon = '' })
-                end,
-            },
-        },
-        config = function(_, opts)
+            }
             require('opencode').setup(opts)
 
             -- HACK: monkeypatch for compatibility with edgy.nvim

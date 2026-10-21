@@ -1,2 +1,2 @@
----@type zpack.Spec[]
+---@type laze.Spec[]
 return {}

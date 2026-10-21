@@ -1,9 +1,11 @@
 local icons = require 'conf.icons'
 
----@type zpack.Spec[]
+---@type LazeSpec[]
 return {
     {
         'lewis6991/gitsigns.nvim',
+        main = 'gitsigns',
+        module = 'gitsigns',
         event = { 'BufWinEnter', 'BufNewFile' },
         init = function()
             require('which-key').add {
@@ -17,7 +19,6 @@ return {
         end,
         ---@module 'gitsigns.config'
         ---@type Gitsigns.Config
-        ---@diagnostic disable: missing-fields
         opts = {
             diff_opts = {
                 -- Include whitespace-only changes in git hunks regardless of 'diffopt'
@@ -181,6 +182,8 @@ return {
     },
     {
         'NeogitOrg/neogit',
+        main = 'neogit',
+        module = 'neogit',
         keys = {
             {
                 '<Leader>gg',
@@ -191,24 +194,23 @@ return {
                 desc = 'Neogit',
             },
         },
-        ---@module 'neogit.config'
-        ---@type NeogitConfig
-        opts = {
-            disable_hint = true,
-            disable_signs = true,
-            integrations = {
-                codediff = true,
-                snacks = true,
-            },
-            diff_viewer = 'codediff',
-            graph_style = 'kitty',
-            status = {
-                recent_commit_count = 50,
-            },
-            process_spinner = true,
-        },
-        ---@param opts NeogitConfig
-        config = function(_, opts)
+        config = function()
+            ---@module 'neogit.config'
+            ---@type NeogitConfig
+            local opts = {
+                disable_hint = true,
+                disable_signs = true,
+                integrations = {
+                    codediff = true,
+                    snacks = true,
+                },
+                diff_viewer = 'codediff',
+                graph_style = 'kitty',
+                status = {
+                    recent_commit_count = 50,
+                },
+                process_spinner = true,
+            }
             local neogit = require 'neogit'
             neogit.setup(opts)
 
@@ -277,7 +279,8 @@ return {
     },
     {
         'NicholasZolton/neojj',
-        lazy = true,
+        main = 'neojj',
+        module = 'neojj',
         keys = {
             {
                 '<Leader>gj',
@@ -307,7 +310,9 @@ return {
     },
     {
         'https://forge.barrettruth.com/barrettruth/diffs.nvim',
-        lazy = false, -- lazy-loads itself
+        main = 'diffs',
+        module = 'diffs',
+        lazy = false,
         keys = {
             {
                 '<Leader>gxo',
@@ -388,7 +393,9 @@ return {
     },
     {
         'sindrets/diffview.nvim',
-        enabled = true, -- disable in favor of codediff.nvim
+        enabled = false, -- disables in favor of codediff.nvim
+        main = 'diffview',
+        module = 'diffview',
         cmd = { 'DiffviewOpen', 'DiffviewFileHistory' },
         init = function()
             require('which-key').add {
@@ -430,10 +437,10 @@ return {
                 desc = 'Review branch changes',
             },
         },
-        opts = function()
+        config = function()
             ---@module 'diffview.config'
             ---@type DiffviewConfig
-            return {
+            local opts = {
                 enhanced_diff_hl = true,
                 default_args = {
                     DiffviewOpen = { '--untracked-files=no', '--imply-local' },
@@ -464,10 +471,13 @@ return {
                 },
                 keymaps = require('conf.diffview').keymaps,
             }
+            require('diffview').setup(opts)
         end,
     },
     {
         'esmuellert/codediff.nvim',
+        main = 'codediff',
+        module = 'codediff',
         cmd = 'CodeDiff',
         init = function()
             require('which-key').add {
@@ -577,6 +587,8 @@ return {
     },
     {
         'pwntester/octo.nvim',
+        main = 'octo',
+        module = 'octo',
         cmd = 'Octo',
         init = function()
             require('which-key').add {
@@ -688,151 +700,151 @@ return {
             --     end,
             -- }
         end,
-        ---@module 'octo.config'
-        ---@type OctoConfig
-        opts = {
-            picker = 'snacks',
-            -- enable_builtin = true,
-            -- picker_config = {
-            --     snacks = {
-            --         actions = {
-            --             issues = {
-            --                 {
-            --                     name = 'confirm',
-            --                     fn = open_in_tab,
-            --                     lhs = '<CR>',
-            --                     desc = 'Open in tab',
-            --                     mode = { 'n', 'i' },
-            --                 },
-            --             },
-            --             pull_requests = {
-            --                 {
-            --                     name = 'confirm',
-            --                     fn = open_in_tab,
-            --                     lhs = '<CR>',
-            --                     desc = 'Open in tab',
-            --                     mode = { 'n', 'i' },
-            --                 },
-            --             },
-            --             notifications = {
-            --                 {
-            --                     name = 'confirm',
-            --                     fn = open_in_tab,
-            --                     lhs = '<CR>',
-            --                     desc = 'Open in tab',
-            --                     mode = { 'n', 'i' },
-            --                 },
-            --             },
-            --             search = {
-            --                 {
-            --                     name = 'confirm',
-            --                     fn = open_in_tab,
-            --                     lhs = '<CR>',
-            --                     desc = 'Open in tab',
-            --                     mode = { 'n', 'i' },
-            --                 },
-            --             },
-            --         },
-            --     },
-            -- },
-            default_merge_method = 'squash',
-            default_delete_branch = true,
-            date_format = '%Y %b %d %H:%M',
-            poll = {
-                enabled = true,
-            },
-            mappings = {
-                issue = {
-                    close_issue = { desc = 'Close' },
-                    reopen_issue = { desc = 'Reopen' },
+        config = function()
+            ---@module 'octo.config'
+            ---@type OctoConfig
+            local opts = {
+                picker = 'snacks',
+                -- enable_builtin = true,
+                -- picker_config = {
+                --     snacks = {
+                --         actions = {
+                --             issues = {
+                --                 {
+                --                     name = 'confirm',
+                --                     fn = open_in_tab,
+                --                     lhs = '<CR>',
+                --                     desc = 'Open in tab',
+                --                     mode = { 'n', 'i' },
+                --                 },
+                --             },
+                --             pull_requests = {
+                --                 {
+                --                     name = 'confirm',
+                --                     fn = open_in_tab,
+                --                     lhs = '<CR>',
+                --                     desc = 'Open in tab',
+                --                     mode = { 'n', 'i' },
+                --                 },
+                --             },
+                --             notifications = {
+                --                 {
+                --                     name = 'confirm',
+                --                     fn = open_in_tab,
+                --                     lhs = '<CR>',
+                --                     desc = 'Open in tab',
+                --                     mode = { 'n', 'i' },
+                --                 },
+                --             },
+                --             search = {
+                --                 {
+                --                     name = 'confirm',
+                --                     fn = open_in_tab,
+                --                     lhs = '<CR>',
+                --                     desc = 'Open in tab',
+                --                     mode = { 'n', 'i' },
+                --                 },
+                --             },
+                --         },
+                --     },
+                -- },
+                default_merge_method = 'squash',
+                default_delete_branch = true,
+                date_format = '%Y %b %d %H:%M',
+                poll = {
+                    enabled = true,
                 },
-                pull_request = {
-                    review = {
-                        lhs = '<LocalLeader>vr',
-                        desc = 'Review',
+                mappings = {
+                    issue = {
+                        close_issue = { desc = 'Close' },
+                        reopen_issue = { desc = 'Reopen' },
                     },
-                    review_start = { lhs = '' },
-                    review_resume = { lhs = '' },
-                    resolve_thread = {
-                        lhs = '<LocalLeader>cr',
-                        desc = 'Resolve thread',
+                    pull_request = {
+                        review = {
+                            lhs = '<LocalLeader>vr',
+                            desc = 'Review',
+                        },
+                        review_start = { lhs = '' },
+                        review_resume = { lhs = '' },
+                        resolve_thread = {
+                            lhs = '<LocalLeader>cr',
+                            desc = 'Resolve thread',
+                        },
+                        unresolve_thread = {
+                            lhs = '<LocalLeader>cu',
+                            desc = 'Unresolve thread',
+                        },
+                        show_pr_diff = { lhs = '<LocalLeader>pD' },
+                        -- wrong naming
+                        close_issue = { desc = 'Close' },
+                        reopen_issue = { desc = 'Reopen' },
+                        -- always squash & merge
+                        merge_pr = { lhs = '' },
+                        rebase_and_merge_pr = { lhs = '' },
+                        merge_pr_queue = { lhs = '' },
+                        squash_and_merge_queue = { lhs = '' },
+                        rebase_and_merge_queue = { lhs = '' },
                     },
-                    unresolve_thread = {
-                        lhs = '<LocalLeader>cu',
-                        desc = 'Unresolve thread',
+                    review_diff = {
+                        next_thread = {
+                            lhs = ']t', -- TODO: use same ]c mapping as pull_request?
+                            desc = 'Next thread',
+                            remap = true,
+                        },
+                        prev_thread = {
+                            lhs = '[t',
+                            desc = 'Prev thread',
+                            remap = true,
+                        },
+                        select_next_entry = {
+                            lhs = ']q',
+                            desc = 'Next file',
+                            remap = true,
+                        },
+                        select_prev_entry = {
+                            lhs = '[q',
+                            desc = 'Prev file',
+                            remap = true,
+                        },
+                        focus_files = {
+                            lhs = '<C-e>',
+                            desc = 'Focus file panel',
+                            remap = true,
+                        },
+                        toggle_files = { lhs = '' },
                     },
-                    show_pr_diff = { lhs = '<LocalLeader>pD' },
-                    -- wrong naming
-                    close_issue = { desc = 'Close' },
-                    reopen_issue = { desc = 'Reopen' },
-                    -- always squash & merge
-                    merge_pr = { lhs = '' },
-                    rebase_and_merge_pr = { lhs = '' },
-                    merge_pr_queue = { lhs = '' },
-                    squash_and_merge_queue = { lhs = '' },
-                    rebase_and_merge_queue = { lhs = '' },
+                    file_panel = {
+                        focus_files = { lhs = '' },
+                        toggle_files = {
+                            lhs = '<C-e>',
+                            desc = 'Toggle files panel',
+                            remap = true,
+                        },
+                    },
+                    submit_win = {
+                        approve_review = {
+                            lhs = '<C-a>',
+                            desc = 'Approve',
+                            mode = { 'n', 'i' },
+                        },
+                        comment_review = {
+                            lhs = '<C-m>',
+                            desc = 'Comment',
+                            mode = { 'n', 'i' },
+                        },
+                        request_changes = {
+                            lhs = '<C-r>',
+                            desc = 'Request changes',
+                            mode = { 'n', 'i' },
+                        },
+                        close_review_tab = {
+                            lhs = '<C-c>',
+                            desc = 'Close',
+                            mode = { 'n', 'i' },
+                        },
+                    },
                 },
-                review_diff = {
-                    next_thread = {
-                        lhs = ']t', -- TODO: use same ]c mapping as pull_request?
-                        desc = 'Next thread',
-                        remap = true,
-                    },
-                    prev_thread = {
-                        lhs = '[t',
-                        desc = 'Prev thread',
-                        remap = true,
-                    },
-                    select_next_entry = {
-                        lhs = ']q',
-                        desc = 'Next file',
-                        remap = true,
-                    },
-                    select_prev_entry = {
-                        lhs = '[q',
-                        desc = 'Prev file',
-                        remap = true,
-                    },
-                    focus_files = {
-                        lhs = '<C-e>',
-                        desc = 'Focus file panel',
-                        remap = true,
-                    },
-                    toggle_files = { lhs = '' },
-                },
-                file_panel = {
-                    focus_files = { lhs = '' },
-                    toggle_files = {
-                        lhs = '<C-e>',
-                        desc = 'Toggle files panel',
-                        remap = true,
-                    },
-                },
-                submit_win = {
-                    approve_review = {
-                        lhs = '<C-a>',
-                        desc = 'Approve',
-                        mode = { 'n', 'i' },
-                    },
-                    comment_review = {
-                        lhs = '<C-m>',
-                        desc = 'Comment',
-                        mode = { 'n', 'i' },
-                    },
-                    request_changes = {
-                        lhs = '<C-r>',
-                        desc = 'Request changes',
-                        mode = { 'n', 'i' },
-                    },
-                    close_review_tab = {
-                        lhs = '<C-c>',
-                        desc = 'Close',
-                        mode = { 'n', 'i' },
-                    },
-                },
-            },
-        },
-        config = function(_, opts)
+            }
             require('octo').setup(opts)
             vim.treesitter.language.register('markdown', 'octo')
 
@@ -1082,6 +1094,8 @@ return {
     },
     {
         'https://forge.barrettruth.com/barrettruth/ci.nvim',
+        main = 'ci',
+        module = 'ci',
         cmd = 'CI',
         init = function()
             require('which-key').add { { '<Leader>gc', group = 'CI' } }
@@ -1097,7 +1111,8 @@ return {
     {
         'harrisoncramer/gitlab.nvim',
         enabled = false, -- incompatible with codediff.nvim https://github.com/harrisoncramer/gitlab.nvim/issues/517
-        lazy = true,
+        main = 'gitlab',
+        module = 'gitlab',
         dependencies = {
             'MunifTanjim/nui.nvim',
             'nvim-lua/plenary.nvim',
@@ -1188,19 +1203,23 @@ return {
     },
     {
         'Hdoc1509/gh-actions.nvim',
+        lazy = false,
+        dependencies = { 'nvim-treesitter/nvim-treesitter' },
         build = function()
             require('nvim-treesitter').install(
                 'gh_actions_expressions',
                 { force = true }
             )
         end,
-        dependencies = { 'nvim-treesitter/nvim-treesitter' },
         config = function()
             require('gh-actions.tree-sitter').setup()
         end,
     },
     {
         'disrupted/github-actions.nvim',
+        main = 'github-actions',
+        module = 'github-actions',
+        lazy = false,
         ---@module 'github-actions.config'
         ---@type github_actions.Opts
         opts = {

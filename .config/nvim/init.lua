@@ -1,15 +1,30 @@
 -- vim: foldmethod=marker
+vim.loader.enable()
+
 require 'conf.ui.ui2'
 require 'conf.filetype'
 require 'conf.diagnostics'
 
-vim.pack.add { 'https://github.com/folke/which-key.nvim' }
-vim.pack.add { 'https://github.com/zuqini/zpack.nvim' }
-
 vim.g.mapleader = ' ' -- set leader to space
 vim.g.maplocalleader = ','
 
-require('zpack').setup { dev = { path = '~/dev' } }
+vim.pack.add { 'https://github.com/disrupted/laze' } -- temporary fork of https://github.com/sys9kdr/laze
+require('laze.extra').setup() -- optional :Laze update/clean/health/reload
+
+---@return laze.Spec[]
+local function plugin_specs()
+    local specs = {}
+    local root = vim.fs.joinpath(vim.fn.stdpath 'config', 'lua', 'plugins')
+    local files = vim.fn.glob(root .. '/**/*.lua', false, true)
+    table.sort(files)
+    for _, file in ipairs(files) do
+        vim.list_extend(specs, dofile(file))
+    end
+    return specs
+end
+
+require('laze').setup(plugin_specs())
+
 local disabled_builtin_plugins = {
     '2html_plugin',
     'tohtml',

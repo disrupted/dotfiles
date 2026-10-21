@@ -279,6 +279,7 @@ local function move_buf_to_tab(bufnr, dest_name)
     local source_name = get_tab_name(source_tab) or '?'
     moving = true
     vim.schedule(function()
+        require 'scope'
         local scope_core = require 'scope.core'
         local scope_utils = require 'scope.utils'
 

@@ -1,11 +1,12 @@
 local icons = require 'conf.icons'
 
----@type zpack.Spec[]
+---@type LazeSpec[]
 return {
     {
         'johmsalas/text-case.nvim',
-        cmd = 'Subs',
         main = 'textcase',
+        module = 'textcase',
+        cmd = 'Subs',
         init = function()
             require('which-key').add {
                 { 'zc', mode = { 'n', 'v' }, group = 'Coerce', icon = '󰬴' },
@@ -63,6 +64,8 @@ return {
     },
     {
         'kylechui/nvim-surround',
+        main = 'nvim-surround',
+        module = 'nvim-surround',
         keys = {
             -- {
             --     '<C-g>s',
@@ -131,31 +134,36 @@ return {
     {
         'tar80/matchwith.nvim',
         enabled = false, -- FIXME: plugin bugs cause some errors
+        main = 'matchwith',
+        module = 'matchwith',
         event = { 'BufWinEnter', 'BufNewFile' },
         ---@module 'matchwith.config'
         ---@type Options
-        ---@diagnostic disable-next-line: missing-fields
         opts = {
             jump_key = '%',
             ignore_filetypes = {},
         },
     },
     {
+        'JoosepAlviste/nvim-ts-context-commentstring',
+        module = 'ts_context_commentstring',
+    },
+    {
         'numToStr/Comment.nvim',
+        main = 'Comment',
+        module = 'Comment',
         keys = {
             { 'gc', mode = { 'n', 'v' }, desc = 'Toggle linewise comment' },
             { 'gb', mode = { 'n', 'v' }, desc = 'Toggle blockwise comment' },
         },
-        opts = function()
-            return {
+        dependencies = { 'JoosepAlviste/nvim-ts-context-commentstring' },
+        config = function()
+            local opts = {
                 ignore = '^$', -- ignore empty lines
                 pre_hook = require(
                     'ts_context_commentstring.integrations.comment_nvim'
                 ).create_pre_hook(),
             }
-        end,
-        dependencies = { 'JoosepAlviste/nvim-ts-context-commentstring' },
-        config = function(_, opts)
             require('Comment').setup(opts)
             local ft = require 'Comment.ft'
             ft.helm = { '{{/* %s */}}', '{{/* %s */}}' }
@@ -163,10 +171,11 @@ return {
     },
     {
         'abecodes/tabout.nvim',
+        main = 'tabout',
+        module = 'tabout',
         event = 'InsertEnter',
         ---@module 'tabout.config'
         ---@type TaboutOptions
-        ---@diagnostic disable-next-line: missing-fields
         opts = {
             completion = false,
             tabouts = {
@@ -184,51 +193,53 @@ return {
     },
     {
         'altermo/ultimate-autopair.nvim',
+        branch = 'v0.6',
+        main = 'ultimate-autopair',
+        module = 'ultimate-autopair',
         event = {
             'InsertEnter',
             -- 'CmdlineEnter'
         },
-        branch = 'v0.6',
-        opts = {
-            cmap = false,
-            extensions = {
-                cond = {
-                    -- disable in comments
-                    -- https://github.com/altermo/ultimate-autopair.nvim/blob/6fd0d6aa976a97dd6f1bed4d46be1b437613a52f/Q%26A.md?plain=1#L26
+        config = function()
+            local opts = {
+                cmap = false,
+                extensions = {
                     cond = {
-                        function(fn)
-                            return not fn.in_node 'comment'
-                        end,
+                        -- disable in comments
+                        -- https://github.com/altermo/ultimate-autopair.nvim/blob/6fd0d6aa976a97dd6f1bed4d46be1b437613a52f/Q%26A.md?plain=1#L26
+                        cond = {
+                            function(fn)
+                                return not fn.in_node 'comment'
+                            end,
+                        },
+                    },
+                    -- get fly mode working on strings:
+                    -- https://github.com/altermo/ultimate-autopair.nvim/issues/33
+                    fly = {
+                        nofilter = true,
                     },
                 },
-                -- get fly mode working on strings:
-                -- https://github.com/altermo/ultimate-autopair.nvim/issues/33
-                fly = {
-                    nofilter = true,
+                config_internal_pairs = {
+                    { '"', '"', fly = true },
+                    { '\'', '\'', fly = true },
                 },
-            },
-            config_internal_pairs = {
-                { '"', '"', fly = true },
-                { '\'', '\'', fly = true },
-            },
-            space2 = { enable = true },
-            tabout = {
-                enable = false,
-                map = '<Tab>',
-                hopout = true,
-                do_nothing_if_fail = false,
-            },
-            { '\\(', '\\)' },
-            { '\\[', '\\]' },
-            { '\\{', '\\}' },
-            {
-                '<',
-                '>',
-                disable_start = true,
-                disable_end = true,
-            },
-        },
-        config = function(_, opts)
+                space2 = { enable = true },
+                tabout = {
+                    enable = false,
+                    map = '<Tab>',
+                    hopout = true,
+                    do_nothing_if_fail = false,
+                },
+                { '\\(', '\\)' },
+                { '\\[', '\\]' },
+                { '\\{', '\\}' },
+                {
+                    '<',
+                    '>',
+                    disable_start = true,
+                    disable_end = true,
+                },
+            }
             local aupair = require 'ultimate-autopair'
             aupair.init {
                 aupair.extend_default(opts),
@@ -237,6 +248,8 @@ return {
     },
     {
         'monaqa/dial.nvim',
+        main = 'dial',
+        module = 'dial',
         init = function()
             require('which-key').add {
                 mode = { 'n', 'v' },
@@ -245,36 +258,8 @@ return {
             }
         end,
         keys = {
-            {
-                '<Leader>j',
-                function()
-                    return require('dial.map').inc_normal()
-                end,
-                expr = true,
-            },
-            {
-                '<Leader>k',
-                function()
-                    return require('dial.map').dec_normal()
-                end,
-                expr = true,
-            },
-            {
-                '<Leader>j',
-                function()
-                    return require('dial.map').inc_visual()
-                end,
-                mode = 'v',
-                expr = true,
-            },
-            {
-                '<Leader>k',
-                function()
-                    return require('dial.map').dec_visual()
-                end,
-                mode = 'v',
-                expr = true,
-            },
+            { '<Leader>j', mode = { 'n', 'v' } },
+            { '<Leader>k', mode = { 'n', 'v' } },
         },
         config = function()
             local augend = require 'dial.augend'
@@ -301,10 +286,20 @@ return {
                     },
                 },
             }
+
+            local map = require 'dial.map'
+            vim.keymap.set('n', '<Leader>j', map.inc_normal, { expr = true })
+            vim.keymap.set('n', '<Leader>k', map.dec_normal, { expr = true })
+            vim.keymap.set('v', '<Leader>j', map.inc_visual, { expr = true })
+            vim.keymap.set('v', '<Leader>k', map.dec_visual, { expr = true })
         end,
     },
+    { 'nvim-neotest/nvim-nio', module='nio' },
     {
         'nvim-neotest/neotest',
+        main = 'neotest',
+        module = 'neotest',
+        dependencies = { 'nvim-neotest/nvim-nio', 'stevearc/overseer.nvim' },
         init = function()
             require('which-key').add {
                 { '<Leader>t', group = 'Test', icon = '' },
@@ -422,98 +417,95 @@ return {
                 desc = 'Prev failed test',
             },
         },
-        dependencies = { { 'nvim-neotest/nvim-nio', lazy = true } },
-        ---@module 'neotest.config'
-        ---@type neotest.Config
-        ---@diagnostic disable-next-line: missing-fields
-        opts = {
-            ---@diagnostic disable-next-line: missing-fields
-            floating = { border = 'single' },
-            adapters = {},
-            consumers = {
-                notify = function(client)
-                    client.listeners.results = function(_, results, partial)
-                        if partial then
-                            return
+        config = function()
+            ---@module 'neotest.config'
+            ---@type neotest.Config
+            local opts = {
+                ---@diagnostic disable-next-line: missing-fields
+                floating = { border = 'single' },
+                adapters = {},
+                consumers = {
+                    notify = function(client)
+                        client.listeners.results = function(_, results, partial)
+                            if partial then
+                                return
+                            end
+                            local error = vim.iter(vim.tbl_values(results))
+                                :any(function(result)
+                                    return not (
+                                        result.errors == nil
+                                        or vim.tbl_isempty(result.errors)
+                                    )
+                                end)
+                            require('neotest.lib').notify(
+                                'Tests completed',
+                                error and vim.log.levels.WARN
+                                    or vim.log.levels.INFO
+                            )
                         end
-                        local error = vim.iter(vim.tbl_values(results))
-                            :any(function(result)
-                                return not (
-                                    result.errors == nil
-                                    or vim.tbl_isempty(result.errors)
-                                )
+                        return {}
+                    end,
+                    autocmd_run = function(client)
+                        client.listeners.run = function()
+                            vim.schedule(function()
+                                vim.api.nvim_exec_autocmds('User', {
+                                    pattern = 'NeotestRun',
+                                    modeline = false,
+                                })
                             end)
-                        require('neotest.lib').notify(
-                            'Tests completed',
-                            error and vim.log.levels.WARN or vim.log.levels.INFO
+                        end
+                        return {}
+                    end,
+                    autocmd_results = function(client)
+                        client.listeners.results = function(
+                            adapter_id,
+                            results,
+                            partial
                         )
-                    end
-                    return {}
-                end,
-                autocmd_run = function(client)
-                    client.listeners.run = function()
-                        vim.schedule(function()
-                            vim.api.nvim_exec_autocmds('User', {
-                                pattern = 'NeotestRun',
-                                modeline = false,
-                            })
-                        end)
-                    end
-                    return {}
-                end,
-                autocmd_results = function(client)
-                    client.listeners.results = function(
-                        adapter_id,
-                        results,
-                        partial
-                    )
-                        vim.schedule(function()
-                            vim.api.nvim_exec_autocmds('User', {
-                                pattern = 'NeotestResult',
-                                modeline = false,
-                                data = {
-                                    adapter_id = adapter_id,
-                                    results = results,
-                                    partial = partial,
-                                },
-                            })
-                        end)
-                    end
-                    return {}
-                end,
-            },
-            quickfix = {
-                enabled = false,
-                open = true,
-            },
-            output = {
-                enabled = false, -- disabled in favor of overseer (live logs)
-            },
-            summary = {
-                mappings = {
-                    expand = { '<right>', '<left>', '<2-LeftMouse>' },
-                    expand_all = 'e',
-                    jumpto = '<CR>',
+                            vim.schedule(function()
+                                vim.api.nvim_exec_autocmds('User', {
+                                    pattern = 'NeotestResult',
+                                    modeline = false,
+                                    data = {
+                                        adapter_id = adapter_id,
+                                        results = results,
+                                        partial = partial,
+                                    },
+                                })
+                            end)
+                        end
+                        return {}
+                    end,
                 },
-            },
-            icons = vim.tbl_extend('force', icons.test, {
-                running_animated = {
-                    '⠋',
-                    '⠙',
-                    '⠹',
-                    '⠸',
-                    '⠼',
-                    '⠴',
-                    '⠦',
-                    '⠧',
-                    '⠇',
-                    '⠏',
+                quickfix = {
+                    enabled = false,
+                    open = true,
                 },
-            }),
-        },
-        ---@module 'neotest.config'
-        ---@param opts neotest.Config
-        config = function(_, opts)
+                output = {
+                    enabled = false, -- disabled in favor of overseer (live logs)
+                },
+                summary = {
+                    mappings = {
+                        expand = { '<right>', '<left>', '<2-LeftMouse>' },
+                        expand_all = 'e',
+                        jumpto = '<CR>',
+                    },
+                },
+                icons = vim.tbl_extend('force', icons.test, {
+                    running_animated = {
+                        '⠋',
+                        '⠙',
+                        '⠹',
+                        '⠸',
+                        '⠼',
+                        '⠴',
+                        '⠦',
+                        '⠧',
+                        '⠇',
+                        '⠏',
+                    },
+                }),
+            }
             opts = vim.tbl_deep_extend('force', opts, {
                 consumers = {
                     overseer = require 'neotest.consumers.overseer',
@@ -630,25 +622,9 @@ return {
         end,
     },
     {
-        'nvim-neotest/neotest-plenary',
-        lazy = true,
-        dependencies = { 'nvim-neotest/neotest' },
-        init = function()
-            require('conf.neotest.adapters').register('lua', 'neotest-plenary')
-        end,
-        ---@module 'neotest-plenary.adapter'
-        ---@type neotest-plenary._AdapterConfig
-        ---@diagnostic disable-next-line: missing-fields
-        opts = {},
-        config = function(_, opts)
-            local adapter = require 'neotest-plenary'(opts)
-            adapter.name = 'Plenary'
-            require('conf.neotest.adapters').attach(adapter)
-        end,
-    },
-    {
         'nvim-neotest/neotest-python',
-        lazy = true,
+        main = 'neotest-python',
+        module = 'neotest-python',
         keys = {
             {
                 '<Leader>tu',
@@ -681,22 +657,21 @@ return {
                 'neotest-python'
             )
         end,
-        ---@module 'neotest-python.adapter'
-        ---@type neotest-python._AdapterConfig
-        ---@diagnostic disable-next-line: missing-fields
-        opts = {
-            dap = { justMyCode = true },
-            runner = 'pytest',
-            args = {
-                '-s', -- don't capture console output
-                '--log-level',
-                'DEBUG',
-                '-vv',
-                -- '--color=no',
-            },
-            -- pytest_discover_instances = true, -- experimental, support parametrized test cases
-        },
-        config = function(_, opts)
+        config = function()
+            ---@module 'neotest-python.adapter'
+            ---@type neotest-python._AdapterConfig
+            local opts = {
+                dap = { justMyCode = true },
+                runner = 'pytest',
+                args = {
+                    '-s', -- don't capture console output
+                    '--log-level',
+                    'DEBUG',
+                    '-vv',
+                    -- '--color=no',
+                },
+                -- pytest_discover_instances = true, -- experimental, support parametrized test cases
+            }
             local adapter = require 'neotest-python'(opts)
             adapter.name = 'Python'
             require('conf.neotest.adapters').attach(adapter)
@@ -704,7 +679,8 @@ return {
     },
     {
         'haydenmeade/neotest-jest',
-        lazy = true,
+        main = 'neotest-jest',
+        module = 'neotest-jest',
         dependencies = { 'nvim-neotest/neotest' },
         init = function()
             for _, filetype in ipairs {
@@ -719,14 +695,14 @@ return {
                 )
             end
         end,
-        opts = {
-            jestCommand = 'npm test --',
-            env = { CI = true },
-            cwd = function()
-                return vim.uv.cwd()
-            end,
-        },
-        config = function(_, opts)
+        config = function()
+            local opts = {
+                jestCommand = 'npm test --',
+                env = { CI = true },
+                cwd = function()
+                    return vim.uv.cwd()
+                end,
+            }
             local adapter = require 'neotest-jest'(opts)
             adapter.name = 'Jest'
             require('conf.neotest.adapters').attach(adapter)
@@ -734,6 +710,8 @@ return {
     },
     {
         'andythigpen/nvim-coverage',
+        main = 'coverage',
+        module = 'coverage',
         cmd = {
             'Coverage',
             'CoverageLoad',
@@ -762,6 +740,8 @@ return {
     },
     {
         'danymat/neogen',
+        main = 'neogen',
+        module = 'neogen',
         cmd = 'Neogen',
         init = function()
             require('which-key').add {
@@ -802,6 +782,8 @@ return {
     },
     {
         'stevearc/overseer.nvim',
+        main = 'overseer',
+        module = 'overseer',
         cmd = {
             'OverseerOpen',
             'OverseerToggle',
@@ -812,61 +794,61 @@ return {
             { '<Bslash>', '<cmd>OverseerToggle<cr>', desc = 'Toggle Overseer' },
             { '<M-Bslash>', '<cmd>OverseerRun<cr>', desc = 'Overseer run' },
         },
-        ---@module 'overseer.config'
-        ---@type overseer.Config
-        opts = {
-            templates = {
-                'builtin',
-                'terminal',
-                'pkl',
-                'python.poetry',
-                'python.uv',
-                'typst',
-            },
-            keymaps = {
-                ['<C-u>'] = 'keymap.scroll_output_up',
-                ['<C-d>'] = 'keymap.scroll_output_down',
-            },
-            form = {
-                border = 'rounded',
-            },
-            task_win = {
-                border = 'rounded',
-                padding = 10,
-            },
-            task_list = {
+        config = function()
+            ---@module 'overseer.config'
+            ---@type overseer.Config
+            local opts = {
+                templates = {
+                    'builtin',
+                    'terminal',
+                    'pkl',
+                    'python.poetry',
+                    'python.uv',
+                    'typst',
+                },
                 keymaps = {
-                    ['<C-j>'] = false,
-                    ['<C-k>'] = false,
-                    ['<C-h>'] = false,
-                    ['<C-l>'] = false,
                     ['<C-u>'] = 'keymap.scroll_output_up',
                     ['<C-d>'] = 'keymap.scroll_output_down',
-                    [']]'] = 'keymap.next_task',
-                    ['[['] = 'keymap.prev_task',
-                    ['j'] = 'keymap.next_task',
-                    ['k'] = 'keymap.prev_task',
-                    ['l'] = '<CMD>wincmd l<CR>',
                 },
-                direction = 'bottom',
-                min_height = 25,
-                max_height = 25,
-            },
-            component_aliases = {
-                default_neotest = {
-                    {
-                        'open_output',
-                        direction = 'dock',
-                        focus = false,
-                        -- on_start = 'never',
-                        -- on_complete = 'failure',
+                form = {
+                    border = 'rounded',
+                },
+                task_win = {
+                    border = 'rounded',
+                    padding = 10,
+                },
+                task_list = {
+                    keymaps = {
+                        ['<C-j>'] = false,
+                        ['<C-k>'] = false,
+                        ['<C-h>'] = false,
+                        ['<C-l>'] = false,
+                        ['<C-u>'] = 'keymap.scroll_output_up',
+                        ['<C-d>'] = 'keymap.scroll_output_down',
+                        [']]'] = 'keymap.next_task',
+                        ['[['] = 'keymap.prev_task',
+                        ['j'] = 'keymap.next_task',
+                        ['k'] = 'keymap.prev_task',
+                        ['l'] = '<CMD>wincmd l<CR>',
                     },
-                    'on_exit_set_status',
-                    'on_complete_dispose',
+                    direction = 'bottom',
+                    min_height = 25,
+                    max_height = 25,
                 },
-            },
-        },
-        config = function(_, opts)
+                component_aliases = {
+                    default_neotest = {
+                        {
+                            'open_output',
+                            direction = 'dock',
+                            focus = false,
+                            -- on_start = 'never',
+                            -- on_complete = 'failure',
+                        },
+                        'on_exit_set_status',
+                        'on_complete_dispose',
+                    },
+                },
+            }
             local overseer = require 'overseer'
             overseer.setup(opts)
 
@@ -968,6 +950,8 @@ return {
     },
     {
         'folke/todo-comments.nvim',
+        main = 'todo-comments',
+        module = 'todo-comments',
         cmd = { 'TodoQuickFix', 'TodoTrouble' },
         keys = {
             {
@@ -993,11 +977,11 @@ return {
                 {}
             )
         end,
-        opts = {
-            search = { pattern = [[\b(KEYWORDS)(\([^\)]*\))?:]] },
-            highlight = { pattern = [[.*<((KEYWORDS)%(\(.{-1,}\))?):]] },
-        },
-        config = function(_, opts)
+        config = function()
+            local opts = {
+                search = { pattern = [[\b(KEYWORDS)(\([^\)]*\))?:]] },
+                highlight = { pattern = [[.*<((KEYWORDS)%(\(.{-1,}\))?):]] },
+            }
             -- HACK: no option to disable highlighting globally
             ---@diagnostic disable-next-line: duplicate-set-field
             require('todo-comments.highlight').start = function() end
@@ -1006,6 +990,8 @@ return {
     },
     {
         'MagicDuck/grug-far.nvim',
+        main = 'grug-far',
+        module = 'grug-far',
         keys = {
             {
                 '<C-_>', -- ctrl + /

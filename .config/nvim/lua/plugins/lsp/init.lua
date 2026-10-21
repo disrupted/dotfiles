@@ -1,8 +1,9 @@
----@type zpack.Spec[]
+---@type LazeSpec[]
 return {
     {
         'Davidyz/inlayhint-filler.nvim',
-        lazy = true,
+        main = 'inlayhint-filler',
+        module = 'inlayhint-filler',
         init = function()
             vim.api.nvim_create_autocmd('LspAttach', {
                 desc = 'LSP inlayhint-filler',
@@ -34,131 +35,159 @@ return {
     },
     {
         'disrupted/kpops.nvim',
-        cmd = 'KPOps',
-        ft = 'yaml.kpops',
+        main = 'kpops',
+        module = 'kpops',
+        lazy = false,
         ---@module 'kpops.config'
         ---@type kpops.Opts
         opts = {},
     },
     {
         'stevearc/conform.nvim',
+        main = 'conform',
+        module = 'conform',
         event = 'BufWritePre',
         cmd = 'ConformInfo',
-        opts = function()
-            local dprint = {
-                'dprint',
-                timeout_ms = 5000, -- HACK: high because dprint needs to download WASM plugins on first run
-            }
-            local check_dprint = function(bufnr)
-                if
-                    require('conform').get_formatter_info('dprint', bufnr).cwd
-                then
-                    Snacks.notify('dprint', {
-                        level = vim.log.levels.DEBUG,
-                        title = 'Format',
-                    })
-                    return dprint
-                end
-            end
-
-            local check_prettier = function(bufnr)
-                local prettierd =
-                    require('conform').get_formatter_info('prettierd', bufnr)
-                if prettierd.cwd then
-                    if prettierd.available then
-                        Snacks.notify('prettierd', {
-                            level = vim.log.levels.DEBUG,
-                            title = 'Format',
-                        })
-                        return { 'prettierd' }
-                    else
-                        Snacks.notify('prettier', {
-                            level = vim.log.levels.DEBUG,
-                            title = 'Format',
-                        })
-                        return { 'prettier' }
-                    end
-                end
-            end
-
-            local dprint_prettier_none = function(bufnr)
-                return check_dprint(bufnr) or check_prettier(bufnr) or {}
-            end
-
-            vim.g.format_modifications_only = false
-            local function format_git_hunks(hunks)
-                for i = #hunks, 1, -1 do
-                    local hunk = hunks[i]
-                    if hunk ~= nil and hunk.type ~= 'delete' then
-                        local start = math.max(1, hunk.added.start) -- on untracked files, start is 0
-                        local last = start + hunk.added.count
-                        -- nvim_buf_get_lines uses zero-based indexing -> subtract from last
-                        local last_hunk_line = vim.api.nvim_buf_get_lines(
-                            0,
-                            last - 2,
-                            last - 1,
-                            true
-                        )[1]
-                        local range = {
-                            start = { start, 0 },
-                            ['end'] = { last - 1, last_hunk_line:len() },
-                        }
-                        require('conform').format { async = false, range = range }
-                    end
-                end
-            end
-
-            ---@module 'conform.types'
-            ---@type conform.setupOpts
-            return {
-                formatters_by_ft = {
-                    -- python = { 'ruff', lsp_format = 'last' }, -- provides `ruff check --fix`
-                    lua = { 'stylua' },
-                    luau = { 'stylua' },
-                    astro = dprint,
-                    json = dprint,
-                    jsonc = dprint,
-                    markdown = { 'pruner' },
-                    javascript = dprint_prettier_none,
-                    javascriptreact = dprint_prettier_none,
-                    typescript = dprint_prettier_none,
-                    typescriptreact = dprint_prettier_none,
-                    dockerfile = dprint,
-                    css = dprint,
-                    html = dprint,
-                    htmldjango = dprint,
-                    yaml = dprint,
-                    graphql = dprint,
-                    pkl = { 'pkl' },
-                    sql = { 'sleek' }, -- or dprint
-                    svelte = dprint,
-                    swift = { 'swift' },
-                    nu = { 'pruner' },
-                    http = { 'kulala-fmt' },
-                    csv = { 'trim_newlines' },
-                    tsv = { 'trim_newlines' },
-                    ['_'] = {
-                        'trim_newlines',
-                        'trim_whitespace',
-                        lsp_format = 'prefer',
-                    },
-                },
-                format_on_save = function(bufnr)
-                    -- Disable with a global or buffer-local variable
+        config = function()
+            local opts = (function()
+                local dprint = {
+                    'dprint',
+                    timeout_ms = 5000, -- HACK: high because dprint needs to download WASM plugins on first run
+                }
+                local check_dprint = function(bufnr)
                     if
-                        vim.g.disable_autoformat
-                        or vim.b[bufnr].disable_autoformat
+                        require('conform').get_formatter_info('dprint', bufnr).cwd
                     then
-                        return
+                        Snacks.notify('dprint', {
+                            level = vim.log.levels.DEBUG,
+                            title = 'Format',
+                        })
+                        return dprint
                     end
-                    local hunks = require('gitsigns').get_hunks(bufnr)
-                    if vim.g.format_modifications_only and hunks then
-                        return format_git_hunks(hunks)
+                end
+
+                local check_prettier = function(bufnr)
+                    local prettierd = require('conform').get_formatter_info(
+                        'prettierd',
+                        bufnr
+                    )
+                    if prettierd.cwd then
+                        if prettierd.available then
+                            Snacks.notify('prettierd', {
+                                level = vim.log.levels.DEBUG,
+                                title = 'Format',
+                            })
+                            return { 'prettierd' }
+                        else
+                            Snacks.notify('prettier', {
+                                level = vim.log.levels.DEBUG,
+                                title = 'Format',
+                            })
+                            return { 'prettier' }
+                        end
                     end
-                    return { async = false }
+                end
+
+                local dprint_prettier_none = function(bufnr)
+                    return check_dprint(bufnr) or check_prettier(bufnr) or {}
+                end
+
+                vim.g.format_modifications_only = false
+                local function format_git_hunks(hunks)
+                    for i = #hunks, 1, -1 do
+                        local hunk = hunks[i]
+                        if hunk ~= nil and hunk.type ~= 'delete' then
+                            local start = math.max(1, hunk.added.start) -- on untracked files, start is 0
+                            local last = start + hunk.added.count
+                            -- nvim_buf_get_lines uses zero-based indexing -> subtract from last
+                            local last_hunk_line = vim.api.nvim_buf_get_lines(
+                                0,
+                                last - 2,
+                                last - 1,
+                                true
+                            )[1]
+                            local range = {
+                                start = { start, 0 },
+                                ['end'] = { last - 1, last_hunk_line:len() },
+                            }
+                            require('conform').format {
+                                async = false,
+                                range = range,
+                            }
+                        end
+                    end
+                end
+
+                ---@module 'conform.types'
+                ---@type conform.setupOpts
+                return {
+                    formatters_by_ft = {
+                        -- python = { 'ruff', lsp_format = 'last' }, -- provides `ruff check --fix`
+                        lua = { 'stylua' },
+                        luau = { 'stylua' },
+                        astro = dprint,
+                        json = dprint,
+                        jsonc = dprint,
+                        markdown = { 'pruner' },
+                        javascript = dprint_prettier_none,
+                        javascriptreact = dprint_prettier_none,
+                        typescript = dprint_prettier_none,
+                        typescriptreact = dprint_prettier_none,
+                        dockerfile = dprint,
+                        css = dprint,
+                        html = dprint,
+                        htmldjango = dprint,
+                        yaml = dprint,
+                        graphql = dprint,
+                        pkl = { 'pkl' },
+                        sql = { 'sleek' }, -- or dprint
+                        svelte = dprint,
+                        swift = { 'swift' },
+                        nu = { 'pruner' },
+                        http = { 'kulala-fmt' },
+                        csv = { 'trim_newlines' },
+                        tsv = { 'trim_newlines' },
+                        ['_'] = {
+                            'trim_newlines',
+                            'trim_whitespace',
+                            lsp_format = 'prefer',
+                        },
+                    },
+                    format_on_save = function(bufnr)
+                        -- Disable with a global or buffer-local variable
+                        if
+                            vim.g.disable_autoformat
+                            or vim.b[bufnr].disable_autoformat
+                        then
+                            return
+                        end
+                        local hunks = require('gitsigns').get_hunks(bufnr)
+                        if vim.g.format_modifications_only and hunks then
+                            return format_git_hunks(hunks)
+                        end
+                        return { async = false }
+                    end,
+                    notify_on_error = true,
+                    log_level = vim.log.levels.WARN,
+                }
+            end)()
+
+            local conform = require 'conform'
+            conform.setup(opts)
+
+            conform.formatters.dprint = {
+                prepend_args = function(self, ctx)
+                    if not self:cwd(ctx) then
+                        Snacks.notify('fallback to global dprint config', {
+                            level = vim.log.levels.DEBUG,
+                            title = 'Format',
+                        })
+                        return {
+                            -- '--config',
+                            -- vim.fs.normalize '~/.config/dprint.jsonc',
+                        }
+                    end
                 end,
-                notify_on_error = true,
-                log_level = vim.log.levels.WARN,
             }
         end,
         init = function()
@@ -198,35 +227,11 @@ return {
                 end,
             })
         end,
-        config = function(_, opts)
-            local conform = require 'conform'
-            conform.setup(opts)
-
-            -- conform.formatters.ruff_fix = {
-            --     prepend_args = { '--respect-gitignore' },
-            -- }
-            -- conform.formatters.ruff_format = {
-            --     prepend_args = { '--silent', '--respect-gitignore' },
-            -- }
-            conform.formatters.dprint = {
-                prepend_args = function(self, ctx)
-                    if not self:cwd(ctx) then
-                        Snacks.notify('fallback to global dprint config', {
-                            level = vim.log.levels.DEBUG,
-                            title = 'Format',
-                        })
-                        return {
-                            -- '--config',
-                            -- vim.fs.normalize '~/.config/dprint.jsonc',
-                        }
-                    end
-                end,
-            }
-        end,
     },
     {
         'joechrisellis/lsp-format-modifications.nvim',
-        lazy = true,
+        main = 'lsp-format-modifications',
+        module = 'lsp-format-modifications',
         dependencies = { 'nvim-lua/plenary.nvim' },
         init = function()
             vim.api.nvim_create_user_command('FormatModified', function()
@@ -256,29 +261,31 @@ return {
     },
     {
         'mfussenegger/nvim-lint',
+        main = 'lint',
+        module = 'lint',
         ft = { 'yaml.github' },
-        opts = {
-            events = { 'BufWritePost', 'BufReadPost', 'InsertLeave' },
-            linters_by_ft = {
-                ['yaml.github'] = { 'actionlint' },
-            },
-            -- from LazyVim: https://github.com/LazyVim/LazyVim/blob/bb36f71b77d8e15788a5b62c82a1c9ec7b209e49/lua/lazyvim/plugins/linting.lua#L16
-            -- easily override linter options or add custom linters
-            ---@type table<string,table>
-            linters = {
-                actionlint = {
-                    cmd = 'jactionlint',
+        config = function()
+            local opts = {
+                events = { 'BufWritePost', 'BufReadPost', 'InsertLeave' },
+                linters_by_ft = {
+                    ['yaml.github'] = { 'actionlint' },
                 },
-                -- Example of using selene only when a selene.toml file is present
-                -- selene = {
-                --   -- dynamically enable/disable linters based on the context.
-                --   condition = function(ctx)
-                --     return vim.fs.find({ "selene.toml" }, { path = ctx.filename, upward = true })[1]
-                --   end,
-                -- },
-            },
-        },
-        config = function(_, opts)
+                -- from LazyVim: https://github.com/LazyVim/LazyVim/blob/bb36f71b77d8e15788a5b62c82a1c9ec7b209e49/lua/lazyvim/plugins/linting.lua#L16
+                -- easily override linter options or add custom linters
+                ---@type table<string,table>
+                linters = {
+                    actionlint = {
+                        cmd = 'jactionlint',
+                    },
+                    -- Example of using selene only when a selene.toml file is present
+                    -- selene = {
+                    --   -- dynamically enable/disable linters based on the context.
+                    --   condition = function(ctx)
+                    --     return vim.fs.find({ "selene.toml" }, { path = ctx.filename, upward = true })[1]
+                    --   end,
+                    -- },
+                },
+            }
             local lint = require 'lint'
             for name, linter in pairs(opts.linters) do
                 if
@@ -355,17 +362,20 @@ return {
     },
     {
         'mrcjkb/rustaceanvim',
+        main = 'rustaceanvim',
+        module = 'rustaceanvim',
         ft = 'rust',
+        dependencies = { 'nvim-neotest/neotest' },
         init = function()
             require('conf.neotest.adapters').register(
                 'rust',
                 'rustaceanvim.neotest'
             )
         end,
-        ---@module 'rustaceanvim.config'
-        ---@type rustaceanvim.Opts
-        opts = {},
-        config = function(_, opts)
+        config = function()
+            ---@module 'rustaceanvim.config'
+            ---@type rustaceanvim.Opts
+            local opts = {}
             vim.g.rustaceanvim = opts
 
             local adapter = require 'rustaceanvim.neotest'()
@@ -375,6 +385,8 @@ return {
     },
     {
         'folke/trouble.nvim',
+        main = 'trouble',
+        module = 'trouble',
         cmd = 'Trouble',
         init = function()
             require('which-key').add {
@@ -532,6 +544,8 @@ return {
     },
     {
         'qvalentin/helm-ls.nvim',
+        main = 'helm-ls',
+        module = 'helm-ls',
         ft = 'helm',
         opts = {},
     },
