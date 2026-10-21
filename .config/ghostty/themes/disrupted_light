@@ -1,4 +1,4 @@
-# vim: ft=conf
+# vim: ft=ghostty
 palette = "0=#000000"
 palette = "1=#ff3333"
 palette = "2=#86b200"

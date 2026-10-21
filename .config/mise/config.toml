@@ -90,7 +90,7 @@ pi = "latest"
 "pypi:visidata" = "latest"
 "github:tontinton/maki" = "latest"
 "aqua:nklmilojevic/sofka" = "latest"
-"cargo:https://github.com/nushell/nufmt" = "latest"
+"github:nushell/nufmt" = "latest"
 
 # language servers, formatters, linters
 shellcheck = "latest"
@@ -140,6 +140,7 @@ version_json_path = ".tag_name"
 postinstall = { run = "$HOME/.config/mise/scripts/install-tinycast.sh", when = "always" }
 
 [settings]
+terminal_progress = false  # emits OSC 9;4 which leaks into nvim terminal buffers when using tmux 3.7c passthrough
 auto_update = true
 experimental = true
 idiomatic_version_file_enable_tools = [
@@ -222,7 +223,7 @@ docker buildx prune -a -f
 "brew-cask:thingsmacsandboxhelper" = "latest"
 "brew-cask:timemachineeditor" = "latest"
 "brew-cask:yaak" = "latest"
-# "brew-cask:zen" = "latest"
+"brew-cask:zen" = "latest"
 
 [env]
 PI_CODING_AGENT_DIR = "{{ env.HOME }}/.config/pi"

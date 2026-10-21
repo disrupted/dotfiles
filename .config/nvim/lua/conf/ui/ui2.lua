@@ -72,6 +72,7 @@ local skip_messages = {
     '^Hunk %d+ of %d+$',
     'Already at newest change',
     'Already at oldest change',
+    'E21: Cannot make changes, \'modifiable\' is off',
 
     '%d lines yanked',
     'no lines in buffer',

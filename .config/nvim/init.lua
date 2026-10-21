@@ -1,6 +1,4 @@
 -- vim: foldmethod=marker
-local command = vim.api.nvim_create_user_command
-
 require 'conf.ui.ui2'
 require 'conf.filetype'
 require 'conf.diagnostics'
@@ -585,6 +583,7 @@ end, { desc = 'Decrement selection' })
 -----------------------------------------------------------------------------//
 -- Commands {{{1
 -----------------------------------------------------------------------------//
+local command = vim.api.nvim_create_user_command
 
 command('Cclear', 'cexpr []', { desc = 'clear QuickFix list' })
 command('TabDir', 'tcd %:p:h', {
