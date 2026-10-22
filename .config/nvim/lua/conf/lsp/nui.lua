@@ -59,7 +59,7 @@ local function nui_lsp_rename()
 
     -- clear all preview highlights and revert any in-buffer text mutations
     local function clear_preview()
-        if not cached_refs then
+        if not cached_refs or not vim.bo[buf].modifiable then
             return
         end
         if cached_refs[buf] then
@@ -82,7 +82,7 @@ local function nui_lsp_rename()
     -- (buf_versions tracks changedtick via nvim_buf_attach on_lines), causing
     -- apply_workspace_edit to consider them "newer than edits" and skip them.
     local function apply_preview(new_name)
-        if not cached_refs then
+        if not cached_refs or not vim.bo[buf].modifiable then
             return
         end
         -- first restore originals so we always apply from a clean slate
