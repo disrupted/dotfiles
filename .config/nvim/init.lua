@@ -631,13 +631,6 @@ end, {
 -----------------------------------------------------------------------------//
 -- }}}1
 -----------------------------------------------------------------------------//
--- HACK: workaround for libuv issue, exit code 134
--- vim.api.nvim_create_autocmd({ 'VimLeave' }, {
---     callback = function()
---         vim.cmd 'sleep 10m'
---     end,
--- })
-
 ---@param mode string
 ---@param key string
 local function keymap_exists(mode, key)
@@ -651,7 +644,7 @@ local function keymap_exists(mode, key)
 end
 
 -- remove some default keymaps
-local nmaps_to_delete = { 'grr', 'gra', 'grn', 'gri', 'grt' }
+local nmaps_to_delete = { 'gra', 'gri', 'grn', 'grr', 'grt', 'grx', 'gO', 'gx' }
 for _, nmap in ipairs(nmaps_to_delete) do
     if keymap_exists('n', nmap) then
         vim.keymap.del('n', nmap)
