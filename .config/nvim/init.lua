@@ -182,6 +182,39 @@ vim.api.nvim_create_autocmd('QuitPre', {
     desc = 'Close accessory windows on quit',
 })
 
+-- source `:h edit-repeat`, replaces vim-repeat
+local au_edit_repeat = vim.api.nvim_create_augroup('edit_repeat', { clear = true })
+local last ---@type vim.event.cmdatom.data?
+vim.api.nvim_create_autocmd('CmdAtom', {
+    group = au_edit_repeat,
+    callback = function(ev)
+        local is_redo_or_undo = ev.data.changed
+            and (ev.data.undoseq or 0) <= (vim.b[ev.buf].maxseq or 0)
+        vim.b[ev.buf].maxseq = math.max(vim.b[ev.buf].maxseq or 0, ev.data.undoseq or 0)
+        if ev.data.changed and not is_redo_or_undo and ev.data.lhs ~= '.' then
+            last = ev.data
+        end
+    end,
+})
+
+vim.keymap.set('n', '.', function()
+    -- Multicursors: degrade to builtin "." (cascades).
+    local mc = vim.api.nvim_create_namespace('nvim.multicursor')
+    if #vim.api.nvim_buf_get_extmarks(0, mc, 0, -1, { limit = 1 }) > 0 then
+        vim.api.nvim_feedkeys('.', 'n', false)
+        return
+    end
+    -- CmdAtom is deferred; schedule the replay, in case "." follows an edit.
+    vim.schedule(function()
+        if last then
+            vim.api.nvim_feedkeys(
+                last.keys or last.lhs,
+                last.keys and 'n' or 'm',
+                false
+            )
+        end
+    end)
+end)
 -----------------------------------------------------------------------------//
 -- Indentation {{{1
 -----------------------------------------------------------------------------//

@@ -324,10 +324,6 @@
       "rev": "dcbfe065297d31823561ba787f51056c147aa682",
       "src": "https://github.com/tpope/vim-abolish"
     },
-    "vim-repeat": {
-      "rev": "65846025c15494983dafe5e3b46c8f88ab2e9635",
-      "src": "https://github.com/tpope/vim-repeat"
-    },
     "which-key.nvim": {
       "rev": "3aab2147e74890957785941f0c1ad87d0a44c15a",
       "src": "https://github.com/folke/which-key.nvim"
