@@ -6,8 +6,8 @@ return {
     cmd = { 'CsvViewEnable', 'CsvViewDisable', 'CsvViewToggle' },
     ft = 'csv',
     config = function()
-        local csvview = require 'csvview'
-        csvview.setup {
+        local csvview = require('csvview')
+        csvview.setup({
             view = { header_lnum = 1 },
             parser = {
                 delimiter = {
@@ -24,7 +24,7 @@ return {
                 jump_prev_field_start = { 'b', mode = { 'n', 'v' } },
                 jump_next_field_end = { 'e', mode = { 'n', 'v' } },
             },
-        }
+        })
         vim.api.nvim_create_autocmd('FileType', {
             pattern = 'csv',
             callback = function(args)

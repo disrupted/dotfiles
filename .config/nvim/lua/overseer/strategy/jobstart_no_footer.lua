@@ -1,6 +1,6 @@
-local log = require 'overseer.log'
-local overseer = require 'overseer'
-local util = require 'overseer.util'
+local log = require('overseer.log')
+local overseer = require('overseer')
+local util = require('overseer.util')
 
 local cleanup_autocmd
 local all_channels = {}
@@ -123,11 +123,7 @@ local function queue_terminal_creation(strat)
 end
 
 function JobstartNoFooterStrategy:_create_terminal()
-    if
-        not self.bufnr
-        or not vim.api.nvim_buf_is_valid(self.bufnr)
-        or self.term_id
-    then
+    if not self.bufnr or not vim.api.nvim_buf_is_valid(self.bufnr) or self.term_id then
         return
     end
     local term_id
@@ -163,9 +159,8 @@ function JobstartNoFooterStrategy:_init_buffer()
     else
         vim.bo[self.bufnr].modifiable = false
         local function open_input()
-            local prompt =
-                vim.api.nvim_buf_get_lines(self.bufnr, -2, -1, true)[1]
-            if prompt:match '^%s*$' then
+            local prompt = vim.api.nvim_buf_get_lines(self.bufnr, -2, -1, true)[1]
+            if prompt:match('^%s*$') then
                 prompt = 'Input: '
             end
             vim.ui.input({ prompt = prompt }, function(text)
@@ -174,7 +169,7 @@ function JobstartNoFooterStrategy:_init_buffer()
                 end
             end)
         end
-        for _, lhs in ipairs { 'i', 'I', 'a', 'A', 'o', 'O' } do
+        for _, lhs in ipairs({ 'i', 'I', 'a', 'A', 'o', 'O' }) do
             vim.keymap.set('n', lhs, open_input, { buffer = self.bufnr })
         end
     end
@@ -202,11 +197,7 @@ function JobstartNoFooterStrategy:start(task)
         -- don't do anything
         elseif self.opts.use_terminal then
             if self.term_id then
-                pcall(
-                    vim.api.nvim_chan_send,
-                    self.term_id,
-                    table.concat(data, '\r\n')
-                )
+                pcall(vim.api.nvim_chan_send, self.term_id, table.concat(data, '\r\n'))
                 vim.defer_fn(function()
                     util.terminal_tail_hack(self.bufnr)
                 end, 10)
@@ -227,12 +218,8 @@ function JobstartNoFooterStrategy:start(task)
                     end
                 end
             end
-            local end_line = vim.api.nvim_buf_get_lines(
-                self.bufnr,
-                -2,
-                -1,
-                true
-            )[1] or ''
+            local end_line = vim.api.nvim_buf_get_lines(self.bufnr, -2, -1, true)[1]
+                or ''
             local end_lines = vim.tbl_map(util.clean_job_line, data)
             end_lines[1] = end_line .. end_lines[1]
             vim.bo[self.bufnr].modifiable = true
@@ -299,7 +286,7 @@ function JobstartNoFooterStrategy:start(task)
             end
             log.debug('Task %s exited with code %s', task.name, c)
             -- Feed one last line end to flush the output
-            on_stdout { '' }
+            on_stdout({ '' })
             self.job_id = nil
             -- If we're exiting vim, don't call the on_exit handler
             -- We manually kill processes during VimLeavePre cleanup, and we don't want to trigger user

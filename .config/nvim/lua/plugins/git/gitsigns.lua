@@ -5,14 +5,14 @@ return {
     module = 'gitsigns',
     event = { 'BufWinEnter', 'BufNewFile' },
     init = function()
-        require('which-key').add {
+        require('which-key').add({
             {
                 '<Leader>g',
                 mode = { 'n', 'v' },
                 group = 'Git',
                 icon = '',
             },
-        }
+        })
     end,
     ---@module 'gitsigns.config'
     ---@type Gitsigns.Config
@@ -103,14 +103,14 @@ return {
             -- Navigation
             map('n', ']g', function()
                 if vim.wo.diff then
-                    vim.cmd.normal { ']g', bang = true }
+                    vim.cmd.normal({ ']g', bang = true })
                 else
                     gs.nav_hunk('next', { target = 'all' })
                 end
             end, { desc = 'Next Git hunk' })
             map('n', '[g', function()
                 if vim.wo.diff then
-                    vim.cmd.normal { '[g', bang = true }
+                    vim.cmd.normal({ '[g', bang = true })
                 else
                     gs.nav_hunk('prev', { target = 'all' })
                 end
@@ -131,21 +131,16 @@ return {
             -- end, { desc = 'Prev staged hunk' })
             map('n', '<Leader>gs', gs.stage_hunk, { desc = 'Stage hunk' })
             map('v', '<Leader>gs', function()
-                gs.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
+                gs.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
             end, { desc = 'Stage hunk' })
             map('n', '<Leader>gr', gs.reset_hunk, { desc = 'Reset hunk' })
             map('v', '<Leader>gr', function()
-                gs.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
+                gs.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') })
             end, { desc = 'Reset hunk' })
             map('n', '<Leader>gS', gs.stage_buffer, { desc = 'Stage buffer' })
             map('n', '<Leader>gR', gs.reset_buffer, { desc = 'Reset buffer' })
             map('n', '<Leader>gh', gs.preview_hunk, { desc = 'Preview hunk' })
-            map(
-                'n',
-                '<Leader>gb',
-                gs.toggle_current_line_blame,
-                { desc = 'Blame' }
-            )
+            map('n', '<Leader>gb', gs.toggle_current_line_blame, { desc = 'Blame' })
             -- map(
             --     'n',
             --     '<Leader>gd',

@@ -1,9 +1,9 @@
 local function is_poetry_installed()
-    return vim.fn.executable 'poetry' == 1
+    return vim.fn.executable('poetry') == 1
 end
 
 local function is_poetry_pyproject()
-    return vim.uv.fs_stat 'poetry.lock' ~= nil
+    return vim.uv.fs_stat('poetry.lock') ~= nil
 end
 
 ---@module 'overseer'

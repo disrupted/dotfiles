@@ -1,4 +1,4 @@
-local icons = require 'conf.icons'
+local icons = require('conf.icons')
 
 ---@type LazeSpec
 return {
@@ -8,28 +8,25 @@ return {
     module = 'diffview',
     cmd = { 'DiffviewOpen', 'DiffviewFileHistory' },
     init = function()
-        require('which-key').add {
+        require('which-key').add({
             {
                 '<Leader>gD',
                 group = 'Diffview',
                 icon = icons.git.diff,
             },
-        }
+        })
     end,
     keys = {
         {
             '<Leader>gDr',
             function()
-                vim.ui.input(
-                    { prompt = 'Diffview Revision' },
-                    function(revision)
-                        local cmd = 'DiffviewOpen'
-                        if revision then
-                            cmd = cmd .. ' ' .. revision
-                        end
-                        vim.cmd(cmd .. ' -- .')
+                vim.ui.input({ prompt = 'Diffview Revision' }, function(revision)
+                    local cmd = 'DiffviewOpen'
+                    if revision then
+                        cmd = cmd .. ' ' .. revision
                     end
-                )
+                    vim.cmd(cmd .. ' -- .')
+                end)
             end,
             desc = 'Revision',
         },
@@ -41,7 +38,7 @@ return {
         {
             '<Leader>gDb',
             function()
-                vim.cmd.DiffviewOpen 'origin/HEAD...HEAD -- .'
+                vim.cmd.DiffviewOpen('origin/HEAD...HEAD -- .')
                 -- require('gitsigns').change_base('origin/HEAD', true)
             end,
             desc = 'Review branch changes',

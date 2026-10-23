@@ -14,8 +14,7 @@ M.filter_enabled = function(opts)
         if
             vim.iter(config.filetypes):any(function(filetype)
                 return filetype == opts.filetype
-            end)
-            and vim.fn.executable(config.cmd[1]) == 1
+            end) and vim.fn.executable(config.cmd[1]) == 1
         then
             table.insert(configs, config)
         end
@@ -28,7 +27,7 @@ end
 ---@param lines string[]
 ---@return snacks.win
 vim.ui.float = function(options, lines)
-    local snacks = require 'snacks'
+    local snacks = require('snacks')
 
     ---@param self snacks.win
     local on_buf = function(self)
@@ -72,7 +71,7 @@ M.info = function()
     end
 
     local bufnr = vim.api.nvim_get_current_buf()
-    local clients = vim.lsp.get_clients { bufnr = bufnr }
+    local clients = vim.lsp.get_clients({ bufnr = bufnr })
 
     local lines = {
         'Language Server Log: ' .. vim.lsp.get_log_path(),
@@ -90,7 +89,7 @@ M.info = function()
         local config = vim.lsp.config[client.name] or {}
 
         local buffers =
-            vim.iter(pairs(client.attached_buffers)):map(tostring):join ', '
+            vim.iter(pairs(client.attached_buffers)):map(tostring):join(', ')
 
         vim.list_extend(lines, {
             '',

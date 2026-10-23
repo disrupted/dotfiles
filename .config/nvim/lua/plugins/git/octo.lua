@@ -1,4 +1,4 @@
-local icons = require 'conf.icons'
+local icons = require('conf.icons')
 
 ---@type LazeSpec
 return {
@@ -7,7 +7,7 @@ return {
     module = 'octo',
     cmd = 'Octo',
     init = function()
-        require('which-key').add {
+        require('which-key').add({
             { '<Leader>go', group = 'Octo', icon = icons.git.github },
             {
                 '<Leader>gop',
@@ -15,20 +15,17 @@ return {
                     local task = vim.async.run(function()
                         local git = require('git').async
                         local remote_url = git.remote_url()
-                        if
-                            require('git').match_remote_type(remote_url)
-                            ~= 'github'
-                        then
-                            Snacks.notify.error 'Octo only supports GitHub'
+                        if require('git').match_remote_type(remote_url) ~= 'github' then
+                            Snacks.notify.error('Octo only supports GitHub')
                             return
                         end
                         local branch = git.current_branch()
                         if branch == '' then
-                            Snacks.notify.error 'Current ref is not a valid branch'
+                            Snacks.notify.error('Current ref is not a valid branch')
                             return
                         end
                         if branch == git.default_branch() then
-                            Snacks.notify.error 'PR is not possible on default branch'
+                            Snacks.notify.error('PR is not possible on default branch')
                             return
                         end
                         local unpushed = git.unpushed_commits()
@@ -44,7 +41,7 @@ return {
                             )
                         end
                         local pr = require('conf.octo').pr
-                        local existing_pr = require('gh').pr.json { 'number' }
+                        local existing_pr = require('gh').pr.json({ 'number' })
                         if not existing_pr then
                             local unpushed = git.unpushed_commits()
                             if unpushed == nil then
@@ -61,11 +58,11 @@ return {
                             end
                             pr.form_create()
                         else
-                            pr.open {
+                            pr.open({
                                 number = existing_pr.number,
                                 octo = true,
                                 browser = false,
-                            }
+                            })
                         end
                     end)
                     task:raise_on_error()
@@ -85,7 +82,7 @@ return {
                 desc = 'Search assigned issues & PRs',
                 icon = icons.misc.search,
             },
-        }
+        })
 
         -- FIXME: register in the Snacks gh picker actions menu
         -- local gh_actions = require 'snacks.gh.actions'
@@ -261,10 +258,10 @@ return {
         require('octo').setup(opts)
         vim.treesitter.language.register('markdown', 'octo')
 
-        local wk = require 'which-key'
+        local wk = require('which-key')
         -- shared keymaps for pull_request & issue
         local function attach_octo(buf)
-            wk.add {
+            wk.add({
                 buffer = buf,
                 { 'q', vim.cmd.tabclose, desc = 'Close Octo' },
                 {
@@ -314,10 +311,10 @@ return {
                     desc = 'Issue',
                     icon = icons.git.issue,
                 },
-            }
+            })
         end
         local function attach_pull_request(buf)
-            wk.add {
+            wk.add({
                 buffer = buf,
                 {
                     '<LocalLeader>cr',
@@ -353,7 +350,7 @@ return {
                 {
                     '<LocalLeader>pr',
                     function()
-                        vim.cmd { cmd = 'Octo', args = { 'pr', 'ready' } }
+                        vim.cmd({ cmd = 'Octo', args = { 'pr', 'ready' } })
                     end,
                     desc = 'Ready for review',
                     icon = '',
@@ -361,7 +358,7 @@ return {
                 {
                     '<LocalLeader>pd',
                     function()
-                        vim.cmd { cmd = 'Octo', args = { 'pr', 'draft' } }
+                        vim.cmd({ cmd = 'Octo', args = { 'pr', 'draft' } })
                     end,
                     desc = 'Convert back to draft',
                     icon = '',
@@ -369,7 +366,7 @@ return {
                 {
                     '<LocalLeader>pu',
                     function()
-                        vim.cmd { cmd = 'Octo', args = { 'pr', 'url' } }
+                        vim.cmd({ cmd = 'Octo', args = { 'pr', 'url' } })
                     end,
                     desc = 'Copy URL',
                     icon = '󰌹',
@@ -377,7 +374,7 @@ return {
                 {
                     '<LocalLeader>pb',
                     function()
-                        vim.cmd { cmd = 'Octo', args = { 'pr', 'browser' } }
+                        vim.cmd({ cmd = 'Octo', args = { 'pr', 'browser' } })
                     end,
                     desc = 'Open in browser',
                     icon = '',
@@ -412,15 +409,15 @@ return {
                         hl = 'DiagnosticInfo',
                     },
                 },
-            }
+            })
         end
         local function attach_issue(buf)
-            wk.add {
+            wk.add({
                 buffer = buf,
                 {
                     '<LocalLeader>iu',
                     function()
-                        vim.cmd { cmd = 'Octo', args = { 'issue', 'url' } }
+                        vim.cmd({ cmd = 'Octo', args = { 'issue', 'url' } })
                     end,
                     desc = 'Copy URL',
                     icon = '󰌹',
@@ -428,23 +425,23 @@ return {
                 {
                     '<LocalLeader>ib',
                     function()
-                        vim.cmd {
+                        vim.cmd({
                             cmd = 'Octo',
                             args = { 'issue', 'browser' },
-                        }
+                        })
                     end,
                     desc = 'Open in browser',
                     icon = '',
                 },
-            }
+            })
         end
         vim.api.nvim_create_autocmd('FileType', {
             pattern = 'octo',
             callback = function(args)
                 attach_octo(args.buf)
-                if args.file:match '^octo://.*/pull/' then
+                if args.file:match('^octo://.*/pull/') then
                     attach_pull_request(args.buf)
-                elseif args.file:match '^octo://.*/issue/' then
+                elseif args.file:match('^octo://.*/issue/') then
                     attach_issue(args.buf)
                 end
             end,
@@ -452,7 +449,7 @@ return {
 
         -- shared keymaps for review_diff and file_panel
         local function attach_shared_review_diff_file_panel(buf)
-            wk.add {
+            wk.add({
                 buffer = buf,
                 {
                     '<LocalLeader>v',
@@ -466,7 +463,7 @@ return {
                     desc = 'Mark viewed',
                     icon = '',
                 },
-            }
+            })
         end
         vim.api.nvim_create_autocmd('FileType', {
             pattern = 'octo_panel',
@@ -476,7 +473,7 @@ return {
         })
 
         local function attach_review_diff(buf)
-            wk.add {
+            wk.add({
                 buffer = buf,
                 { '<LocalLeader>c', desc = 'Comment', icon = '' },
                 {
@@ -494,7 +491,7 @@ return {
                     desc = 'Close review',
                     icon = '',
                 },
-            }
+            })
         end
         vim.api.nvim_create_autocmd('BufEnter', {
             pattern = 'octo://*/review/*', -- review buffer

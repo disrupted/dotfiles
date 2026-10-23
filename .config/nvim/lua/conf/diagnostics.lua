@@ -1,4 +1,4 @@
-vim.diagnostic.config {
+vim.diagnostic.config({
     underline = true, -- use custom diagnostic handler instead to filter for which diagnostics to show an underline
     signs = {
         text = {
@@ -33,7 +33,7 @@ vim.diagnostic.config {
     virtual_lines = { current_line = true },
     update_in_insert = false,
     severity_sort = true,
-}
+})
 
 ---@param diagnostic vim.Diagnostic
 ---@return boolean
@@ -68,42 +68,41 @@ local function underline_handler(orig_handler)
     }
 end
 
-vim.diagnostic.handlers.underline =
-    underline_handler(vim.diagnostic.handlers.underline)
+vim.diagnostic.handlers.underline = underline_handler(vim.diagnostic.handlers.underline)
 
 vim.keymap.set('n', '[d', function()
-    vim.diagnostic.jump { count = -1, float = false }
+    vim.diagnostic.jump({ count = -1, float = false })
 end, { desc = 'Prev diagnostic' })
 vim.keymap.set('n', ']d', function()
-    vim.diagnostic.jump { count = 1, float = false }
+    vim.diagnostic.jump({ count = 1, float = false })
 end, { desc = 'Next diagnostic' })
 vim.keymap.set('n', '[e', function()
-    vim.diagnostic.jump {
+    vim.diagnostic.jump({
         count = -1,
         enable_popup = false,
         severity = vim.diagnostic.severity.ERROR,
-    }
+    })
 end, { desc = 'Prev error' })
 vim.keymap.set('n', ']e', function()
-    vim.diagnostic.jump {
+    vim.diagnostic.jump({
         count = 1,
         enable_popup = false,
         severity = vim.diagnostic.severity.ERROR,
-    }
+    })
 end, { desc = 'Next error' })
 vim.keymap.set('n', '[w', function()
-    vim.diagnostic.jump {
+    vim.diagnostic.jump({
         count = -1,
         enable_popup = false,
         severity = vim.diagnostic.severity.WARN,
-    }
+    })
 end, { desc = 'Prev warning' })
 vim.keymap.set('n', ']w', function()
-    vim.diagnostic.jump {
+    vim.diagnostic.jump({
         count = 1,
         enable_popup = false,
         severity = vim.diagnostic.severity.WARN,
-    }
+    })
 end, { desc = 'Next warning' })
 
 local function refresh_diagnostics_loclist()

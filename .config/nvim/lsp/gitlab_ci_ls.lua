@@ -4,7 +4,7 @@ return {
     filetypes = { 'yaml.gitlab' },
     root_markers = { '.gitlab*', '.git' },
     init_options = {
-        cache_path = vim.fn.stdpath 'cache',
-        log_path = vim.fn.stdpath 'log' .. '/lsp.gitlab-ci-ls.log',
+        cache_path = vim.fn.stdpath('cache'),
+        log_path = vim.fn.stdpath('log') .. '/lsp.gitlab-ci-ls.log',
     },
 }

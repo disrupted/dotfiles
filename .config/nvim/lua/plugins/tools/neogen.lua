@@ -5,22 +5,22 @@ return {
     module = 'neogen',
     cmd = 'Neogen',
     init = function()
-        require('which-key').add {
+        require('which-key').add({
             { '<Leader>D', group = 'Generate docs', icon = '󰦨' },
-        }
+        })
     end,
     keys = {
         {
             '<Leader>Df',
             function()
-                require('neogen').generate {}
+                require('neogen').generate({})
             end,
             desc = 'Function',
         },
         {
             '<Leader>DC',
             function()
-                require('neogen').generate { type = 'class' }
+                require('neogen').generate({ type = 'class' })
             end,
             desc = 'Class',
         },

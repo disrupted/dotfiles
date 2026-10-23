@@ -26,6 +26,6 @@ vim.api.nvim_create_autocmd('BufNewFile', {
     pattern = { 'lsp/*.lua' },
     desc = 'Load skeleton when creating new file',
     callback = function()
-        vim.cmd 'read ~/.config/nvim/skeletons/lsp.lua | 1delete_'
+        vim.cmd('read ~/.config/nvim/skeletons/lsp.lua | 1delete_')
     end,
 })

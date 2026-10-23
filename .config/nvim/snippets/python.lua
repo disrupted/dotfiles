@@ -1,4 +1,4 @@
-local ls = require 'luasnip'
+local ls = require('luasnip')
 local s = ls.snippet
 local sn = ls.snippet_node
 local t = ls.text_node
@@ -15,9 +15,9 @@ local n = require('luasnip.extras').nonempty
 local dl = require('luasnip.extras').dynamic_lambda
 local fmt = require('luasnip.extras.fmt').fmt
 local fmta = require('luasnip.extras.fmt').fmta
-local types = require 'luasnip.util.types'
-local conds = require 'luasnip.extras.conditions'
-local conds_expand = require 'luasnip.extras.conditions.expand'
+local types = require('luasnip.util.types')
+local conds = require('luasnip.extras.conditions')
+local conds_expand = require('luasnip.extras.conditions.expand')
 
 local function copy(args)
     return args[1]
@@ -55,36 +55,36 @@ end
 local snippets = {
     -- class
     s('class', {
-        t 'class ',
+        t('class '),
         -- placeholder/insert.
         i(1, 'Example'),
         c(2, {
-            t '',
+            t(''),
             -- base class
             sn(nil, {
-                t '(',
+                t('('),
                 i(1),
-                t ')',
+                t(')'),
             }),
         }),
-        t { ':', '\t' },
-        t 'def __init__(self, ',
+        t({ ':', '\t' }),
+        t('def __init__(self, '),
         -- first field
         i(3, 'arg'),
-        t ': ',
+        t(': '),
         -- argument type
         i(4, 'str'),
         -- linebreak
-        t { ') -> None:', '\t\t' },
-        t 'self.',
+        t({ ') -> None:', '\t\t' }),
+        t('self.'),
         -- field name, copied from argument
         f(copy, 3),
-        t ': ',
+        t(': '),
         -- field type
         f(copy, 4),
-        t ' = ',
+        t(' = '),
         f(copy, 3),
-        t { '', '\t\t' },
+        t({ '', '\t\t' }),
         i(0),
     }, {
         show_condition = function(line_to_cursor)
@@ -97,34 +97,34 @@ local snippets = {
         dscr = { 'New property: get and set via decorator' },
     }, {
         -- decorator
-        t { '@property', '' },
-        t 'def ',
+        t({ '@property', '' }),
+        t('def '),
         -- method name
         i(1, 'foo'),
-        t '(self) -> ',
+        t('(self) -> '),
         -- return type
         i(2, 'str'),
         -- linebreak
-        t { ':', '\t' },
-        t 'return self._',
+        t({ ':', '\t' }),
+        t('return self._'),
         -- field name, copied from argument
         f(copy, 1),
         -- empty lines
-        t { '', '', '' },
+        t({ '', '', '' }),
         -- setter
-        t { '@' },
+        t({ '@' }),
         f(copy, 1),
-        t { '.setter', '' },
-        t 'def ',
+        t({ '.setter', '' }),
+        t('def '),
         f(copy, 1),
-        t '(self, ',
+        t('(self, '),
         f(copy, 1),
-        t ': ',
+        t(': '),
         f(copy, 2),
-        t { ') -> None:', '\t' },
-        t 'self._',
+        t({ ') -> None:', '\t' }),
+        t('self._'),
         f(copy, 1),
-        t ' = ',
+        t(' = '),
         f(copy, 1),
     }, {
         show_condition = function(line_to_cursor)
@@ -132,12 +132,12 @@ local snippets = {
         end,
     }),
     s('main', {
-        t { 'if __name__ == "__main__":', '\t' },
+        t({ 'if __name__ == "__main__":', '\t' }),
         i(0, 'main()'),
     }, {
         show_condition = function(line_to_cursor)
             local bufname = vim.api.nvim_buf_get_name(0)
-            return bufname:match 'main%.py' and line_to_cursor == ''
+            return bufname:match('main%.py') and line_to_cursor == ''
         end,
     }),
     s({
@@ -145,7 +145,7 @@ local snippets = {
         name = 'shebang',
         dscr = { 'Python shebang' },
     }, {
-        t { '#!/usr/bin/env python3' },
+        t({ '#!/usr/bin/env python3' }),
     }, {
         show_condition = function(line_to_cursor)
             return line_to_cursor == ''
@@ -157,20 +157,20 @@ local snippets = {
         name = 'def function',
         dscr = { 'def func(arg: str) -> None:' },
     }, {
-        t 'def ',
+        t('def '),
         -- function name
         i(1, 'func'),
-        t '(',
+        t('('),
         -- first function argument
         i(2, 'arg'),
-        t ': ',
+        t(': '),
         -- argument type
         i(3, 'str'),
-        t ') -> ',
+        t(') -> '),
         -- return type
         i(4, 'None'),
         -- linebreak
-        t { ':', '\t' },
+        t({ ':', '\t' }),
         i(0, 'pass'),
     }, {
         show_condition = function(line_to_cursor)
@@ -195,25 +195,25 @@ local snippets = {
             end
             return ''
         end, 2),
-        t 'def ',
+        t('def '),
         -- method name
         i(1, 'method'),
-        t '(',
+        t('('),
         c(2, {
-            t 'self, ',
-            t 'cls, ',
-            t '',
+            t('self, '),
+            t('cls, '),
+            t(''),
         }),
         -- first method argument
         i(3, 'arg'),
-        t ': ',
+        t(': '),
         -- argument type
         i(4, 'str'),
-        t ') -> ',
+        t(') -> '),
         -- return type
         i(5, 'None'),
         -- linebreak
-        t { ':', '\t' },
+        t({ ':', '\t' }),
         i(0, 'pass'),
     }, {
         show_condition = function(line_to_cursor)
@@ -231,9 +231,9 @@ local snippets = {
                 and not is_inside_ignored_node()
         end,
     }, {
-        t { 'from ' },
+        t({ 'from ' }),
         i(1, ''),
-        t { ' import ' },
+        t({ ' import ' }),
         i(0, ''),
     }),
     s({
@@ -245,9 +245,9 @@ local snippets = {
                 and not is_inside_ignored_node()
         end,
     }, {
-        t { 'if ' },
+        t({ 'if ' }),
         i(1, ''),
-        t { ':', '\t' },
+        t({ ':', '\t' }),
         i(0, 'pass'),
     }),
     s({
@@ -259,18 +259,18 @@ local snippets = {
                 and not is_inside_ignored_node()
         end,
     }, {
-        t { 'for ' },
+        t({ 'for ' }),
         i(1, 'i'),
-        t { ' in ' },
+        t({ ' in ' }),
         c(2, {
             i(nil, 'iterable'),
             sn(nil, {
-                t 'range(',
+                t('range('),
                 i(1, '10'),
-                t ')',
+                t(')'),
             }),
         }),
-        t { ':', '\t' },
+        t({ ':', '\t' }),
         i(0, 'pass'),
     }),
     s({
@@ -282,16 +282,16 @@ local snippets = {
                 and not is_inside_ignored_node()
         end,
     }, {
-        t { 'try:', '\t' },
+        t({ 'try:', '\t' }),
         i(1, 'pass'),
-        t { '', 'except ' },
+        t({ '', 'except ' }),
         i(2, 'Exception'),
-        t { ' as ' },
+        t({ ' as ' }),
         i(3, 'e'),
-        t { ':', '\t' },
+        t({ ':', '\t' }),
         c(4, {
             sn(nil, {
-                t 'raise ',
+                t('raise '),
                 i(1, 'e'),
             }),
             i(nil, 'pass'),

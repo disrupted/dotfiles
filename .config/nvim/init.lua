@@ -1,14 +1,14 @@
 -- vim: foldmethod=marker
 vim.loader.enable()
 
-require 'conf.ui.ui2'
-require 'conf.filetype'
-require 'conf.diagnostics'
+require('conf.ui.ui2')
+require('conf.filetype')
+require('conf.diagnostics')
 
 vim.g.mapleader = ' ' -- set leader to space
 vim.g.maplocalleader = ','
 
-vim.pack.add { 'https://github.com/disrupted/laze' } -- temporary fork of https://github.com/sys9kdr/laze
+vim.pack.add({ 'https://github.com/disrupted/laze' }) -- temporary fork of https://github.com/sys9kdr/laze
 require('laze.extra').setup() -- optional :Laze update/clean/health/reload
 
 require('plugins').setup()
@@ -50,7 +50,7 @@ local disabled_builtin_plugins = {
 for _, plugin in pairs(disabled_builtin_plugins) do
     vim.g['loaded_' .. plugin] = 1
 end
-require 'conf.lsp'
+require('conf.lsp')
 vim.o.exrc = true
 vim.g.health = { style = 'float' }
 -----------------------------------------------------------------------------//
@@ -76,7 +76,7 @@ local shadafile = function()
         return
     end
     return vim.fs.joinpath(
-        vim.fn.stdpath 'state', ---@diagnostic disable-line: param-type-mismatch
+        vim.fn.stdpath('state'), ---@diagnostic disable-line: param-type-mismatch
         'shada',
         vim.g.workspace_root:gsub('/', '_') .. '.shada'
     )
@@ -112,8 +112,8 @@ vim.api.nvim_create_autocmd('BufReadPost', {
         if row > 0 and row <= vim.api.nvim_buf_line_count(0) then
             vim.api.nvim_win_set_cursor(0, { row, col })
 
-            if vim.api.nvim_eval 'foldclosed(\'.\')' ~= -1 then
-                vim.api.nvim_input 'zv'
+            if vim.api.nvim_eval('foldclosed(\'.\')') ~= -1 then
+                vim.api.nvim_input('zv')
             end
         end
     end,
@@ -121,21 +121,21 @@ vim.api.nvim_create_autocmd('BufReadPost', {
 
 vim.api.nvim_create_autocmd('TextYankPost', {
     callback = function()
-        vim.hl.hl_op {
+        vim.hl.hl_op({
             higroup = 'Search',
             timeout = 250,
             on_visual = true,
-        }
+        })
     end,
     desc = 'highlight yanked text briefly',
 })
 vim.api.nvim_create_autocmd('TextPutPost', {
     callback = function()
-        vim.hl.hl_op {
+        vim.hl.hl_op({
             higroup = 'Search',
             timeout = 250,
             on_visual = true,
-        }
+        })
     end,
     desc = 'highlight pasted text briefly',
 })
@@ -238,7 +238,7 @@ vim.o.emoji = false -- turn off as they are treated as double width characters
 vim.o.virtualedit = 'onemore' -- allow cursor to move past end of line in visual block mode, needed for my custom paste mapping
 vim.o.list = true -- show invisible characters
 vim.o.listchars = 'eol: ,tab:→ ,extends:…,precedes:…,trail:·'
-vim.opt.shortmess:append 'I' -- disable :intro startup screen
+vim.opt.shortmess:append('I') -- disable :intro startup screen
 
 -----------------------------------------------------------------------------//
 -- Title {{{1
@@ -251,7 +251,7 @@ vim.opt.shortmess:append 'I' -- disable :intro startup screen
 -- Folds {{{1
 -----------------------------------------------------------------------------//
 vim.o.foldtext = 'folds#render()'
-vim.opt.foldopen:append 'search'
+vim.opt.foldopen:append('search')
 vim.o.foldlevelstart = 10
 vim.o.foldmethod = 'marker' -- or 'syntax'
 
@@ -275,16 +275,16 @@ vim.o.scrolloff = 4 -- Lines of context
 vim.o.showmatch = true
 
 -- Use faster grep alternatives if possible
-if executable 'rg' then
+if executable('rg') then
     vim.o.grepprg =
         [[rg --hidden --glob "!.git" --no-heading --smart-case --vimgrep --follow $*]]
-    vim.opt.grepformat:prepend '%f:%l:%c:%m'
+    vim.opt.grepformat:prepend('%f:%l:%c:%m')
 end
 
 -----------------------------------------------------------------------------//
 -- Motions & Text Objects {{{1
 -----------------------------------------------------------------------------//
-vim.opt.iskeyword:prepend '-' -- treat dash separated words as a word textobject
+vim.opt.iskeyword:prepend('-') -- treat dash separated words as a word textobject
 
 -----------------------------------------------------------------------------//
 -- window splitting and buffers {{{1
@@ -306,7 +306,7 @@ vim.o.fillchars = vim.iter({
     :map(function(k, v)
         return k .. ':' .. v
     end)
-    :join ','
+    :join(',')
 
 -----------------------------------------------------------------------------//
 -- Wild and file globbing stuff in command mode {{{1
@@ -348,7 +348,9 @@ vim.o.ttimeoutlen = 10
 -- Diff {{{1
 -----------------------------------------------------------------------------//
 -- Use in vertical diff mode, blank lines to keep sides aligned, Ignore whitespace changes
-vim.opt.diffopt:prepend 'vertical,iwhite,hiddenoff,foldcolumn:0,context:4,algorithm:histogram,indent-heuristic'
+vim.opt.diffopt:prepend(
+    'vertical,iwhite,hiddenoff,foldcolumn:0,context:4,algorithm:histogram,indent-heuristic'
+)
 
 -----------------------------------------------------------------------------//
 -- Terminal {{{1
@@ -364,14 +366,14 @@ vim.api.nvim_create_autocmd('TermOpen', {
 vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter', 'WinEnter' }, {
     pattern = 'term://*',
     callback = function()
-        vim.api.nvim_command 'startinsert'
+        vim.api.nvim_command('startinsert')
     end,
     desc = 'Enter insert mode when switching to terminal',
 })
 vim.api.nvim_create_autocmd('BufLeave', {
     pattern = 'term://*',
     callback = function()
-        vim.api.nvim_command 'stopinsert'
+        vim.api.nvim_command('stopinsert')
     end,
     desc = 'Exit insert mode when switching from terminal',
 })
@@ -546,12 +548,7 @@ vim.keymap.set('n', 'gV', [['`[' . strpart(getregtype(), 0, 1) . '`]']], expr)
 
 -- quickfix navigation
 vim.keymap.set('n', ']q', '<cmd>cnext<CR>', { desc = 'Next QuickFix entry' })
-vim.keymap.set(
-    'n',
-    '[q',
-    '<cmd>cprevious<CR>',
-    { desc = 'Prev QuickFix entry' }
-)
+vim.keymap.set('n', '[q', '<cmd>cprevious<CR>', { desc = 'Prev QuickFix entry' })
 
 --  alt + / nohighlight
 vim.keymap.set('n', '<M-/>', '<cmd>noh<CR>')
@@ -565,10 +562,10 @@ vim.keymap.set('n', '<M-i>', vim.show_pos, { desc = 'Inspect' })
 
 -- Treesitter incremental selection
 local function selection_range_supported()
-    return not vim.tbl_isempty(vim.lsp.get_clients {
+    return not vim.tbl_isempty(vim.lsp.get_clients({
         bufnr = 0,
         method = 'textDocument/selectionRange',
-    })
+    }))
 end
 vim.keymap.set({ 'n', 'x' }, '<CR>', function()
     if vim.treesitter.get_parser(nil, nil, { error = false }) then

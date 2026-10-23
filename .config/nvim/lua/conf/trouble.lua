@@ -1,4 +1,4 @@
-local trouble = require 'trouble'
+local trouble = require('trouble')
 ---@cast trouble trouble.api
 
 local M = {}

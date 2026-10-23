@@ -1,4 +1,4 @@
-vim.filetype.add {
+vim.filetype.add({
     extension = {
         avsc = 'json',
         jinja2 = 'htmldjango',
@@ -21,4 +21,4 @@ vim.filetype.add {
         ['.*%.gitlab%-ci%.yml'] = 'yaml.gitlab',
         ['%.env%..*'] = 'ini',
     },
-}
+})

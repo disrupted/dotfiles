@@ -3,13 +3,13 @@ return {
     'L3MON4D3/LuaSnip',
     main = 'luasnip',
     module = 'luasnip',
-    version = vim.version.range 'v2.*',
+    version = vim.version.range('v2.*'),
     build = 'make install_jsregexp',
     keys = {
         {
             '<C-j>',
             function()
-                local luasnip = require 'luasnip'
+                local luasnip = require('luasnip')
                 if luasnip.jumpable(1) then
                     luasnip.jump(1)
                 end
@@ -20,7 +20,7 @@ return {
         {
             '<C-k>',
             function()
-                local luasnip = require 'luasnip'
+                local luasnip = require('luasnip')
                 if luasnip.jumpable(-1) then
                     luasnip.jump(-1)
                 end
@@ -31,7 +31,7 @@ return {
         {
             '<C-e>',
             function()
-                local luasnip = require 'luasnip'
+                local luasnip = require('luasnip')
                 if luasnip.choice_active() then
                     luasnip.change_choice(1)
                 end
@@ -41,8 +41,8 @@ return {
         },
     },
     config = function()
-        local types = require 'luasnip.util.types'
-        require('luasnip').config.set_config {
+        local types = require('luasnip.util.types')
+        require('luasnip').config.set_config({
             enable_autosnippets = true,
             keep_roots = true,
             link_roots = true,
@@ -63,7 +63,7 @@ return {
                     },
                 },
             },
-        }
+        })
 
         vim.api.nvim_set_hl(0, 'LuasnipChoiceNodePassive', { italic = true })
         vim.api.nvim_set_hl(0, 'LuasnipChoiceNodeActive', { bold = true })
@@ -78,8 +78,8 @@ return {
             end,
         })
 
-        require('luasnip.loaders.from_lua').lazy_load {
+        require('luasnip.loaders.from_lua').lazy_load({
             paths = { './snippets' },
-        }
+        })
     end,
 }

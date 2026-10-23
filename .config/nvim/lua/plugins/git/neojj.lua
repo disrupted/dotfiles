@@ -7,7 +7,7 @@ return {
         {
             '<Leader>gj',
             function()
-                require('neojj').open { kind = 'tab' }
+                require('neojj').open({ kind = 'tab' })
                 vim.cmd.tabmove()
             end,
             desc = 'Neojj',

@@ -7,10 +7,10 @@ return {
     init = function()
         vim.api.nvim_create_user_command('FormatModified', function()
             local bufnr = vim.api.nvim_get_current_buf()
-            local clients = vim.lsp.get_clients {
+            local clients = vim.lsp.get_clients({
                 bufnr = bufnr,
                 method = 'textDocument/rangeFormatting',
-            }
+            })
 
             if #clients == 0 then
                 Snacks.notify.error(

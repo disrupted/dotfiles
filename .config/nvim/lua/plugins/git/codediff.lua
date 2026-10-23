@@ -1,4 +1,4 @@
-local icons = require 'conf.icons'
+local icons = require('conf.icons')
 
 ---@type LazeSpec
 return {
@@ -7,28 +7,25 @@ return {
     module = 'codediff',
     cmd = 'CodeDiff',
     init = function()
-        require('which-key').add {
+        require('which-key').add({
             {
                 '<Leader>gd',
                 group = 'Codediff',
                 icon = icons.git.diff,
             },
-        }
+        })
     end,
     keys = {
         {
             '<Leader>gdr',
             function()
-                vim.ui.input(
-                    { prompt = 'Codediff Revision' },
-                    function(revision)
-                        if revision and revision ~= '' then
-                            vim.cmd('CodeDiff ' .. revision)
-                        else
-                            vim.cmd 'CodeDiff' -- No revision = git status
-                        end
+                vim.ui.input({ prompt = 'Codediff Revision' }, function(revision)
+                    if revision and revision ~= '' then
+                        vim.cmd('CodeDiff ' .. revision)
+                    else
+                        vim.cmd('CodeDiff') -- No revision = git status
                     end
-                )
+                end)
             end,
             desc = 'Revision',
         },
@@ -40,14 +37,14 @@ return {
         {
             '<Leader>gdb',
             function()
-                vim.cmd { cmd = 'CodeDiff', args = { 'origin/HEAD...HEAD' } }
+                vim.cmd({ cmd = 'CodeDiff', args = { 'origin/HEAD...HEAD' } })
                 -- require('gitsigns').change_base('origin/HEAD', true)
             end,
             desc = 'Review branch changes',
         },
     },
     config = function()
-        require('codediff').setup {
+        require('codediff').setup({
             highlights = {
                 line_insert = 'OneDiffAddLine',
                 line_delete = 'OneDiffDeleteLine',
@@ -109,6 +106,6 @@ return {
                     diffget_current = '3do',
                 },
             },
-        }
+        })
     end,
 }

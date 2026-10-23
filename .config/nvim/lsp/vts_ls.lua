@@ -38,18 +38,13 @@ return {
         '.git',
     },
     on_attach = function(client, bufnr)
-        vim.api.nvim_buf_create_user_command(
-            bufnr,
-            'LspOrganizeImports',
-            function()
-                client:exec_cmd {
-                    title = 'Organize TypeScript imports',
-                    command = '_typescript.organizeImports',
-                    arguments = { vim.uri_from_bufnr(bufnr) },
-                }
-            end,
-            { desc = 'Organize TypeScript imports' }
-        )
+        vim.api.nvim_buf_create_user_command(bufnr, 'LspOrganizeImports', function()
+            client:exec_cmd({
+                title = 'Organize TypeScript imports',
+                command = '_typescript.organizeImports',
+                arguments = { vim.uri_from_bufnr(bufnr) },
+            })
+        end, { desc = 'Organize TypeScript imports' })
     end,
     settings = {
         typescript = {

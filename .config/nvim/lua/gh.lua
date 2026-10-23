@@ -50,7 +50,7 @@ end
 ---@async
 ---@return boolean
 M.pr.exists = function()
-    return M.pr.json { 'number' } ~= nil
+    return M.pr.json({ 'number' }) ~= nil
 end
 
 ---@class gh.pr.create.Opts
@@ -99,7 +99,7 @@ M.pr.refresh = function()
         vim.g.git_branch
         and vim.g.git_branch ~= require('git').async.default_branch()
     then
-        vim.g.git_pr = M.pr.json { 'state', 'title' }
+        vim.g.git_pr = M.pr.json({ 'state', 'title' })
     else
         vim.g.git_pr = nil
     end

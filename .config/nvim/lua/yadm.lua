@@ -12,8 +12,8 @@ local repo = vim.fs.joinpath(
 M.config = { repo = repo }
 
 M.setup = function()
-    if vim.fn.executable 'yadm' ~= 1 then
-        Snacks.notify.warn 'yadm not installed'
+    if vim.fn.executable('yadm') ~= 1 then
+        Snacks.notify.warn('yadm not installed')
         return
     end
     local cwd = assert(vim.uv.cwd())
@@ -30,7 +30,7 @@ M.setup = function()
         local out = vim.system({ 'yadm', 'rev-parse', '--git-dir' }):wait()
         repo = vim.trim(out.stdout or '')
         if not repo then
-            Snacks.notify.error 'yadm repo not found'
+            Snacks.notify.error('yadm repo not found')
             return
         end
     end

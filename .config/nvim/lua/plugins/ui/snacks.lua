@@ -1,6 +1,6 @@
-local icons = require 'conf.icons'
+local icons = require('conf.icons')
 
-local gh = require 'conf.snacks.gh'
+local gh = require('conf.snacks.gh')
 
 ---@type LazeSpec
 return {
@@ -18,11 +18,11 @@ return {
         end
         vim.print = _G.dd
 
-        require('which-key').add {
+        require('which-key').add({
             {
                 '<Leader>h',
                 function()
-                    Snacks.picker.help { layout = { preset = 'dropdown' } }
+                    Snacks.picker.help({ layout = { preset = 'dropdown' } })
                 end,
                 desc = 'Help',
                 icon = '?',
@@ -30,7 +30,7 @@ return {
             {
                 '<Leader><Leader>',
                 function()
-                    local picker = Snacks.picker.buffers {
+                    local picker = Snacks.picker.buffers({
                         current = true,
                         sort_lastused = true,
                         layout = {
@@ -53,18 +53,18 @@ return {
                         win = {
                             list = {
                                 on_buf = function(self)
-                                    self:execute 'calculate_file_truncate_width'
+                                    self:execute('calculate_file_truncate_width')
                                 end,
                             },
                         },
-                    }
+                    })
 
                     if not picker then
                         return
                     end
 
                     picker.list.win:on('VimResized', function()
-                        picker:action 'calculate_file_truncate_width'
+                        picker:action('calculate_file_truncate_width')
                     end)
                 end,
                 desc = 'Buffers',
@@ -76,14 +76,13 @@ return {
                     ---@type snacks.picker.Config
                     local source = {}
 
-                    if
-                        pcall(require, 'fff')
-                        and pcall(require, 'fff-snacks')
-                    then
+                    if pcall(require, 'fff') and pcall(require, 'fff-snacks') then
                         source = require('fff-snacks.find_files').source
                         source.formatters = nil
                     else
-                        Snacks.notify 'fff unavailable, falling back to builtin smart picker'
+                        Snacks.notify(
+                            'fff unavailable, falling back to builtin smart picker'
+                        )
                         source = {
                             source = 'smart',
                             finders = {
@@ -108,15 +107,15 @@ return {
                         win = {
                             list = {
                                 on_buf = function(self)
-                                    self:execute 'calculate_file_truncate_width'
+                                    self:execute('calculate_file_truncate_width')
                                 end,
                             },
                             preview = {
                                 on_buf = function(self)
-                                    self:execute 'calculate_file_truncate_width'
+                                    self:execute('calculate_file_truncate_width')
                                 end,
                                 on_close = function(self)
-                                    self:execute 'calculate_file_truncate_width'
+                                    self:execute('calculate_file_truncate_width')
                                 end,
                             },
                         },
@@ -128,7 +127,7 @@ return {
                     end
 
                     picker.list.win:on('VimResized', function()
-                        picker:action 'calculate_file_truncate_width'
+                        picker:action('calculate_file_truncate_width')
                     end)
                 end,
                 desc = 'Files',
@@ -178,17 +177,17 @@ return {
             {
                 '<A-d>',
                 function()
-                    Snacks.scratch { ft = 'lua' }
+                    Snacks.scratch({ ft = 'lua' })
                 end,
                 desc = 'Toggle Scratch Buffer',
             },
-        }
+        })
     end,
     keys = {
         {
             '<C-e>',
             function()
-                local explorers = Snacks.picker.get { source = 'explorer' }
+                local explorers = Snacks.picker.get({ source = 'explorer' })
                 if not vim.tbl_isempty(explorers) then
                     local picker = explorers[1]
                     if picker:is_focused() then
@@ -206,7 +205,7 @@ return {
                     require('dapui').close()
                 end
 
-                local picker = Snacks.picker.explorer {
+                local picker = Snacks.picker.explorer({
                     layout = {
                         preset = 'sidebar',
                         preview = false,
@@ -227,34 +226,34 @@ return {
                                     ---@param win snacks.win
                                     function(win)
                                         require('conf.ui').cursor.show()
-                                        return win:execute 'explorer_add'
+                                        return win:execute('explorer_add')
                                     end,
                                 },
                                 r = {
                                     ---@param win snacks.win
                                     function(win)
                                         require('conf.ui').cursor.show()
-                                        return win:execute 'explorer_rename'
+                                        return win:execute('explorer_rename')
                                     end,
                                 },
                                 c = {
                                     ---@param win snacks.win
                                     function(win)
                                         require('conf.ui').cursor.show()
-                                        return win:execute 'explorer_copy'
+                                        return win:execute('explorer_copy')
                                     end,
                                 },
                                 m = {
                                     ---@param win snacks.win
                                     function(win)
                                         require('conf.ui').cursor.show()
-                                        return win:execute 'explorer_move'
+                                        return win:execute('explorer_move')
                                     end,
                                 },
                             },
                         },
                     },
-                }
+                })
 
                 picker.list.win:on(
                     { 'BufEnter', 'WinEnter' },
@@ -266,17 +265,12 @@ return {
                     require('conf.ui').cursor.show,
                     { buf = true, desc = 'Show cursor' }
                 )
-                local augroup = vim.api.nvim_create_augroup(
-                    'ExplorerCmdline',
-                    { clear = true }
-                )
+                local augroup =
+                    vim.api.nvim_create_augroup('ExplorerCmdline', { clear = true })
                 vim.api.nvim_create_autocmd('CmdlineLeave', {
                     group = augroup,
                     callback = function()
-                        if
-                            vim.api.nvim_get_current_win()
-                            == picker.list.win.win
-                        then
+                        if vim.api.nvim_get_current_win() == picker.list.win.win then
                             require('conf.ui').cursor.hide()
                         end
                     end,
@@ -294,8 +288,7 @@ return {
                     if cwd == vim.g.workspace_root then
                         return '.'
                     end
-                    local relpath =
-                        assert(vim.fs.relpath(vim.g.workspace_root, cwd))
+                    local relpath = assert(vim.fs.relpath(vim.g.workspace_root, cwd))
                     return relpath .. '/'
                 end
 
@@ -316,24 +309,23 @@ return {
                     cwd = vim.fs.dirname(cwd)
                     picker:set_cwd(cwd)
                     refresh_cwd_title(picker, cwd)
-                    picker:find { refresh = true }
+                    picker:find({ refresh = true })
                 end
 
                 ---@param picker snacks.Picker
                 ---@param item snacks.picker.Item
                 ---@return boolean?
                 local function dir_down(picker, item, action)
-                    item = item or picker:current { resolve = false }
+                    item = item or picker:current({ resolve = false })
                     if not item then
                         return true
                     end
 
                     if item.dir then
-                        local target =
-                            vim.fs.normalize(Snacks.picker.util.path(item))
+                        local target = vim.fs.normalize(Snacks.picker.util.path(item))
                         picker:set_cwd(target)
                         refresh_cwd_title(picker, target)
-                        picker:find { refresh = true }
+                        picker:find({ refresh = true })
                         return true
                     end
                 end
@@ -348,8 +340,7 @@ return {
                 end
 
                 local include_globs = { '.github', '.gitlab-ci.yml', '.env*' }
-                local include_patterns =
-                    vim.tbl_map(glob_to_lua_pattern, include_globs)
+                local include_patterns = vim.tbl_map(glob_to_lua_pattern, include_globs)
 
                 ---@param name string
                 ---@return boolean
@@ -383,7 +374,7 @@ return {
 
                 local start_cwd = buf_parent_dir()
 
-                Snacks.picker.pick {
+                Snacks.picker.pick({
                     source = 'files',
                     hidden = true,
                     cwd = start_cwd,
@@ -434,10 +425,7 @@ return {
 
                         for item, idx in picker:iter() do
                             local path = Snacks.picker.util.path(item)
-                            if
-                                path
-                                and vim.fs.normalize(path) == current_file
-                            then
+                            if path and vim.fs.normalize(path) == current_file then
                                 picker.list:view(idx) -- move cursor/selection row to current file
                                 return
                             end
@@ -447,8 +435,7 @@ return {
                         dir_up = dir_up,
                         dir_down = dir_down,
                         dir_down_or_open = function(...)
-                            return dir_down(...)
-                                or Snacks.picker.actions.confirm(...)
+                            return dir_down(...) or Snacks.picker.actions.confirm(...)
                         end,
                     },
                     layout = {
@@ -486,7 +473,7 @@ return {
                             },
                         },
                     },
-                }
+                })
             end,
             desc = 'Files',
         },
@@ -495,7 +482,7 @@ return {
             function()
                 local cursor = vim.api.nvim_win_get_cursor(0)
                 -- alternative: Trouble symbols open pinned=true auto_refresh=true win.relative=win win.position=left
-                local picker = Snacks.picker.lsp_symbols {
+                local picker = Snacks.picker.lsp_symbols({
                     title = 'LSP Document Symbols',
                     keep_parents = true,
                     filter = {
@@ -511,7 +498,7 @@ return {
                             wo = { number = true },
                         },
                     },
-                }
+                })
 
                 if not picker then
                     return -- abort if picker was closed
@@ -540,10 +527,10 @@ return {
             '<leader>gl',
             function()
                 if vim.g.git_repo == require('yadm').config.repo then
-                    Snacks.picker.git_status {
+                    Snacks.picker.git_status({
                         title = 'YADM status',
                         finder = require('conf.snacks.finder').yadm_status,
-                    }
+                    })
                 else
                     Snacks.picker.git_status()
                 end
@@ -560,11 +547,8 @@ return {
         {
             '<C-x>',
             function()
-                if
-                    package.loaded.scope
-                    and #vim.api.nvim_list_tabpages() > 1
-                then
-                    require('scope.core').close_buffer {}
+                if package.loaded.scope and #vim.api.nvim_list_tabpages() > 1 then
+                    require('scope.core').close_buffer({})
                 else
                     Snacks.bufdelete()
                 end
@@ -596,14 +580,14 @@ return {
             '<Leader>gy',
             function()
                 ---@diagnostic disable-next-line: missing-fields
-                Snacks.gitbrowse.open {
+                Snacks.gitbrowse.open({
                     what = 'permalink',
                     notify = false,
                     open = function(url)
                         vim.fn.setreg('+', url)
-                        Snacks.notify { 'Yanked permlink to clipboard', url }
+                        Snacks.notify({ 'Yanked permlink to clipboard', url })
                     end,
-                }
+                })
             end,
             mode = { 'n', 'v' },
             desc = 'Yank permalink for Git remote',
@@ -699,7 +683,7 @@ return {
                 ui_select = true,
                 actions = {
                     opencode_send = function(picker)
-                        local selected = picker:selected { fallback = true }
+                        local selected = picker:selected({ fallback = true })
                         if selected and #selected > 0 then
                             local files = {}
                             for _, item in ipairs(selected) do
@@ -716,13 +700,13 @@ return {
                             end
                             picker:close()
 
-                            require('opencode.services.session_runtime').open {
+                            require('opencode.services.session_runtime').open({
                                 new_session = false,
                                 focus = 'input',
                                 start_insert = true,
-                            }
+                            })
 
-                            local context = require 'opencode.context'
+                            local context = require('opencode.context')
                             for _, file in ipairs(files) do
                                 context.add_file(file)
                             end
@@ -850,7 +834,7 @@ return {
                     },
                     dirs = {
                         finder = function(opts, ctx)
-                            local finder = require 'conf.snacks.finder'
+                            local finder = require('conf.snacks.finder')
                             return vim.g.git_repo and finder.git_dirs(opts, ctx)
                                 or finder.fd_dirs(opts, ctx)
                         end,
@@ -888,14 +872,8 @@ return {
                                 Snacks.input.input({
                                     prompt = 'Grep glob',
                                     default = default,
-                                }, function(
-                                    input
-                                )
-                                    if
-                                        not input
-                                        or input == ''
-                                        or input == default
-                                    then
+                                }, function(input)
+                                    if not input or input == '' or input == default then
                                         return
                                     end
                                     table.insert(self.opts['glob'], input)
@@ -903,8 +881,7 @@ return {
                                 end)
                             end,
                             pick_dirs = function(self, _, _)
-                                self.input.filter.meta.grep_search =
-                                    self.input:get()
+                                self.input.filter.meta.grep_search = self.input:get()
                                 self.input:set(nil, '')
                                 self.input.filter.meta.source_id = 2
                                 self:find()
@@ -922,7 +899,7 @@ return {
                                         self.input.filter.meta.grep_search
                                     )
                                 else
-                                    self:action 'confirm'
+                                    self:action('confirm')
                                 end
                             end,
                         },
@@ -975,9 +952,7 @@ return {
                     },
                     lsp_definitions = {
                         title = 'LSP Definitions',
-                        finder = require(
-                            'conf.snacks.lsp.definitions_filtered'
-                        ).finder,
+                        finder = require('conf.snacks.lsp.definitions_filtered').finder,
                         layout = {
                             preset = 'select',
                             layout = { max_height = 14 },
@@ -1050,8 +1025,7 @@ return {
                 layout = {
                     cycle = true,
                     preset = function()
-                        return vim.o.columns >= 120 and 'telescope'
-                            or 'dropdown'
+                        return vim.o.columns >= 120 and 'telescope' or 'dropdown'
                     end,
                 },
                 win = {
@@ -1095,7 +1069,7 @@ return {
         }
         require('snacks').setup(opts)
 
-        local gh_actions = require 'snacks.gh.actions'
+        local gh_actions = require('snacks.gh.actions')
         gh_actions.actions.gh_merge_rebase = {
             enabled = function()
                 return false
@@ -1106,7 +1080,7 @@ return {
                 return false
             end,
         }
-        gh_actions.actions.gh_develop = gh_actions.cli_action {
+        gh_actions.actions.gh_develop = gh_actions.cli_action({
             cmd = 'develop',
             icon = icons.git.branch .. ' ',
             type = 'issue',
@@ -1116,7 +1090,7 @@ return {
             enabled = function(item)
                 return item.state == 'open'
             end,
-        }
+        })
         gh_actions.actions.gh_checkout_pr = {
             title = 'Checkout PR #{number}',
             icon = gh_actions.cli_actions.gh_checkout.icon,
@@ -1154,7 +1128,7 @@ return {
         -- style, test) whose subject is rendered with `SnacksPickerDimmed`.
         -- Neutralize it so no commit type is dimmed. Covers gh pickers,
         -- `git log`, diff headers and the gh preview.
-        local format = require 'snacks.picker.format'
+        local format = require('snacks.picker.format')
         local commit_message = format.commit_message
         ---@param item snacks.picker.Item
         ---@param picker snacks.Picker

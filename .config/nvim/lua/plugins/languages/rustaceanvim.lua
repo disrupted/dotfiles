@@ -6,10 +6,7 @@ return {
     ft = 'rust',
     dependencies = { 'nvim-neotest/neotest' },
     init = function()
-        require('conf.neotest.adapters').register(
-            'rust',
-            'rustaceanvim.neotest'
-        )
+        require('conf.neotest.adapters').register('rust', 'rustaceanvim.neotest')
     end,
     config = function()
         ---@module 'rustaceanvim.config'
@@ -17,7 +14,7 @@ return {
         local opts = {}
         vim.g.rustaceanvim = opts
 
-        local adapter = require 'rustaceanvim.neotest'()
+        local adapter = require('rustaceanvim.neotest')()
         adapter.name = 'Rust'
         require('conf.neotest.adapters').attach(adapter)
     end,

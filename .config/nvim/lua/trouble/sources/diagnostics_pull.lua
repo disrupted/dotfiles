@@ -9,7 +9,7 @@
 -- After the initial pull, DiagnosticChanged drives subsequent refreshes naturally.
 
 local function diagnostics()
-    return require 'trouble.sources.diagnostics'
+    return require('trouble.sources.diagnostics')
 end
 
 ---@type trouble.Source

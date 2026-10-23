@@ -68,11 +68,11 @@ return {
                 },
             },
         }
-        local overseer = require 'overseer'
+        local overseer = require('overseer')
         overseer.setup(opts)
 
         -- Monkey-patch the JobstartStrategy to use a fixed width
-        local JobstartStrategy = require 'overseer.strategy.jobstart'
+        local JobstartStrategy = require('overseer.strategy.jobstart')
         local original_start = JobstartStrategy.start
         JobstartStrategy.start = function(self, task)
             -- Temporarily override vim.o.columns during jobstart
@@ -118,10 +118,7 @@ return {
                             vim.api.nvim_create_autocmd('CmdlineLeave', {
                                 buffer = args.buf,
                                 callback = function()
-                                    if
-                                        vim.api.nvim_get_current_win()
-                                        == win
-                                    then
+                                    if vim.api.nvim_get_current_win() == win then
                                         require('conf.ui').cursor.hide()
                                     end
                                 end,
@@ -136,13 +133,13 @@ return {
 
         local function toggle_runner(window)
             if vim.bo.buftype == 'terminal' then
-                vim.cmd 'close'
+                vim.cmd('close')
                 return
             end
 
             -- check for Overseer window
-            local task_list = require 'overseer.task_list'
-            local tasks = overseer.list_tasks {
+            local task_list = require('overseer.task_list')
+            local tasks = overseer.list_tasks({
                 status = {
                     overseer.STATUS.RUNNING,
                     overseer.STATUS.SUCCESS,
@@ -150,7 +147,7 @@ return {
                     overseer.STATUS.CANCELED,
                 },
                 sort = task_list.sort_finished_recently,
-            }
+            })
 
             if vim.tbl_isempty(tasks) then
                 Snacks.notify.warn('No tasks found', { title = 'Overseer' })

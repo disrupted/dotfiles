@@ -3,8 +3,7 @@ local M = {}
 ---@param item snacks.picker.finder.Item
 ---@return boolean
 local function is_site_packages(item)
-    return type(item.file) == 'string'
-        and item.file:match 'site%-packages' ~= nil
+    return type(item.file) == 'string' and item.file:match('site%-packages') ~= nil
 end
 
 ---@param item snacks.picker.finder.Item

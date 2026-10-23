@@ -7,7 +7,7 @@ local glab = {
     ---@param args string[]
     ---@return string? out
     run = function(args)
-        local out = system { 'glab', unpack(args) }
+        local out = system({ 'glab', unpack(args) })
         if out.code == 0 then
             return vim.trim(out.stdout or '')
         end
@@ -19,7 +19,7 @@ M.mr = {}
 ---@async
 ---@return table<string, any>?
 M.mr.json = function()
-    local out = glab.run { 'mr', 'view', '--output', 'json' }
+    local out = glab.run({ 'mr', 'view', '--output', 'json' })
     if out and out ~= '' then
         return vim.json.decode(out)
     end
@@ -66,8 +66,7 @@ M.mr.create = function(opts)
 
     local out = system(cmd)
     -- assert(out.code == 0)
-    return vim.trim(out.stdout or ''),
-        out.stderr and vim.trim(out.stderr) or nil
+    return vim.trim(out.stdout or ''), out.stderr and vim.trim(out.stderr) or nil
 end
 
 ---@async

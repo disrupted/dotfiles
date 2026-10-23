@@ -5,7 +5,7 @@ return {
     module = 'auto-save',
     event = { 'InsertLeave', 'TextChanged' },
     config = function()
-        require('auto-save').setup {
+        require('auto-save').setup({
             debounce_delay = 2000,
             trigger_events = {
                 immediate_save = {
@@ -34,25 +34,22 @@ return {
                     return false
                 end
 
-                if
-                    package.loaded.luasnip
-                    and require('luasnip').in_snippet()
-                then
+                if package.loaded.luasnip and require('luasnip').in_snippet() then
                     return false
                 end
 
                 return true
             end,
-        }
+        })
 
-        require('which-key').add {
+        require('which-key').add({
             {
                 '<Leader>b',
                 '<cmd>ASToggle<cr>',
                 icon = { icon = '', hl = 'DiagnosticInfo' },
                 desc = 'Toggle autosave',
             },
-        }
+        })
 
         local group = vim.api.nvim_create_augroup('autosave', {})
         vim.api.nvim_create_autocmd('User', {
@@ -64,8 +61,7 @@ return {
                     id = 'autosave',
                     title = 'autosave',
                     history = false,
-                    level = enabled and vim.log.levels.INFO
-                        or vim.log.levels.WARN,
+                    level = enabled and vim.log.levels.INFO or vim.log.levels.WARN,
                 })
             end,
         })
@@ -74,8 +70,7 @@ return {
             group = group,
             callback = function(args)
                 if args.data.saved_buffer ~= nil then
-                    local filename =
-                        vim.api.nvim_buf_get_name(args.data.saved_buffer)
+                    local filename = vim.api.nvim_buf_get_name(args.data.saved_buffer)
                     Snacks.notify('saved ' .. filename, {
                         title = 'autosave',
                         level = vim.log.levels.DEBUG,

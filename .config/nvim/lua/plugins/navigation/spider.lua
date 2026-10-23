@@ -8,7 +8,7 @@ return {
         {
             'w',
             function()
-                require('spider').motion 'w'
+                require('spider').motion('w')
             end,
             desc = 'Spider-w',
             -- NOTE: might have to use Ex commands for dot-repeat to work
@@ -18,10 +18,7 @@ return {
         {
             'w',
             function()
-                require('spider').motion(
-                    'w',
-                    { skipInsignificantPunctuation = false }
-                )
+                require('spider').motion('w', { skipInsignificantPunctuation = false })
             end,
             desc = 'Spider-w',
             mode = { 'o', 'x' },
@@ -29,7 +26,7 @@ return {
         {
             'e',
             function()
-                require('spider').motion 'e'
+                require('spider').motion('e')
             end,
             desc = 'Spider-e',
             mode = { 'n', 'o', 'x' },
@@ -37,7 +34,7 @@ return {
         {
             'b',
             function()
-                require('spider').motion 'b'
+                require('spider').motion('b')
             end,
             desc = 'Spider-b',
             mode = { 'n', 'o', 'x' },
@@ -45,7 +42,7 @@ return {
         {
             'ge',
             function()
-                require('spider').motion 'ge'
+                require('spider').motion('ge')
             end,
             desc = 'Spider-ge',
             mode = { 'n', 'o', 'x' },

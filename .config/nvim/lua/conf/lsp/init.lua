@@ -16,7 +16,7 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 vim.api.nvim_create_user_command('LspFormat', function()
-    vim.lsp.buf.format { async = false }
+    vim.lsp.buf.format({ async = false })
 end, {})
 
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -74,7 +74,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
             },
         }
 
-        if client:supports_method 'textDocument/codeAction' then
+        if client:supports_method('textDocument/codeAction') then
             mappings[#mappings + 1] = {
                 '<Leader>c',
                 vim.lsp.buf.code_action,
@@ -144,19 +144,17 @@ vim.api.nvim_create_autocmd('LspAttach', {
             mappings[#mappings + 1] = {
                 'K',
                 function()
-                    vim.lsp.buf.hover {
+                    vim.lsp.buf.hover({
                         border = 'rounded',
                         max_width = 80,
                         max_height = 25,
-                    }
+                    })
                 end,
                 desc = 'LSP: Hover',
             }
         end
 
-        if
-            client:supports_method('textDocument/prepareCallHierarchy', buffer)
-        then
+        if client:supports_method('textDocument/prepareCallHierarchy', buffer) then
             mappings[#mappings + 1] = {
                 'gli',
                 function()
@@ -166,9 +164,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
                 icon = '󰃺',
             }
         end
-        if
-            client:supports_method('textDocument/prepareCallHierarchy', buffer)
-        then
+        if client:supports_method('textDocument/prepareCallHierarchy', buffer) then
             mappings[#mappings + 1] = {
                 'glo',
                 function()
@@ -178,9 +174,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
                 icon = '󰃷',
             }
         end
-        if
-            client:supports_method('textDocument/prepareTypeHierarchy', buffer)
-        then
+        if client:supports_method('textDocument/prepareTypeHierarchy', buffer) then
             mappings[#mappings + 1] = {
                 'gts',
                 function()
@@ -190,9 +184,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
                 icon = '󰫧',
             }
         end
-        if
-            client:supports_method('textDocument/prepareTypeHierarchy', buffer)
-        then
+        if client:supports_method('textDocument/prepareTypeHierarchy', buffer) then
             mappings[#mappings + 1] = {
                 'gtb',
                 function()
@@ -204,7 +196,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         end
 
         require('which-key').add(mappings)
-        vim.opt.shortmess:append 'c'
+        vim.opt.shortmess:append('c')
     end,
 })
 
@@ -244,7 +236,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     callback = function(args)
         local bufnr = args.buf
         local client = vim.lsp.get_client_by_id(args.data.client_id)
-        if client and client:supports_method 'textDocument/inlayHint' then
+        if client and client:supports_method('textDocument/inlayHint') then
             Snacks.notify('registered inlay hints', {
                 level = vim.log.levels.DEBUG,
                 title = 'LSP: ' .. client.name,
@@ -266,16 +258,13 @@ vim.api.nvim_create_autocmd('LspAttach', {
                     local _, new_mode = unpack(vim.split(args.match, ':'))
                     if
 
-                        vim.tbl_contains(
-                            { 'i', 'v', 'V', '\22', 'R' },
-                            new_mode
-                        )
-                        and vim.lsp.inlay_hint.is_enabled { bufnr = bufnr }
+                        vim.tbl_contains({ 'i', 'v', 'V', '\22', 'R' }, new_mode)
+                        and vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
                     then
                         vim.lsp.inlay_hint.enable(false, { bufnr = bufnr })
                     elseif
                         new_mode == 'n'
-                        and not vim.lsp.inlay_hint.is_enabled { bufnr = bufnr }
+                        and not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
                     then
                         vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
                     end
@@ -314,7 +303,7 @@ vim.lsp.config('*', {
     capabilities = require('conf.lsp.protocol').capabilities,
 })
 
-vim.lsp.enable {
+vim.lsp.enable({
     'angular_ls',
     'astro',
     'basedpyright',
@@ -350,4 +339,4 @@ vim.lsp.enable {
     -- 'vts_ls',
     'yaml_ls',
     -- 'zuban',
-}
+})

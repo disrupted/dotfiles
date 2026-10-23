@@ -1,5 +1,5 @@
-local fuzzy = require 'conf.fuzzy'
-local matcher = require 'snacks.picker.core.matcher'
+local fuzzy = require('conf.fuzzy')
+local matcher = require('snacks.picker.core.matcher')
 
 local M = {}
 

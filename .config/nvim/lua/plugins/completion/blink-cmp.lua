@@ -13,7 +13,7 @@ return {
     main = 'blink.cmp',
     module = 'blink.cmp',
     event = { 'InsertEnter', 'CmdlineEnter' },
-    version = vim.version.range '*',
+    version = vim.version.range('*'),
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
     opts = {
@@ -35,7 +35,7 @@ return {
             ['<C-e>'] = {}, -- disable default because mapped to LuaSnip
             ['<C-s>'] = {
                 function(cmp)
-                    cmp.show { providers = { 'snippets' } }
+                    cmp.show({ providers = { 'snippets' } })
                 end,
             },
             ['<a-d>'] = {
@@ -50,10 +50,7 @@ return {
             -- Opencode: preset 'enter'
             ['<CR>'] = {
                 function(cmp)
-                    if
-                        is_inside_opencode_prompt()
-                        and is_opencode_completion()
-                    then
+                    if is_inside_opencode_prompt() and is_opencode_completion() then
                         return cmp.accept()
                     end
                 end,
@@ -61,10 +58,7 @@ return {
             },
             ['<Tab>'] = {
                 function(cmp)
-                    if
-                        is_inside_opencode_prompt()
-                        and is_opencode_completion()
-                    then
+                    if is_inside_opencode_prompt() and is_opencode_completion() then
                         return cmp.select_next()
                     end
                 end,
@@ -72,10 +66,7 @@ return {
             },
             ['<S-Tab>'] = {
                 function(cmp)
-                    if
-                        is_inside_opencode_prompt()
-                        and is_opencode_completion()
-                    then
+                    if is_inside_opencode_prompt() and is_opencode_completion() then
                         return cmp.select_prev()
                     end
                 end,
@@ -214,8 +205,7 @@ return {
                                         if not gitlab_url then
                                             return false
                                         end
-                                        gitlab_url =
-                                            gitlab_url:gsub('https://', '')
+                                        gitlab_url = gitlab_url:gsub('https://', '')
                                         enable = gitlab_url
                                             and require('blink-cmp-git.utils')
                                                     .get_repo_remote_url()
@@ -278,10 +268,7 @@ return {
                 ghost_text = { enabled = false },
                 menu = {
                     auto_show = function()
-                        return not vim.tbl_contains(
-                            { '/', '?' },
-                            vim.fn.getcmdtype()
-                        )
+                        return not vim.tbl_contains({ '/', '?' }, vim.fn.getcmdtype())
                     end,
                 },
                 list = { selection = { preselect = false } },

@@ -5,7 +5,7 @@ return {
     module = 'ci',
     cmd = 'CI',
     init = function()
-        require('which-key').add { { '<Leader>gc', group = 'CI' } }
+        require('which-key').add({ { '<Leader>gc', group = 'CI' } })
     end,
     keys = {
         {

@@ -1,11 +1,11 @@
 -- https://gist.github.com/MunifTanjim/8d9498c096719bdf4234321230fe3dc7
-local Input = require 'nui.input'
+local Input = require('nui.input')
 local event = require('nui.utils.autocmd').event
 
 local function nui_lsp_rename()
     local node = vim.treesitter.get_node()
     local curr_name = node and vim.treesitter.get_node_text(node, 0)
-        or vim.fn.expand '<cword>'
+        or vim.fn.expand('<cword>')
 
     local params = vim.lsp.util.make_position_params(0, 'utf-16')
     local buf = vim.api.nvim_get_current_buf()
@@ -66,13 +66,7 @@ local function nui_lsp_rename()
             for line_nr, infos in pairs(cached_refs[buf]) do
                 -- restore original line text
                 local orig = infos[1].orig_text
-                vim.api.nvim_buf_set_lines(
-                    buf,
-                    line_nr,
-                    line_nr + 1,
-                    false,
-                    { orig }
-                )
+                vim.api.nvim_buf_set_lines(buf, line_nr, line_nr + 1, false, { orig })
             end
         end
     end
@@ -100,14 +94,7 @@ local function nui_lsp_rename()
             for _, info in ipairs(infos) do
                 local s = info.start_col + offset
                 local e = info.end_col + offset
-                vim.api.nvim_buf_set_text(
-                    buf,
-                    line_nr,
-                    s,
-                    line_nr,
-                    e,
-                    { new_name }
-                )
+                vim.api.nvim_buf_set_text(buf, line_nr, s, line_nr, e, { new_name })
                 offset = offset + #new_name - (info.end_col - info.start_col)
             end
         end
@@ -153,10 +140,7 @@ local function nui_lsp_rename()
                     and not vim.tbl_isempty(result.documentChanges)
                 then
                     local msg = {
-                        ('**Renamed `%s` -> `%s`**'):format(
-                            curr_name,
-                            new_name
-                        ),
+                        ('**Renamed `%s` -> `%s`**'):format(curr_name, new_name),
                     }
 
                     local total_files = vim.tbl_count(result.documentChanges)
@@ -255,7 +239,7 @@ local function nui_lsp_rename()
 
     -- go into normal mode
     vim.schedule(function()
-        vim.api.nvim_command 'stopinsert'
+        vim.api.nvim_command('stopinsert')
     end)
 
     -- submit on <CR> in normal mode

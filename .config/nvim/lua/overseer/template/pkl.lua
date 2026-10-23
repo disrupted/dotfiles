@@ -4,7 +4,7 @@ return {
     name = 'pkl eval',
     tags = { 'BUILD' },
     builder = function()
-        local file = vim.fn.expand '%:p:t'
+        local file = vim.fn.expand('%:p:t')
 
         ---@type overseer.TaskDefinition
         return {

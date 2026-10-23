@@ -3,7 +3,7 @@ describe('workspace test-file detection', function()
 
     before_each(function()
         package.loaded['conf.workspace'] = nil
-        workspace = require 'conf.workspace'
+        workspace = require('conf.workspace')
     end)
 
     after_each(function()

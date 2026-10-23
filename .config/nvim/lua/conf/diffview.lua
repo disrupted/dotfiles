@@ -1,8 +1,8 @@
-require('which-key').add {
+require('which-key').add({
     { '<LocalLeader>x', group = 'Conflict', icon = '' },
-}
+})
 
-local actions = require 'diffview.actions'
+local actions = require('diffview.actions')
 local keymaps = {
     disable_defaults = true,
     _shared = {
@@ -53,31 +53,31 @@ local keymaps = {
         {
             'n',
             '<LocalLeader>xo',
-            actions.conflict_choose 'ours',
+            actions.conflict_choose('ours'),
             { desc = 'Choose OURS' },
         },
         {
             'n',
             '<LocalLeader>xt',
-            actions.conflict_choose 'theirs',
+            actions.conflict_choose('theirs'),
             { desc = 'Choose THEIRS' },
         },
         {
             'n',
             '<LocalLeader>xb',
-            actions.conflict_choose 'base',
+            actions.conflict_choose('base'),
             { desc = 'Choose BASE' },
         },
         {
             'n',
             '<LocalLeader>xa',
-            actions.conflict_choose 'all',
+            actions.conflict_choose('all'),
             { desc = 'Choose all' },
         },
         {
             'n',
             'dx',
-            actions.conflict_choose 'none',
+            actions.conflict_choose('none'),
             { desc = 'Delete conflict region' },
         },
     },
@@ -85,7 +85,7 @@ local keymaps = {
         {
             'n',
             '?',
-            actions.help 'file_panel',
+            actions.help('file_panel'),
             { desc = 'Open help panel' },
         },
         {
@@ -157,7 +157,7 @@ local keymaps = {
         {
             'n',
             '<LocalLeader>xo',
-            actions.conflict_choose_all 'ours',
+            actions.conflict_choose_all('ours'),
             {
                 desc = 'Choose OURS for whole file',
             },
@@ -165,25 +165,25 @@ local keymaps = {
         {
             'n',
             '<LocalLeader>xt',
-            actions.conflict_choose_all 'theirs',
+            actions.conflict_choose_all('theirs'),
             { desc = 'Choose THEIRS for whole file' },
         },
         {
             'n',
             '<LocalLeader>xb',
-            actions.conflict_choose_all 'base',
+            actions.conflict_choose_all('base'),
             { desc = 'Choose BASE for whole file' },
         },
         {
             'n',
             '<LocalLeader>xa',
-            actions.conflict_choose_all 'all',
+            actions.conflict_choose_all('all'),
             { desc = 'Choose all for whole file' },
         },
         {
             'n',
             'dx',
-            actions.conflict_choose_all 'none',
+            actions.conflict_choose_all('none'),
             { desc = 'Delete conflicts for whole file' },
         },
     },
@@ -191,7 +191,7 @@ local keymaps = {
         {
             'n',
             '?',
-            actions.help 'file_history_panel',
+            actions.help('file_history_panel'),
             { desc = 'Help' },
         },
         {
@@ -241,7 +241,7 @@ local keymaps = {
         {
             'n',
             '?',
-            actions.help 'option_panel',
+            actions.help('option_panel'),
             { desc = 'Help' },
         },
     },

@@ -1,8 +1,8 @@
 local M = {}
 
-local n = require 'nui-components'
+local n = require('nui-components')
 
-local renderer = n.create_renderer {
+local renderer = n.create_renderer({
     width = 60,
     height = 20,
     keymap = {
@@ -10,7 +10,7 @@ local renderer = n.create_renderer {
         focus_next = '<C-n>',
         focus_prev = '<C-p>',
     },
-}
+})
 
 renderer:on_mount(function()
     local augroup = vim.api.nvim_create_augroup('OcroPrForm', { clear = true })
@@ -22,13 +22,8 @@ renderer:on_mount(function()
                     local wins = vim.tbl_map(function(c)
                         return c.winid
                     end, renderer:get_focusable_components())
-                    if
-                        not vim.tbl_contains(
-                            wins,
-                            vim.api.nvim_get_current_win()
-                        )
-                    then
-                        vim.api.nvim_del_augroup_by_name 'OcroPrForm'
+                    if not vim.tbl_contains(wins, vim.api.nvim_get_current_win()) then
+                        vim.api.nvim_del_augroup_by_name('OcroPrForm')
                         renderer:close()
                     end
                 end
@@ -37,10 +32,10 @@ renderer:on_mount(function()
     })
 end)
 
-local signal = n.create_signal {
+local signal = n.create_signal({
     is_loading = false,
     labels = {},
-}
+})
 
 local function reset_signal()
     signal.is_loading = false
@@ -55,9 +50,9 @@ local function extract_gh_error(stderr)
     end
 
     local lines = {}
-    for line in stderr:gmatch '[^\r\n]+' do
+    for line in stderr:gmatch('[^\r\n]+') do
         local trimmed = vim.trim(line)
-        if trimmed ~= '' and not trimmed:match '^Warning: ' then
+        if trimmed ~= '' and not trimmed:match('^Warning: ') then
             table.insert(lines, trimmed)
         end
     end
@@ -89,7 +84,7 @@ local create_pr_form = function(opts)
             on_submit = function(is_valid)
                 local task = vim.async.run(function()
                     if not is_valid then
-                        Snacks.notify.error 'Title is required'
+                        Snacks.notify.error('Title is required')
                         return
                     end
 
@@ -102,7 +97,7 @@ local create_pr_form = function(opts)
                         renderer:get_component_by_id('body'):get_current_value()
                     )
 
-                    local out, err = M.pr.create {
+                    local out, err = M.pr.create({
                         title = title,
                         body = body,
                         label = vim.iter(signal.labels:get_value())
@@ -110,24 +105,26 @@ local create_pr_form = function(opts)
                                 return label.id
                             end)
                             :totable(),
-                    }
+                    })
                     if out then
                         renderer:close()
                         Snacks.notify({ 'PR created', out }, { title = 'Octo' })
                         vim.async.sleep(500)
                         require('gh').pr.refresh()
-                        M.pr.open {
+                        M.pr.open({
                             octo = false,
                             browser = true,
-                        }
+                        })
                     elseif err == nil then
-                        Snacks.notify.error 'Failed to create PR. Run :messages for details.'
+                        Snacks.notify.error(
+                            'Failed to create PR. Run :messages for details.'
+                        )
                     end
                 end)
                 task:raise_on_error()
             end,
         },
-        n.text_input {
+        n.text_input({
             id = 'title',
             border_label = ' Title ',
             filetype = 'gitcommit',
@@ -136,8 +133,8 @@ local create_pr_form = function(opts)
             size = 1,
             max_lines = 1,
             validate = n.validator.min_length(3),
-        },
-        n.text_input {
+        }),
+        n.text_input({
             id = 'body',
             border_label = ' Body ',
             filetype = 'markdown',
@@ -149,11 +146,11 @@ local create_pr_form = function(opts)
                         vim.api.nvim_win_text_height(component.winid, {}).all
                     local new_size = math.max(7, visual_lines)
                     component._private.text_input_signal.size = new_size
-                    renderer:set_size { height = 13 + new_size }
+                    renderer:set_size({ height = 13 + new_size })
                 end)
             end,
-        },
-        n.select {
+        }),
+        n.select({
             border_label = ' Labels ',
             size = 5,
             selected = signal.labels,
@@ -162,40 +159,40 @@ local create_pr_form = function(opts)
             on_select = function(nodes)
                 signal.labels = nodes
             end,
-        },
+        }),
         n.columns(
-            n.button {
+            n.button({
                 label = 'Create PR',
                 on_press = function()
                     ---@diagnostic disable-next-line: undefined-field
                     if signal.is_loading:get_value() then
                         return -- prevent duplicate submit
                     end
-                    local form = renderer:get_component_by_id 'form'
+                    local form = renderer:get_component_by_id('form')
                     assert(form)
                     form:submit()
                 end,
                 ---@diagnostic disable-next-line: undefined-field
                 is_active = signal.is_loading:get_value(),
-            },
-            n.spinner {
+            }),
+            n.spinner({
                 is_loading = signal.is_loading,
                 padding = { left = 1 },
                 ---@diagnostic disable-next-line: undefined-field
                 hidden = signal.is_loading:negate(),
-            },
-            n.gap { flex = 1 },
-            n.paragraph {
+            }),
+            n.gap({ flex = 1 }),
+            n.paragraph({
                 lines = '<S-CR> Submit',
                 align = 'right',
                 is_focusable = false,
-            },
+            }),
             n.gap(1),
-            n.paragraph {
+            n.paragraph({
                 lines = '<Esc> Cancel',
                 align = 'right',
                 is_focusable = false,
-            }
+            })
         )
     )
 end
@@ -217,10 +214,10 @@ M.pr.open = function(opts)
         local number = opts.number or require('gh').pr.json({ 'number' }).number
         Snacks.notify('Opening PR #' .. number .. '...', { title = 'Octo' })
         require('conf.workspace').create_tab('PR ' .. number)
-        vim.cmd 'Octo pr'
+        vim.cmd('Octo pr')
     end
     if opts.browser then
-        vim.cmd 'Octo pr browser'
+        vim.cmd('Octo pr browser')
     end
 end
 
@@ -231,7 +228,7 @@ M.pr.form_create = function()
     local labels = require('gh').labels()
 
     renderer:render(function()
-        return create_pr_form { title = title, labels = labels }
+        return create_pr_form({ title = title, labels = labels })
     end)
 end
 
@@ -244,7 +241,7 @@ M.pr.create = function(opts)
         -- assignee = '@me',
         draft = true,
     })
-    local git = require 'git'
+    local git = require('git')
 
     if opts.base == nil then
         -- if upstream tracking branch was changed we want to

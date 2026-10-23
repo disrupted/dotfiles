@@ -22,11 +22,7 @@ return {
     },
     init = function()
         vim.api.nvim_create_user_command('Todo', 'TodoTrouble', {})
-        vim.api.nvim_create_user_command(
-            'TodoBuffer',
-            'TodoTrouble filter.buf=0',
-            {}
-        )
+        vim.api.nvim_create_user_command('TodoBuffer', 'TodoTrouble filter.buf=0', {})
     end,
     config = function()
         local opts = {

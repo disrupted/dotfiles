@@ -7,10 +7,10 @@ return {
         {
             '<C-_>', -- ctrl + /
             function()
-                require('grug-far').toggle_instance {
+                require('grug-far').toggle_instance({
                     transient = true,
                     startInInsertMode = false,
-                }
+                })
             end,
             desc = 'Find and Replace',
         },

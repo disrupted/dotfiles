@@ -41,9 +41,9 @@ describe('gh wrapper', function()
             },
         }
 
-        local gh = require 'gh'
+        local gh = require('gh')
         local out = run(function()
-            return gh.run { 'repo', 'view' }
+            return gh.run({ 'repo', 'view' })
         end)
 
         assert.equals('hello world', out)
@@ -59,16 +59,16 @@ describe('gh wrapper', function()
             },
         }
 
-        local gh = require 'gh'
+        local gh = require('gh')
         run(function()
-            gh.pr.create {
+            gh.pr.create({
                 title = 'test',
                 body = 'body',
                 assignee = 'me',
                 draft = true,
                 label = { 'bug', 'urgent' },
                 base = 'main',
-            }
+            })
         end)
 
         assert.same({
@@ -100,13 +100,13 @@ describe('gh wrapper', function()
             },
         }
 
-        local gh = require 'gh'
+        local gh = require('gh')
         local stdout, stderr = run(function()
-            return gh.pr.create {
+            return gh.pr.create({
                 title = 'test',
                 body = 'body',
                 label = {},
-            }
+            })
         end)
 
         assert.equals('stdout text\n', stdout)

@@ -1,9 +1,9 @@
 local function is_uv_installed()
-    return vim.fn.executable 'uv' == 1
+    return vim.fn.executable('uv') == 1
 end
 
 local function is_uv_pyproject()
-    return vim.uv.fs_stat 'uv.lock' ~= nil
+    return vim.uv.fs_stat('uv.lock') ~= nil
 end
 
 ---@module 'overseer'
@@ -53,9 +53,7 @@ return {
         callback = function(search)
             local filepath = vim.api.nvim_buf_get_name(0)
             local fname = vim.fs.basename(filepath)
-            return fname == 'pyproject.toml'
-                and is_uv_installed()
-                and is_uv_pyproject()
+            return fname == 'pyproject.toml' and is_uv_installed() and is_uv_pyproject()
         end,
     },
 }

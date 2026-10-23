@@ -27,7 +27,7 @@ local function now_ms()
 end
 
 local function now_localtime()
-    return os.date '%Y-%m-%d %H:%M:%S'
+    return os.date('%Y-%m-%d %H:%M:%S')
 end
 
 ---@param ts_ms integer?
@@ -60,8 +60,7 @@ end
 ---@param args string[]
 ---@return string stdout
 local function git(args)
-    local out = vim.system({ 'git', '--git-dir', vim.g.git_repo, unpack(args) })
-        :wait()
+    local out = vim.system({ 'git', '--git-dir', vim.g.git_repo, unpack(args) }):wait()
     if out.code ~= 0 then
         error(assert(out.stderr))
     end
@@ -86,7 +85,7 @@ end
 ---@param remote? string
 ---@return string
 M.remote_url = function(remote)
-    return git { 'remote', 'get-url', remote or 'origin' }
+    return git({ 'remote', 'get-url', remote or 'origin' })
 end
 
 ---@param remote_branch string
@@ -103,13 +102,13 @@ end
 
 ---@return string name of the current branch
 M.current_branch = function()
-    return git { 'branch', '--show-current' }
+    return git({ 'branch', '--show-current' })
 end
 
 ---@param remote_url string
 ---@return 'github' | 'gitlab'
 M.match_remote_type = function(remote_url)
-    if remote_url:match 'github%.com' then
+    if remote_url:match('github%.com') then
         return 'github'
     end
     -- others are usually self-hosted GitLab instances in my use case
@@ -155,10 +154,7 @@ M.refresh = function()
                     modeline = false,
                 })
             else
-                Snacks.notify.error(
-                    { err },
-                    { title = 'GitHub PR refresh failed' }
-                )
+                Snacks.notify.error({ err }, { title = 'GitHub PR refresh failed' })
             end
         elseif vim.g.git_remote_type == 'gitlab' then
             local ok, err = pcall(require('glab').mr.refresh)
@@ -168,10 +164,7 @@ M.refresh = function()
                     modeline = false,
                 })
             else
-                Snacks.notify.error(
-                    { err },
-                    { title = 'GitLab MR refresh failed' }
-                )
+                Snacks.notify.error({ err }, { title = 'GitLab MR refresh failed' })
             end
         end
 
@@ -232,9 +225,8 @@ end
 M.debug_status = function()
     local coalesced_pct = 0
     if metrics.refresh_requested > 0 then
-        coalesced_pct = math.floor(
-            (metrics.refresh_coalesced / metrics.refresh_requested) * 100
-        )
+        coalesced_pct =
+            math.floor((metrics.refresh_coalesced / metrics.refresh_requested) * 100)
     end
 
     return {
@@ -264,9 +256,7 @@ M.debug_status = function()
             last_refresh_started = metrics.last_refresh_started_at,
             last_refresh_started_age = age_from_now(last_refresh_started_ms),
             last_refresh_completed = metrics.last_refresh_completed_at,
-            last_refresh_completed_age = age_from_now(
-                last_refresh_completed_ms
-            ),
+            last_refresh_completed_age = age_from_now(last_refresh_completed_ms),
             last_refresh_duration = metrics.last_refresh_duration_ms
                     and ('%dms'):format(metrics.last_refresh_duration_ms)
                 or nil,
@@ -376,19 +366,19 @@ M.async = {}
 ---@param remote? string
 ---@return string?
 M.async.remote_url = function(remote)
-    return git_async { 'remote', 'get-url', remote or 'origin' }
+    return git_async({ 'remote', 'get-url', remote or 'origin' })
 end
 
 ---@async
 ---@return string? name of the current branch
 M.async.current_branch = function()
-    return git_async { 'branch', '--show-current' }
+    return git_async({ 'branch', '--show-current' })
 end
 
 ---@async
 ---@return string?
 M.async.head = function()
-    return git_async { 'rev-parse', '--short', 'HEAD' }
+    return git_async({ 'rev-parse', '--short', 'HEAD' })
 end
 
 ---@async
@@ -397,7 +387,7 @@ M.async.unpushed_commits = function()
     if not M.async.tracking_branch() then
         return nil
     end
-    local count = git_async { 'rev-list', '--count', '@{u}..HEAD' }
+    local count = git_async({ 'rev-list', '--count', '@{u}..HEAD' })
     if count then
         return tonumber(count)
     end
@@ -407,12 +397,12 @@ end
 ---@return string? name of the upstream tracking branch 'origin/...'
 ---errors: fatal: no upstream configured for branch '...'
 M.async.tracking_branch = function()
-    return git_async {
+    return git_async({
         'rev-parse',
         '--abbrev-ref',
         '--symbolic-full-name',
         '@{u}',
-    }
+    })
 end
 
 ---@async
@@ -433,7 +423,7 @@ M.async.default_branch = function(opts)
 
     -- If origin is absent and no upstream remote, pick the first configured remote.
     if remote == 'origin' then
-        local remotes = git_async { 'remote' }
+        local remotes = git_async({ 'remote' })
         if remotes then
             local first_remote = vim.split(remotes, '\n', {
                 plain = true,
@@ -446,11 +436,11 @@ M.async.default_branch = function(opts)
     end
 
     -- Local cached remote HEAD: refs/remotes/<remote>/HEAD -> <remote>/<branch>
-    local short = git_async {
+    local short = git_async({
         'symbolic-ref',
         '--short',
         ('refs/remotes/%s/HEAD'):format(remote),
-    }
+    })
     if short then
         local _, branch = M.split_remote_branch(short)
         if branch and branch ~= '' then
@@ -460,9 +450,9 @@ M.async.default_branch = function(opts)
 
     -- Remote query fallback: works when local remote HEAD is missing/stale.
     if opts.online then
-        local symref = git_async { 'ls-remote', '--symref', remote, 'HEAD' }
+        local symref = git_async({ 'ls-remote', '--symref', remote, 'HEAD' })
         if symref then
-            local branch = symref:match 'ref:%s+refs/heads/(.-)%s+HEAD'
+            local branch = symref:match('ref:%s+refs/heads/(.-)%s+HEAD')
             if branch and branch ~= '' then
                 return branch
             end
@@ -470,12 +460,12 @@ M.async.default_branch = function(opts)
     end
 
     -- Heuristic fallback for common default branch names
-    for _, branch in ipairs { 'main', 'master' } do
-        local ref = git_async {
+    for _, branch in ipairs({ 'main', 'master' }) do
+        local ref = git_async({
             'show-ref',
             '--verify',
             ('refs/remotes/%s/%s'):format(remote, branch),
-        }
+        })
         if ref then
             return branch
         end
@@ -485,7 +475,7 @@ end
 ---@async
 ---@return string? title of the last commit
 M.async.last_commit_title = function()
-    return git_async { 'log', '-1', '--pretty=%s' }
+    return git_async({ 'log', '-1', '--pretty=%s' })
 end
 
 return M

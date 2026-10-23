@@ -1,4 +1,4 @@
-local icons = require 'conf.icons'
+local icons = require('conf.icons')
 
 ---@type LazeSpec
 return {
@@ -12,7 +12,7 @@ return {
         'sindrets/diffview.nvim',
     },
     init = function()
-        require('which-key').add {
+        require('which-key').add({
             { '<Leader>ga', group = 'GitLab', icon = icons.git.gitlab },
             {
                 '<Leader>gap',
@@ -58,9 +58,7 @@ return {
                                     return
                                 elseif unpushed > 0 then
                                     Snacks.notify.warn(
-                                        ('%d unpushed commit(s)'):format(
-                                            unpushed
-                                        ),
+                                        ('%d unpushed commit(s)'):format(unpushed),
                                         { title = 'GitLab' }
                                     )
                                 end
@@ -82,7 +80,7 @@ return {
                 desc = 'Review MR',
                 icon = icons.git.review,
             },
-        }
+        })
     end,
     build = function()
         require('gitlab.server').build(true)

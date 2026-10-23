@@ -1,4 +1,4 @@
-local icons = require 'conf.icons'
+local icons = require('conf.icons')
 
 ---@type LazeSpec
 return {
@@ -7,14 +7,14 @@ return {
     module = 'heirline',
     event = 'UIEnter',
     config = function()
-        local conditions = require 'heirline.conditions'
-        local utils = require 'heirline.utils'
+        local conditions = require('heirline.conditions')
+        local utils = require('heirline.utils')
         local lazy_require = require('utils').lazy_require
 
         vim.api.nvim_create_autocmd('ColorScheme', {
             group = vim.api.nvim_create_augroup('Heirline', {}),
             callback = function()
-                utils.on_colorscheme {}
+                utils.on_colorscheme({})
             end,
             desc = 'Reload highlights on colorscheme or background change',
         })
@@ -26,8 +26,7 @@ return {
             static = { icon = '' },
             provider = function(self)
                 local workspace = vim.g.workspace_root
-                local relpath =
-                    vim.fs.relpath(vim.env.HOME, vim.g.workspace_root)
+                local relpath = vim.fs.relpath(vim.env.HOME, vim.g.workspace_root)
                 if relpath then
                     workspace = relpath == '.' and '~' or '~/' .. relpath
                 end
@@ -38,7 +37,7 @@ return {
             end,
             update = { 'DirChanged' },
             hl = function()
-                local hl = utils.get_highlight 'StatusLine'
+                local hl = utils.get_highlight('StatusLine')
                 return { fg = hl.fg, bg = hl.bg, bold = true }
             end,
         }
@@ -51,8 +50,7 @@ return {
 
         local GitStatus = {
             condition = function(self)
-                return vim.b[self.bufnr].gitsigns_status_dict
-                    and is_file(self.bufnr)
+                return vim.b[self.bufnr].gitsigns_status_dict and is_file(self.bufnr)
             end,
             static = {
                 icons = {
@@ -76,11 +74,7 @@ return {
                     return self.status.added ~= 0
                 end,
                 provider = function(self)
-                    return string.format(
-                        '%s%s ',
-                        self.icons.added,
-                        self.status.added
-                    )
+                    return string.format('%s%s ', self.icons.added, self.status.added)
                 end,
                 hl = 'GitSignsAdd',
             },
@@ -146,8 +140,7 @@ return {
                 provider = function()
                     return string.format(
                         '%s %s',
-                        vim.g.git_branch and icons.git.branch
-                            or icons.git.commit,
+                        vim.g.git_branch and icons.git.branch or icons.git.commit,
                         vim.g.git_branch or vim.g.git_head
                     )
                 end,
@@ -156,7 +149,7 @@ return {
 
         local Diagnostics = {
             condition = function(self)
-                return vim.diagnostic.is_enabled { bufnr = self.bufnr }
+                return vim.diagnostic.is_enabled({ bufnr = self.bufnr })
                     and not vim.tbl_isempty(vim.diagnostic.count(self.bufnr))
             end,
             init = function(self)
@@ -226,7 +219,7 @@ return {
             },
         }
 
-        local dap = lazy_require 'dap'
+        local dap = lazy_require('dap')
         local DAPStatus = {
             condition = function()
                 return package.loaded.dap and dap.session() ~= nil
@@ -252,7 +245,7 @@ return {
             },
         }
 
-        local neotest = lazy_require 'neotest'
+        local neotest = lazy_require('neotest')
         local NeoTestBlock = {
             condition = function()
                 return package.loaded.neotest
@@ -418,9 +411,9 @@ return {
                 return package.loaded.overseer
             end,
             init = function(self)
-                local tasks = require('overseer.task_list').list_tasks {
+                local tasks = require('overseer.task_list').list_tasks({
                     unique = true,
-                }
+                })
                 local tasks_by_status =
                     require('overseer.util').tbl_group_by(tasks, 'status')
                 self.tasks = tasks_by_status
@@ -433,10 +426,10 @@ return {
                     RUNNING = '󰑮',
                 },
             },
-            OverseerTasksForStatus 'CANCELED',
-            OverseerTasksForStatus 'RUNNING',
-            OverseerTasksForStatus 'SUCCESS',
-            OverseerTasksForStatus 'FAILURE',
+            OverseerTasksForStatus('CANCELED'),
+            OverseerTasksForStatus('RUNNING'),
+            OverseerTasksForStatus('SUCCESS'),
+            OverseerTasksForStatus('FAILURE'),
         }
 
         vim.api.nvim_create_user_command('TabName', function(opts)
@@ -468,11 +461,8 @@ return {
             Space,
             {
                 init = function(self)
-                    local success, tabname = pcall(
-                        vim.api.nvim_tabpage_get_var,
-                        self.tabpage,
-                        'tabname'
-                    )
+                    local success, tabname =
+                        pcall(vim.api.nvim_tabpage_get_var, self.tabpage, 'tabname')
                     self.tabname = success and tabname or nil
                     self.filename = vim.api.nvim_buf_get_name(self.buf)
                 end,
@@ -500,22 +490,22 @@ return {
                 'BufWinEnter',
             },
             hl = function()
-                local hl = utils.get_highlight 'StatusLineNC'
+                local hl = utils.get_highlight('StatusLineNC')
                 return { fg = hl.fg, bg = hl.bg, bold = true }
             end,
             {
                 provider = function()
-                    return vim.iter(vim.lsp.get_clients { bufnr = 0 })
+                    return vim.iter(vim.lsp.get_clients({ bufnr = 0 }))
                         :map(function(server)
                             return server.name
                         end)
-                        :join ' '
+                        :join(' ')
                 end,
             },
             Space,
         }
 
-        require('heirline').setup {
+        require('heirline').setup({
             statusline = {
                 init = function(self)
                     self.bufnr = vim.api.nvim_get_current_buf()
@@ -558,6 +548,6 @@ return {
                     }, args.buf)
                 end,
             },
-        }
+        })
     end,
 }

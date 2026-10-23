@@ -6,13 +6,13 @@ return {
     module = 'harpoon',
     dependencies = { 'nvim-lua/plenary.nvim' },
     init = function()
-        require('which-key').add { { ';', group = 'Harpoon', icon = '󰤱' } }
+        require('which-key').add({ { ';', group = 'Harpoon', icon = '󰤱' } })
     end,
     keys = {
         {
             ';;',
             function()
-                local harpoon = require 'harpoon'
+                local harpoon = require('harpoon')
                 local list = harpoon:list()
                 local list_info = vim.iter(list.items):fold(
                     { max = 35 },
@@ -37,7 +37,7 @@ return {
         {
             'M',
             function()
-                local harpoon = require 'harpoon'
+                local harpoon = require('harpoon')
                 local list = harpoon:list()
                 local item = list.config.create_list_item(list.config)
 

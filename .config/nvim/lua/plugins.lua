@@ -2,7 +2,7 @@ local M = {}
 
 ---@return LazeSpec[]
 function M.specs()
-    local root = vim.fs.joinpath(vim.fn.stdpath 'config', 'lua', 'plugins')
+    local root = vim.fs.joinpath(vim.fn.stdpath('config'), 'lua', 'plugins')
     local files = vim.fn.glob(root .. '/**/*.lua', false, true)
 
     -- Keep startup deterministic; laze resolves dependencies by name.

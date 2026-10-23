@@ -17,9 +17,7 @@ return {
                 ---@module 'vim.lsp.semantic_tokens'
                 ---@type STTokenRange
                 local token = args.data.token
-                if
-                    token.type == 'parameter' and not token.modifiers.definition
-                then
+                if token.type == 'parameter' and not token.modifiers.definition then
                     local captures = vim.treesitter.get_captures_at_pos(
                         bufnr,
                         token.line,

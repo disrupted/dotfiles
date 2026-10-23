@@ -34,7 +34,7 @@ end
 ---@param query string
 ---@return boolean
 local function has_uppercase(query)
-    return query:match '%u' ~= nil
+    return query:match('%u') ~= nil
 end
 
 ---@param text string
@@ -195,9 +195,7 @@ function M.match(query, candidates, opts)
     local mod, err = get_backend()
     if not mod then
         warn_once(
-            ('frizbee backend unavailable, using fallback matcher (%s)'):format(
-                err
-            )
+            ('frizbee backend unavailable, using fallback matcher (%s)'):format(err)
         )
         local fallback = fallback_match(candidates, query, case_sensitive)
         if opts.limit and opts.limit > 0 and #fallback > opts.limit then
@@ -221,9 +219,7 @@ function M.match(query, candidates, opts)
     })
 
     if not ok then
-        warn_once(
-            ('frizbee match failed, using fallback matcher (%s)'):format(native)
-        )
+        warn_once(('frizbee match failed, using fallback matcher (%s)'):format(native))
         return fallback_match(candidates, query, case_sensitive)
     end
 

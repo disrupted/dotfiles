@@ -1,4 +1,4 @@
-local icons = require 'conf.icons'
+local icons = require('conf.icons')
 
 local M = {}
 
@@ -132,7 +132,7 @@ function M.filters(spec)
                     local picker = ctx.picker
                     vim.schedule(function()
                         if not picker.closed then
-                            picker:find { refresh = true }
+                            picker:find({ refresh = true })
                         end
                     end)
                 end
@@ -178,7 +178,7 @@ function M.filters(spec)
 end
 
 ---@type snacks.picker.Config
-M.pr = M.filters {
+M.pr = M.filters({
     type = 'pr',
     filters = {
         mine = {
@@ -194,10 +194,10 @@ M.pr = M.filters {
             qualifier = 'review-requested:@me',
         },
     },
-}
+})
 
 ---@type snacks.picker.Config
-M.issue = M.filters {
+M.issue = M.filters({
     type = 'issue',
     filters = {
         assignee_me = {
@@ -207,6 +207,6 @@ M.issue = M.filters {
             qualifier = 'assignee:@me',
         },
     },
-}
+})
 
 return M

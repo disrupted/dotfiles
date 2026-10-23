@@ -7,10 +7,10 @@ return {
         {
             '<Leader>tu',
             function()
-                require('neotest').run.run {
+                require('neotest').run.run({
                     suite = false,
                     extra_args = { '--snapshot-update' },
-                }
+                })
             end,
             ft = 'python',
             desc = 'Update snapshot for nearest function',
@@ -18,11 +18,11 @@ return {
         {
             '<Leader>tU',
             function()
-                require('neotest').run.run {
+                require('neotest').run.run({
                     vim.api.nvim_buf_get_name(0),
                     suite = false,
                     extra_args = { '--snapshot-update' },
-                }
+                })
             end,
             ft = 'python',
             desc = 'Update snapshot for entire file/buffer',
@@ -47,7 +47,7 @@ return {
             },
             -- pytest_discover_instances = true, -- experimental, support parametrized test cases
         }
-        local adapter = require 'neotest-python'(opts)
+        local adapter = require('neotest-python')(opts)
         adapter.name = 'Python'
         require('conf.neotest.adapters').attach(adapter)
     end,

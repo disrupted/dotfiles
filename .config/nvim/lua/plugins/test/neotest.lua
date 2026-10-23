@@ -1,4 +1,4 @@
-local icons = require 'conf.icons'
+local icons = require('conf.icons')
 
 ---@type LazeSpec
 return {
@@ -7,38 +7,36 @@ return {
     module = 'neotest',
     dependencies = { 'nvim-neotest/nvim-nio', 'stevearc/overseer.nvim' },
     init = function()
-        require('which-key').add {
+        require('which-key').add({
             { '<Leader>t', group = 'Test', icon = '' },
-        }
+        })
     end,
     keys = {
         {
             '<Leader>tf',
             function()
-                require('neotest').run.run { suite = false }
+                require('neotest').run.run({ suite = false })
             end,
             desc = 'Nearest function',
         },
         {
             '<Leader>tb',
             function()
-                require('neotest').run.run {
+                require('neotest').run.run({
                     vim.api.nvim_buf_get_name(0),
                     suite = false,
-                }
+                })
             end,
             desc = 'Entire file/buffer',
         },
         {
             '<Leader>ta',
             function()
-                for _, adapter_id in
-                    ipairs(require('neotest').state.adapter_ids())
-                do
-                    require('neotest').run.run {
+                for _, adapter_id in ipairs(require('neotest').state.adapter_ids()) do
+                    require('neotest').run.run({
                         suite = true,
                         adapter_id = adapter_id,
-                    }
+                    })
                 end
             end,
             desc = 'Entire project',
@@ -47,10 +45,10 @@ return {
             '<Leader>td',
             function()
                 require('conf.dap.adapters').load(vim.bo.filetype)
-                require('neotest').run.run {
+                require('neotest').run.run({
                     strategy = 'dap',
                     suite = false,
-                }
+                })
             end,
             desc = 'Debug nearest function',
         },
@@ -69,8 +67,7 @@ return {
                     return
                 end
 
-                local target =
-                    require('conf.workspace').find_or_create_tab 'tests'
+                local target = require('conf.workspace').find_or_create_tab('tests')
                 if vim.api.nvim_get_current_tabpage() ~= target then
                     vim.api.nvim_set_current_tabpage(target)
                 end
@@ -111,14 +108,14 @@ return {
         {
             ']t',
             function()
-                require('neotest').jump.next { status = 'failed' }
+                require('neotest').jump.next({ status = 'failed' })
             end,
             desc = 'Next failed test',
         },
         {
             '[t',
             function()
-                require('neotest').jump.prev { status = 'failed' }
+                require('neotest').jump.prev({ status = 'failed' })
             end,
             desc = 'Prev failed test',
         },
@@ -162,11 +159,7 @@ return {
                     return {}
                 end,
                 autocmd_results = function(client)
-                    client.listeners.results = function(
-                        adapter_id,
-                        results,
-                        partial
-                    )
+                    client.listeners.results = function(adapter_id, results, partial)
                         vim.schedule(function()
                             vim.api.nvim_exec_autocmds('User', {
                                 pattern = 'NeotestResult',
@@ -213,7 +206,7 @@ return {
         }
         opts = vim.tbl_deep_extend('force', opts, {
             consumers = {
-                overseer = require 'neotest.consumers.overseer',
+                overseer = require('neotest.consumers.overseer'),
             },
             strategies = {
                 overseer = {
@@ -240,7 +233,7 @@ return {
         })
 
         local function expand_summary_dirs_only()
-            local neotest = require 'neotest'
+            local neotest = require('neotest')
             local expanded = {}
 
             for _, adapter_id in ipairs(neotest.state.adapter_ids() or {}) do
@@ -285,10 +278,8 @@ return {
             end,
         })
 
-        local augroup = vim.api.nvim_create_augroup(
-            'NeotestSummaryCursor',
-            { clear = true }
-        )
+        local augroup =
+            vim.api.nvim_create_augroup('NeotestSummaryCursor', { clear = true })
         vim.api.nvim_create_autocmd('FileType', {
             group = augroup,
             pattern = 'neotest-summary',
@@ -307,10 +298,7 @@ return {
                             vim.api.nvim_create_autocmd('CmdlineLeave', {
                                 buffer = args.buf,
                                 callback = function()
-                                    if
-                                        vim.api.nvim_get_current_win()
-                                        == win
-                                    then
+                                    if vim.api.nvim_get_current_win() == win then
                                         require('conf.ui').cursor.hide()
                                     end
                                 end,

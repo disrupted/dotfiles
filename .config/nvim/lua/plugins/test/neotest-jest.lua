@@ -5,12 +5,12 @@ return {
     module = 'neotest-jest',
     dependencies = { 'nvim-neotest/neotest' },
     init = function()
-        for _, filetype in ipairs {
+        for _, filetype in ipairs({
             'javascript',
             'typescript',
             'javascriptreact',
             'typescriptreact',
-        } do
+        }) do
             require('conf.neotest.adapters').register(filetype, 'neotest-jest')
         end
     end,
@@ -22,7 +22,7 @@ return {
                 return vim.uv.cwd()
             end,
         }
-        local adapter = require 'neotest-jest'(opts)
+        local adapter = require('neotest-jest')(opts)
         adapter.name = 'Jest'
         require('conf.neotest.adapters').attach(adapter)
     end,

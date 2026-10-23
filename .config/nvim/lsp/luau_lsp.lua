@@ -3,7 +3,7 @@ return {
     cmd = {
         'luau-lsp',
         'lsp',
-        '--definitions=' .. vim.fs.normalize '~/dev/maki/plugins/maki.d.luau',
+        '--definitions=' .. vim.fs.normalize('~/dev/maki/plugins/maki.d.luau'),
     },
     filetypes = { 'luau' },
     root_markers = { '.git', 'init.lua' },

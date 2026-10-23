@@ -4,14 +4,14 @@ return {
     main = 'dap',
     module = 'dap',
     init = function()
-        require('which-key').add {
+        require('which-key').add({
             {
                 '<Leader>d',
                 group = 'Debug',
                 mode = { 'n', 'v' },
                 icon = { icon = '󰃤', hl = 'DiagnosticError' },
             },
-        }
+        })
     end,
     keys = {
         {
@@ -21,8 +21,8 @@ return {
                 require('dap').continue()
                 vim.o.signcolumn = 'yes:2'
                 -- load dap-view early to use a smaller terminal window by default
-                require 'dap-view'
-                require 'nvim-dap-virtual-text'
+                require('dap-view')
+                require('nvim-dap-virtual-text')
             end,
             desc = 'Continue/start',
         },
@@ -87,9 +87,7 @@ return {
         {
             '<Leader>dB',
             function()
-                require('dap').set_breakpoint(
-                    vim.fn.input 'Breakpoint condition: '
-                )
+                require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))
             end,
             desc = 'Toggle conditional breakpoint',
         },
@@ -110,7 +108,7 @@ return {
         { -- DAP UI looks better
             '<Leader>dS',
             function()
-                local widgets = require 'dap.ui.widgets'
+                local widgets = require('dap.ui.widgets')
                 widgets.centered_float(widgets.scopes, { border = 'rounded' })
             end,
             desc = 'Scopes',
@@ -131,7 +129,7 @@ return {
         },
     },
     config = function()
-        local dap = require 'dap'
+        local dap = require('dap')
         -- when hitting a breakpoint use an already open window containing the breakpoint buffer
         -- instead of switching the current window to the other buffer
         dap.defaults.fallback.switchbuf = 'usevisible,usetab,uselast'

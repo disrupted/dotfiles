@@ -14,20 +14,13 @@ local start = function(config)
     end
     config = vim.deepcopy(config)
     if not config.root_dir then
-        if
-            config.root_markers ~= nil
-            and not vim.tbl_isempty(config.root_markers)
-        then
-            config.root_dir =
-                vim.fs.root(vim.g.workspace_root, config.root_markers)
+        if config.root_markers ~= nil and not vim.tbl_isempty(config.root_markers) then
+            config.root_dir = vim.fs.root(vim.g.workspace_root, config.root_markers)
         else
             config.root_dir = vim.g.workspace_root
         end
     end
-    Snacks.notify.info(
-        string.format('Starting %s', config.name),
-        { title = 'LSP' }
-    )
+    Snacks.notify.info(string.format('Starting %s', config.name), { title = 'LSP' })
     return vim.lsp.start(config, { attach = false })
 end
 
@@ -69,9 +62,9 @@ local clients = setmetatable(default_clients, {
     ---@return integer[] client_ids
     __index = function(_, key)
         return function()
-            local configs = require('conf.lsp.config').filter_enabled {
+            local configs = require('conf.lsp.config').filter_enabled({
                 filetype = key,
-            }
+            })
             local client_ids = {}
             for _, config in ipairs(configs) do
                 local client_id = start(config)
@@ -88,8 +81,8 @@ end
 
 ---@return integer[] started_client_ids
 M.start_project_clients = function()
-    local workspace = require 'conf.workspace'
-    local filetypes = workspace.project_filetypes { buffers = false }
+    local workspace = require('conf.workspace')
+    local filetypes = workspace.project_filetypes({ buffers = false })
     local started = {}
 
     for _, filetype in ipairs(filetypes) do

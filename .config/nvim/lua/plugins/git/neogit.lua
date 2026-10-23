@@ -7,7 +7,7 @@ return {
         {
             '<Leader>gg',
             function()
-                require('neogit').open { kind = 'tab' }
+                require('neogit').open({ kind = 'tab' })
                 vim.cmd.tabmove()
             end,
             desc = 'Neogit',
@@ -30,11 +30,10 @@ return {
             },
             process_spinner = true,
         }
-        local neogit = require 'neogit'
+        local neogit = require('neogit')
         neogit.setup(opts)
 
-        local augroup =
-            vim.api.nvim_create_augroup('NeogitEvents', { clear = true })
+        local augroup = vim.api.nvim_create_augroup('NeogitEvents', { clear = true })
 
         vim.api.nvim_create_autocmd('User', {
             pattern = 'NeogitPushComplete',

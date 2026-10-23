@@ -5,13 +5,13 @@ return {
     module = 'trouble',
     cmd = 'Trouble',
     init = function()
-        require('which-key').add {
+        require('which-key').add({
             {
                 '<Leader>x',
                 group = 'Trouble',
                 icon = { icon = '', hl = 'DiagnosticWarn' },
             },
-        }
+        })
     end,
     keys = {
         {
@@ -19,10 +19,12 @@ return {
             function()
                 local started_clients =
                     require('conf.workspace.lsp').start_project_clients()
-                require('conf.trouble').diagnostics.toggle 'workspace_diagnostics_severe'
+                require('conf.trouble').diagnostics.toggle(
+                    'workspace_diagnostics_severe'
+                )
                 if not vim.tbl_isempty(started_clients) then
                     vim.defer_fn(function()
-                        require('trouble').refresh 'workspace_diagnostics_severe'
+                        require('trouble').refresh('workspace_diagnostics_severe')
                     end, 500)
                 end
             end,
@@ -33,10 +35,10 @@ return {
             function()
                 local started_clients =
                     require('conf.workspace.lsp').start_project_clients()
-                require('conf.trouble').diagnostics.toggle 'workspace_diagnostics'
+                require('conf.trouble').diagnostics.toggle('workspace_diagnostics')
                 if not vim.tbl_isempty(started_clients) then
                     vim.defer_fn(function()
-                        require('trouble').refresh 'workspace_diagnostics'
+                        require('trouble').refresh('workspace_diagnostics')
                     end, 500)
                 end
             end,
@@ -45,7 +47,7 @@ return {
         {
             '<Leader>xb',
             function()
-                require('conf.trouble').diagnostics.toggle 'buffer_diagnostics'
+                require('conf.trouble').diagnostics.toggle('buffer_diagnostics')
             end,
             desc = 'Buffer diagnostics',
         },
@@ -71,7 +73,7 @@ return {
             ['<tab>'] = 'fold_toggle',
             s = {
                 action = function(view)
-                    local f = view:get_filter 'severity'
+                    local f = view:get_filter('severity')
                     local severity = ((f and f.filter.severity or 0) + 1) % 5
                     view:filter({ severity = severity }, {
                         id = 'severity',
@@ -111,8 +113,7 @@ return {
                     local severity = vim.diagnostic.severity.WARN
                     for _, item in ipairs(items) do
                         if item.severity > 0 then -- filter out unnecessary
-                            severity =
-                                math.min(severity, math.max(item.severity))
+                            severity = math.min(severity, math.max(item.severity))
                         end
                     end
                     return vim.tbl_filter(function(item)
@@ -130,7 +131,7 @@ return {
                     local secondary_locations = {}
 
                     for _, item in ipairs(items) do
-                        if item.dirname:match 'site%-packages' then
+                        if item.dirname:match('site%-packages') then
                             -- filter out virtualenv
                             table.insert(secondary_locations, item)
                             goto continue
@@ -139,8 +140,7 @@ return {
                         local current_location = item.filename .. item.pos[1]
                         if
                             not locations[current_location]
-                            or locations[current_location].pos[2]
-                                > item.pos[2]
+                            or locations[current_location].pos[2] > item.pos[2]
                         then
                             locations[current_location] = item
                         end
@@ -148,8 +148,7 @@ return {
                     end
 
                     local primary_locations = vim.tbl_values(locations)
-                    return vim.tbl_isempty(primary_locations)
-                            and secondary_locations
+                    return vim.tbl_isempty(primary_locations) and secondary_locations
                         or primary_locations
                 end,
             },

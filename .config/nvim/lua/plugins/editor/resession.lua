@@ -28,7 +28,7 @@ return {
         if package.loaded['scope'] then
             extensions.scope = {}
         end
-        require('resession').setup {
+        require('resession').setup({
             ---@param bufnr integer
             ---@return boolean
             buf_filter = function(bufnr)
@@ -42,6 +42,6 @@ return {
                 return true
             end,
             extensions = extensions,
-        }
+        })
     end,
 }

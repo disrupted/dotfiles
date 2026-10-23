@@ -12,7 +12,7 @@ return {
             include_configs = false,
             console = 'internalConsole',
         }
-        local py = require 'dap-python'
+        local py = require('dap-python')
         local function debugpy_python()
             local roots = {
                 vim.env.MISE_DATA_DIR,
@@ -38,7 +38,7 @@ return {
 
         py.setup(debugpy_python(), opts)
         py.test_runner = 'pytest'
-        local dap = require 'dap'
+        local dap = require('dap')
         local configs = dap.configurations.python or {}
         dap.configurations.python = configs
         table.insert(configs, {
@@ -55,7 +55,7 @@ return {
             name = 'Launch file with arguments',
             program = '${file}',
             args = function()
-                local args_string = vim.fn.input 'Arguments: '
+                local args_string = vim.fn.input('Arguments: ')
                 return vim.split(args_string, ' +')
             end,
             console = opts.console,
@@ -91,11 +91,11 @@ return {
             name = 'Attach remote',
             mode = 'remote',
             host = function()
-                local host = vim.fn.input 'Host [127.0.0.1]: '
+                local host = vim.fn.input('Host [127.0.0.1]: ')
                 return host ~= '' and host or '127.0.0.1'
             end,
             port = function()
-                return tonumber(vim.fn.input 'Port [5678]: ') or 5678
+                return tonumber(vim.fn.input('Port [5678]: ')) or 5678
             end,
             pathMappings = {
                 {
@@ -107,11 +107,7 @@ return {
                         )
                     end,
                     remoteRoot = function()
-                        return vim.fn.input(
-                            'Container code folder > ',
-                            '/',
-                            'file'
-                        )
+                        return vim.fn.input('Container code folder > ', '/', 'file')
                     end,
                 },
             },

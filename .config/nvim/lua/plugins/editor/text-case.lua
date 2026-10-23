@@ -5,10 +5,10 @@ return {
     module = 'textcase',
     cmd = 'Subs',
     init = function()
-        require('which-key').add {
+        require('which-key').add({
             { 'zc', mode = { 'n', 'v' }, group = 'Coerce', icon = '󰬴' },
             { 'zx', group = 'Coerce (operator)', icon = '󰬴' },
-        }
+        })
 
         local ignored_nodes = { 'string', 'comment' }
         local function is_inside_ignored_node()
@@ -24,10 +24,10 @@ return {
 
         local function textcase_map(char, operation, desc)
             vim.keymap.set('n', 'zc' .. char, function()
-                local clients_supporting_rename = vim.lsp.get_clients {
+                local clients_supporting_rename = vim.lsp.get_clients({
                     bufnr = 0,
                     method = 'textDocument/rename',
-                }
+                })
                 if
                     vim.tbl_isempty(clients_supporting_rename)
                     or is_inside_ignored_node()

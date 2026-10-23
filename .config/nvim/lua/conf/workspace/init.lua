@@ -10,7 +10,7 @@ local default_workspace_markers = {
     bun = { 'bun.lock' },
     xcode = {
         function(name)
-            return name:match '%.xcodeproj$' ~= nil
+            return name:match('%.xcodeproj$') ~= nil
         end,
     },
     nvim = { '.emmyrc.json' },
@@ -33,7 +33,7 @@ local default_project_markers = {
     javascript = { 'package.json' },
     swift = {
         function(name)
-            return name:match '%.xcodeproj$' ~= nil
+            return name:match('%.xcodeproj$') ~= nil
         end,
     },
 }
@@ -120,7 +120,7 @@ M.get_root = function(cwd)
     if vim.g.git_repo then
         return vim.fs.dirname(vim.g.git_repo)
     end
-    local config = vim.fn.stdpath 'config'
+    local config = vim.fn.stdpath('config')
     local rel_to_config = vim.fs.relpath(config, cwd)
     if rel_to_config then
         return config
@@ -133,8 +133,7 @@ end
 ---@return integer? handle tabpage handle, or nil if not found
 local function find_tab(name)
     for _, handle in ipairs(vim.api.nvim_list_tabpages()) do
-        local ok, tabname =
-            pcall(vim.api.nvim_tabpage_get_var, handle, 'tabname')
+        local ok, tabname = pcall(vim.api.nvim_tabpage_get_var, handle, 'tabname')
         if ok and tabname == name then
             return handle
         end
@@ -179,32 +178,32 @@ end
 local function is_test_file(filepath)
     local normalized_path = filepath:gsub('\\', '/')
     local filename = vim.fs.basename(normalized_path)
-    local name_no_ext = filename:match '^(.+)%.[^%.]+$' or filename
+    local name_no_ext = filename:match('^(.+)%.[^%.]+$') or filename
     local lower_name = name_no_ext:lower()
 
     -- test_foo.py, tests-foo.py, test.foo.py
-    if lower_name:match '^test[_%-%.]' or lower_name:match '^tests[_%-%.]' then
+    if lower_name:match('^test[_%-%.]') or lower_name:match('^tests[_%-%.]') then
         return true
     end
 
     -- foo_test.py, foo.spec.lua, foo-tests.go
     if
-        lower_name:match '[_%-%.]test$'
-        or lower_name:match '[_%-%.]tests$'
-        or lower_name:match '[_%-%.]spec$'
-        or lower_name:match '[_%-%.]specs$'
+        lower_name:match('[_%-%.]test$')
+        or lower_name:match('[_%-%.]tests$')
+        or lower_name:match('[_%-%.]spec$')
+        or lower_name:match('[_%-%.]specs$')
     then
         return true
     end
 
     -- Java/Kotlin style class names: TestAdapter, AdapterTest
-    if name_no_ext:match '^Test[%u%d]' or name_no_ext:match 'Test$' then
+    if name_no_ext:match('^Test[%u%d]') or name_no_ext:match('Test$') then
         return true
     end
 
     -- directory segment is exactly /test/ or /tests/
     local lower_path = normalized_path:lower()
-    for segment in lower_path:gmatch '[^/]+' do
+    for segment in lower_path:gmatch('[^/]+') do
         if segment == 'test' or segment == 'tests' then
             return true
         end
@@ -239,7 +238,7 @@ local function is_real_file(bufnr)
     end
     -- URI-style buffers are not files; routing them as 'code'/'tests' would
     -- drag them into the wrong tab.
-    if name:match '^%a[%w+.-]*://' then
+    if name:match('^%a[%w+.-]*://') then
         return false
     end
     return true
@@ -279,9 +278,9 @@ local function move_buf_to_tab(bufnr, dest_name)
     local source_name = get_tab_name(source_tab) or '?'
     moving = true
     vim.schedule(function()
-        require 'scope'
-        local scope_core = require 'scope.core'
-        local scope_utils = require 'scope.utils'
+        require('scope')
+        local scope_core = require('scope.core')
+        local scope_utils = require('scope.utils')
 
         -- If the user has switched away from the source tab, do a
         -- lightweight move: update scope caches without switching focus.
@@ -353,7 +352,7 @@ local function move_buf_to_tab(bufnr, dest_name)
 
             -- Navigate away from the buffer in the source tab
             if source_buf then
-                vim.cmd [[exe "normal! \<C-o>"]]
+                vim.cmd([[exe "normal! \<C-o>"]])
             elseif #scope_utils.get_valid_buffers() == 0 then
                 vim.cmd.enew()
                 vim.bo.buflisted = true
@@ -417,7 +416,7 @@ end
 M.setup = function()
     local cwd = vim.uv.cwd()
     if not cwd then
-        Snacks.notify.error 'Invalid CWD'
+        Snacks.notify.error('Invalid CWD')
         return
     end
     require('git').setup(cwd)
@@ -438,7 +437,7 @@ M.setup = function()
     }, { title = 'Workspace', level = vim.log.levels.DEBUG })
 
     local argv = vim.fn.argv(0)
-    if type(argv) == 'string' and argv:match '.git/COMMIT_EDITMSG' ~= nil then
+    if type(argv) == 'string' and argv:match('.git/COMMIT_EDITMSG') ~= nil then
         return
     end
 
@@ -468,10 +467,7 @@ M.setup = function()
                 return
             end
 
-            if
-                args.file ~= ''
-                and vim.fs.relpath(vim.g.workspace_root, args.file)
-            then
+            if args.file ~= '' and vim.fs.relpath(vim.g.workspace_root, args.file) then
                 Snacks.notify(
                     { 'add managed buffer', vim.inspect(args) },
                     { title = 'Workspace', level = vim.log.levels.DEBUG }
@@ -493,18 +489,14 @@ M.setup = function()
             -- Check all listed buffers, not just the active one — scope
             -- may have restored several wrong-tab buffers on TabEnter.
             vim.schedule(function()
-                local scope_core = require 'scope.core'
-                local scope_utils = require 'scope.utils'
+                local scope_core = require('scope.core')
+                local scope_utils = require('scope.utils')
                 local listed = scope_utils.get_valid_buffers()
                 local switched = false
                 for _, b in ipairs(listed) do
                     local assigned = buf_tab_assignment[b]
                     if assigned and assigned ~= current_name then
-                        vim.api.nvim_set_option_value(
-                            'buflisted',
-                            false,
-                            { buf = b }
-                        )
+                        vim.api.nvim_set_option_value('buflisted', false, { buf = b })
                         switched = true
                     end
                 end
@@ -526,8 +518,7 @@ M.setup = function()
                     end
                 end
                 if switched then
-                    scope_core.cache[current_tab] =
-                        scope_utils.get_valid_buffers()
+                    scope_core.cache[current_tab] = scope_utils.get_valid_buffers()
                 end
             end)
         end,
@@ -626,8 +617,7 @@ M.setup = function()
     vim.keymap.set('n', '<C-o>', function()
         if cross_tab_pos > 0 then
             local entry = cross_tab_jumps[cross_tab_pos]
-            local current_name =
-                get_tab_name(vim.api.nvim_get_current_tabpage())
+            local current_name = get_tab_name(vim.api.nvim_get_current_tabpage())
             if
                 current_name == entry.dest_tab
                 and vim.api.nvim_get_current_buf() == entry.dest_buf
@@ -638,8 +628,7 @@ M.setup = function()
                     vim.api.nvim_set_current_tabpage(target)
                     if
                         vim.api.nvim_buf_is_valid(entry.source_buf)
-                        and vim.api.nvim_get_current_buf()
-                            ~= entry.source_buf
+                        and vim.api.nvim_get_current_buf() ~= entry.source_buf
                     then
                         vim.cmd('keepjumps buffer ' .. entry.source_buf)
                     end
@@ -654,8 +643,7 @@ M.setup = function()
     vim.keymap.set('n', '<C-i>', function()
         if cross_tab_pos < #cross_tab_jumps then
             local entry = cross_tab_jumps[cross_tab_pos + 1]
-            local current_name =
-                get_tab_name(vim.api.nvim_get_current_tabpage())
+            local current_name = get_tab_name(vim.api.nvim_get_current_tabpage())
             if
                 current_name == entry.source_tab
                 and vim.api.nvim_get_current_buf() == entry.source_buf

@@ -47,7 +47,7 @@ local function trim_trailing_space_from_label(label)
 end
 
 local function is_parameter_name_hint(hint)
-    return inlay_hint_label_text(hint.label):match '=%s$' ~= nil
+    return inlay_hint_label_text(hint.label):match('=%s$') ~= nil
 end
 
 ---@type vim.lsp.Config

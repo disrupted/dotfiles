@@ -49,7 +49,7 @@ local function in_scope(file, scope_dir, root)
             return true
         end
         local rel_prefix = rel_scope
-        if not rel_prefix:match '/$' then
+        if not rel_prefix:match('/$') then
             rel_prefix = rel_prefix .. '/'
         end
         if vim.startswith(rel_file, rel_prefix) then
@@ -58,7 +58,7 @@ local function in_scope(file, scope_dir, root)
     end
 
     local prefix = scope_dir
-    if not prefix:match '/$' then
+    if not prefix:match('/$') then
         prefix = prefix .. '/'
     end
     return vim.startswith(file, prefix)
@@ -169,20 +169,19 @@ local function workspace_symbols_finder(
                 return
             end
             selected_client = active_client
-            local lsp_source = require 'snacks.picker.source.lsp'
+            local lsp_source = require('snacks.picker.source.lsp')
 
             local query = ctx.filter.search or ''
 
             lsp_source.request(active_client, 'workspace/symbol', function()
                 return { query = query }
             end, function(request_client, result)
-                local items =
-                    lsp_source.results_to_items(request_client, result, {
-                        text_with_file = true,
-                        filter = function(item)
-                            return want(lsp_source.symbol_kind(item.kind))
-                        end,
-                    })
+                local items = lsp_source.results_to_items(request_client, result, {
+                    text_with_file = true,
+                    filter = function(item)
+                        return want(lsp_source.symbol_kind(item.kind))
+                    end,
+                })
 
                 local effective_scope = scope_dir or root
                 items = vim.tbl_filter(function(item)
@@ -222,15 +221,10 @@ function M.pick(opts)
 
     local title = picker_title(client, root, scope_dir)
 
-    local picker = Snacks.picker.lsp_workspace_symbols {
+    local picker = Snacks.picker.lsp_workspace_symbols({
         title = title,
         cwd = root,
-        finder = workspace_symbols_finder(
-            root,
-            project_filetype,
-            client,
-            scope_dir
-        ),
+        finder = workspace_symbols_finder(root, project_filetype, client, scope_dir),
         search = opts.search,
         matcher = {
             fuzzy = true,
@@ -240,7 +234,7 @@ function M.pick(opts)
         actions = {
             pick_scope_dir = function(self, _)
                 local current_search = self.input:get()
-                Snacks.picker.dirs {
+                Snacks.picker.dirs({
                     title = 'Pick Symbol Scope Directory',
                     cwd = root,
                     confirm = function(dir_picker, item)
@@ -255,12 +249,12 @@ function M.pick(opts)
                         end
                         dir_picker:close()
                         self:close()
-                        M.pick {
+                        M.pick({
                             search = current_search,
                             scope_dir = dir,
-                        }
+                        })
                     end,
-                }
+                })
             end,
             clear_scope_dir = function(self, _)
                 if not scope_dir then
@@ -268,9 +262,9 @@ function M.pick(opts)
                 end
                 local current_search = self.input:get()
                 self:close()
-                M.pick {
+                M.pick({
                     search = current_search,
-                }
+                })
             end,
         },
         win = {
@@ -293,7 +287,7 @@ function M.pick(opts)
             preset = 'dropdown',
             layout = { width = 0.5 },
         },
-    }
+    })
 
     if not picker then
         return nil
@@ -301,10 +295,9 @@ function M.pick(opts)
 
     if not client then
         vim.defer_fn(function()
-            local current_client =
-                workspace_symbol_client(root, project_filetype)
+            local current_client = workspace_symbol_client(root, project_filetype)
             if not current_client then
-                Snacks.notify.warn 'No client supporting workspace symbols'
+                Snacks.notify.warn('No client supporting workspace symbols')
                 picker:close()
                 return
             end

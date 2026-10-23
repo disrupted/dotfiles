@@ -10,8 +10,7 @@ function M.format_lsp_symbol(item, picker)
     local kind = item.lsp_kind or item.kind or 'Unknown'
     kind = picker.opts.icons.kinds[kind] and kind or 'Unknown'
 
-    ret[#ret + 1] =
-        { picker.opts.icons.kinds[kind], 'SnacksPickerIcon' .. kind }
+    ret[#ret + 1] = { picker.opts.icons.kinds[kind], 'SnacksPickerIcon' .. kind }
     ret[#ret + 1] = { ' ' }
 
     local name = vim.trim((item.name or ''):gsub('\r?\n', ' '))
@@ -37,27 +36,19 @@ local function type_hierarchy(method, ctx)
     ---@async
     ---@param cb async fun(item: snacks.picker.finder.Item)
     return function(cb)
-        local lsp_source = require 'snacks.picker.source.lsp'
+        local lsp_source = require('snacks.picker.source.lsp')
         local prepared = {}
 
-        lsp_source.request(
-            buf,
-            'textDocument/prepareTypeHierarchy',
-            function(client)
-                return vim.lsp.util.make_position_params(
-                    win,
-                    client.offset_encoding
-                )
-            end,
-            function(client, result)
-                for _, base_item in ipairs(result or {}) do
-                    prepared[#prepared + 1] = {
-                        client = client,
-                        base_item = base_item,
-                    }
-                end
+        lsp_source.request(buf, 'textDocument/prepareTypeHierarchy', function(client)
+            return vim.lsp.util.make_position_params(win, client.offset_encoding)
+        end, function(client, result)
+            for _, base_item in ipairs(result or {}) do
+                prepared[#prepared + 1] = {
+                    client = client,
+                    base_item = base_item,
+                }
             end
-        )
+        end)
 
         for _, req in ipairs(prepared) do
             lsp_source.request(req.client, method, function()

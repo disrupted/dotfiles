@@ -11,12 +11,10 @@ return {
     config = function()
         local opts = {
             ignore = '^$', -- ignore empty lines
-            pre_hook = require(
-                'ts_context_commentstring.integrations.comment_nvim'
-            ).create_pre_hook(),
+            pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
         }
         require('Comment').setup(opts)
-        local ft = require 'Comment.ft'
+        local ft = require('Comment.ft')
         ft.helm = { '{{/* %s */}}', '{{/* %s */}}' }
     end,
 }

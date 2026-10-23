@@ -5,7 +5,7 @@ return {
     module = 'quicker',
     ft = 'qf',
     init = function()
-        require('which-key').add {
+        require('which-key').add({
             {
                 '<Leader>q',
                 function()
@@ -14,7 +14,7 @@ return {
                 desc = 'Toggle QuickFix list',
                 icon = require('conf.icons').misc.quickfix,
             },
-        }
+        })
     end,
     ---@module 'quicker'
     ---@type quicker.SetupOptions

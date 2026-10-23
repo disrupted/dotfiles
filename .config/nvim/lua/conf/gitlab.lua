@@ -1,8 +1,8 @@
 local M = {}
 
-local n = require 'nui-components'
+local n = require('nui-components')
 
-local renderer = n.create_renderer {
+local renderer = n.create_renderer({
     width = 60,
     height = 13,
     keymap = {
@@ -10,11 +10,10 @@ local renderer = n.create_renderer {
         focus_next = '<C-n>',
         focus_prev = '<C-p>',
     },
-}
+})
 
 renderer:on_mount(function()
-    local augroup =
-        vim.api.nvim_create_augroup('GitlabMrForm', { clear = true })
+    local augroup = vim.api.nvim_create_augroup('GitlabMrForm', { clear = true })
     vim.api.nvim_create_autocmd('WinLeave', {
         group = augroup,
         callback = function()
@@ -23,13 +22,8 @@ renderer:on_mount(function()
                     local wins = vim.tbl_map(function(c)
                         return c.winid
                     end, renderer:get_focusable_components())
-                    if
-                        not vim.tbl_contains(
-                            wins,
-                            vim.api.nvim_get_current_win()
-                        )
-                    then
-                        vim.api.nvim_del_augroup_by_name 'GitlabMrForm'
+                    if not vim.tbl_contains(wins, vim.api.nvim_get_current_win()) then
+                        vim.api.nvim_del_augroup_by_name('GitlabMrForm')
                         renderer:close()
                     end
                 end
@@ -38,9 +32,9 @@ renderer:on_mount(function()
     })
 end)
 
-local signal = n.create_signal {
+local signal = n.create_signal({
     is_loading = false,
-}
+})
 
 ---@class gitlab.mr.create.form.Opts
 ---@field title? string
@@ -54,10 +48,7 @@ local create_mr_form = function(opts)
             on_submit = function(is_valid)
                 local task = vim.async.run(function()
                     if not is_valid then
-                        Snacks.notify.error(
-                            'Title is required',
-                            { title = 'GitLab' }
-                        )
+                        Snacks.notify.error('Title is required', { title = 'GitLab' })
                         return
                     end
                     signal.is_loading = true
@@ -69,16 +60,13 @@ local create_mr_form = function(opts)
                         renderer:get_component_by_id('body'):get_current_value()
                     )
 
-                    local out = M.mr.create {
+                    local out = M.mr.create({
                         title = title,
                         body = body,
-                    }
+                    })
                     if out then
                         renderer:close()
-                        Snacks.notify(
-                            { 'MR created', out },
-                            { title = 'GitLab' }
-                        )
+                        Snacks.notify({ 'MR created', out }, { title = 'GitLab' })
                         vim.async.sleep(500)
                         require('glab').mr.refresh()
                         M.mr.open()
@@ -87,7 +75,7 @@ local create_mr_form = function(opts)
                 task:raise_on_error()
             end,
         },
-        n.text_input {
+        n.text_input({
             id = 'title',
             border_label = ' Title ',
             filetype = 'gitcommit',
@@ -96,8 +84,8 @@ local create_mr_form = function(opts)
             size = 1,
             max_lines = 1,
             validate = n.validator.min_length(3),
-        },
-        n.text_input {
+        }),
+        n.text_input({
             id = 'body',
             border_label = ' Body ',
             filetype = 'markdown',
@@ -109,43 +97,43 @@ local create_mr_form = function(opts)
                         vim.api.nvim_win_text_height(component.winid, {}).all
                     local new_size = math.max(7, visual_lines)
                     component._private.text_input_signal.size = new_size
-                    renderer:set_size { height = 6 + new_size }
+                    renderer:set_size({ height = 6 + new_size })
                 end)
             end,
-        },
+        }),
         n.columns(
-            n.button {
+            n.button({
                 label = 'Create MR',
                 on_press = function()
                     ---@diagnostic disable-next-line: undefined-field
                     if signal.is_loading:get_value() then
                         return -- prevent duplicate submit
                     end
-                    local form = renderer:get_component_by_id 'form'
+                    local form = renderer:get_component_by_id('form')
                     assert(form)
                     form:submit()
                 end,
                 ---@diagnostic disable-next-line: undefined-field
                 is_active = signal.is_loading:get_value(),
-            },
-            n.spinner {
+            }),
+            n.spinner({
                 is_loading = signal.is_loading,
                 padding = { left = 1 },
                 ---@diagnostic disable-next-line: undefined-field
                 hidden = signal.is_loading:negate(),
-            },
-            n.gap { flex = 1 },
-            n.paragraph {
+            }),
+            n.gap({ flex = 1 }),
+            n.paragraph({
                 lines = '<S-CR> Submit',
                 align = 'right',
                 is_focusable = false,
-            },
+            }),
             n.gap(1),
-            n.paragraph {
+            n.paragraph({
                 lines = '<Esc> Cancel',
                 align = 'right',
                 is_focusable = false,
-            }
+            })
         )
     )
 end
@@ -161,7 +149,7 @@ M.mr.open = function(opts)
         browser = true,
     })
     if opts.browser then
-        vim.system { 'glab', 'mr', 'view', '--web' }
+        vim.system({ 'glab', 'mr', 'view', '--web' })
     end
 end
 
@@ -171,7 +159,7 @@ M.mr.form_create = function()
     local title = require('git').async.last_commit_title()
 
     renderer:render(function()
-        return create_mr_form { title = title }
+        return create_mr_form({ title = title })
     end)
 end
 
@@ -184,7 +172,7 @@ M.mr.create = function(opts)
         assignee = vim.env.GITLAB_USERNAME,
         draft = false,
     })
-    local git = require 'git'
+    local git = require('git')
 
     if not opts.target then
         -- if upstream tracking branch was changed we want to
@@ -204,8 +192,8 @@ M.mr.create = function(opts)
     if
         stderr
         and stderr ~= ''
-        and not stderr:match '^Creating merge request '
-        and not stderr:match '^Creating draft merge request '
+        and not stderr:match('^Creating merge request ')
+        and not stderr:match('^Creating draft merge request ')
     then
         Snacks.notify.error(stderr, { title = 'GitLab' })
         return

@@ -1,4 +1,4 @@
-local icons = require 'conf.icons'
+local icons = require('conf.icons')
 
 local server_spawn_attempted = false
 
@@ -18,7 +18,7 @@ return {
         },
     },
     init = function()
-        require('which-key').add {
+        require('which-key').add({
             {
                 '<leader>a',
                 group = 'Agent',
@@ -39,7 +39,7 @@ return {
                 mode = { 'n', 'x' },
                 icon = { icon = '', hl = 'DiagnosticWarn' },
             },
-        }
+        })
     end,
     dependencies = { 'disrupted/snacks.nvim' },
     config = function()
@@ -49,7 +49,7 @@ return {
             -- backend = vim.env.ANTHROPIC_API_KEY and 'opencode' or 'pi',
             backend = 'pi',
             pi = {
-                executable = vim.fs.normalize '~/.config/pi/safehouse_pi.sh',
+                executable = vim.fs.normalize('~/.config/pi/safehouse_pi.sh'),
             },
             server = {
                 url = '127.0.0.1',
@@ -65,12 +65,14 @@ return {
                 spawn_command = function(port, url, env)
                     -- Spawn at most once per session
                     if server_spawn_attempted then
-                        error 'opencode server spawn already attempted this session; not retrying'
+                        error(
+                            'opencode server spawn already attempted this session; not retrying'
+                        )
                     end
                     server_spawn_attempted = true
 
                     local job = vim.fn.jobstart({
-                        vim.fs.normalize '~/.config/opencode/safehouse_opencode.sh',
+                        vim.fs.normalize('~/.config/opencode/safehouse_opencode.sh'),
                         'serve',
                         '--port',
                         tostring(port),
@@ -78,8 +80,8 @@ return {
                         env = env,
                     })
                     if job <= 0 then
-                        Snacks.notify.error 'opencode server failed to start'
-                        error 'failed to start opencode server'
+                        Snacks.notify.error('opencode server failed to start')
+                        error('failed to start opencode server')
                     end
                     return vim.fn.jobpid(job)
                 end,
@@ -91,11 +93,11 @@ return {
                 input_window = {
                     ['<C-a>'] = {
                         function()
-                            local enabled =
-                                require('opencode.context').toggle_context 'current_file'
+                            local enabled = require('opencode.context').toggle_context(
+                                'current_file'
+                            )
                             Snacks.notify(
-                                'current file context: '
-                                    .. (enabled and 'on' or 'off'),
+                                'current file context: ' .. (enabled and 'on' or 'off'),
                                 {
                                     id = 'agent-context-current-file',
                                     title = 'Agent',
@@ -328,13 +330,13 @@ return {
         require('opencode').setup(opts)
 
         -- HACK: monkeypatch for compatibility with edgy.nvim
-        local input_window = require 'opencode.ui.input_window'
+        local input_window = require('opencode.ui.input_window')
         input_window.schedule_resize = function() end
 
         local function add_quickfix_to_context()
-            local context = require 'opencode.context'
+            local context = require('opencode.context')
 
-            if not context.is_context_enabled 'selection' then
+            if not context.is_context_enabled('selection') then
                 Snacks.notify.warn(
                     'Selection context is disabled (context.selection)',
                     { title = 'Agent', icon = '' }
@@ -362,8 +364,7 @@ return {
 
             local added, skipped = 0, 0
             for _, item in ipairs(items) do
-                local path = item.bufnr > 0
-                        and vim.api.nvim_buf_get_name(item.bufnr)
+                local path = item.bufnr > 0 and vim.api.nvim_buf_get_name(item.bufnr)
                     or item.filename
                 local last = (item.end_lnum or 0) > item.lnum and item.end_lnum
                     or item.lnum
@@ -373,10 +374,7 @@ return {
                 local lines
                 if item.lnum < 1 or not path or path == '' then
                     lines = nil
-                elseif
-                    item.bufnr > 0
-                    and vim.api.nvim_buf_is_loaded(item.bufnr)
-                then
+                elseif item.bufnr > 0 and vim.api.nvim_buf_is_loaded(item.bufnr) then
                     lines = vim.api.nvim_buf_get_lines(
                         item.bufnr,
                         item.lnum - 1,
@@ -384,17 +382,13 @@ return {
                         false
                     )
                 elseif vim.fn.filereadable(path) == 1 then
-                    lines = vim.list_slice(
-                        vim.fn.readfile(path, '', last),
-                        item.lnum,
-                        last
-                    )
+                    lines =
+                        vim.list_slice(vim.fn.readfile(path, '', last), item.lnum, last)
                 end
-                lines = lines
-                    or vim.split(item.text or '', '\n', { plain = true })
+                lines = lines or vim.split(item.text or '', '\n', { plain = true })
 
                 local content = table.concat(lines, '\n')
-                if not content:match '%S' or seen[key] then
+                if not content:match('%S') or seen[key] then
                     skipped = skipped + 1
                 else
                     seen[key] = true
@@ -415,11 +409,11 @@ return {
                 return
             end
 
-            require('opencode.services.session_runtime').open {
+            require('opencode.services.session_runtime').open({
                 new_session = false,
                 focus = 'input',
                 start_insert = true,
-            }
+            })
 
             Snacks.notify(
                 string.format(
@@ -431,7 +425,7 @@ return {
             )
         end
 
-        require('which-key').add {
+        require('which-key').add({
             {
                 '<C-a>',
                 function()
@@ -456,12 +450,12 @@ return {
                 desc = 'Add quickfix list to context',
                 icon = { icon = icons.misc.quickfix, hl = 'DiagnosticInfo' },
             },
-        }
+        })
 
         vim.api.nvim_create_autocmd('FileType', {
             pattern = { 'qf' },
             callback = function(args)
-                require('which-key').add {
+                require('which-key').add({
                     buffer = args.buf,
                     remap = true,
                     {
@@ -473,7 +467,7 @@ return {
                             hl = 'DiagnosticInfo',
                         },
                     },
-                }
+                })
             end,
         })
 
@@ -483,7 +477,7 @@ return {
                 'OpencodeEvent:question.asked',
             },
             callback = function(args)
-                io.stdout:write '\a'
+                io.stdout:write('\a')
                 io.stdout:flush()
             end,
             desc = 'Ring terminal bell when agent needs attention',
@@ -492,7 +486,7 @@ return {
         vim.api.nvim_create_autocmd('User', {
             pattern = 'OpencodeEvent:permission.asked',
             callback = function(args)
-                require('which-key').add {
+                require('which-key').add({
                     {
                         '<leader>aa',
                         '<cmd>Opencode permission accept<CR>',
@@ -511,28 +505,24 @@ return {
                         desc = 'Deny',
                         icon = { icon = '', hl = 'DiagnosticError' },
                     },
-                }
+                })
             end,
         })
 
         vim.api.nvim_create_autocmd('User', {
             pattern = 'OpencodeEvent:permission.replied',
             callback = function(args)
-                if
-                    vim.tbl_isempty(
-                        require('opencode.state').pending_permissions
-                    )
-                then
+                if vim.tbl_isempty(require('opencode.state').pending_permissions) then
                     local keymaps = { '<leader>aa', '<leader>aA', '<leader>ad' }
                     for _, keymap in ipairs(keymaps) do
                         vim.keymap.del('n', keymap)
                     end
-                    require('which-key').add {
+                    require('which-key').add({
                         { '<leader>aa' },
                         { '<leader>aA' },
                         { '<leader>ad' },
                         hidden = true,
-                    }
+                    })
                 end
             end,
         })
@@ -591,11 +581,8 @@ return {
                         'tabname'
                     )
                     if ok then
-                        local workspace = require 'conf.workspace'
-                        if
-                            workspace.get_tab_for_file(abspath)
-                            ~= current_tab_name
-                        then
+                        local workspace = require('conf.workspace')
+                        if workspace.get_tab_for_file(abspath) ~= current_tab_name then
                             return
                         end
                     end
@@ -617,7 +604,7 @@ return {
         vim.api.nvim_create_autocmd('FileType', {
             pattern = { 'opencode' },
             callback = function(args)
-                require('which-key').add {
+                require('which-key').add({
                     buffer = args.buf,
                     {
                         '<LocalLeader>',
@@ -639,7 +626,7 @@ return {
                         desc = 'Select session',
                         icon = '󱅳',
                     },
-                }
+                })
 
                 -- TODO: auto resize input window with edgy
                 --[[ local function get_content_height(windows)
@@ -690,7 +677,7 @@ return {
         vim.api.nvim_create_autocmd('FileType', {
             pattern = { 'opencode_output' },
             callback = function(args)
-                require('which-key').add {
+                require('which-key').add({
                     buffer = args.buf,
                     {
                         '<LocalLeader>',
@@ -722,7 +709,7 @@ return {
                         desc = 'Timeline',
                         icon = '󱇼',
                     },
-                }
+                })
             end,
         })
     end,

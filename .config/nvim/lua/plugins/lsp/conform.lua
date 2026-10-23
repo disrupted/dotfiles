@@ -12,9 +12,7 @@ return {
                 timeout_ms = 5000, -- HACK: high because dprint needs to download WASM plugins on first run
             }
             local check_dprint = function(bufnr)
-                if
-                    require('conform').get_formatter_info('dprint', bufnr).cwd
-                then
+                if require('conform').get_formatter_info('dprint', bufnr).cwd then
                     Snacks.notify('dprint', {
                         level = vim.log.levels.DEBUG,
                         title = 'Format',
@@ -55,20 +53,16 @@ return {
                         local start = math.max(1, hunk.added.start) -- on untracked files, start is 0
                         local last = start + hunk.added.count
                         -- nvim_buf_get_lines uses zero-based indexing -> subtract from last
-                        local last_hunk_line = vim.api.nvim_buf_get_lines(
-                            0,
-                            last - 2,
-                            last - 1,
-                            true
-                        )[1]
+                        local last_hunk_line =
+                            vim.api.nvim_buf_get_lines(0, last - 2, last - 1, true)[1]
                         local range = {
                             start = { start, 0 },
                             ['end'] = { last - 1, last_hunk_line:len() },
                         }
-                        require('conform').format {
+                        require('conform').format({
                             async = false,
                             range = range,
-                        }
+                        })
                     end
                 end
             end
@@ -109,10 +103,7 @@ return {
                 },
                 format_on_save = function(bufnr)
                     -- Disable with a global or buffer-local variable
-                    if
-                        vim.g.disable_autoformat
-                        or vim.b[bufnr].disable_autoformat
-                    then
+                    if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
                         return
                     end
                     local hunks = require('gitsigns').get_hunks(bufnr)
@@ -126,7 +117,7 @@ return {
             }
         end)()
 
-        local conform = require 'conform'
+        local conform = require('conform')
         conform.setup(opts)
 
         conform.formatters.dprint = {

@@ -45,18 +45,18 @@ return {
                 },
             },
         }
-        local wk = require 'which-key'
+        local wk = require('which-key')
         wk.setup(opts)
 
-        wk.add {
+        wk.add({
             {
                 '<Leader>?',
                 function()
-                    wk.show { global = false }
+                    wk.show({ global = false })
                 end,
                 desc = 'Buffer keymaps',
                 icon = '󰘳',
             },
-        }
+        })
     end,
 }

@@ -9,7 +9,9 @@ return {
             result.diagnostics = vim.tbl_filter(function(diagnostic)
                 if
                     -- mkdocs
-                    diagnostic.message:match 'Unresolved tag: tag:yaml%.org,2002:python/'
+                    diagnostic.message:match(
+                        'Unresolved tag: tag:yaml%.org,2002:python/'
+                    )
                 then
                     return false
                 end

@@ -11,11 +11,8 @@ return {
                     return
                 end
                 local client = vim.lsp.get_client_by_id(args.data.client_id)
-                if
-                    client
-                    and client:supports_method 'textDocument/inlayHint'
-                then
-                    require('which-key').add {
+                if client and client:supports_method('textDocument/inlayHint') then
+                    require('which-key').add({
                         {
                             '<Leader>I',
                             function()
@@ -26,7 +23,7 @@ return {
                             desc = 'Insert inlay hint under cursor',
                             icon = '',
                         },
-                    }
+                    })
                 end
             end,
         })

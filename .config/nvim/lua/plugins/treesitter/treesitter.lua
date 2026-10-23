@@ -81,7 +81,7 @@ return {
                 'zsh',
             },
         }
-        local treesitter = require 'nvim-treesitter'
+        local treesitter = require('nvim-treesitter')
         treesitter.install(opts.ensure_installed)
 
         -- the filetype on the RHS will use the parser and queries on the LHS
@@ -101,10 +101,7 @@ return {
                     -- HACK: try starting it anyways, some external parsers (e.g. ghostty) aren't correctly detected as installed
                     local ok = pcall(vim.treesitter.start, args.buf, lang)
                     if not ok then
-                        if
-                            vim.b[args.buf].ts_available_notified_lang
-                            ~= lang
-                        then
+                        if vim.b[args.buf].ts_available_notified_lang ~= lang then
                             Snacks.notify(
                                 string.format(
                                     'Treesitter parser available for %s',

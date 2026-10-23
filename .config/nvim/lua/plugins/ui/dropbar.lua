@@ -1,4 +1,4 @@
-local icons = require 'conf.icons'
+local icons = require('conf.icons')
 
 ---@type LazeSpec
 return {
@@ -35,14 +35,14 @@ return {
 
                     return vim.bo[buf].ft == 'markdown'
                         or pcall(vim.treesitter.get_parser, buf)
-                        or not vim.tbl_isempty(vim.lsp.get_clients {
+                        or not vim.tbl_isempty(vim.lsp.get_clients({
                             bufnr = buf,
                             method = 'textDocument/documentSymbol',
-                        })
+                        }))
                 end,
                 ---@type dropbar_source_t[]|fun(buf: integer, win: integer): dropbar_source_t[]
                 sources = function(buf, _)
-                    local sources = require 'dropbar.sources'
+                    local sources = require('dropbar.sources')
                     if vim.bo[buf].ft == 'markdown' then
                         return {
                             sources.path,
@@ -55,10 +55,10 @@ return {
                         }
                     end
 
-                    local clients = vim.lsp.get_clients {
+                    local clients = vim.lsp.get_clients({
                         bufnr = buf,
                         method = 'textDocument/documentSymbol',
-                    }
+                    })
                     if not vim.tbl_isempty(clients) then
                         return {
                             sources.path,
@@ -89,13 +89,13 @@ return {
                 path = {
                     ---@type dropbar_source_t[]|fun(sym: dropbar_symbol_t): dropbar_symbol_t
                     modified = function(sym)
-                        return sym:merge {
+                        return sym:merge({
                             name = string.format(
                                 '%s %s ',
                                 sym.name,
                                 icons.documents.file_modified
                             ),
-                        }
+                        })
                     end,
                 },
                 treesitter = {
@@ -249,7 +249,7 @@ return {
             },
         }
         require('dropbar').setup(opts)
-        require('which-key').add {
+        require('which-key').add({
             {
                 '<Leader>;',
                 function()
@@ -258,7 +258,7 @@ return {
                 desc = 'Winbar pick symbol',
                 icon = '󱐀',
             },
-        }
+        })
 
         vim.api.nvim_create_autocmd('LspAttach', {
             desc = 'Register LSP source and disable Treesitter source when an LS that supports documentSymbol attaches.',
@@ -269,12 +269,9 @@ return {
             callback = function(args)
                 local bufnr = args.buf
                 local client = vim.lsp.get_client_by_id(args.data.client_id)
-                if
-                    client
-                    and client:supports_method 'textDocument/documentSymbol'
-                then
-                    local sources = require 'dropbar.sources'
-                    local utils = require 'dropbar.utils'
+                if client and client:supports_method('textDocument/documentSymbol') then
+                    local sources = require('dropbar.sources')
+                    local utils = require('dropbar.utils')
                     for win in pairs(_G.dropbar.bars[bufnr]) do
                         _G.dropbar.bars[bufnr][win].sources = {
                             sources.path,

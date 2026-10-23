@@ -8,8 +8,8 @@ vim.o.messagesopt = table.concat({
     'timeout:4000',
 }, ',')
 
-local ui2 = require 'vim._core.ui2'
-ui2.enable {
+local ui2 = require('vim._core.ui2')
+ui2.enable({
     enable = true,
     msg = {
         targets = {
@@ -44,7 +44,7 @@ ui2.enable {
         msg = { height = 0.5 },
         pager = { height = 0.8 },
     },
-}
+})
 
 local skip_messages = {
     -- Write
@@ -104,17 +104,9 @@ local normalized_content = function(src)
     return table.concat(list)
 end
 
-local messages = require 'vim._core.ui2.messages'
+local messages = require('vim._core.ui2.messages')
 local orig_msg_show = messages.msg_show
-messages.msg_show = function(
-    kind,
-    content,
-    replace_last,
-    history,
-    append,
-    id,
-    trigger
-)
+messages.msg_show = function(kind, content, replace_last, history, append, id, trigger)
     local msg = normalized_content(content)
 
     for _, pat in ipairs(skip_messages) do
