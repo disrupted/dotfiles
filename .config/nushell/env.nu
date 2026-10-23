@@ -147,4 +147,4 @@ $env.FZF_ALT_C_COMMAND = 'fd -t d -d 1'
 $env.FZF_ALT_C_OPTS = '--preview="eza --no-quotes -1 --icons --git --git-ignore {}" --preview-window=right:60%:wrap'
 
 # Carapace completions
-$env.CARAPACE_BRIDGES = "zsh,fish,bash,inshellisense"
+$env.CARAPACE_BRIDGES = "zsh"
