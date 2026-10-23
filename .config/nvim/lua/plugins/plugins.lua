@@ -994,8 +994,11 @@ return {
                                 },
                             },
                             layout = {
-                                preset = 'telescope',
-                                reverse = true,
+                                preset = 'dropdown',
+                                layout = {
+                                    width = 0.8,
+                                    max_width = 200,
+                                },
                             },
                         },
                         lsp_supertypes = {

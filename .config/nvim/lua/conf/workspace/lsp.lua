@@ -52,6 +52,7 @@ local default_clients = {
         end
     end,
     rust = function()
+        require('rustaceanvim')
         require('rustaceanvim.lsp').start()
         config = vim.tbl_extend(
             'keep',
