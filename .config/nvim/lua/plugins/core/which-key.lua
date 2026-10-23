@@ -1,6 +1,7 @@
 ---@type LazeSpec
 return {
-    'folke/which-key.nvim',
+    -- 'folke/which-key.nvim',
+    'disrupted/which-key.nvim',
     main = 'which-key',
     module = 'which-key',
     lazy = false,

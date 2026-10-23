@@ -3,11 +3,9 @@ return {
     'johmsalas/text-case.nvim',
     main = 'textcase',
     module = 'textcase',
-    cmd = 'Subs',
     init = function()
         require('which-key').add({
-            { 'zc', mode = { 'n', 'v' }, group = 'Coerce', icon = '󰬴' },
-            { 'zx', group = 'Coerce (operator)', icon = '󰬴' },
+            { 'cr', mode = { 'n', 'v' }, group = 'Coerce', icon = '󰬴' },
         })
 
         local ignored_nodes = { 'string', 'comment' }
@@ -22,40 +20,64 @@ return {
             return false
         end
 
-        local function textcase_map(char, operation, desc)
-            vim.keymap.set('n', 'zc' .. char, function()
-                local clients_supporting_rename = vim.lsp.get_clients({
-                    bufnr = 0,
-                    method = 'textDocument/rename',
-                })
-                if
-                    vim.tbl_isempty(clients_supporting_rename)
-                    or is_inside_ignored_node()
-                then
-                    require('textcase').current_word(operation)
-                else
-                    require('textcase').lsp_rename(operation)
-                end
-            end, { desc = 'to ' .. desc })
-            vim.keymap.set('n', 'zx' .. char, function()
-                require('textcase').operator(operation)
-            end, { desc = 'to ' .. desc })
-            vim.keymap.set('v', 'zc' .. char, function()
-                require('textcase').visual(operation)
-            end, { desc = 'to ' .. desc })
+        local function coerce_current(operation)
+            local clients_supporting_rename = vim.lsp.get_clients({
+                bufnr = 0,
+                method = 'textDocument/rename',
+            })
+            if
+                vim.tbl_isempty(clients_supporting_rename)
+                or is_inside_ignored_node()
+            then
+                ---@diagnostic disable-next-line: need-check-nil
+                require('textcase').current_word(operation)
+            else
+                ---@diagnostic disable-next-line: need-check-nil
+                require('textcase').lsp_rename(operation)
+            end
         end
 
-        textcase_map('s', 'to_snake_case', 'snake_case')
-        textcase_map('d', 'to_dash_case', 'dash-case')
-        textcase_map('c', 'to_camel_case', 'camelCase')
-        textcase_map('p', 'to_pascal_case', 'PascalCase')
-        textcase_map('v', 'to_constant_case', 'CONSTANT_CASE') -- environment variable
-        textcase_map('t', 'to_title_case', 'Title Case')
-        textcase_map('r', 'to_phrase_case', 'Regular phrase case')
-        textcase_map('.', 'to_dot_case', 'dot.case')
+        local coercions = {
+            c = { 'to_camel_case', 'camelCase' },
+            p = { 'to_pascal_case', 'PascalCase' },
+            m = { 'to_pascal_case', 'PascalCase' },
+            _ = { 'to_snake_case', 'snake_case' },
+            s = { 'to_snake_case', 'snake_case' },
+            u = { 'to_constant_case', 'CONSTANT_CASE' },
+            U = { 'to_constant_case', 'CONSTANT_CASE' },
+            k = { 'to_dash_case', 'dash-case' },
+            ['-'] = { 'to_dash_case', 'dash-case' },
+            ['.'] = { 'to_dot_case', 'dot.case' },
+            [' '] = { 'to_lower_phrase_case', 'lower phrase case' },
+        }
+
+        for char, coercion in pairs(coercions) do
+            local operation, desc = coercion[1], coercion[2]
+            vim.keymap.set('n', 'cr' .. char, function()
+                coerce_current(operation)
+            end, { desc = 'Coerce to ' .. desc })
+            vim.keymap.set('v', 'cr' .. char, function()
+                ---@diagnostic disable-next-line: need-check-nil
+                require('textcase').visual(operation)
+            end, { desc = 'Coerce to ' .. desc })
+        end
     end,
-    opts = {
-        default_keymappings_enabled = false,
-        -- substitude_command_name = 'S', -- do not overwrite vim-abolish until feature parity
-    },
+    config = function()
+        require('textcase').setup({
+            default_keymappings_enabled = false,
+            substitude_command_name = 'Subs',
+        })
+
+        -- :Subs is redundant and inferior to :S / :Subvert (conf.subvert)
+        local function drop_subs()
+            pcall(vim.api.nvim_del_user_command, 'Subs')
+        end
+        drop_subs()
+        if vim.v.vim_did_enter == 0 then
+            vim.api.nvim_create_autocmd('VimEnter', {
+                once = true,
+                callback = drop_subs,
+            })
+        end
+    end,
 }

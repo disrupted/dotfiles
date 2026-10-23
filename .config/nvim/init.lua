@@ -51,6 +51,7 @@ for _, plugin in pairs(disabled_builtin_plugins) do
     vim.g['loaded_' .. plugin] = 1
 end
 require('conf.lsp')
+require('conf.subvert').setup() -- pure-Lua :S / :Subvert (vim-abolish substitution)
 vim.o.exrc = true
 vim.g.health = { style = 'float' }
 -----------------------------------------------------------------------------//
