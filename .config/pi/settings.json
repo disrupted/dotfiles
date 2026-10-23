@@ -7,7 +7,7 @@
   ],
   "lastChangelogVersion": "1.4.0",
   "hideThinkingBlock": true,
-  "defaultProvider": "openrouter",
-  "defaultModel": "deepseek/deepseek-v4.1-flash",
-  "defaultThinkingLevel": "low"
+  "defaultProvider": "opencode-go",
+  "defaultModel": "deepseek-v4.1-flash",
+  "defaultThinkingLevel": "high"
 }

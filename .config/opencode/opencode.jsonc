@@ -3,9 +3,9 @@
   "update": "disable",
   "share": "disabled",
   "disabled_providers": ["opencode", "github-copilot"],
-  "model": "openrouter/deepseek/deepseek-v4.1-flash",
+  "model": "opencode-go/deepseek-v4.1-flash",
   "agents": {
-    "title": { "model": "openrouter/deepseek/deepseek-v4.1-flash#none" },
+    "title": { "model": "opencode-go/deepseek-v4.1-flash" },
     "plan": {
       "permissions": [
         { "action": "shell", "resource": "gh issue create *", "effect": "deny" },

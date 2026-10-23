@@ -47,9 +47,9 @@ maki.setup({
 			"*-1m",
 		},
 	} or {
-		default_model = "openrouter/deepseek/deepseek-v4.1-flash",
-		allowed_models = { "openrouter/*" },
-		excluded_models = { "*/*:batch" },
+		default_model = "opencode-go/deepseek-v4.1-flash",
+		allowed_models = { "opencode-go/*" },
+		-- excluded_models = { "*/*:batch" },
 	},
 	agent = {
 		rtk = false,
