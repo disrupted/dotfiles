@@ -13,24 +13,25 @@ extra_grants=()
 
 case "$launch_dir" in
 "$home_dir/.config" | "$home_dir/.config/"* | "$home_dir/dev" | "$home_dir/dev/"* | "$home_dir/.local" | "$home_dir/.local/"*)
-	extra_grants+=(--add-dirs="$home_dir/.config")
-	extra_grants+=(--add-dirs="$home_dir/dev")
-	extra_grants+=(--add-dirs-ro="$home_dir/.local")
-	extra_grants+=(--add-dirs="$home_dir/.local/share/nvim")
-	;;
+    extra_grants+=(--add-dirs="$home_dir/.config")
+    extra_grants+=(--add-dirs="$home_dir/dev")
+    extra_grants+=(--add-dirs-ro="$home_dir/.local")
+    extra_grants+=(--add-dirs="$home_dir/.local/share/nvim")
+    extra_grants+=(--add-dirs="$home_dir/.local/share/yadm/repo.git")
+    ;;
 esac
 
 # Work: grant the whole work tree, plus shared bakdata (read-only reference).
 # Launching inside bakdata grants it read-write
 for _client in spectrumk bayer bakdata; do
-	case "$launch_dir" in
-	"$home_dir/$_client" | "$home_dir/$_client/"*)
-		extra_grants+=(--add-dirs="$home_dir/$_client")
-		extra_grants+=(--add-dirs-ro="$home_dir/bakdata")
-		extra_grants+=(--add-dirs-ro="$home_dir/Downloads")
-		break
-		;;
-	esac
+    case "$launch_dir" in
+    "$home_dir/$_client" | "$home_dir/$_client/"*)
+        extra_grants+=(--add-dirs="$home_dir/$_client")
+        extra_grants+=(--add-dirs-ro="$home_dir/bakdata")
+        extra_grants+=(--add-dirs-ro="$home_dir/Downloads")
+        break
+        ;;
+    esac
 done
 unset _client
 
@@ -40,14 +41,14 @@ unset _client
 has_explicit_server=false
 is_exempt=false
 for arg in "$@"; do
-	case "$arg" in
-	--standalone | --server | --server=*) has_explicit_server=true ;;
-	serve | auth | models | debug | plugin | mcp | stats | upgrade | update | uninstall | --help | -h | --version | -v) is_exempt=true ;;
-	esac
+    case "$arg" in
+    --standalone | --server | --server=*) has_explicit_server=true ;;
+    serve | auth | models | debug | plugin | mcp | stats | upgrade | update | uninstall | --help | -h | --version | -v) is_exempt=true ;;
+    esac
 done
 
 if [ "$has_explicit_server" = false ] && [ "$is_exempt" = false ]; then
-	cat >&2 <<'EOF'
+    cat >&2 <<'EOF'
 safehouse_opencode: no explicit server requested.
 
 OpenCode v2 would fall back to its user-wide shared background service, which is
@@ -61,23 +62,23 @@ Examples:
   safehouse_opencode.sh --standalone
   safehouse_opencode.sh serve
 EOF
-	exit 1
+    exit 1
 fi
 
 safehouse_args=(
-	safehouse
-	--enable="1password,ssh,kubectl,docker,keychain,playwright-chrome"
-	# local overlays
-	--append-profile="$home_dir/.config/opencode/opencode.sb"
-	--append-profile="$home_dir/.config/opencode/local-opencode.sb"
-	--append-profile="$home_dir/.config/safehouse/local-ssh.sb"
-	--append-profile="$home_dir/.config/safehouse/local-dev.sb"
+    safehouse
+    --enable="1password,ssh,kubectl,docker,keychain,playwright-chrome"
+    # local overlays
+    --append-profile="$home_dir/.config/opencode/opencode.sb"
+    --append-profile="$home_dir/.config/opencode/local-opencode.sb"
+    --append-profile="$home_dir/.config/safehouse/local-ssh.sb"
+    --append-profile="$home_dir/.config/safehouse/local-dev.sb"
 )
 if [ "${#extra_grants[@]}" -gt 0 ]; then
-	safehouse_args+=("${extra_grants[@]}")
+    safehouse_args+=("${extra_grants[@]}")
 fi
 safehouse_args+=(
-	--env-pass="OPENCODE_CONFIG,OPENCODE_PASSWORD,OPENCODE_SERVER_PASSWORD,OPENCODE_SERVER_USERNAME,CONTEXT7_API_KEY,GITHUB_TOKEN,OPENROUTER_API_KEY,OPENAI_API_KEY,ANTHROPIC_API_KEY,GEMINI_API_KEY,VIRTUAL_ENV,REUSE_CONTAINERS"
-	-- opencode "$@"
+    --env-pass="OPENCODE_CONFIG,OPENCODE_PASSWORD,OPENCODE_SERVER_PASSWORD,OPENCODE_SERVER_USERNAME,CONTEXT7_API_KEY,GITHUB_TOKEN,OPENCODE_API_KEY,OPENAI_API_KEY,ANTHROPIC_API_KEY,GEMINI_API_KEY,VIRTUAL_ENV,REUSE_CONTAINERS"
+    -- opencode "$@"
 )
 exec "${safehouse_args[@]}"

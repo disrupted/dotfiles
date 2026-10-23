@@ -1,7 +1,8 @@
-(allow file-read*
-    ; mise
-    (home-subpath "/.local/bin")
-)
+(deny file-read* file-write* (home-subpath "/.config/fnox/age.txt"))
+(deny file-read* file-write* (workdir-literal "/.env"))
+
+; mise
+(allow file-read* (home-subpath "/.local/bin"))
 
 (allow file-read* file-write*
     ; aube
@@ -14,3 +15,9 @@
     ; dprint
     (home-subpath "/Library/Caches/dprint")
 )
+
+; Nx
+(allow file-read* file-write* (home-subpath "/.nx"))
+(allow network-bind network-outbound
+    (remote unix-socket
+        (path-regex #"^(/private)?/var/folders/[^/]+/[^/]+/T/plugin[-.0-9]+\.sock$")))

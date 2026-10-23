@@ -17,6 +17,7 @@ case "$launch_dir" in
     extra_grants+=(--add-dirs="$home_dir/dev")
     extra_grants+=(--add-dirs-ro="$home_dir/.local")
     extra_grants+=(--add-dirs="$home_dir/.local/share/nvim")
+    extra_grants+=(--add-dirs="$home_dir/.local/share/yadm/repo.git")
     ;;
 esac
 
