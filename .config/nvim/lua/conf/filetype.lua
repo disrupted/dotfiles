@@ -16,6 +16,8 @@ vim.filetype.add {
         ['docker-compose.yml'] = 'yaml.docker-compose',
     },
     pattern = {
+        ['mise%.?%a*%.toml'] = 'toml.mise', -- mise.toml, mise.<env>.toml
+        ['${HOME}/%.config/mise/config%.toml'] = 'toml.mise',
         ['.*%.gitlab%-ci%.yml'] = 'yaml.gitlab',
         ['%.env%..*'] = 'ini',
     },

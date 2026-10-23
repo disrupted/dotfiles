@@ -328,6 +328,7 @@ vim.lsp.enable {
     'html_ls',
     'json_ls',
     'luau_lsp',
+    'mise',
     'nickel_ls',
     'nushell',
     'pkl_ls',

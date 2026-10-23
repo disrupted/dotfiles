@@ -1,5 +1,3 @@
-#:schema https://mise.jdx.dev/schema/mise.json
-
 [tools]
 neovim = "nightly"
 starship = "latest"
@@ -11,7 +9,7 @@ bun = "latest"
 node = "latest"
 
 uv = "latest"
-"pypi:poetry" = "latest"  # for legacy projects
+"pypi:poetry" = "latest" # for legacy projects
 
 fnox = "latest"
 age = "latest"
@@ -81,7 +79,11 @@ docker-compose = { version = "latest", depends = ["docker-cli"] }
 "aqua:docker/buildx" = { version = "latest", depends = ["docker-cli"] }
 "github:eugene1g/agent-safehouse" = { version = "latest", asset_pattern = "safehouse.sh", bin = "safehouse" }
 # "npm:@opencode/cli" = { version = "latest", depends = ["bun"], postinstall = { run = "bun \"$MISE_TOOL_INSTALL_PATH/node_modules/@opencode/cli/postinstall.mjs\"", when = "always" } }
-"npm:@opencode/cli" = { version = "latest", depends = ["node"], allow_builds = ["@opencode/cli"] }
+"npm:@opencode/cli" = { version = "latest", depends = [
+  "node",
+], allow_builds = [
+  "@opencode/cli",
+] }
 pi = "latest"
 "github:Mapika/portview" = "latest"
 "github:topiary/topiary" = "latest"
@@ -106,6 +108,7 @@ tinymist = "latest"
 "github:vale-cli/vale-ls" = "latest"
 "github:stubbedev/shell-lsp" = "latest"
 "cargo:emmylua_check" = "latest"
+"cargo:emmylua_formatter" = "latest"
 "cargo:emmylua_ls" = "latest"
 "cargo:gitlab-ci-ls" = "latest"
 "cargo:nickel-lang-lsp" = "latest"
@@ -119,13 +122,16 @@ tinymist = "latest"
 "npm:@microsoft/compose-language-service" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:@actions/languageserver" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:@fsouza/prettierd" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
-"npm:svelte-language-server" = { version = "latest", trust_policy_excludes = ["svelte@4.2.20"], postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
+"npm:svelte-language-server" = { version = "latest", trust_policy_excludes = [
+  "svelte@4.2.20",
+], postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:@tailwindcss/language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:@vtsls/language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:yaml-language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:@mistweaverco/kulala-fmt" = { version = "latest", allow_low_downloads = true, postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
-"npm:typescript-svelte-plugin" = "latest"  # library plugin, no bin/ -> no runtime to patch
+"npm:typescript-svelte-plugin" = "latest"                                                                                                                                                                                 # library plugin, no bin/ -> no runtime to patch
 "github:ewhauser/shuck" = "latest"
+"github:agavra/tuicr" = "latest"
 
 # Tinycast: installed straight from the GitHub release zip via the `http`
 # backend + a postinstall hook (no Homebrew cask, no Ruby). The hook copies
@@ -140,14 +146,10 @@ version_json_path = ".tag_name"
 postinstall = { run = "$HOME/.config/mise/scripts/install-tinycast.sh", when = "always" }
 
 [settings]
-terminal_progress = false  # emits OSC 9;4 which leaks into nvim terminal buffers when using tmux 3.7c passthrough
-auto_update = true
+terminal_progress = false                                        # emits OSC 9;4 which leaks into nvim terminal buffers when using tmux 3.7c passthrough
+self_update.auto = true
 experimental = true
-idiomatic_version_file_enable_tools = [
-  "python",
-  "rust",
-  "node",
-]
+idiomatic_version_file_enable_tools = ["python", "rust", "node"]
 
 [settings.python]
 compile = false
@@ -227,4 +229,6 @@ docker buildx prune -a -f
 
 [env]
 PI_CODING_AGENT_DIR = "{{ env.HOME }}/.config/pi"
-_.path = ["/opt/homebrew/opt/gnu-sed/libexec/gnubin"]  # shadow BSD sed with gnu-sed
+_.path = [
+  "/opt/homebrew/opt/gnu-sed/libexec/gnubin",
+] # shadow BSD sed with gnu-sed
