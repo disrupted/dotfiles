@@ -5,8 +5,9 @@ return {
         branch = 'main',
         main = 'nvim-treesitter',
         module = 'nvim-treesitter',
-        build = ':TSUpdate',
         event = { 'BufReadPost', 'BufNewFile', 'FileType' },
+        lazy = vim.fn.argc(-1) == 0, -- load Treesitter early when opening a file from the cmdline
+        build = ':TSUpdate',
         config = function()
             local opts = {
                 ensure_installed = {
