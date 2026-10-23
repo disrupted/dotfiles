@@ -156,6 +156,7 @@ M.mr = {}
 M.mr.open = function(opts)
     ---@class gitlab.mr.open.Opts
     ---@field browser boolean
+    ---@cast opts gitlab.mr.open.Opts
     opts = vim.tbl_extend('keep', opts or {}, {
         browser = true,
     })

@@ -1,7 +1,11 @@
 local M = {}
 
+local HOME = vim.env.HOME
+if not HOME then
+    return
+end
 local repo = vim.fs.joinpath(
-    vim.env.XDG_DATA_HOME or vim.fs.joinpath(vim.env.HOME, '.local', 'share'),
+    vim.env.XDG_DATA_HOME or vim.fs.joinpath(HOME, '.local', 'share'),
     'yadm',
     'repo.git'
 )
@@ -16,7 +20,7 @@ M.setup = function()
     if
         cwd ~= vim.env.HOME
         and not vim.fs.relpath(
-            vim.env.XDG_CONFIG_HOME or vim.fs.joinpath(vim.env.HOME, '.config'),
+            vim.env.XDG_CONFIG_HOME or vim.fs.joinpath(HOME, '.config'),
             cwd
         )
     then

@@ -76,8 +76,10 @@ end
 ---@param opts octo.pr.create.form.Opts
 local create_pr_form = function(opts)
     local labels_data = {}
-    for _, label in ipairs(opts.labels) do
-        table.insert(labels_data, n.option(label.name, { id = label.name }))
+    if opts.labels then
+        for _, label in ipairs(opts.labels) do
+            table.insert(labels_data, n.option(label.name, { id = label.name }))
+        end
     end
 
     return n.form(
@@ -206,6 +208,7 @@ M.pr.open = function(opts)
     ---@field number? integer
     ---@field octo boolean
     ---@field browser boolean
+    ---@cast opts octo.pr.open.Opts
     opts = vim.tbl_extend('keep', opts or {}, {
         octo = true,
         browser = false,

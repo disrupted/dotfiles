@@ -1,4 +1,5 @@
 local trouble = require 'trouble'
+---@cast trouble trouble.api
 
 local M = {}
 

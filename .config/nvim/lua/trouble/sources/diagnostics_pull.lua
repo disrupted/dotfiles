@@ -8,30 +8,24 @@
 -- once DiagnosticChanged fires for them; the only missing piece is the trigger.
 -- After the initial pull, DiagnosticChanged drives subsequent refreshes naturally.
 
----@type trouble.Source
-local M = {}
-
 local function diagnostics()
     return require 'trouble.sources.diagnostics'
 end
 
-M.highlights = {
-    Message = 'TroubleText',
-    ItemSource = 'Comment',
-    Code = 'Comment',
+---@type trouble.Source
+return {
+    highlights = {
+        Message = 'TroubleText',
+        ItemSource = 'Comment',
+        Code = 'Comment',
+    },
+    setup = function()
+        diagnostics().setup()
+    end,
+    get = function(cb, ctx)
+        -- Always trigger a pull so results stay fresh.
+        -- DiagnosticChanged will fire and trigger auto_refresh when results arrive.
+        vim.lsp.buf.workspace_diagnostics()
+        diagnostics().get(cb, ctx)
+    end,
 }
-
-function M.setup()
-    diagnostics().setup()
-end
-
----@param cb trouble.Source.Callback
----@param ctx trouble.Source.ctx
-function M.get(cb, ctx)
-    -- Always trigger a pull so results stay fresh.
-    -- DiagnosticChanged will fire and trigger auto_refresh when results arrive.
-    vim.lsp.buf.workspace_diagnostics()
-    diagnostics().get(cb, ctx)
-end
-
-return M

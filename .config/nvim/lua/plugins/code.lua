@@ -249,7 +249,6 @@ return {
     {
         'monaqa/dial.nvim',
         main = 'dial',
-        module = 'dial',
         init = function()
             require('which-key').add {
                 mode = { 'n', 'v' },
@@ -294,7 +293,7 @@ return {
             vim.keymap.set('v', '<Leader>k', map.dec_visual, { expr = true })
         end,
     },
-    { 'nvim-neotest/nvim-nio', module='nio' },
+    { 'nvim-neotest/nvim-nio', module = 'nio' },
     {
         'nvim-neotest/neotest',
         main = 'neotest',

@@ -123,7 +123,6 @@ return {
                 return {
                     formatters_by_ft = {
                         -- python = { 'ruff', lsp_format = 'last' }, -- provides `ruff check --fix`
-                        lua = { 'stylua' },
                         luau = { 'stylua' },
                         astro = dprint,
                         json = dprint,

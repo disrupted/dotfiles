@@ -1,8 +1,9 @@
 local M = {}
 
-function M.prequire(...)
-    local status, lib = pcall(require, ...)
-    if status then
+---@param modname string
+function M.prequire(modname)
+    local ok, lib = pcall(require, modname)
+    if ok then
         return lib
     end
     return nil
@@ -10,12 +11,13 @@ end
 
 -- only actually `require()`s a module when it gets used
 -- from feline.nvim
-function M.lazy_require(module)
+---@param modname string
+function M.lazy_require(modname)
     local mt = {}
 
     mt.__index = function(_, key)
         if not mt._module then
-            mt._module = require(module)
+            mt._module = require(modname)
         end
 
         return mt._module[key]
@@ -23,7 +25,7 @@ function M.lazy_require(module)
 
     mt.__newindex = function(_, key, val)
         if not mt._module then
-            mt._module = require(module)
+            mt._module = require(modname)
         end
 
         mt._module[key] = val

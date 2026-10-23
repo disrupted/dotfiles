@@ -4,8 +4,117 @@
     "version": "LuaJIT"
   },
   "workspace": {
+    "library": [
+      "$VIMRUNTIME",
+      "$HOME/.local/share/nvim/site/pack/core/opt/laze/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/one.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/gh-actions.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/github-actions.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/kpops.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/which-key.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/snacks.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/nui.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/opencode.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/text-case.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/nvim-surround/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/matchwith.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/nvim-ts-context-commentstring/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/Comment.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/tabout.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/ultimate-autopair.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/dial.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/nvim-nio/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/neotest/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/neotest-python/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/neotest-jest/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/nvim-coverage/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/neogen/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/overseer.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/todo-comments.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/grug-far.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/blink.cmp/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/blink-cmp-git/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/blink-cmp-conventional-commits/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/csvview.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/nvim-dap/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/nvim-dap-view/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/nvim-dap-virtual-text/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/nvim-dap-python/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/scope.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/resession.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/harpoon/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/auto-save.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/gitsigns.nvim/lua/gitsigns/config.lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/neogit/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/neojj/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/diffview.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/codediff.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/octo.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/inlayhint-filler.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/conform.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/lsp-format-modifications.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/nvim-lint/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/rustaceanvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/trouble.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/helm-ls.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/render-markdown.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/Navigator.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/nvim-spider/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/treewalker.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/frizbee.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/fff-snacks.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/mkdir.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/guess-indent.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/rest.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/presenting.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/quicker.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/nvim-bqf/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/LuaSnip/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/nvim-treesitter/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/nvim-treesitter-textobjects/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/tree-sitter-ghostty/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/heirline.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/dropbar.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/nvim-web-devicons/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/nui-components.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/tiny-cmdline.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/ripple.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/edgy.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/xcodebuild.nvim/lua"
+    ],
     "ignoreGlobs": [
       "**/*_spec.lua"
     ]
+  },
+  "format": {
+    "externalTool": {
+      "program": "stylua",
+      "args": [
+        "-",
+        "--stdin-filepath",
+        "${file}"
+      ],
+      "timeout": 2000
+    },
+    "externalToolRangeFormat": {
+      "program": "stylua",
+      "args": [
+        "-",
+        "--stdin-filepath",
+        "${file}",
+        "--range-start=${start_offset}",
+        "--range-end=${end_offset}"
+      ],
+      "timeout": 2000
+    }
+  },
+  "diagnostics": {
+    "disable": [
+      "unnecessary-if"
+    ]
+  },
+  "strict": {
+    "typeCall": true,
+    "arrayIndex": true
   }
 }

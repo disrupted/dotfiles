@@ -61,6 +61,7 @@ local function underline_handler(orig_handler)
                     diagnostic.severity = 0
                 end
             end
+            assert(orig_handler.show)
             orig_handler.show(namespace, bufnr, diagnostics, opts)
         end,
         hide = orig_handler.hide,

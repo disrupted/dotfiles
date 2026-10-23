@@ -19,7 +19,9 @@ return {
         end,
         ---@module 'gitsigns.config'
         ---@type Gitsigns.Config
+        ---@diagnostic disable-next-line: missing-fields
         opts = {
+            ---@diagnostic disable-next-line: missing-fields
             diff_opts = {
                 -- Include whitespace-only changes in git hunks regardless of 'diffopt'
                 ignore_whitespace_change = false,
@@ -30,9 +32,11 @@ return {
             signs = {
                 add = {
                     text = '▎', -- ▍
+                    show_count = false,
                 },
                 change = {
                     text = '▎',
+                    show_count = false,
                 },
                 delete = {
                     text = '▎',
@@ -48,6 +52,7 @@ return {
                 },
                 untracked = {
                     text = '▍', -- ▋▎┊┆╷
+                    show_count = false,
                 },
             },
             count_chars = {
@@ -96,6 +101,7 @@ return {
                 end
 
                 local gs = package.loaded.gitsigns
+                ---@cast gs gitsigns.main
 
                 -- Navigation
                 map('n', ']g', function()

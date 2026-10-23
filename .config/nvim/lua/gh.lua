@@ -33,7 +33,9 @@ end
 ---@async
 ---@return Label[]
 M.labels = function()
-    return M.json({ 'label', 'list' }, { 'name' }) or {}
+    local labels = M.json({ 'label', 'list' }, { 'name' }) or {}
+    ---@cast labels Label[]
+    return labels
 end
 
 M.pr = {}

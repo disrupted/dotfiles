@@ -203,10 +203,12 @@ local function schedule_refresh()
     )
 end
 
----@type uv.uv_fs_event_t
+---@type uv.uv_fs_event_t?
 local watcher
 
----@type uv.fs_event_start.callback
+---@param err string?
+---@param filename string
+---@param events { change: boolean?, rename: boolean? }
 local function on_file_change(err, filename, events)
     if err then
         Snacks.notify.error(
@@ -372,19 +374,19 @@ M.async = {}
 
 ---@async
 ---@param remote? string
----@return string
+---@return string?
 M.async.remote_url = function(remote)
     return git_async { 'remote', 'get-url', remote or 'origin' }
 end
 
 ---@async
----@return string name of the current branch
+---@return string? name of the current branch
 M.async.current_branch = function()
     return git_async { 'branch', '--show-current' }
 end
 
 ---@async
----@return string
+---@return string?
 M.async.head = function()
     return git_async { 'rev-parse', '--short', 'HEAD' }
 end
@@ -414,10 +416,10 @@ M.async.tracking_branch = function()
 end
 
 ---@async
----@param opts {online?: boolean}
+---@param opts? {online?: boolean}
 ---@return string? name of the default branch
 M.async.default_branch = function(opts)
-    local opts = opts or {}
+    opts = opts or {}
     local remote = 'origin'
 
     -- Prefer upstream remote when available.
@@ -481,7 +483,7 @@ M.async.default_branch = function(opts)
 end
 
 ---@async
----@return string title of the last commit
+---@return string? title of the last commit
 M.async.last_commit_title = function()
     return git_async { 'log', '-1', '--pretty=%s' }
 end
