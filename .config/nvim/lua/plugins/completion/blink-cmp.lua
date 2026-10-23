@@ -1,0 +1,302 @@
+local function is_inside_opencode_prompt()
+    return vim.bo.filetype == 'opencode'
+end
+
+local function is_opencode_completion()
+    local item = require('blink.cmp.completion.list').get_selected_item()
+    return item and vim.startswith(item.source_id, 'opencode_')
+end
+
+---@type LazeSpec
+return {
+    'saghen/blink.cmp',
+    main = 'blink.cmp',
+    module = 'blink.cmp',
+    event = { 'InsertEnter', 'CmdlineEnter' },
+    version = vim.version.range '*',
+    ---@module 'blink.cmp'
+    ---@type blink.cmp.Config
+    opts = {
+        keymap = {
+            preset = 'default',
+            ['<C-c>'] = {
+                function(cmp)
+                    if cmp.is_menu_visible() then
+                        return cmp.cancel()
+                    end
+                    if is_inside_opencode_prompt() then
+                        return false
+                    end
+                    return cmp.show()
+                end,
+                'fallback',
+            },
+            ['<C-d>'] = { 'show_documentation', 'hide_documentation' },
+            ['<C-e>'] = {}, -- disable default because mapped to LuaSnip
+            ['<C-s>'] = {
+                function(cmp)
+                    cmp.show { providers = { 'snippets' } }
+                end,
+            },
+            ['<a-d>'] = {
+                -- inspect the current completion item for debugging
+                function()
+                    local item =
+                        require('blink.cmp.completion.list').get_selected_item()
+                    vim.print(item)
+                    return true
+                end,
+            },
+            -- Opencode: preset 'enter'
+            ['<CR>'] = {
+                function(cmp)
+                    if
+                        is_inside_opencode_prompt()
+                        and is_opencode_completion()
+                    then
+                        return cmp.accept()
+                    end
+                end,
+                'fallback',
+            },
+            ['<Tab>'] = {
+                function(cmp)
+                    if
+                        is_inside_opencode_prompt()
+                        and is_opencode_completion()
+                    then
+                        return cmp.select_next()
+                    end
+                end,
+                'fallback',
+            },
+            ['<S-Tab>'] = {
+                function(cmp)
+                    if
+                        is_inside_opencode_prompt()
+                        and is_opencode_completion()
+                    then
+                        return cmp.select_prev()
+                    end
+                end,
+                'fallback',
+            },
+        },
+        snippets = { preset = 'luasnip' },
+        completion = {
+            documentation = {
+                auto_show = true,
+                auto_show_delay_ms = 200,
+            },
+            ghost_text = {
+                enabled = true,
+                show_without_selection = false,
+            },
+            list = {
+                selection = {
+                    preselect = true,
+                },
+            },
+            menu = {
+                auto_show = true,
+                border = 'none',
+                draw = {
+                    columns = function(ctx)
+                        if ctx.mode == 'cmdline' then
+                            return { { 'label' } }
+                        else
+                            return {
+                                { 'kind_icon' },
+                                { 'label', 'label_description', gap = 1 },
+                                { 'source_icon' },
+                            }
+                        end
+                    end,
+                    components = {
+                        source_icon = {
+                            width = { fixed = 1 },
+                            ellipsis = false,
+                            text = function(ctx)
+                                return require('conf.icons').cmp_sources[ctx.source_name]
+                            end,
+                            highlight = 'BlinkCmpSource',
+                        },
+                    },
+                },
+            },
+        },
+        sources = {
+            default = function()
+                if vim.bo.filetype == 'gitcommit' then
+                    return {
+                        'conventional_commits',
+                        'git',
+                        'path',
+                        'buffer',
+                    }
+                end
+                local success, node = pcall(vim.treesitter.get_node)
+                if
+                    success
+                    and node
+                    and vim.tbl_contains(
+                        { 'comment', 'line_comment', 'block_comment' },
+                        node:type()
+                    )
+                then
+                    return { 'buffer', 'path' }
+                end
+                local sources = {
+                    'lsp',
+                    'path',
+                    'snippets',
+                    'buffer',
+                    'git',
+                }
+                return sources
+            end,
+            providers = {
+                git = {
+                    name = 'Git',
+                    module = 'blink-cmp-git',
+                    score_offset = 10,
+                    enabled = function()
+                        return vim.tbl_contains(
+                            { 'octo', 'gitcommit', 'markdown' },
+                            vim.bo.filetype
+                        )
+                    end,
+                    should_show_items = function(ctx)
+                        return ctx.trigger.initial_kind ~= 'trigger_character' -- hide after trigger character
+                    end,
+                    ---@module 'blink-cmp-git'
+                    ---@type blink-cmp-git.Options
+                    opts = {
+                        kind_highlight = function()
+                            return 'BlinkCmpKind'
+                        end,
+                        kind_icon_highlight = function()
+                            return 'BlinkCmpKind'
+                        end,
+                        -- Mirror blink.cmp's default label rendering: the whole
+                        -- label in BlinkCmpLabel, fuzzy matches in BlinkCmpLabelMatch.
+                        label_highlight = function(context)
+                            local highlights = {
+                                {
+                                    0,
+                                    #context.label,
+                                    group = 'BlinkCmpLabel',
+                                },
+                            }
+                            for _, idx in ipairs(context.label_matched_indices) do
+                                table.insert(highlights, {
+                                    idx,
+                                    idx + 1,
+                                    group = 'BlinkCmpLabelMatch',
+                                })
+                            end
+                            return highlights
+                        end,
+                        git_centers = {
+                            gitlab = {
+                                issue = {
+                                    enable = function()
+                                        -- Get the default enable result
+                                        local enable = require(
+                                            'blink-cmp-git.default.gitlab'
+                                        ).issue.enable()
+                                        if enable then
+                                            return enable
+                                        end
+
+                                        ---@type string?
+                                        local gitlab_url = vim.env.GITLAB_HOST
+                                        if not gitlab_url then
+                                            return false
+                                        end
+                                        gitlab_url =
+                                            gitlab_url:gsub('https://', '')
+                                        enable = gitlab_url
+                                            and require('blink-cmp-git.utils')
+                                                    .get_repo_remote_url()
+                                                    :find(gitlab_url, nil, true)
+                                                ~= nil
+                                        return enable
+                                    end,
+                                },
+                            },
+                        },
+                    },
+                },
+                snippets = {
+                    min_keyword_length = 2,
+                    score_offset = 6,
+                    should_show_items = function(ctx)
+                        return ctx.trigger.initial_kind ~= 'trigger_character' -- hide snippets after trigger character
+                    end,
+                },
+                lsp = {
+                    score_offset = 5,
+                    timeout_ms = 1000,
+                    -- name = 'LSP',
+                    -- module = 'blink.cmp.sources.lsp',
+                    -- disable completion for language keywords, use snippets instead
+                    -- transform_items = function(_, items)
+                    --     return vim.tbl_filter(function(item)
+                    --         return item.kind
+                    --             ~= require('blink.cmp.types').CompletionItemKind.Keyword
+                    --     end, items)
+                    -- end,
+                },
+                path = {
+                    opts = {
+                        get_cwd = function(_)
+                            return vim.g.workspace_root
+                        end,
+                    },
+                },
+                buffer = {
+                    min_keyword_length = 3,
+                    -- timeout_ms = 5000,
+                },
+                conventional_commits = {
+                    score_offset = 11,
+                    name = 'Conventional Commits',
+                    module = 'blink-cmp-conventional-commits',
+                    ---@module 'blink-cmp-conventional-commits'
+                    ---@type blink-cmp-conventional-commits.Options
+                    opts = {},
+                },
+            },
+        },
+        signature = {
+            enabled = true,
+            window = { border = 'rounded' },
+        },
+        cmdline = {
+            completion = {
+                ghost_text = { enabled = false },
+                menu = {
+                    auto_show = function()
+                        return not vim.tbl_contains(
+                            { '/', '?' },
+                            vim.fn.getcmdtype()
+                        )
+                    end,
+                },
+                list = { selection = { preselect = false } },
+            },
+            keymap = {
+                preset = 'enter',
+                ['<CR>'] = { 'accept_and_enter', 'fallback' },
+                ['<Up>'] = {},
+                ['<Down>'] = {},
+                ['<C-j>'] = {},
+                ['<C-k>'] = {},
+            },
+        },
+        appearance = {
+            kind_icons = require('conf.icons').kinds,
+        },
+    },
+}

@@ -1,5 +1,5 @@
 local skeletons = {
-    lua = '~/.config/nvim/skeletons/nvim-lazy-spec.lua',
+    lua = '~/.config/nvim/skeletons/laze-spec.lua',
     tsx = '~/.config/nvim/skeletons/typescript-react.tsx',
     python = '~/.config/nvim/skeletons/python-pytest.py',
 }
@@ -9,6 +9,7 @@ vim.api.nvim_create_autocmd('BufNewFile', {
     group = au,
     pattern = {
         'lua/plugins/*.lua',
+        'lua/plugins/**/*.lua',
         '*.tsx',
         'tests/**.py',
     },
@@ -25,6 +26,6 @@ vim.api.nvim_create_autocmd('BufNewFile', {
     pattern = { 'lsp/*.lua' },
     desc = 'Load skeleton when creating new file',
     callback = function()
-        vim.cmd 'read ~/.config/nvim/skeletons/nvim-lsp.lua | 1delete_'
+        vim.cmd 'read ~/.config/nvim/skeletons/lsp.lua | 1delete_'
     end,
 })

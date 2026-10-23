@@ -1,2 +1,0 @@
----@type laze.Spec[]
-return {}
