@@ -1,6 +1,9 @@
 ---@type LazeSpec
 return {
-    'folke/todo-comments.nvim',
+    -- TODO: switch back to folke/todo-comments.nvim once
+    -- https://github.com/folke/todo-comments.nvim/pull/395 merges.
+    'dtor/todo-comments.nvim',
+    branch = 'remove-plenary',
     main = 'todo-comments',
     module = 'todo-comments',
     cmd = { 'TodoQuickFix', 'TodoTrouble' },

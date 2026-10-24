@@ -1,41 +1,54 @@
 local M = {}
 
-local n = require('nui-components')
+local system = require('conf.async').system
+local icons = require('conf.icons')
 
-local renderer = n.create_renderer({
-    width = 60,
-    height = 20,
-    keymap = {
-        close = '<Esc>',
-        focus_next = '<C-n>',
-        focus_prev = '<C-p>',
-    },
-})
+---@type any, any, any
+local n, renderer, signal
 
-renderer:on_mount(function()
-    local augroup = vim.api.nvim_create_augroup('OcroPrForm', { clear = true })
-    vim.api.nvim_create_autocmd('WinLeave', {
-        group = augroup,
-        callback = function()
-            vim.schedule(function()
-                if renderer.layout and renderer.layout._.mounted then
-                    local wins = vim.tbl_map(function(c)
-                        return c.winid
-                    end, renderer:get_focusable_components())
-                    if not vim.tbl_contains(wins, vim.api.nvim_get_current_win()) then
-                        vim.api.nvim_del_augroup_by_name('OcroPrForm')
-                        renderer:close()
-                    end
-                end
-            end)
-        end,
+local function ensure_ui()
+    if n then
+        return
+    end
+
+    n = require('nui-components')
+    renderer = n.create_renderer({
+        width = 60,
+        height = 20,
+        keymap = {
+            close = '<Esc>',
+            focus_next = '<C-n>',
+            focus_prev = '<C-p>',
+        },
     })
-end)
 
-local signal = n.create_signal({
-    is_loading = false,
-    labels = {},
-})
+    renderer:on_mount(function()
+        local augroup = vim.api.nvim_create_augroup('GitHubPrForm', { clear = true })
+        vim.api.nvim_create_autocmd('WinLeave', {
+            group = augroup,
+            callback = function()
+                vim.schedule(function()
+                    if renderer.layout and renderer.layout._.mounted then
+                        local wins = vim.tbl_map(function(c)
+                            return c.winid
+                        end, renderer:get_focusable_components())
+                        if
+                            not vim.tbl_contains(wins, vim.api.nvim_get_current_win())
+                        then
+                            vim.api.nvim_del_augroup_by_name('GitHubPrForm')
+                            renderer:close()
+                        end
+                    end
+                end)
+            end,
+        })
+    end)
+
+    signal = n.create_signal({
+        is_loading = false,
+        labels = {},
+    })
+end
 
 local function reset_signal()
     signal.is_loading = false
@@ -64,11 +77,11 @@ local function extract_gh_error(stderr)
     return table.concat(lines, '\n')
 end
 
----@class octo.pr.create.form.Opts
+---@class github.pr.create.form.Opts
 ---@field title? string
 ---@field labels? Label[]
 
----@param opts octo.pr.create.form.Opts
+---@param opts github.pr.create.form.Opts
 local create_pr_form = function(opts)
     local labels_data = {}
     if opts.labels then
@@ -108,13 +121,10 @@ local create_pr_form = function(opts)
                     })
                     if out then
                         renderer:close()
-                        Snacks.notify({ 'PR created', out }, { title = 'Octo' })
+                        Snacks.notify({ 'PR created', out }, { title = 'GitHub' })
                         vim.async.sleep(500)
                         require('gh').pr.refresh()
-                        M.pr.open({
-                            octo = false,
-                            browser = true,
-                        })
+                        M.pr.open()
                     elseif err == nil then
                         Snacks.notify.error(
                             'Failed to create PR. Run :messages for details.'
@@ -199,34 +209,28 @@ end
 
 M.pr = {}
 
+---@class github.pr.open.Opts
+---@field number? integer
+
 ---@async
----@param opts? octo.pr.open.Opts
+---@param opts? github.pr.open.Opts
 M.pr.open = function(opts)
-    ---@class octo.pr.open.Opts
-    ---@field number? integer
-    ---@field octo boolean
-    ---@field browser boolean
-    ---@cast opts octo.pr.open.Opts
-    opts = vim.tbl_extend('keep', opts or {}, {
-        octo = true,
-        browser = false,
-    })
-    if opts.octo then
-        local number = opts.number
-        if not number then
-            local pr = require('gh').pr.json({ 'number' })
-            number = pr and pr.number
-        end
-        if not number then
-            Snacks.notify.error('Could not determine PR number', { title = 'Octo' })
-            return
-        end
-        Snacks.notify('Opening PR #' .. number .. '...', { title = 'Octo' })
-        require('conf.workspace').create_tab('PR ' .. number)
-        vim.cmd('Octo pr')
+    opts = opts or {}
+    local number = opts.number
+    if not number then
+        local pr = require('gh').pr.json({ 'number' })
+        number = pr and pr.number
     end
-    if opts.browser then
-        vim.cmd('Octo pr browser')
+    if not number then
+        Snacks.notify.error('Could not determine PR number', { title = 'GitHub' })
+        return
+    end
+    Snacks.notify(('Opening PR #%d in browser...'):format(number), {
+        title = 'GitHub',
+    })
+    local out = system({ 'gh', 'pr', 'view', tostring(number), '--web' })
+    if out.code ~= 0 then
+        Snacks.notify.error(out.stderr or 'Failed to open PR', { title = 'GitHub' })
     end
 end
 
@@ -236,6 +240,7 @@ M.pr.form_create = function()
     local title = require('git').async.last_commit_title()
     local labels = require('gh').labels()
 
+    ensure_ui()
     renderer:render(function()
         return create_pr_form({ title = title, labels = labels })
     end)
@@ -278,6 +283,73 @@ M.pr.create = function(opts)
     end
 
     return nil, err
+end
+
+---@async
+local function create_or_open_pr()
+    local git = require('git').async
+    local remote_url = git.remote_url()
+    if require('git').match_remote_type(remote_url) ~= 'github' then
+        Snacks.notify.error('Not a GitHub remote', { title = 'GitHub' })
+        return
+    end
+    local branch = git.current_branch()
+    if branch == '' then
+        Snacks.notify.error('Current ref is not a valid branch', { title = 'GitHub' })
+        return
+    end
+    if branch == git.default_branch() then
+        Snacks.notify.error(
+            'PR is not possible on default branch',
+            { title = 'GitHub' }
+        )
+        return
+    end
+    local unpushed = git.unpushed_commits()
+    if unpushed == nil then
+        Snacks.notify.warn(
+            'Branch has no upstream, push it with -u first',
+            { title = 'GitHub' }
+        )
+    elseif unpushed > 0 then
+        Snacks.notify.warn(
+            ('%d unpushed commit(s)'):format(unpushed),
+            { title = 'GitHub' }
+        )
+    end
+    local existing_pr = require('gh').pr.json({ 'number' })
+    if existing_pr then
+        M.pr.open({ number = existing_pr.number })
+        return
+    end
+    local unpushed_after = git.unpushed_commits()
+    if unpushed_after == nil then
+        Snacks.notify.error(
+            'Branch has no upstream, push it with -u first',
+            { title = 'GitHub' }
+        )
+        return
+    elseif unpushed_after > 0 then
+        Snacks.notify.warn(
+            ('%d unpushed commit(s)'):format(unpushed_after),
+            { title = 'GitHub' }
+        )
+    end
+    M.pr.form_create()
+end
+
+function M.setup()
+    vim.keymap.set('n', '<Leader>gop', function()
+        local task = vim.async.run(create_or_open_pr)
+        task:raise_on_error()
+    end, {
+        desc = 'View or create PR',
+    })
+
+    require('which-key').add({
+        { '<Leader>go', group = 'GitHub', icon = icons.git.github },
+        { '<Leader>gop', icon = icons.git.pull_request },
+    })
 end
 
 return M

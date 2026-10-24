@@ -6,8 +6,6 @@ local library = {}
 --     end)
 --     :filter(function(path)
 --         return vim.uv.fs_stat(path) ~= nil
---             and path:match 'plenary%.nvim' == nil
---             and path:match 'ci%.nvim' == nil
 --     end)
 --     :totable()
 table.insert(library, 1, vim.env.VIMRUNTIME)

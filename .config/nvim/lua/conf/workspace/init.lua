@@ -223,8 +223,8 @@ M.get_tab_for_file = function(filepath)
 end
 
 --- Check whether a buffer is backed by a real file rather than a virtual
---- or URI buffer (e.g. terminals, octo://).  This must
---- not rely on `buftype` alone: plugins like Octo only set `buftype=acwrite`
+--- or URI buffer (e.g. terminals, custom schemes).  This must
+--- not rely on `buftype` alone: some plugins only set `buftype=acwrite`
 --- in their own BufEnter handler, which runs after this module's handler
 --- because these autocmds are registered earlier.
 ---@param bufnr integer

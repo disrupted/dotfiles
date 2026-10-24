@@ -1,40 +1,52 @@
 local M = {}
 
-local n = require('nui-components')
+local icons = require('conf.icons')
 
-local renderer = n.create_renderer({
-    width = 60,
-    height = 13,
-    keymap = {
-        close = '<Esc>',
-        focus_next = '<C-n>',
-        focus_prev = '<C-p>',
-    },
-})
+---@type any, any, any
+local n, renderer, signal
 
-renderer:on_mount(function()
-    local augroup = vim.api.nvim_create_augroup('GitlabMrForm', { clear = true })
-    vim.api.nvim_create_autocmd('WinLeave', {
-        group = augroup,
-        callback = function()
-            vim.schedule(function()
-                if renderer.layout and renderer.layout._.mounted then
-                    local wins = vim.tbl_map(function(c)
-                        return c.winid
-                    end, renderer:get_focusable_components())
-                    if not vim.tbl_contains(wins, vim.api.nvim_get_current_win()) then
-                        vim.api.nvim_del_augroup_by_name('GitlabMrForm')
-                        renderer:close()
-                    end
-                end
-            end)
-        end,
+local function ensure_ui()
+    if n then
+        return
+    end
+
+    n = require('nui-components')
+    renderer = n.create_renderer({
+        width = 60,
+        height = 13,
+        keymap = {
+            close = '<Esc>',
+            focus_next = '<C-n>',
+            focus_prev = '<C-p>',
+        },
     })
-end)
 
-local signal = n.create_signal({
-    is_loading = false,
-})
+    renderer:on_mount(function()
+        local augroup = vim.api.nvim_create_augroup('GitlabMrForm', { clear = true })
+        vim.api.nvim_create_autocmd('WinLeave', {
+            group = augroup,
+            callback = function()
+                vim.schedule(function()
+                    if renderer.layout and renderer.layout._.mounted then
+                        local wins = vim.tbl_map(function(c)
+                            return c.winid
+                        end, renderer:get_focusable_components())
+                        if
+                            not vim.tbl_contains(wins, vim.api.nvim_get_current_win())
+                        then
+                            vim.api.nvim_del_augroup_by_name('GitlabMrForm')
+                            renderer:close()
+                        end
+                    end
+                end)
+            end,
+        })
+    end)
+
+    signal = n.create_signal({
+        is_loading = false,
+    })
+end
 
 ---@class gitlab.mr.create.form.Opts
 ---@field title? string
@@ -158,6 +170,7 @@ end
 M.mr.form_create = function()
     local title = require('git').async.last_commit_title()
 
+    ensure_ui()
     renderer:render(function()
         return create_mr_form({ title = title })
     end)
@@ -199,6 +212,60 @@ M.mr.create = function(opts)
         return
     end
     return stdout
+end
+
+---@async
+local function create_or_open_mr()
+    local git = require('git').async
+    local remote_url = git.remote_url()
+    if require('git').match_remote_type(remote_url) ~= 'gitlab' then
+        Snacks.notify.error('Not a GitLab remote', { title = 'GitLab' })
+        return
+    end
+    local branch = git.current_branch()
+    if branch == '' then
+        Snacks.notify.error('Current ref is not a valid branch', { title = 'GitLab' })
+        return
+    end
+    if branch == git.default_branch() then
+        Snacks.notify.error(
+            'MR is not possible on default branch',
+            { title = 'GitLab' }
+        )
+        return
+    end
+    if require('glab').mr.exists() then
+        M.mr.open()
+        return
+    end
+    local unpushed = git.unpushed_commits()
+    if unpushed == nil then
+        Snacks.notify.error(
+            'Branch has no upstream, push it with -u first',
+            { title = 'GitLab' }
+        )
+        return
+    elseif unpushed > 0 then
+        Snacks.notify.warn(
+            ('%d unpushed commit(s)'):format(unpushed),
+            { title = 'GitLab' }
+        )
+    end
+    M.mr.form_create()
+end
+
+function M.setup()
+    vim.keymap.set('n', '<Leader>gap', function()
+        local task = vim.async.run(create_or_open_mr)
+        task:raise_on_error()
+    end, {
+        desc = 'View or create MR',
+    })
+
+    require('which-key').add({
+        { '<Leader>ga', group = 'GitLab', icon = icons.git.gitlab },
+        { '<Leader>gap', icon = icons.git.pull_request },
+    })
 end
 
 return M

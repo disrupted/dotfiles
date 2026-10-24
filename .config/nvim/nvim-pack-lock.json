@@ -13,6 +13,10 @@
       "rev": "91d86506ac2a039504d5205d32a1d4bc7aa57072",
       "src": "https://github.com/numToStr/Navigator.nvim"
     },
+    "atlas.nvim": {
+      "rev": "184e891e19d989deb93f890fa20f4ec3dcb89ef2",
+      "src": "https://github.com/emrearmagan/atlas.nvim"
+    },
     "auto-save.nvim": {
       "rev": "917bfcd7409b7d3a7b9bb734b049a0e254efae97",
       "src": "https://github.com/disrupted/auto-save.nvim"
@@ -86,10 +90,6 @@
       "rev": "3a811e07810c53b8707c3d080b50abddaac8a440",
       "src": "https://github.com/disrupted/github-actions.nvim"
     },
-    "gitlab.nvim": {
-      "rev": "0228b3b9aad2bf091fc72534c23a2751e7d649de",
-      "src": "https://github.com/harrisoncramer/gitlab.nvim"
-    },
     "gitsigns.nvim": {
       "rev": "683137003522aebd6948358334164a6ba2ca7cd5",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
@@ -122,10 +122,6 @@
       "rev": "573d7461fab05e94181051b22d195955668c2521",
       "src": "https://github.com/disrupted/laze"
     },
-    "lsp-format-modifications.nvim": {
-      "rev": "1b307ec983f5e312d2ad9ff22b5e8084afea848f",
-      "src": "https://github.com/joechrisellis/lsp-format-modifications.nvim"
-    },
     "matchwith.nvim": {
       "rev": "70bde09e0c1c89375b1fd89a6800973fe8798ec6",
       "src": "https://github.com/tar80/matchwith.nvim"
@@ -142,10 +138,6 @@
       "rev": "a6549816e62cec7037f1549d8f1659d45635370c",
       "src": "https://github.com/disrupted/neogit",
       "version": "'fix/git-dir-relative-to-repo'"
-    },
-    "neojj": {
-      "rev": "d84589a265c44b5183887a43a456fe14550c0b56",
-      "src": "https://github.com/NicholasZolton/neojj"
     },
     "neotest": {
       "rev": "27bf921498043f7ecd821d6db68d05de244bbd02",
@@ -171,10 +163,6 @@
       "rev": "9cbabffb1c8717982e34fb5d55b12e12d0c50108",
       "src": "https://github.com/ofseed/nvim-bqf",
       "version": "'native-open'"
-    },
-    "nvim-coverage": {
-      "rev": "a939e425e363319d952a6c35fb3f38b34041ded2",
-      "src": "https://github.com/andythigpen/nvim-coverage"
     },
     "nvim-dap": {
       "rev": "cfa2d58f4537aca6ca83e2de1a0d9f1491121264",
@@ -226,10 +214,6 @@
       "rev": "ec309a0eaff6ea967e58c275996155ab5c16938d",
       "src": "https://github.com/kyazdani42/nvim-web-devicons"
     },
-    "octo.nvim": {
-      "rev": "8461d99d13cca243f89848bf4d9fadee096f0a48",
-      "src": "https://github.com/pwntester/octo.nvim"
-    },
     "one.nvim": {
       "rev": "df2e169d2f616efaf987de37765d30aab9db54e3",
       "src": "https://github.com/disrupted/one.nvim"
@@ -241,10 +225,6 @@
     "overseer.nvim": {
       "rev": "a93d9f6d6defdac4bcd6d2c8ba988650e42e0a0e",
       "src": "https://github.com/stevearc/overseer.nvim"
-    },
-    "plenary.nvim": {
-      "rev": "74b06c6c75e4eeb3108ec01852001636d85a932b",
-      "src": "https://github.com/nvim-lua/plenary.nvim"
     },
     "presenting.nvim": {
       "rev": "0b513a3147d5c2d92658ffcc200b391f3de12393",
@@ -296,8 +276,9 @@
       "src": "https://github.com/rachartier/tiny-cmdline.nvim"
     },
     "todo-comments.nvim": {
-      "rev": "31e3c38ce9b29781e4422fc0322eb0a21f4e8668",
-      "src": "https://github.com/folke/todo-comments.nvim"
+      "rev": "cd14f77b75202ecc30a9be74bfc2b6c6488b9cfb",
+      "src": "https://github.com/dtor/todo-comments.nvim",
+      "version": "'remove-plenary'"
     },
     "tree-sitter-ghostty": {
       "rev": "a2075c3761a41449bb4faf69794c902dfef6d70e",

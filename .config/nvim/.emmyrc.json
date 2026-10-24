@@ -10,6 +10,7 @@
     "library": [
       "$VIMRUNTIME",
       "$HOME/.local/share/nvim/site/pack/core/opt/laze/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/atlas.nvim/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/one.nvim/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/diffs.nvim/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/gh-actions.nvim/lua",

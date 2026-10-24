@@ -153,7 +153,7 @@ return {
                     score_offset = 10,
                     enabled = function()
                         return vim.tbl_contains(
-                            { 'octo', 'gitcommit', 'markdown' },
+                            { 'gitcommit', 'markdown' },
                             vim.bo.filetype
                         )
                     end,
