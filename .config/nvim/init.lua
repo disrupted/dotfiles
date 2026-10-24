@@ -12,6 +12,7 @@ vim.pack.add({ 'https://github.com/disrupted/laze' }) -- temporary fork of https
 require('laze.extra').setup() -- optional :Laze update/clean/health/reload
 
 require('plugins').setup()
+require('conf.emmylua').setup()
 
 local disabled_builtin_plugins = {
     '2html_plugin',
