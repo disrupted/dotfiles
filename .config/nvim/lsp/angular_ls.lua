@@ -80,6 +80,7 @@ local function get_angular_core_version(root_dir)
         return ''
     end
 
+    ---@cast content string
     local json = vim.json.decode(content) or {}
 
     local version = (json.dependencies or {})['@angular/core']

@@ -7,6 +7,7 @@ local style = 'a:Cursor/lCursor'
 ---@param visible boolean
 local set_hl = function(visible)
     hl.blend = visible and 0 or 100
+    ---@diagnostic disable-next-line: param-type-mismatch
     vim.api.nvim_set_hl(0, hl_group, hl)
     if visible then
         vim.opt.guicursor:remove(style)

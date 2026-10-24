@@ -47,6 +47,7 @@ return {
             },
             -- pytest_discover_instances = true, -- experimental, support parametrized test cases
         }
+        ---@diagnostic disable-next-line: call-non-callable
         local adapter = require('neotest-python')(opts)
         adapter.name = 'Python'
         require('conf.neotest.adapters').attach(adapter)

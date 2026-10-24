@@ -66,8 +66,8 @@ return {
                 if args.data.client_id ~= client.id then
                     return
                 end
-                ---@module 'vim.lsp.semantic_tokens'
-                ---@type STTokenRange
+                --- STTokenRange is a private class in vim.lsp.semantic_tokens, so mirror it
+                ---@type { line: integer, start_col: integer, length: integer, type: string, modifiers: table<string, boolean> }
                 local token = args.data.token
                 if token.type == 'property' then
                     return

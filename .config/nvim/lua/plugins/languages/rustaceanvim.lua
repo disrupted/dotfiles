@@ -14,6 +14,7 @@ return {
         local opts = {}
         vim.g.rustaceanvim = opts
 
+        ---@diagnostic disable-next-line: call-non-callable
         local adapter = require('rustaceanvim.neotest')()
         adapter.name = 'Rust'
         require('conf.neotest.adapters').attach(adapter)

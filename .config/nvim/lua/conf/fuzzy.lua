@@ -1,7 +1,7 @@
 local M = {}
 
-local backend = nil
-local backend_error = nil
+local backend = nil ---@type table?
+local backend_error = nil ---@type string?
 local backend_loaded = false
 local warned = false
 
@@ -23,6 +23,7 @@ local function get_backend()
     backend_loaded = true
     local ok, mod = pcall(require, 'frizbee')
     if ok then
+        ---@cast mod table
         backend = mod
         return backend, nil
     end

@@ -3,9 +3,9 @@ local M = {}
 ---@alias Breakpoint table
 
 -- Get the saved data for this extension
----@param opts resession.Extension.OnSaveOpts Information about the session being saved
+---@param _opts resession.Extension.OnSaveOpts Information about the session being saved
 ---@return table<string, Breakpoint>
-M.on_save = function(opts)
+M.on_save = function(_opts)
     local breakpoints = {}
     if package.loaded.dap then
         for buf, buf_breakpoints in pairs(require('dap.breakpoints').get()) do

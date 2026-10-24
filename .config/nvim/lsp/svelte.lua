@@ -79,8 +79,12 @@ local config = {
 }
 
 local plugin = svelte_ts_plugin()
-if plugin then
-    table.insert(config.settings.vtsls.tsserver.globalPlugins, {
+local tsserver = config.settings
+    and config.settings.vtsls
+    and config.settings.vtsls.tsserver
+if plugin and tsserver and tsserver.globalPlugins then
+    ---@diagnostic disable-next-line: param-type-mismatch
+    table.insert(tsserver.globalPlugins, {
         name = 'typescript-svelte-plugin',
         location = plugin,
         enableForWorkspaceTypeScriptVersions = true,

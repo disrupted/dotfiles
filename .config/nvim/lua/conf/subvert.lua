@@ -48,11 +48,13 @@ local function expand_braces(dict)
     for bad, good in pairs(dict) do
         local before, middle, after = bad:match('^(.-){(.-)}(.*)$')
         if before then
+            ---@cast middle string
             again = true
             local vbefore, vmiddle, vafter = good:match('^(.-){(.-)}(.*)$')
             if not vbefore then
                 vbefore, vmiddle, vafter = good, ',', ''
             end
+            ---@cast vmiddle string
             local targets = middle == '' and { '' }
                 or vim.split(middle, ',', { plain = true, keepempty = true })
             local replacements = vmiddle == '' and { '' }
@@ -222,6 +224,7 @@ local function subvert(opts)
         .. replacement
         .. '/'
         .. normalized.flags
+    ---@diagnostic disable-next-line: param-type-mismatch
     local ok, err = pcall(vim.cmd, command)
     if not ok then
         vim.notify('S: ' .. tostring(err), vim.log.levels.ERROR)

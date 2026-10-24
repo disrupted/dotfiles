@@ -14,21 +14,8 @@ return {
         { '<M-Bslash>', '<cmd>OverseerRun<cr>', desc = 'Overseer run' },
     },
     config = function()
-        ---@module 'overseer.config'
-        ---@type overseer.Config
+        ---@type overseer.SetupOpts
         local opts = {
-            templates = {
-                'builtin',
-                'terminal',
-                'pkl',
-                'python.poetry',
-                'python.uv',
-                'typst',
-            },
-            keymaps = {
-                ['<C-u>'] = 'keymap.scroll_output_up',
-                ['<C-d>'] = 'keymap.scroll_output_down',
-            },
             form = {
                 border = 'rounded',
             },
@@ -69,15 +56,18 @@ return {
             },
         }
         local overseer = require('overseer')
+        local STATUS = require('overseer.constants').STATUS
         overseer.setup(opts)
 
         -- Monkey-patch the JobstartStrategy to use a fixed width
         local JobstartStrategy = require('overseer.strategy.jobstart')
         local original_start = JobstartStrategy.start
+        ---@diagnostic disable-next-line: duplicate-set-field, redundant-parameter
         JobstartStrategy.start = function(self, task)
             -- Temporarily override vim.o.columns during jobstart
             local saved_columns = vim.o.columns
             vim.o.columns = saved_columns - 40 + 3
+            ---@diagnostic disable-next-line: redundant-parameter, param-type-mismatch
             local result = original_start(self, task)
             vim.o.columns = saved_columns
             return result
@@ -131,7 +121,7 @@ return {
             end,
         })
 
-        local function toggle_runner(window)
+        local function _toggle_runner(window)
             if vim.bo.buftype == 'terminal' then
                 vim.cmd('close')
                 return
@@ -141,10 +131,10 @@ return {
             local task_list = require('overseer.task_list')
             local tasks = overseer.list_tasks({
                 status = {
-                    overseer.STATUS.RUNNING,
-                    overseer.STATUS.SUCCESS,
-                    overseer.STATUS.FAILURE,
-                    overseer.STATUS.CANCELED,
+                    STATUS.RUNNING,
+                    STATUS.SUCCESS,
+                    STATUS.FAILURE,
+                    STATUS.CANCELED,
                 },
                 sort = task_list.sort_finished_recently,
             })
@@ -153,6 +143,9 @@ return {
                 Snacks.notify.warn('No tasks found', { title = 'Overseer' })
             else
                 local most_recent = tasks[1]
+                if not most_recent then
+                    return
+                end
                 overseer.run_action(most_recent, 'open ' .. window)
             end
         end

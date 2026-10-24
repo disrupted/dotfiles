@@ -233,6 +233,7 @@ vim.o.joinspaces = false -- No double spaces with join after a dot
 vim.o.number = true -- line numbers
 vim.o.relativenumber = false -- relative line numbers
 vim.o.numberwidth = 2
+---@diagnostic disable-next-line: assign-type-mismatch
 vim.o.signcolumn = 'auto:1-2' -- 'auto:1-2', 'yes:1'
 vim.o.laststatus = 3 -- global statusline
 vim.o.cursorline = false -- use autocmd below to only enable it for the focused window
@@ -254,7 +255,7 @@ vim.api.nvim_create_autocmd({ 'InsertLeave', 'WinEnter' }, {
 })
 vim.api.nvim_create_autocmd({ 'InsertEnter', 'WinLeave' }, {
     group = au_cursorline,
-    callback = function(args)
+    callback = function()
         vim.wo.cursorline = false
     end,
     desc = 'Hide cursorline in insert mode and inactive windows',

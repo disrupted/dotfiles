@@ -10,9 +10,11 @@ return {
     lazy = false,
     priority = 998,
     init = function()
+        ---@diagnostic disable-next-line: global-in-non-module
         _G.dd = function(...)
             Snacks.debug.inspect(...)
         end
+        ---@diagnostic disable-next-line: global-in-non-module
         _G.bt = function()
             Snacks.debug.backtrace()
         end
@@ -177,6 +179,7 @@ return {
             {
                 '<A-d>',
                 function()
+                    ---@diagnostic disable-next-line: param-type-mismatch
                     Snacks.scratch({ ft = 'lua' })
                 end,
                 desc = 'Toggle Scratch Buffer',
@@ -190,19 +193,15 @@ return {
                 local explorers = Snacks.picker.get({ source = 'explorer' })
                 if not vim.tbl_isempty(explorers) then
                     local picker = explorers[1]
+                    if not picker then
+                        return
+                    end
                     if picker:is_focused() then
                         picker:close()
                     else
                         picker.list.win:focus()
                     end
                     return
-                end
-
-                if
-                    package.loaded.dapui
-                    and require('dapui.windows').layouts[1]:is_open()
-                then
-                    require('dapui').close()
                 end
 
                 local picker = Snacks.picker.explorer({
@@ -315,17 +314,20 @@ return {
                 ---@param picker snacks.Picker
                 ---@param item snacks.picker.Item
                 ---@return boolean?
-                local function dir_down(picker, item, action)
+                local function dir_down(picker, item, _action)
                     item = item or picker:current({ resolve = false })
                     if not item then
                         return true
                     end
 
                     if item.dir then
-                        local target = vim.fs.normalize(Snacks.picker.util.path(item))
-                        picker:set_cwd(target)
-                        refresh_cwd_title(picker, target)
-                        picker:find({ refresh = true })
+                        local item_path = Snacks.picker.util.path(item)
+                        if item_path then
+                            local target = vim.fs.normalize(item_path)
+                            picker:set_cwd(target)
+                            refresh_cwd_title(picker, target)
+                            picker:find({ refresh = true })
+                        end
                         return true
                     end
                 end
@@ -360,6 +362,7 @@ return {
                     return name:sub(1, 1) == '.', name
                 end
 
+                ---@type string?
                 local current_file = vim.api.nvim_buf_get_name(0)
                 if current_file == '' then
                     current_file = nil
@@ -374,6 +377,7 @@ return {
 
                 local start_cwd = buf_parent_dir()
 
+                ---@diagnostic disable-next-line: param-type-mismatch
                 Snacks.picker.pick({
                     source = 'files',
                     hidden = true,
@@ -408,7 +412,7 @@ return {
                             return false
                         end
 
-                        local stat = (vim.uv or vim.loop).fs_stat(path)
+                        local stat = vim.uv.fs_stat(path)
                         item.file = path
                         item.dir = stat and stat.type == 'directory' or false
                         item.open = false
@@ -418,9 +422,11 @@ return {
                         if not current_file then
                             return
                         end
+                        ---@diagnostic disable-next-line: undefined-field
                         if picker._focused_current_file then
                             return
                         end
+                        ---@diagnostic disable-next-line: inject-field
                         picker._focused_current_file = true
 
                         for item, idx in picker:iter() do
@@ -579,7 +585,7 @@ return {
         {
             '<Leader>gy',
             function()
-                ---@diagnostic disable-next-line: missing-fields
+                ---@diagnostic disable-next-line: missing-fields, param-type-mismatch
                 Snacks.gitbrowse.open({
                     what = 'permalink',
                     notify = false,
@@ -833,10 +839,10 @@ return {
                         },
                     },
                     dirs = {
-                        finder = function(opts, ctx)
+                        finder = function(fopts, ctx)
                             local finder = require('conf.snacks.finder')
-                            return vim.g.git_repo and finder.git_dirs(opts, ctx)
-                                or finder.fd_dirs(opts, ctx)
+                            return vim.g.git_repo and finder.git_dirs(fopts, ctx)
+                                or finder.fd_dirs(fopts, ctx)
                         end,
                         format = 'file',
                         show_empty = true,
@@ -869,6 +875,7 @@ return {
                         actions = {
                             pick_glob = function(self, _)
                                 local default = '*.'
+                                ---@diagnostic disable-next-line: param-type-mismatch
                                 Snacks.input.input({
                                     prompt = 'Grep glob',
                                     default = default,
@@ -1067,6 +1074,7 @@ return {
                 },
             },
         }
+        ---@diagnostic disable-next-line: param-type-mismatch
         require('snacks').setup(opts)
 
         local gh_actions = require('snacks.gh.actions')
@@ -1115,9 +1123,12 @@ return {
             local win = (scratch_opts or {}).win
             if win and win.keys and win.keys.submit then
                 win.keys.submit[1] = '<S-CR>'
-                for i, key in ipairs(win.footer_keys or {}) do
-                    if key == '<c-s>' then
-                        win.footer_keys[i] = '<S-CR>'
+                local footer_keys = win.footer_keys
+                if type(footer_keys) == 'table' then
+                    for i, key in ipairs(footer_keys) do
+                        if key == '<c-s>' then
+                            footer_keys[i] = '<S-CR>'
+                        end
                     end
                 end
             end
@@ -1132,6 +1143,7 @@ return {
         local commit_message = format.commit_message
         ---@param item snacks.picker.Item
         ---@param picker snacks.Picker
+        ---@diagnostic disable-next-line: duplicate-set-field
         format.commit_message = function(item, picker)
             local ret = commit_message(item, picker)
             for _, span in ipairs(ret) do

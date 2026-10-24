@@ -47,6 +47,7 @@ return {
             },
         }
         local wk = require('which-key')
+        ---@diagnostic disable-next-line: param-type-mismatch
         wk.setup(opts)
 
         wk.add({

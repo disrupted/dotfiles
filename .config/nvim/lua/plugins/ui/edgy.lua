@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-field
 ---@type LazeSpec
 return {
     'folke/edgy.nvim',
@@ -50,7 +51,7 @@ return {
             {
                 ft = 'snacks_layout_box',
                 title = 'Explorer',
-                filter = function(buf, win)
+                filter = function(_buf, win)
                     -- exclude floating windows
                     return vim.api.nvim_win_get_config(win).relative == ''
                 end,
@@ -148,7 +149,7 @@ return {
             },
             {
                 ft = 'OverseerOutput',
-                filter = function(buf, win)
+                filter = function(_buf, win)
                     -- exclude floating windows
                     return vim.api.nvim_win_get_config(win).relative == ''
                 end,

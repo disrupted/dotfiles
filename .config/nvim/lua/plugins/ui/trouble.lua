@@ -24,7 +24,9 @@ return {
                 )
                 if not vim.tbl_isempty(started_clients) then
                     vim.defer_fn(function()
-                        require('trouble').refresh('workspace_diagnostics_severe')
+                        local trouble_api = require('trouble.api')
+                        ---@cast trouble_api trouble.api
+                        trouble_api.refresh('workspace_diagnostics_severe')
                     end, 500)
                 end
             end,
@@ -38,7 +40,9 @@ return {
                 require('conf.trouble').diagnostics.toggle('workspace_diagnostics')
                 if not vim.tbl_isempty(started_clients) then
                     vim.defer_fn(function()
-                        require('trouble').refresh('workspace_diagnostics')
+                        local trouble_api = require('trouble.api')
+                        ---@cast trouble_api trouble.api
+                        trouble_api.refresh('workspace_diagnostics')
                     end, 500)
                 end
             end,
@@ -113,7 +117,7 @@ return {
                     local severity = vim.diagnostic.severity.WARN
                     for _, item in ipairs(items) do
                         if item.severity > 0 then -- filter out unnecessary
-                            severity = math.min(severity, math.max(item.severity))
+                            severity = math.min(severity, math.max(item.severity)) --[[@as integer]]
                         end
                     end
                     return vim.tbl_filter(function(item)

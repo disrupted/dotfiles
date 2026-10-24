@@ -62,7 +62,7 @@ return {
                 password = function()
                     return vim.fn.sha256(assert(vim.uv.cwd())):sub(1, 32)
                 end,
-                spawn_command = function(port, url, env)
+                spawn_command = function(port, _url, env)
                     -- Spawn at most once per session
                     if server_spawn_attempted then
                         error(
@@ -393,9 +393,9 @@ return {
                 else
                     seen[key] = true
                     context.add_selection(context.new_selection({
-                        path = path,
-                        name = vim.fn.fnamemodify(path, ':t'),
-                        extension = vim.fn.fnamemodify(path, ':e'),
+                        path = path or '',
+                        name = vim.fn.fnamemodify(path or '', ':t'),
+                        extension = vim.fn.fnamemodify(path or '', ':e'),
                     }, content, range))
                     added = added + 1
                 end
@@ -476,7 +476,7 @@ return {
                 'OpencodeEvent:permission.asked',
                 'OpencodeEvent:question.asked',
             },
-            callback = function(args)
+            callback = function()
                 io.stdout:write('\a')
                 io.stdout:flush()
             end,
@@ -485,7 +485,7 @@ return {
 
         vim.api.nvim_create_autocmd('User', {
             pattern = 'OpencodeEvent:permission.asked',
-            callback = function(args)
+            callback = function()
                 require('which-key').add({
                     {
                         '<leader>aa',
@@ -511,7 +511,7 @@ return {
 
         vim.api.nvim_create_autocmd('User', {
             pattern = 'OpencodeEvent:permission.replied',
-            callback = function(args)
+            callback = function()
                 if vim.tbl_isempty(require('opencode.state').pending_permissions) then
                     local keymaps = { '<leader>aa', '<leader>aA', '<leader>ad' }
                     for _, keymap in ipairs(keymaps) do

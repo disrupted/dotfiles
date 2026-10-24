@@ -248,6 +248,7 @@ return {
                 },
             },
         }
+        ---@diagnostic disable-next-line: param-type-mismatch
         require('dropbar').setup(opts)
         require('which-key').add({
             {

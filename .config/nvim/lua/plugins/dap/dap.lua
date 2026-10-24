@@ -133,6 +133,7 @@ return {
         -- when hitting a breakpoint use an already open window containing the breakpoint buffer
         -- instead of switching the current window to the other buffer
         dap.defaults.fallback.switchbuf = 'usevisible,usetab,uselast'
+        ---@diagnostic disable-next-line: assign-type-mismatch
         dap.defaults.fallback.exception_breakpoints = { 'uncaught' } -- { 'raised', 'uncaught' }
 
         dap.listeners.after.event_exited.dap_view_config = function(_, body)
@@ -163,21 +164,6 @@ return {
         -- some adapters send disconnect response instead of terminated
         dap.listeners.after.disconnect.dap_view_config = function()
             require('dap-view').close(true)
-        end
-
-        local function close_dapui()
-            if package.loaded.dapui then
-                require('dapui').close()
-            end
-        end
-        dap.listeners.after.event_exited.dapui_config = function()
-            close_dapui()
-        end
-        dap.listeners.after.event_terminated.dapui_config = function()
-            close_dapui()
-        end
-        dap.listeners.after.disconnect.dapui_config = function()
-            close_dapui()
         end
 
         vim.fn.sign_define('DapBreakpoint', {

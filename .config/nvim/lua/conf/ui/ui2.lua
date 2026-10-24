@@ -106,6 +106,7 @@ end
 
 local messages = require('vim._core.ui2.messages')
 local orig_msg_show = messages.msg_show
+---@diagnostic disable-next-line: duplicate-set-field
 messages.msg_show = function(kind, content, replace_last, history, append, id, trigger)
     local msg = normalized_content(content)
 

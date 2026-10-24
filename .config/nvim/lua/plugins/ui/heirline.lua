@@ -1,3 +1,4 @@
+---@diagnostic disable: param-type-mismatch, inject-field
 local icons = require('conf.icons')
 
 ---@type LazeSpec

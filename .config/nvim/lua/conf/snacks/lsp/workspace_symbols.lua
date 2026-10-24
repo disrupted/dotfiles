@@ -107,7 +107,10 @@ local function workspace_symbol_client(root, filetype)
             if
                 filetype
                 and vim.list_contains(
-                    client.config and client.config.filetypes or {},
+                    -- client.config is a vim.lsp.ClientConfig, which doesn't
+                    -- declare filetypes in the runtime types
+                    client.config and (client.config --[[@as vim.lsp.Config]]).filetypes
+                        or {},
                     filetype
                 )
             then
@@ -173,13 +176,18 @@ local function workspace_symbols_finder(
 
             local query = ctx.filter.search or ''
 
+            ---@diagnostic disable-next-line: param-type-mismatch
             lsp_source.request(active_client, 'workspace/symbol', function()
                 return { query = query }
             end, function(request_client, result)
                 local items = lsp_source.results_to_items(request_client, result, {
                     text_with_file = true,
                     filter = function(item)
-                        return want(lsp_source.symbol_kind(item.kind))
+                        local kind = item.kind
+                        if not kind then
+                            return want('Unknown')
+                        end
+                        return want(lsp_source.symbol_kind(kind))
                     end,
                 })
 
@@ -199,6 +207,7 @@ local function workspace_symbols_finder(
 
                 for _, item in ipairs(items) do
                     item.tree = opts.tree
+                    ---@diagnostic disable-next-line: await-in-sync
                     cb(item)
                 end
             end)
@@ -234,6 +243,7 @@ function M.pick(opts)
         actions = {
             pick_scope_dir = function(self, _)
                 local current_search = self.input:get()
+                ---@diagnostic disable-next-line: undefined-field
                 Snacks.picker.dirs({
                     title = 'Pick Symbol Scope Directory',
                     cwd = root,

@@ -14,15 +14,14 @@ return {
                 if args.data.client_id ~= client.id then
                     return
                 end
-                ---@module 'vim.lsp.semantic_tokens'
-                ---@type STTokenRange
+                --- STTokenRange is a private class in vim.lsp.semantic_tokens, so mirror it
+                ---@type { line: integer, start_col: integer, length: integer, type: string, modifiers: table<string, boolean> }
                 local token = args.data.token
                 if token.type == 'parameter' and not token.modifiers.definition then
-                    local captures = vim.treesitter.get_captures_at_pos(
-                        bufnr,
+                    local captures = vim.treesitter.get_captures(bufnr, {
                         token.line,
-                        token.start_col
-                    )
+                        token.start_col,
+                    })
                     if
                         vim.iter(captures):any(function(capture)
                             return capture.lang == 'python'

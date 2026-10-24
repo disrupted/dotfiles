@@ -65,7 +65,8 @@ local function nui_lsp_rename()
         if cached_refs[buf] then
             for line_nr, infos in pairs(cached_refs[buf]) do
                 -- restore original line text
-                local orig = infos[1].orig_text
+                local info = infos[1]
+                local orig = info and info.orig_text or ''
                 vim.api.nvim_buf_set_lines(buf, line_nr, line_nr + 1, false, { orig })
             end
         end
@@ -109,6 +110,7 @@ local function nui_lsp_rename()
 
         -- add `newName` property to `params`.
         -- this is needed for making `textDocument/rename` request.
+        ---@diagnostic disable-next-line: inject-field
         params['newName'] = new_name
 
         -- send the `textDocument/rename` request to LSP server
@@ -210,17 +212,18 @@ local function nui_lsp_rename()
         },
     }
 
+    ---@diagnostic disable-next-line: call-non-callable, param-type-mismatch
     local input = Input(popup_options, {
         -- set the default value to current name
         default_value = curr_name,
         -- pass the `on_submit` callback function we wrote earlier
         on_submit = on_submit,
         prompt = '',
-        ---@param input string
-        on_change = function(input)
+        ---@param value string
+        on_change = function(value)
             vim.schedule(function()
-                if input and #input > 0 then
-                    apply_preview(input)
+                if value and #value > 0 then
+                    apply_preview(value)
                 else
                     clear_preview()
                 end
@@ -249,18 +252,21 @@ local function nui_lsp_rename()
             'n',
             false
         )
+        ---@diagnostic disable-next-line: param-type-mismatch
     end, { noremap = true })
 
     -- close on <esc> in normal mode
     input:map('n', '<esc>', function()
         clear_preview()
-        input.input_props.on_close()
+        input:unmount()
+        ---@diagnostic disable-next-line: param-type-mismatch
     end, { noremap = true })
 
     -- close when cursor leaves the buffer
     input:on(event.BufLeave, function()
         clear_preview()
-        input.input_props.on_close()
+        input:unmount()
+        ---@diagnostic disable-next-line: param-type-mismatch
     end, { once = true })
 end
 

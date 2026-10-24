@@ -53,8 +53,12 @@ return {
                         local start = math.max(1, hunk.added.start) -- on untracked files, start is 0
                         local last = start + hunk.added.count
                         -- nvim_buf_get_lines uses zero-based indexing -> subtract from last
-                        local last_hunk_line =
-                            vim.api.nvim_buf_get_lines(0, last - 2, last - 1, true)[1]
+                        local last_hunk_line = vim.api.nvim_buf_get_lines(
+                            0,
+                            last - 2,
+                            last - 1,
+                            true
+                        )[1] or ''
                         local range = {
                             start = { start, 0 },
                             ['end'] = { last - 1, last_hunk_line:len() },
@@ -121,7 +125,9 @@ return {
         conform.setup(opts)
 
         conform.formatters.dprint = {
+            ---@return string[]?
             prepend_args = function(self, ctx)
+                ---@diagnostic disable-next-line: need-check-nil, param-type-mismatch
                 if not self:cwd(ctx) then
                     Snacks.notify('fallback to global dprint config', {
                         level = vim.log.levels.DEBUG,
@@ -132,6 +138,7 @@ return {
                         -- vim.fs.normalize '~/.config/dprint.jsonc',
                     }
                 end
+                return nil
             end,
         }
     end,

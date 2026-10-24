@@ -17,7 +17,7 @@ return {
             {
                 '<Leader>gap',
                 function()
-                    local task = vim.async
+                    local _task = vim.async
                         .run(function()
                             local git = require('git').async
                             local remote_url = git.remote_url()

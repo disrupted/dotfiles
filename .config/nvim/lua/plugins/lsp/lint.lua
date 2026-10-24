@@ -63,9 +63,7 @@ return {
             -- Add global linters.
             vim.list_extend(names, lint.linters_by_ft['*'] or {})
 
-            -- Filter out linters that don't exist or don't match the condition.
-            local ctx = { filename = vim.api.nvim_buf_get_name(0) }
-            ctx.dirname = vim.fs.dirname(ctx.filename)
+            -- Filter out linters that don't exist.
             names = vim.tbl_filter(function(name)
                 local linter = lint.linters[name]
                 if not linter then
@@ -74,12 +72,7 @@ return {
                         { title = 'Lint' }
                     )
                 end
-                return linter
-                    and not (
-                        type(linter) == 'table'
-                        and linter.condition
-                        and not linter.condition(ctx)
-                    )
+                return linter ~= nil
             end, names)
 
             -- Run linters.

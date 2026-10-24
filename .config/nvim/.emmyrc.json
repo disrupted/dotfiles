@@ -88,7 +88,14 @@
       "$HOME/.local/share/nvim/site/pack/core/opt/xcodebuild.nvim/lua"
     ],
     "ignoreGlobs": [
-      "**/*_spec.lua"
+      "**/*_spec.lua",
+      "snippets/**",
+      "lua/overseer/**",
+      "overseer/strategy/jobstart_no_footer.lua",
+      "overseer/component/edgy_size.lua",
+      "overseer/component/shell_hook/interactive.lua",
+      "overseer/template/python/poetry.lua",
+      "overseer/template/python/uv.lua"
     ]
   },
   "format": {
@@ -115,7 +122,8 @@
   },
   "diagnostics": {
     "disable": [
-      "unnecessary-if"
+      "unnecessary-if",
+      "missing-fields"
     ]
   },
   "strict": {

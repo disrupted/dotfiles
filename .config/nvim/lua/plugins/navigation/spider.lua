@@ -18,6 +18,7 @@ return {
         {
             'w',
             function()
+                ---@diagnostic disable-next-line: param-type-mismatch
                 require('spider').motion('w', { skipInsignificantPunctuation = false })
             end,
             desc = 'Spider-w',

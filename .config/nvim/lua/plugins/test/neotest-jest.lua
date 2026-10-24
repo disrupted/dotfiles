@@ -22,6 +22,7 @@ return {
                 return vim.uv.cwd()
             end,
         }
+        ---@diagnostic disable-next-line: call-non-callable
         local adapter = require('neotest-jest')(opts)
         adapter.name = 'Jest'
         require('conf.neotest.adapters').attach(adapter)

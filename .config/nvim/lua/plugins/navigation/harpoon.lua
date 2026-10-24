@@ -39,7 +39,11 @@ return {
             function()
                 local harpoon = require('harpoon')
                 local list = harpoon:list()
-                local item = list.config.create_list_item(list.config)
+                local create_list_item = list.config.create_list_item
+                if not create_list_item then
+                    return
+                end
+                local item = create_list_item(list.config)
 
                 if not list:get_by_value(item.value) then
                     list:add(item)
@@ -86,6 +90,7 @@ return {
         },
     },
     config = function()
+        ---@diagnostic disable-next-line: missing-parameter
         require('harpoon').setup()
     end,
 }

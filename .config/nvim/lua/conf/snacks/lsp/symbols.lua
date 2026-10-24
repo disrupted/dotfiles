@@ -6,7 +6,8 @@ local M = {}
 ---@param range lsp_range_t 0-based range
 ---@return boolean
 function M.cursor_in_range(cursor, range)
-    local row, col = unpack(cursor)
+    local row = cursor[1] or 0
+    local col = cursor[2] or 0
     row = row - 1
     return (
         row > range.start.line

@@ -52,7 +52,7 @@ local default_opts = {
 
 -- Detect project type of cwd
 ---@param opts? detect_project.Opts
----@return string detected filetypes of current project
+---@return string[] detected filetypes of current project
 M.project_filetypes = function(opts)
     ---@type detect_project.Opts
     opts = vim.tbl_extend('keep', opts or {}, default_opts)
@@ -73,7 +73,8 @@ M.project_filetypes = function(opts)
     end
 
     -- check marker files
-    for filetype, files in pairs(opts.markers) do
+    local markers = opts.markers or {}
+    for filetype, files in pairs(markers) do
         if
             not vim.list_contains(project_filetypes, filetype)
             and vim.iter(files):any(function(file_predicate)
@@ -94,7 +95,7 @@ M.project_filetypes = function(opts)
     -- include only requested filetypes
     return vim.iter(project_filetypes)
         :filter(function(ft)
-            return opts.markers[ft] ~= nil
+            return markers[ft] ~= nil
         end)
         :totable()
 end
@@ -336,14 +337,12 @@ local function move_buf_to_tab(bufnr, dest_name)
 
             -- Record the cross-tab jump (truncate any forward entries)
             if source_buf then
-                for i = #cross_tab_jumps, cross_tab_pos + 1, -1 do
-                    cross_tab_jumps[i] = nil
-                end
+                cross_tab_jumps = vim.list_slice(cross_tab_jumps, 1, cross_tab_pos)
                 cross_tab_pos = cross_tab_pos + 1
                 cross_tab_jumps[cross_tab_pos] = {
                     source_tab = source_name,
                     source_buf = source_buf,
-                    source_pos = source_pos,
+                    source_pos = source_pos or { 1, 0 },
                     dest_tab = dest_name,
                     dest_buf = bufnr,
                     dest_pos = cursor_pos or { 1, 0 },
@@ -619,7 +618,8 @@ M.setup = function()
             local entry = cross_tab_jumps[cross_tab_pos]
             local current_name = get_tab_name(vim.api.nvim_get_current_tabpage())
             if
-                current_name == entry.dest_tab
+                entry ~= nil
+                and current_name == entry.dest_tab
                 and vim.api.nvim_get_current_buf() == entry.dest_buf
             then
                 local target = find_tab(entry.source_tab)
@@ -645,7 +645,8 @@ M.setup = function()
             local entry = cross_tab_jumps[cross_tab_pos + 1]
             local current_name = get_tab_name(vim.api.nvim_get_current_tabpage())
             if
-                current_name == entry.source_tab
+                entry ~= nil
+                and current_name == entry.source_tab
                 and vim.api.nvim_get_current_buf() == entry.source_buf
             then
                 local target = find_tab(entry.dest_tab)

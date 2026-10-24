@@ -206,11 +206,12 @@ return {
                                             return false
                                         end
                                         gitlab_url = gitlab_url:gsub('https://', '')
-                                        enable = gitlab_url
-                                            and require('blink-cmp-git.utils')
-                                                    .get_repo_remote_url()
-                                                    :find(gitlab_url, nil, true)
-                                                ~= nil
+                                        ---@diagnostic disable-next-line: await-in-sync
+                                        local remote_url = require(
+                                            'blink-cmp-git.utils'
+                                        ).get_repo_remote_url()
+                                        enable = remote_url:find(gitlab_url, nil, true)
+                                            ~= nil
                                         return enable
                                     end,
                                 },

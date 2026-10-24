@@ -7,10 +7,12 @@ local TYPE_NAME_COLUMN = 26
 ---@return snacks.picker.Highlight[]
 function M.format_lsp_symbol(item, picker)
     local ret = {} ---@type snacks.picker.Highlight[]
+    local icons = picker.opts.icons
+    local kinds = icons and icons.kinds or {}
     local kind = item.lsp_kind or item.kind or 'Unknown'
-    kind = picker.opts.icons.kinds[kind] and kind or 'Unknown'
+    kind = kinds[kind] and kind or 'Unknown'
 
-    ret[#ret + 1] = { picker.opts.icons.kinds[kind], 'SnacksPickerIcon' .. kind }
+    ret[#ret + 1] = { kinds[kind], 'SnacksPickerIcon' .. kind }
     ret[#ret + 1] = { ' ' }
 
     local name = vim.trim((item.name or ''):gsub('\r?\n', ' '))
@@ -31,6 +33,7 @@ end
 local function type_hierarchy(method, ctx)
     local buf = ctx.filter.current_buf
     local win = ctx.filter.current_win
+    ---@cast win integer
     local seen = {}
 
     ---@async
@@ -68,6 +71,7 @@ local function type_hierarchy(method, ctx)
                     }, ':')
                     if not seen[key] then
                         seen[key] = true
+                        ---@diagnostic disable-next-line: await-in-sync
                         cb(item)
                     end
                 end
@@ -76,17 +80,17 @@ local function type_hierarchy(method, ctx)
     end
 end
 
----@param opts snacks.picker.lsp.Config
+---@param _opts snacks.picker.lsp.Config
 ---@param ctx snacks.picker.finder.ctx
----@type snacks.picker.finder
-function M.supertypes(opts, ctx)
+---@return fun(cb: async fun(item: snacks.picker.finder.Item))
+function M.supertypes(_opts, ctx)
     return type_hierarchy('typeHierarchy/supertypes', ctx)
 end
 
----@param opts snacks.picker.lsp.Config
+---@param _opts snacks.picker.lsp.Config
 ---@param ctx snacks.picker.finder.ctx
----@type snacks.picker.finder
-function M.subtypes(opts, ctx)
+---@return fun(cb: async fun(item: snacks.picker.finder.Item))
+function M.subtypes(_opts, ctx)
     return type_hierarchy('typeHierarchy/subtypes', ctx)
 end
 

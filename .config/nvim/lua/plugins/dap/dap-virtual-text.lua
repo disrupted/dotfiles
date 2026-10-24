@@ -17,7 +17,7 @@ return {
         --- @param node userdata tree-sitter node identified as variable definition of reference (see `:h tsnode`)
         --- @param options nvim_dap_virtual_text_options Current options for nvim-dap-virtual-text
         --- @return string|nil A text how the virtual text should be displayed or nil, if this variable shouldn't be displayed
-        display_callback = function(variable, buf, stackframe, node, options)
+        display_callback = function(variable, _buf, _stackframe, _node, options)
             if #variable.value > 30 then
                 return
             end

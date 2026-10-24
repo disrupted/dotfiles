@@ -1,3 +1,4 @@
+---@diagnostic disable-next-line: param-type-mismatch
 vim.diagnostic.config({
     underline = true, -- use custom diagnostic handler instead to filter for which diagnostics to show an underline
     signs = {

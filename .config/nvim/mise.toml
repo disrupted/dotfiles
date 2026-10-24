@@ -1,3 +1,7 @@
+[tasks.check]
+description = "Run Emmylua type checks"
+run = "VIMRUNTIME='/Users/disrupted/.local/share/mise/installs/neovim/nightly/share/nvim/runtime' emmylua_check -c .emmyrc.json ."
+
 [tasks.test]
 description = "Run Plenary test suite"
 run = "./run_tests.sh"

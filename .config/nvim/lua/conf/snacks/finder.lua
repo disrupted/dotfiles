@@ -53,7 +53,6 @@ M.git_dirs = function(opts, ctx)
 end
 
 ---@param opts snacks.picker.git.status.Config
----@type snacks.picker.finder
 function M.yadm_status(opts, ctx)
     local cwd = vim.fs.normalize(opts and opts.cwd or vim.uv.cwd() or '.') or nil
     local args = {

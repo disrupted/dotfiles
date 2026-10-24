@@ -51,6 +51,7 @@ M.capabilities = vim.tbl_deep_extend(
 
 ---@param override lsp.ClientCapabilities
 M.extend_client_capabilities = function(override)
+    ---@diagnostic disable-next-line: param-type-mismatch
     return vim.tbl_deep_extend('force', M.capabilities, override)
 end
 

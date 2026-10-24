@@ -36,8 +36,9 @@ local default_clients = {
         -- check which server is available in venv
         local venv_path = vim.env.VIRTUAL_ENV
         for _, config in ipairs(configs) do
-            local exepath = vim.fn.exepath(config.cmd[1])
-            if exepath ~= '' then
+            local cmd = config and config.cmd
+            local exepath = cmd and cmd[1] and vim.fn.exepath(cmd[1]) or ''
+            if exepath ~= '' and config and venv_path then
                 if vim.fs.relpath(venv_path, exepath) then
                     return start(config)
                 end
@@ -47,11 +48,11 @@ local default_clients = {
     rust = function()
         require('rustaceanvim')
         require('rustaceanvim.lsp').start()
-        config = vim.tbl_extend(
+        local config = vim.tbl_extend(
             'keep',
-            vim.lsp.config['rust-analyzer'],
+            vim.lsp.config['rust-analyzer'] or {},
             { cmd = { 'rust-analyzer' } }
-        )
+        ) --[[@as vim.lsp.Config]]
         return start(config)
     end,
 }
@@ -59,7 +60,7 @@ local default_clients = {
 ---@type table<string, fun():integer|integer[]|nil>
 local clients = setmetatable(default_clients, {
     ---@param key string filetype
-    ---@return integer[] client_ids
+    ---@return fun(): integer[] client_ids
     __index = function(_, key)
         return function()
             local configs = require('conf.lsp.config').filter_enabled({

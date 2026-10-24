@@ -17,6 +17,7 @@ return {
             win_height = 12,
             win_vheight = 12,
             should_preview_cb = function(bufnr)
+                ---@diagnostic disable-next-line: param-type-mismatch
                 local fname = vim.api.nvim_buf_get_name(bufnr)
                 local stat = vim.uv.fs_stat(fname)
                 if not stat or stat.size > 100 * 1024 then

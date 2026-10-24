@@ -43,16 +43,16 @@ return {
                         local pr = require('conf.octo').pr
                         local existing_pr = require('gh').pr.json({ 'number' })
                         if not existing_pr then
-                            local unpushed = git.unpushed_commits()
-                            if unpushed == nil then
+                            local unpushed_after = git.unpushed_commits()
+                            if unpushed_after == nil then
                                 Snacks.notify.error(
                                     'Branch has no upstream, push it with -u first',
                                     { title = 'GitHub' }
                                 )
                                 return
-                            elseif unpushed > 0 then
+                            elseif unpushed_after > 0 then
                                 Snacks.notify.warn(
-                                    ('%d unpushed commit(s)'):format(unpushed),
+                                    ('%d unpushed commit(s)'):format(unpushed_after),
                                     { title = 'GitHub' }
                                 )
                             end

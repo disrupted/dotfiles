@@ -9,14 +9,16 @@ M.filter_enabled = function(opts)
     local configs = {}
     local enabled_configs = vim.tbl_keys(vim.lsp._enabled_configs)
     for _, name in ipairs(enabled_configs) do
-        ---@type vim.lsp.Config
         local config = vim.lsp.config[name]
-        if
-            vim.iter(config.filetypes):any(function(filetype)
+        local cmd = config and config.cmd
+        local filetypes = config and config.filetypes
+        if config and cmd and cmd[1] and filetypes then
+            local matches = vim.iter(filetypes):any(function(filetype)
                 return filetype == opts.filetype
-            end) and vim.fn.executable(config.cmd[1]) == 1
-        then
-            table.insert(configs, config)
+            end)
+            if matches and vim.fn.executable(cmd[1]) == 1 then
+                configs[#configs + 1] = config
+            end
         end
     end
     return configs
@@ -31,6 +33,7 @@ vim.ui.float = function(options, lines)
 
     ---@param self snacks.win
     local on_buf = function(self)
+        ---@diagnostic disable-next-line: param-type-mismatch
         vim.api.nvim_buf_set_lines(self.buf, 0, -1, false, lines)
     end
 
@@ -55,9 +58,12 @@ M.info = function()
             return table.concat(cmd, ' ')
         elseif type(cmd) == 'function' then
             --
-            local info = debug.getinfo(cmd, 'S')
+            local info = debug.getinfo(cmd, 'S') or {}
 
-            return ('<function %s:%s>'):format(info.source, info.linedefined)
+            return ('<function %s:%s>'):format(
+                info.source or '?',
+                info.linedefined or '?'
+            )
         else
             return tostring(config.cmd)
         end
@@ -74,7 +80,7 @@ M.info = function()
     local clients = vim.lsp.get_clients({ bufnr = bufnr })
 
     local lines = {
-        'Language Server Log: ' .. vim.lsp.get_log_path(),
+        'Language Server Log: ' .. vim.lsp.log.get_filename(),
         'Detected filetype  : ' .. vim.bo[bufnr].filetype,
         '',
         string.format(
@@ -128,6 +134,7 @@ M.info = function()
         end
     end
 
+    ---@diagnostic disable-next-line: param-type-mismatch
     vim.ui.float({ ft = 'markdown', relative = 'editor' }, lines):show()
 end
 

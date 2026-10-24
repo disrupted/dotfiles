@@ -7,7 +7,7 @@ local function is_site_packages(item)
 end
 
 ---@param item snacks.picker.finder.Item
----@return integer, integer
+---@return number, number
 local function line_col(item)
     local line = item.pos and item.pos[1] or 0
     local col = item.pos and item.pos[2] or math.huge
@@ -16,7 +16,7 @@ end
 
 ---@param opts snacks.picker.lsp.Config
 ---@param ctx snacks.picker.finder.ctx
----@type snacks.picker.finder
+---@return fun(cb: async fun(item: snacks.picker.finder.Item))
 function M.finder(opts, ctx)
     local base = require('snacks.picker.source.lsp').get_locations(
         'textDocument/definition',

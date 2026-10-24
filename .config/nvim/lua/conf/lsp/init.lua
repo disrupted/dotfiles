@@ -42,7 +42,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
             return
         end
 
-        Snacks.notify(('attached to buffer %i'):format(args.buf), {
+        Snacks.notify(('attached to buffer %i'):format(buffer), {
             level = vim.log.levels.DEBUG,
             title = 'LSP: ' .. client.name,
         })
@@ -178,6 +178,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
             mappings[#mappings + 1] = {
                 'gts',
                 function()
+                    ---@diagnostic disable-next-line: undefined-field
                     Snacks.picker.lsp_supertypes()
                 end,
                 desc = 'Supertypes',
@@ -188,6 +189,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
             mappings[#mappings + 1] = {
                 'gtb',
                 function()
+                    ---@diagnostic disable-next-line: undefined-field
                     Snacks.picker.lsp_subtypes()
                 end,
                 desc = 'Subtypes',
@@ -254,8 +256,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
             })
             vim.api.nvim_create_autocmd('ModeChanged', {
                 buffer = bufnr,
-                callback = function(args)
-                    local _, new_mode = unpack(vim.split(args.match, ':'))
+                callback = function(ev)
+                    local _, new_mode = unpack(vim.split(ev.match, ':'))
                     if
 
                         vim.tbl_contains({ 'i', 'v', 'V', '\22', 'R' }, new_mode)

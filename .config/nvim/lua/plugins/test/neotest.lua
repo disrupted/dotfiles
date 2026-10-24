@@ -248,6 +248,7 @@ return {
             end
 
             if next(expanded) then
+                ---@diagnostic disable-next-line: access-invisible
                 neotest.summary.render(expanded)
                 return true
             end
@@ -259,7 +260,7 @@ return {
             callback = function()
                 -- discovery can still be running; retry briefly
                 local tries = 0
-                local timer = vim.uv.new_timer()
+                local timer = assert(vim.uv.new_timer())
                 timer:start(
                     0,
                     100,
