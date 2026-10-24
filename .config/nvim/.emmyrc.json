@@ -4,10 +4,14 @@
     "version": "LuaJIT"
   },
   "workspace": {
+    "workspaceRoots": [
+      "lua"
+    ],
     "library": [
       "$VIMRUNTIME",
       "$HOME/.local/share/nvim/site/pack/core/opt/laze/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/one.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/diffs.nvim/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/gh-actions.nvim/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/github-actions.nvim/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/kpops.nvim/lua",
@@ -44,12 +48,13 @@
       "$HOME/.local/share/nvim/site/pack/core/opt/resession.nvim/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/harpoon/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/auto-save.nvim/lua",
-      "$HOME/.local/share/nvim/site/pack/core/opt/gitsigns.nvim/lua/gitsigns/config.lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/gitsigns.nvim/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/neogit/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/neojj/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/diffview.nvim/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/codediff.nvim/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/octo.nvim/lua",
+      "$HOME/.local/share/nvim/site/pack/core/opt/gitlab.nvim/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/inlayhint-filler.nvim/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/conform.nvim/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/lsp-format-modifications.nvim/lua",

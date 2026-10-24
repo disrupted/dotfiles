@@ -105,10 +105,10 @@ M.current_branch = function()
     return git({ 'branch', '--show-current' })
 end
 
----@param remote_url string
+---@param remote_url string?
 ---@return 'github' | 'gitlab'
 M.match_remote_type = function(remote_url)
-    if remote_url:match('github%.com') then
+    if remote_url and remote_url:match('github%.com') then
         return 'github'
     end
     -- others are usually self-hosted GitLab instances in my use case

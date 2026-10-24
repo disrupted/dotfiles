@@ -100,19 +100,22 @@ return {
             local gs = package.loaded.gitsigns
             ---@cast gs gitsigns.main
 
+            ---@diagnostic disable-next-line: missing-fields
+            local nav_opts = { target = 'all' } --[[@as Gitsigns.NavOpts]]
+
             -- Navigation
             map('n', ']g', function()
                 if vim.wo.diff then
                     vim.cmd.normal({ ']g', bang = true })
                 else
-                    gs.nav_hunk('next', { target = 'all' })
+                    gs.nav_hunk('next', nav_opts)
                 end
             end, { desc = 'Next Git hunk' })
             map('n', '[g', function()
                 if vim.wo.diff then
                     vim.cmd.normal({ '[g', bang = true })
                 else
-                    gs.nav_hunk('prev', { target = 'all' })
+                    gs.nav_hunk('prev', nav_opts)
                 end
             end, { desc = 'Prev Git hunk' })
             -- map('n', ']s', function()

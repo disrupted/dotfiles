@@ -67,11 +67,11 @@
       "src": "https://github.com/folke/edgy.nvim"
     },
     "fff": {
-      "rev": "51649e10e1ee5502f5c110679ef3102748c18c77",
+      "rev": "7353971198321b5330824c29eb4e49635c072245",
       "src": "https://github.com/dmtrKovalenko/fff"
     },
     "fff-snacks.nvim": {
-      "rev": "544305711662dfd29647570218340f0a9ecadbd6",
+      "rev": "f3a69c69654dc2530a5ab7c1581fa6bdadaf46db",
       "src": "https://github.com/madmaxieee/fff-snacks.nvim"
     },
     "frizbee.nvim": {
@@ -91,11 +91,11 @@
       "src": "https://github.com/harrisoncramer/gitlab.nvim"
     },
     "gitsigns.nvim": {
-      "rev": "fd780920613e541cbdfac41bf711583ed49f9249",
+      "rev": "683137003522aebd6948358334164a6ba2ca7cd5",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "grug-far.nvim": {
-      "rev": "bbde8ef5ae46ceee2c3bd8b21fc048c5f8ffbfc0",
+      "rev": "91b7e58b6ffc6ddad5acb7a7c1df21257724449e",
       "src": "https://github.com/MagicDuck/grug-far.nvim"
     },
     "guess-indent.nvim": {
@@ -125,7 +125,7 @@
     },
     "laze": {
       "rev": "573d7461fab05e94181051b22d195955668c2521",
-      "src": "https://github.com/sys9kdr/laze"
+      "src": "https://github.com/disrupted/laze"
     },
     "lsp-format-modifications.nvim": {
       "rev": "1b307ec983f5e312d2ad9ff22b5e8084afea848f",
@@ -145,7 +145,8 @@
     },
     "neogit": {
       "rev": "a6549816e62cec7037f1549d8f1659d45635370c",
-      "src": "https://github.com/NeogitOrg/neogit"
+      "src": "https://github.com/disrupted/neogit",
+      "version": "'fix/git-dir-relative-to-repo'"
     },
     "neojj": {
       "rev": "d84589a265c44b5183887a43a456fe14550c0b56",
@@ -213,7 +214,7 @@
       "src": "https://github.com/kylechui/nvim-surround"
     },
     "nvim-treesitter": {
-      "rev": "d3e4a28b63961ba972b0945d66c73b6eec969953",
+      "rev": "29212d826054bb2948fa9d3a99eca9bf6a050eb2",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter",
       "version": "'main'"
     },
@@ -276,7 +277,7 @@
       "src": "https://github.com/ian-howell/ripple.nvim"
     },
     "rustaceanvim": {
-      "rev": "a968f5133b8b24f481de12f08cd79420d1ace559",
+      "rev": "4e25c6cab03f707c1ced715eeb37a0250d1c2377",
       "src": "https://github.com/mrcjkb/rustaceanvim"
     },
     "scope.nvim": {

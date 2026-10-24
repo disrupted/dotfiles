@@ -1,5 +1,6 @@
+local library = {}
 -- FIXME: some plugin modules shadow our modules, hardcoded safe list in .emmyrc.json instead
--- local library = vim.iter(vim.pack.get(nil, { info = false }))
+-- library = vim.iter(vim.pack.get(nil, { info = false }))
 --     :map(function(plug)
 --         return vim.fs.joinpath(plug.path, 'lua')
 --     end)
@@ -9,7 +10,7 @@
 --             and path:match 'ci%.nvim' == nil
 --     end)
 --     :totable()
--- table.insert(library, 1, vim.env.VIMRUNTIME)
+table.insert(library, 1, vim.env.VIMRUNTIME)
 
 ---@type vim.lsp.Config
 return {
@@ -22,9 +23,9 @@ return {
     },
     workspace_required = false,
     settings = {
-        -- emmylua = {
-        --     workspace = { library = library },
-        -- },
+        emmylua = {
+            workspace = { library = library },
+        },
         Lua = {
             diagnostics = {
                 enable = true,

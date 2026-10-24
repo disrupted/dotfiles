@@ -199,6 +199,7 @@ end
 
 M.pr = {}
 
+---@async
 ---@param opts? octo.pr.open.Opts
 M.pr.open = function(opts)
     ---@class octo.pr.open.Opts
@@ -211,7 +212,15 @@ M.pr.open = function(opts)
         browser = false,
     })
     if opts.octo then
-        local number = opts.number or require('gh').pr.json({ 'number' }).number
+        local number = opts.number
+        if not number then
+            local pr = require('gh').pr.json({ 'number' })
+            number = pr and pr.number
+        end
+        if not number then
+            Snacks.notify.error('Could not determine PR number', { title = 'Octo' })
+            return
+        end
         Snacks.notify('Opening PR #' .. number .. '...', { title = 'Octo' })
         require('conf.workspace').create_tab('PR ' .. number)
         vim.cmd('Octo pr')

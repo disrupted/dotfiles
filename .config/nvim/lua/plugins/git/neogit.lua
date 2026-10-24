@@ -1,6 +1,8 @@
 ---@type LazeSpec
 return {
-    'NeogitOrg/neogit',
+    -- 'NeogitOrg/neogit',
+    'disrupted/neogit',
+    branch = 'fix/git-dir-relative-to-repo',
     main = 'neogit',
     module = 'neogit',
     keys = {
