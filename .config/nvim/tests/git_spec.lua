@@ -1,3 +1,8 @@
+local ntf = require('ntf')
+local describe, it = ntf.describe, ntf.it
+local before_each, after_each = ntf.before_each, ntf.after_each
+local assert = ntf.assert
+
 describe('git helpers', function()
     local git
 
@@ -16,21 +21,21 @@ describe('git helpers', function()
     it('splits remote-tracking branch names', function()
         local remote, branch = git.split_remote_branch('origin/main')
 
-        assert.equals('origin', remote)
-        assert.equals('main', branch)
+        assert.equal('origin', remote)
+        assert.equal('main', branch)
     end)
 
     it('preserves slashes in branch names', function()
         local remote, branch = git.split_remote_branch('upstream/feature/fix/foo')
 
-        assert.equals('upstream', remote)
-        assert.equals('feature/fix/foo', branch)
+        assert.equal('upstream', remote)
+        assert.equal('feature/fix/foo', branch)
     end)
 
     it('returns nil remote for local branch names', function()
         local remote, branch = git.split_remote_branch('main')
 
         assert.is_nil(remote)
-        assert.equals('main', branch)
+        assert.equal('main', branch)
     end)
 end)

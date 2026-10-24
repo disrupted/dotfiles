@@ -1,3 +1,8 @@
+local ntf = require('ntf')
+local describe, it = ntf.describe, ntf.it
+local before_each, after_each = ntf.before_each, ntf.after_each
+local assert = ntf.assert
+
 describe('gh wrapper', function()
     local calls
     local responses
@@ -46,7 +51,7 @@ describe('gh wrapper', function()
             return gh.run({ 'repo', 'view' })
         end)
 
-        assert.equals('hello world', out)
+        assert.equal('hello world', out)
         assert.same({ 'gh', 'repo', 'view' }, calls[1])
     end)
 
@@ -109,7 +114,7 @@ describe('gh wrapper', function()
             })
         end)
 
-        assert.equals('stdout text\n', stdout)
-        assert.equals('stderr text\n', stderr)
+        assert.equal('stdout text\n', stdout)
+        assert.equal('stderr text\n', stderr)
     end)
 end)

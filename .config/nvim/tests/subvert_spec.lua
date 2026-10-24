@@ -1,3 +1,7 @@
+local ntf = require('ntf')
+local describe, it = ntf.describe, ntf.it
+local assert = ntf.assert
+
 describe('subvert (:S/:Subvert)', function()
     require('conf.subvert').setup()
 
@@ -83,9 +87,7 @@ describe('subvert (:S/:Subvert)', function()
 
     it('supports the n flag without modifying the buffer', function()
         set_lines({ 'foo foo' })
-        assert.has_no.errors(function()
-            vim.cmd('%S/foo/bar/ng')
-        end)
+        vim.cmd('%S/foo/bar/ng')
         assert_lines({ 'foo foo' })
     end)
 

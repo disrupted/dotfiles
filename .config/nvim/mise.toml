@@ -1,7 +1,11 @@
+[tools]
+# until ntf publishes releases install its pinned source archive directly.
+"http:ntf" = { version = "951c9db", url = "https://github.com/notomo/ntf/archive/951c9db2f59a7aa8cec7c64fbc04f7ad6a9a647f.tar.gz", bin = "bin/ntf" }
+
 [tasks.check]
 description = "Run Emmylua type checks"
 run = "VIMRUNTIME='/Users/disrupted/.local/share/mise/installs/neovim/nightly/share/nvim/runtime' emmylua_check -c .emmyrc.json ."
 
 [tasks.test]
-description = "Run Plenary test suite"
-run = "./run_tests.sh"
+description = "Run the test suite"
+run = "ntf --process-hook=./tests/minimal_init.lua ./tests"

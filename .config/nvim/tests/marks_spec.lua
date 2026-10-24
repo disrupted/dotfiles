@@ -1,3 +1,8 @@
+local ntf = require('ntf')
+local describe, it = ntf.describe, ntf.it
+local before_each, after_each = ntf.before_each, ntf.after_each
+local assert = ntf.assert
+
 describe('native file marks', function()
     local marks
     local picker_opts
@@ -31,8 +36,8 @@ describe('native file marks', function()
     end)
 
     it('keeps file marks A-Z only', function()
-        assert.is_not_nil(marks.transform({ label = 'A' }))
-        assert.is_not_nil(marks.transform({ label = 'Z' }))
+        assert.no.is_nil(marks.transform({ label = 'A' }))
+        assert.no.is_nil(marks.transform({ label = 'Z' }))
         assert.is_false(marks.transform({ label = '0' }))
         assert.is_false(marks.transform({ label = '"' }))
         assert.is_false(marks.transform({ label = '^' }))
@@ -42,19 +47,19 @@ describe('native file marks', function()
     it('opens a global-only picker', function()
         marks.picker()
 
-        assert.equals('Marks', picker_opts.title)
+        assert.equal('Marks', picker_opts.title)
         assert.is_true(picker_opts.global)
         assert.is_false(picker_opts['local'])
         assert.is_false(picker_opts.transform({ label = '0' }))
-        assert.is_not_nil(picker_opts.transform({ label = 'A' }))
+        assert.no.is_nil(picker_opts.transform({ label = 'A' }))
     end)
 
     it('maps the picker to <leader>m only', function()
         marks.setup()
 
-        assert.equals(1, #mappings)
-        assert.equals('n', mappings[1].mode)
-        assert.equals('<leader>m', mappings[1].lhs)
-        assert.equals('Marks', mappings[1].opts.desc)
+        assert.equal(1, #mappings)
+        assert.equal('n', mappings[1].mode)
+        assert.equal('<leader>m', mappings[1].lhs)
+        assert.equal('Marks', mappings[1].opts.desc)
     end)
 end)

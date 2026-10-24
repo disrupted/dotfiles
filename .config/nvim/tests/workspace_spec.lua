@@ -1,3 +1,8 @@
+local ntf = require('ntf')
+local describe, it = ntf.describe, ntf.it
+local before_each, after_each = ntf.before_each, ntf.after_each
+local assert = ntf.assert
+
 describe('workspace test-file detection', function()
     local workspace
 
