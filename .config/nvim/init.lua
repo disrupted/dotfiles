@@ -83,6 +83,7 @@ local shadafile = function()
     )
 end
 vim.o.shadafile = shadafile() or 'NONE'
+require('conf.marks').setup()
 
 vim.o.completeopt = table.concat({ 'menu', 'menuone', 'noselect' }, ',') -- Completion options
 vim.o.clipboard = 'unnamedplus'

@@ -46,7 +46,6 @@
       "$HOME/.local/share/nvim/site/pack/core/opt/nvim-dap-python/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/scope.nvim/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/resession.nvim/lua",
-      "$HOME/.local/share/nvim/site/pack/core/opt/harpoon/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/auto-save.nvim/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/gitsigns.nvim/lua",
       "$HOME/.local/share/nvim/site/pack/core/opt/neogit/lua",
