@@ -598,6 +598,13 @@ return {
             mode = { 'n', 'v' },
             desc = 'Yank permalink for Git remote',
         },
+        {
+            '<Leader>R',
+            function()
+                Snacks.rename.rename_file()
+            end,
+            desc = 'Rename current buffer file',
+        },
     },
     ---@type snacks.Config
     config = function()
