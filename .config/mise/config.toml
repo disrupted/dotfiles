@@ -77,6 +77,7 @@ colima = { version = "latest", depends = ["lima"] }
 docker-cli = "latest"
 docker-compose = { version = "latest", depends = ["docker-cli"] }
 "aqua:docker/buildx" = { version = "latest", depends = ["docker-cli"] }
+nono = "latest"
 "github:eugene1g/agent-safehouse" = { version = "latest", asset_pattern = "safehouse.sh", bin = "safehouse" }
 # "npm:@opencode/cli" = { version = "latest", depends = ["bun"], postinstall = { run = "bun \"$MISE_TOOL_INSTALL_PATH/node_modules/@opencode/cli/postinstall.mjs\"", when = "always" } }
 "npm:@opencode/cli" = { version = "latest", depends = [
@@ -146,7 +147,6 @@ version_json_path = ".tag_name"
 postinstall = { run = "$HOME/.config/mise/scripts/install-tinycast.sh", when = "always" }
 
 [settings]
-terminal_progress = false                                        # emits OSC 9;4 which leaks into nvim terminal buffers when using tmux 3.7c passthrough
 self_update.auto = true
 experimental = true
 idiomatic_version_file_enable_tools = ["python", "rust", "node"]
