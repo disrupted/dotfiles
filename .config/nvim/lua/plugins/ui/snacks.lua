@@ -1,6 +1,6 @@
 local icons = require('conf.icons')
 
-local gh = require('conf.snacks.gh')
+local atlas = require('conf.snacks.atlas')
 
 ---@type LazeSpec
 return {
@@ -163,7 +163,8 @@ return {
             {
                 '<Leader>gi',
                 function()
-                    Snacks.picker.gh_issue()
+                    ---@diagnostic disable-next-line: undefined-field
+                    Snacks.picker.atlas_issue()
                 end,
                 desc = 'List issues',
                 icon = icons.git.issue,
@@ -171,7 +172,8 @@ return {
             {
                 '<Leader>gp',
                 function()
-                    Snacks.picker.gh_pr()
+                    ---@diagnostic disable-next-line: undefined-field
+                    Snacks.picker.atlas_pr()
                 end,
                 desc = 'List PRs',
                 icon = icons.git.pull_request,
@@ -727,7 +729,7 @@ return {
                     end,
                 },
                 sources = {
-                    gh_issue = vim.tbl_deep_extend('force', gh.issue, {
+                    atlas_issue = vim.tbl_deep_extend('force', atlas.issue, {
                         layout = {
                             layout = {
                                 backdrop = false,
@@ -754,26 +756,11 @@ return {
                                         border = 'bottom',
                                     },
                                     { win = 'list', border = 'none' },
-                                },
-                            },
-                        },
-                        win = {
-                            input = {
-                                keys = {
-                                    ['<C-o>'] = {
-                                        'gh_develop',
-                                        mode = { 'n', 'i' },
-                                    },
-                                },
-                            },
-                            list = {
-                                keys = {
-                                    ['<C-o>'] = { 'gh_develop' },
                                 },
                             },
                         },
                     }),
-                    gh_pr = vim.tbl_deep_extend('force', gh.pr, {
+                    atlas_pr = vim.tbl_deep_extend('force', atlas.pr, {
                         layout = {
                             layout = {
                                 backdrop = false,
@@ -800,21 +787,6 @@ return {
                                         border = 'bottom',
                                     },
                                     { win = 'list', border = 'none' },
-                                },
-                            },
-                        },
-                        win = {
-                            input = {
-                                keys = {
-                                    ['<C-o>'] = {
-                                        'gh_checkout_pr',
-                                        mode = { 'n', 'i' },
-                                    },
-                                },
-                            },
-                            list = {
-                                keys = {
-                                    ['<C-o>'] = { 'gh_checkout_pr' },
                                 },
                             },
                         },
@@ -1084,45 +1056,6 @@ return {
         ---@diagnostic disable-next-line: param-type-mismatch
         require('snacks').setup(opts)
 
-        local gh_actions = require('snacks.gh.actions')
-        gh_actions.actions.gh_merge_rebase = {
-            enabled = function()
-                return false
-            end,
-        }
-        gh_actions.actions.gh_merge = {
-            enabled = function()
-                return false
-            end,
-        }
-        gh_actions.actions.gh_develop = gh_actions.cli_action({
-            cmd = 'develop',
-            icon = icons.git.branch .. ' ',
-            type = 'issue',
-            args = { '--checkout' },
-            title = 'Create branch for issue #{number}',
-            success = 'Created and checked out branch for issue #{number}',
-            enabled = function(item)
-                return item.state == 'open'
-            end,
-        })
-        gh_actions.actions.gh_checkout_pr = {
-            title = 'Checkout PR #{number}',
-            icon = gh_actions.cli_actions.gh_checkout.icon,
-            type = 'pr',
-            action = function(item, ctx)
-                -- checkout PR without confirmation dialog
-                local checkout = gh_actions.cli_actions.gh_checkout
-                gh_actions.run(item, {
-                    cmd = checkout.cmd,
-                    icon = checkout.icon,
-                    type = checkout.type,
-                    title = checkout.title,
-                    success = checkout.success,
-                }, ctx)
-            end,
-        }
-
         -- remap submit for consistency and to avoid conflict with blink.cmp
         local scratch_open = Snacks.scratch.open
         ---@param scratch_opts? snacks.scratch.Config
@@ -1144,8 +1077,8 @@ return {
 
         -- Snacks hardcodes a list of commit types (chore, bot, build, ci,
         -- style, test) whose subject is rendered with `SnacksPickerDimmed`.
-        -- Neutralize it so no commit type is dimmed. Covers gh pickers,
-        -- `git log`, diff headers and the gh preview.
+        -- Neutralize it so no commit type is dimmed in `git log` or diff
+        -- headers.
         local format = require('snacks.picker.format')
         local commit_message = format.commit_message
         ---@param item snacks.picker.Item

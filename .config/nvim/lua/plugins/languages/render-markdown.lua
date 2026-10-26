@@ -14,6 +14,22 @@ return {
             return win ~= -1 and vim.w[win].lsp_floating_bufnr ~= nil
         end,
         render_modes = { 'n', 'c', 't' },
+        overrides = {
+            filetype = {
+                -- Snacks explicitly renders preview buffers as markdown regardless
+                -- of file_types allowlist
+                ['markdown.snacks_picker_preview'] = {
+                    -- The default debounce can suppress the final render during
+                    -- fast preview changes, leaving stale extmarks behind.
+                    debounce = 0,
+                    render_modes = true,
+                    win_options = {
+                        conceallevel = { default = 3, rendered = 3 },
+                        concealcursor = { default = 'nvic', rendered = 'nvic' },
+                    },
+                },
+            },
+        },
         anti_conceal = {
             enabled = false,
             disabled_modes = { 'n' },
