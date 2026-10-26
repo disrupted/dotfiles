@@ -25,6 +25,29 @@ M.mr.json = function()
     end
 end
 
+---@class glab.Label
+---@field name string
+
+---@async
+---@return glab.Label[]
+M.labels = function()
+    local out = glab.run({
+        'label',
+        'list',
+        '--output',
+        'json',
+        '--per-page',
+        '100',
+    })
+    if out and out ~= '' then
+        local labels = vim.json.decode(out)
+        if type(labels) == 'table' then
+            return labels
+        end
+    end
+    return {}
+end
+
 ---@async
 ---@return boolean
 M.mr.exists = function()
@@ -36,12 +59,14 @@ end
 ---@field body string
 ---@field assignee? string
 ---@field draft? boolean
+---@field label? string[]
 ---@field target? string base branch
 
 ---@async
 ---@param opts glab.mr.create.Opts
 ---@return string? stdout
 ---@return string? stderr
+---@return integer code
 M.mr.create = function(opts)
     ---@type string[]
     local cmd = { 'glab', 'mr', 'create' }
@@ -49,12 +74,16 @@ M.mr.create = function(opts)
     table.insert(cmd, opts.title)
     table.insert(cmd, '--description')
     table.insert(cmd, opts.body)
-    if opts.assignee then
+    if opts.assignee and opts.assignee ~= '' then
         table.insert(cmd, '--assignee')
         table.insert(cmd, opts.assignee)
     end
     if opts.draft then
         table.insert(cmd, '--draft')
+    end
+    for _, label in ipairs(opts.label or {}) do
+        table.insert(cmd, '--label')
+        table.insert(cmd, label)
     end
     if opts.target then
         table.insert(cmd, '--target-branch')
@@ -66,7 +95,9 @@ M.mr.create = function(opts)
 
     local out = system(cmd)
     -- assert(out.code == 0)
-    return vim.trim(out.stdout or ''), out.stderr and vim.trim(out.stderr) or nil
+    return vim.trim(out.stdout or ''),
+        out.stderr and vim.trim(out.stderr) or nil,
+        out.code
 end
 
 ---@async

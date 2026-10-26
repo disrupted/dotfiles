@@ -105,14 +105,60 @@ M.current_branch = function()
     return git({ 'branch', '--show-current' })
 end
 
+--- Extract the host from a git remote URL.
+---
+--- Supports scp-like (`git@host:path`) and URL (`https://host/path`)
+--- remotes, both with and without user info or a port.
 ---@param remote_url string?
----@return 'github' | 'gitlab'
+---@return string?
+M.remote_host = function(remote_url)
+    if not remote_url or remote_url == '' then
+        return nil
+    end
+
+    local host = remote_url:match('^[^/@:]+@([^:/]+):')
+    if not host then
+        host = remote_url:match('^[%a][%w+.-]*://[^/@]*@([^:/]+)')
+            or remote_url:match('^[%a][%w+.-]*://([^:/]+)')
+    end
+    if not host then
+        host = remote_url:match('^([^/:]+)[:/]')
+    end
+
+    return host and host:lower() or nil
+end
+
+--- Host of the self-hosted GitLab instance, if configured.
+---@return string?
+M.gitlab_host = function()
+    local value = vim.env.GITLAB_HOST
+    if not value or value == '' then
+        return nil
+    end
+
+    value = value:gsub('/+$', '')
+    local host = value:match('^[%a][%w+.-]*://([^/:]+)') or value:match('^([^/:]+)')
+    return host and host:lower() or nil
+end
+
+---@param remote_url string?
+---@return 'github' | 'gitlab' | nil
 M.match_remote_type = function(remote_url)
-    if remote_url and remote_url:match('github%.com') then
+    local host = M.remote_host(remote_url)
+    if not host then
+        return nil
+    end
+
+    if host == 'github.com' then
         return 'github'
     end
-    -- others are usually self-hosted GitLab instances in my use case
-    return 'gitlab'
+
+    local gitlab_host = M.gitlab_host()
+    if gitlab_host and host == gitlab_host then
+        return 'gitlab'
+    end
+
+    return nil
 end
 
 M.refresh = function()

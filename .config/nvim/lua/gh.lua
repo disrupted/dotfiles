@@ -33,7 +33,7 @@ end
 ---@async
 ---@return Label[]
 M.labels = function()
-    local labels = M.json({ 'label', 'list' }, { 'name' }) or {}
+    local labels = M.json({ 'label', 'list', '--limit', '100' }, { 'name' }) or {}
     ---@cast labels Label[]
     return labels
 end
@@ -65,6 +65,7 @@ end
 ---@param opts gh.pr.create.Opts
 ---@return string stdout
 ---@return string? stderr
+---@return integer code
 M.pr.create = function(opts)
     ---@type string[]
     local cmd = { 'gh', 'pr', 'create' }
@@ -90,7 +91,7 @@ M.pr.create = function(opts)
 
     local out = system(cmd)
     -- assert(out.code == 0)
-    return out.stdout or '', out.stderr
+    return out.stdout or '', out.stderr, out.code
 end
 
 ---@async
