@@ -1,3 +1,4 @@
 #:schema https://mise.jdx.dev/schema/mise.json
 
 [env]
+PI_CACHE_RETENTION = "long"

@@ -9,5 +9,9 @@
   "hideThinkingBlock": true,
   "defaultProvider": "opencode-go",
   "defaultModel": "deepseek-v4.1-flash",
-  "defaultThinkingLevel": "high"
+  "defaultThinkingLevel": "high",
+  "packages": [
+    "npm:pi-polish"
+  ],
+  "theme": "light/dark"
 }

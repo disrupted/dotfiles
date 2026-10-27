@@ -9,11 +9,19 @@
     (home-subpath "/.local/share/aube")
     (home-subpath "/.cache/aube")
 
+    ; pre-commit
+    (home-subpath "/.cache/pre-commit")
+    (home-subpath "/.cache/pre-commit-zipapp")
+
     ; hk
     (home-subpath "/Library/Caches/hk")
 
     ; dprint
     (home-subpath "/Library/Caches/dprint")
+
+    ; Helm
+    (home-subpath "/Library/Preferences/helm")
+    (home-subpath "/Library/Caches/helm")
 )
 
 ; Nx
