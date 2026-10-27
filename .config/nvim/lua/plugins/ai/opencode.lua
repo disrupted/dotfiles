@@ -41,13 +41,11 @@ return {
             },
         })
     end,
-    dependencies = { 'disrupted/snacks.nvim' },
     config = function()
         ---@module 'opencode'
         ---@type OpencodeConfig
         local opts = {
-            -- backend = vim.env.ANTHROPIC_API_KEY and 'opencode' or 'pi',
-            backend = 'pi',
+            backend = vim.env.WORK and 'opencode' or 'pi',
             pi = {
                 executable = vim.fs.normalize('~/.config/pi/safehouse_pi.sh'),
             },
