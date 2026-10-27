@@ -455,6 +455,34 @@ local function open_detail(picker, item)
     end)
 end
 
+---@param picker snacks.Picker
+local function refresh_picker(picker)
+    vim.schedule(function()
+        if not picker.closed then
+            local opts = picker.opts --[[@as table]]
+            opts.atlas_force_refresh = true
+            picker:find({ refresh = true })
+        end
+    end)
+end
+
+---@param picker snacks.Picker
+---@param item snacks.picker.finder.Item|nil
+local function open_pr_actions(picker, item)
+    if not item then
+        return
+    end
+    local Snacks = require('snacks')
+    local context = { provider = item.provider, pr = item.item }
+    require('atlas.pulls.actions').open(context, function(result, err)
+        if err then
+            Snacks.notify.error(tostring(err), { title = 'Atlas Pull Requests' })
+        elseif result and result.changed_pr then
+            refresh_picker(picker)
+        end
+    end)
+end
+
 local toggles, actions = {}, {}
 local input_keys, list_keys = {}, {}
 
@@ -498,6 +526,17 @@ actions.atlas_checkout = function(picker, item)
     end)
 end
 
+actions.atlas_actions = open_pr_actions
+
+input_keys['<C-a>'] = {
+    'atlas_actions',
+    mode = { 'n', 'i' },
+    desc = 'PR actions',
+}
+list_keys['<C-a>'] = {
+    'atlas_actions',
+    desc = 'PR actions',
+}
 input_keys['<C-o>'] = {
     'atlas_checkout',
     mode = { 'n', 'i' },
@@ -993,13 +1032,7 @@ local function open_issue_actions(picker, item)
         if err then
             Snacks.notify.error(tostring(err), { title = 'Issues' })
         elseif result then
-            vim.schedule(function()
-                if not picker.closed then
-                    local opts = picker.opts --[[@as table]]
-                    opts.atlas_force_refresh = true
-                    picker:find({ refresh = true })
-                end
-            end)
+            refresh_picker(picker)
         end
     end, {
         {
@@ -1043,15 +1076,15 @@ issue_actions.atlas_issue_refresh = function(picker)
 end
 
 issue_actions.atlas_issue_develop = develop_issue
-issue_actions.atlas_issue_actions = open_issue_actions
+issue_actions.atlas_actions = open_issue_actions
 
-issue_input_keys['<A-s>'] = {
-    'atlas_issue_actions',
+issue_input_keys['<C-a>'] = {
+    'atlas_actions',
     mode = { 'n', 'i' },
     desc = 'Issue actions',
 }
-issue_list_keys['<A-s>'] = {
-    'atlas_issue_actions',
+issue_list_keys['<C-a>'] = {
+    'atlas_actions',
     desc = 'Issue actions',
 }
 issue_input_keys['<C-o>'] = {
