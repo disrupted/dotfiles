@@ -81,10 +81,10 @@ const FZF_COLORS_LIGHT = '
 --color=marker:#5f8700,spinner:#d7005f,header:#5f8700
 --color=gutter:#e8e8e8'
 
-# Probe the terminal color scheme once per session. `term query` has no timeout,
-# so a terminal that ignores CSI ?996n would block until a keypress. Appending a
-# DSR CSI 6n guarantees a reply to stop on. Returns "dark", "light" or null.
-def theme-query-safe [] {
+# Returns "dark", "light" or null.
+# tmux doesn't reply to ?996n when it doesn't know the theme and `term query`
+# has no timeout, so also send DSR (6n), which is always answered.
+def theme-query [] {
   if not $nu.is-interactive { return null }
   if ($env.TERM? | default "") == "dumb" { return null }
 
@@ -98,34 +98,25 @@ def theme-query-safe [] {
   if ($reply | str contains "?997;1n") { "dark" } else if ($reply | str contains "?997;2n") { "light" } else { null }
 }
 
-# Fast probe for in-session updates; only used once support is known.
-def theme-query-fast [] {
-  let code = (
-    try {
-      term query "\e[?996n" --prefix "\e[?997;" --terminator "n" | decode | str trim
-    } catch { null }
-  )
-  match $code {
-    "1" => "dark"
-    "2" => "light"
-    _ => null
-  }
-}
-
-# Theme update helper
 def --env update-theme [] {
-  let system_theme = if ($env.__THEME_PROBED? | is-empty) {
-    $env.__THEME_PROBED = "1"
-    let probed = (theme-query-safe)
-    if $probed != null { $env.__THEME_SUPPORTED = "1" }
-    $probed
-  } else if ($env.__THEME_SUPPORTED? | is-not-empty) {
-    theme-query-fast
+  let detected = (theme-query)
+  let inherited = ($env.THEME? | default "")
+
+  # popup panes usually can't answer, so fall back to the inherited theme
+  let system_theme = if $detected != null {
+    $detected
+  } else if $inherited in [dark light] {
+    $inherited
   } else {
     null
   }
 
   if $system_theme == null { return }
+
+  # let popups inherit the theme from the tmux server
+  if $detected != null and ($env.TMUX? | is-not-empty) and $detected != $inherited {
+    try { ^tmux set-environment -g THEME $detected } catch { }
+  }
 
   $env.THEME = $system_theme
   $env.BAT_THEME = if $system_theme == "dark" { "OneHalfDark" } else { "OneHalfLight" }

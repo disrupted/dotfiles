@@ -564,13 +564,6 @@ return {
             desc = 'Delete buffer',
         },
         {
-            '<C-Bslash>',
-            function()
-                Snacks.terminal()
-            end,
-            mode = { 'n', 't', 'i', 'v' },
-        },
-        {
             '<C-n>',
             function()
                 Snacks.words.jump(vim.v.count1)
@@ -1038,7 +1031,6 @@ return {
                 },
             },
             terminal = {
-                -- keys = { ['\\'] = 'hide' },
                 win = {
                     wo = {
                         winbar = '',
