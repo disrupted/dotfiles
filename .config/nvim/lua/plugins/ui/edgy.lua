@@ -83,6 +83,13 @@ return {
         },
         right = {
             {
+                ft = 'atlas-ui.detail',
+                wo = {
+                    cursorline = false,
+                    winbar = false,
+                },
+            },
+            {
                 ft = 'opencode_output',
                 wo = {
                     winbar = false,
@@ -111,6 +118,14 @@ return {
             },
         },
         bottom = {
+            {
+                ft = 'atlas-ui.logs',
+                size = { height = 15 },
+            },
+            {
+                ft = 'atlas-ui.review',
+                size = { height = 10 },
+            },
             {
                 ft = 'snacks_terminal',
                 title = 'Terminal %{b:snacks_terminal.id}',
