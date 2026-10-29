@@ -104,6 +104,7 @@ return {
                 :totable(),
             ','
         )
+        local project = require('conf.project')
         local cmd = {
             resolve_ngserver(root_dir),
             '--stdio',
@@ -114,9 +115,17 @@ return {
             '--angularCoreVersion',
             get_angular_core_version(root_dir),
         }
-        return vim.lsp.rpc.start(cmd, dispatchers)
+        -- run in the config root's mise env
+        local root = project.of(root_dir) or root_dir
+        return vim.lsp.rpc.start(project.exec(root, cmd), dispatchers, {
+            cwd = root_dir,
+        })
     end,
     filetypes = { 'typescript', 'html', 'typescriptreact', 'htmlangular' },
     root_markers = { 'angular.json', 'nx.json' },
+    root_dir = require('conf.project').lsp_root_dir(
+        { 'angular.json', 'nx.json' },
+        'ngserver'
+    ),
     workspace_required = true,
 }

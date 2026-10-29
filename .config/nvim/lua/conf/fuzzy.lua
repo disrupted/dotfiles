@@ -11,13 +11,22 @@ local function warn_once(msg)
         return
     end
     warned = true
-    vim.notify(msg, vim.log.levels.WARN)
+    vim.schedule(function()
+        vim.notify(msg, vim.log.levels.WARN)
+    end)
 end
 
+--- Returns the frizbee module, or nil with an error. Returns nil without an
+--- error if it cannot be loaded yet: requiring it (through the plugin
+--- loader) is not allowed in a fast event context, so that attempt is not
+--- cached as a failure. Call `preload()` from the main loop beforehand.
 ---@return table?, string?
 local function get_backend()
     if backend_loaded then
         return backend, backend_error
+    end
+    if vim.in_fast_event() and not package.loaded['frizbee'] then
+        return nil, nil
     end
 
     backend_loaded = true
@@ -195,9 +204,11 @@ function M.match(query, candidates, opts)
 
     local mod, err = get_backend()
     if not mod then
-        warn_once(
-            ('frizbee backend unavailable, using fallback matcher (%s)'):format(err)
-        )
+        if err then
+            warn_once(
+                ('frizbee backend unavailable, using fallback matcher (%s)'):format(err)
+            )
+        end
         local fallback = fallback_match(candidates, query, case_sensitive)
         if opts.limit and opts.limit > 0 and #fallback > opts.limit then
             return vim.list_slice(fallback, 1, opts.limit)
@@ -242,6 +253,12 @@ function M.match(query, candidates, opts)
         return vim.list_slice(matches, 1, opts.limit)
     end
     return matches
+end
+
+--- Load the frizbee backend on the main loop, so that matching in a fast
+--- event context (e.g. inside a picker finder coroutine) can use it.
+function M.preload()
+    get_backend()
 end
 
 ---@return table

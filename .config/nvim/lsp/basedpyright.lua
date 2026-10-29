@@ -1,12 +1,17 @@
+local project = require('conf.project')
+
+local root_markers = {
+    { 'pyrightconfig.json', 'uv.lock' },
+    { 'pyproject.toml', 'setup.py' },
+    '.git',
+}
+
 ---@type vim.lsp.Config
 return {
-    cmd = { 'basedpyright-langserver', '--stdio' },
+    cmd = project.lsp_cmd({ 'basedpyright-langserver', '--stdio' }),
     filetypes = { 'python' },
-    root_markers = {
-        'pyproject.toml',
-        'setup.py',
-        '.git',
-    },
+    root_markers = root_markers,
+    root_dir = project.lsp_root_dir(root_markers, 'basedpyright-langserver'),
     on_attach = function(client, bufnr)
         vim.api.nvim_create_autocmd('LspTokenUpdate', {
             buffer = bufnr,

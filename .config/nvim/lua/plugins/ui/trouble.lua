@@ -17,34 +17,34 @@ return {
         {
             '<Leader>xx',
             function()
-                local started_clients =
-                    require('conf.workspace.lsp').start_project_clients()
+                require('conf.workspace.lsp').start_project_clients(function(ids)
+                    if not vim.tbl_isempty(ids) then
+                        vim.defer_fn(function()
+                            local trouble_api = require('trouble.api')
+                            ---@cast trouble_api trouble.api
+                            trouble_api.refresh('workspace_diagnostics_severe')
+                        end, 500)
+                    end
+                end)
                 require('conf.trouble').diagnostics.toggle(
                     'workspace_diagnostics_severe'
                 )
-                if not vim.tbl_isempty(started_clients) then
-                    vim.defer_fn(function()
-                        local trouble_api = require('trouble.api')
-                        ---@cast trouble_api trouble.api
-                        trouble_api.refresh('workspace_diagnostics_severe')
-                    end, 500)
-                end
             end,
             desc = 'Workspace diagnostics (most severe)',
         },
         {
             '<Leader>xw',
             function()
-                local started_clients =
-                    require('conf.workspace.lsp').start_project_clients()
+                require('conf.workspace.lsp').start_project_clients(function(ids)
+                    if not vim.tbl_isempty(ids) then
+                        vim.defer_fn(function()
+                            local trouble_api = require('trouble.api')
+                            ---@cast trouble_api trouble.api
+                            trouble_api.refresh('workspace_diagnostics')
+                        end, 500)
+                    end
+                end)
                 require('conf.trouble').diagnostics.toggle('workspace_diagnostics')
-                if not vim.tbl_isempty(started_clients) then
-                    vim.defer_fn(function()
-                        local trouble_api = require('trouble.api')
-                        ---@cast trouble_api trouble.api
-                        trouble_api.refresh('workspace_diagnostics')
-                    end, 500)
-                end
             end,
             desc = 'Workspace diagnostics',
         },

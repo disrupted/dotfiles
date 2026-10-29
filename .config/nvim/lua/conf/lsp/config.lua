@@ -1,29 +1,5 @@
 local M = {}
 
----@class find_config.Opts
----@field filetype string
-
----@param opts find_config.Opts
----@return vim.lsp.Config[]
-M.filter_enabled = function(opts)
-    local configs = {}
-    local enabled_configs = vim.tbl_keys(vim.lsp._enabled_configs)
-    for _, name in ipairs(enabled_configs) do
-        local config = vim.lsp.config[name]
-        local cmd = config and config.cmd
-        local filetypes = config and config.filetypes
-        if config and cmd and cmd[1] and filetypes then
-            local matches = vim.iter(filetypes):any(function(filetype)
-                return filetype == opts.filetype
-            end)
-            if matches and vim.fn.executable(cmd[1]) == 1 then
-                configs[#configs + 1] = config
-            end
-        end
-    end
-    return configs
-end
-
 --- Create a floating window using snacks.win
 ---@param options snacks.win.Config
 ---@param lines string[]

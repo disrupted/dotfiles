@@ -134,8 +134,128 @@ function M.exec(root, command)
     return vim.list_extend({ 'mise', '-C', root, 'exec', '--' }, command)
 end
 
+---@type table<string, table<string, string>|false> root -> env (false: failed)
+local envs = {}
+---@type table<string, fun(env: table<string, string>?)[]> pending callbacks
+local env_waiters = {}
+
+--- Resolved mise environment of a config root (`mise env --json`), cached.
+--- Used to look up executables; processes are spawned via `exec()`.
+---@param root string
+---@param cb fun(env: table<string, string>?) called on the main loop
+function M.env(root, cb)
+    local cached = envs[root]
+    if cached ~= nil then
+        cb(cached or nil)
+        return
+    end
+    if env_waiters[root] then
+        table.insert(env_waiters[root], cb)
+        return
+    end
+    local waiters = { cb }
+    env_waiters[root] = waiters
+    vim.async.run(function()
+        local out = require('conf.async').system(
+            { 'mise', '-C', root, 'env', '--json' },
+            { text = true }
+        )
+        local ok, env = false, nil
+        if out.code == 0 and out.stdout then
+            ok, env = pcall(vim.json.decode, out.stdout)
+        end
+        envs[root] = ok and type(env) == 'table' and env or false
+        env_waiters[root] = nil
+        for _, waiter in ipairs(waiters) do
+            waiter(envs[root] or nil)
+        end
+    end)
+end
+
+---@param bin string
+---@param path string PATH-style list
+---@return string?
+local function search_path(bin, path)
+    for dir in vim.gsplit(path, ':', { plain = true, trimempty = true }) do
+        local candidate = vim.fs.joinpath(dir, bin)
+        if vim.uv.fs_access(candidate, 'X') then
+            return candidate
+        end
+    end
+end
+
+--- Find `bin` in the environment of `root`: Neovim's own PATH for the
+--- workspace root, the root's mise env for monorepo config roots.
+---@param root string
+---@param bin string
+---@param cb fun(path: string?) called on the main loop
+function M.executable(root, bin, cb)
+    if root == vim.g.workspace_root or vim.fn.executable('mise') == 0 then
+        local path = vim.fn.exepath(bin)
+        cb(path ~= '' and path or nil)
+        return
+    end
+    M.env(root, function(env)
+        cb(env and env.PATH and search_path(bin, env.PATH) or nil)
+    end)
+end
+
+--- `cmd` for vim.lsp.Config: spawn the server in the mise env of the config
+--- root that contains the client's root_dir.
+---@param command string[]
+---@return fun(dispatchers: vim.lsp.rpc.Dispatchers, config: vim.lsp.ClientConfig): vim.lsp.rpc.Client
+function M.lsp_cmd(command)
+    return function(dispatchers, config)
+        local root = config.root_dir and M.of(config.root_dir) or vim.g.workspace_root
+        return vim.lsp.rpc.start(M.exec(root, command), dispatchers, {
+            cwd = config.cmd_cwd or config.root_dir,
+            env = config.cmd_env,
+            detached = config.detached,
+        })
+    end
+end
+
+---@type table<function, true>
+local path_aware = setmetatable({}, { __mode = 'k' })
+
+--- `root_dir` for vim.lsp.Config: resolve the root from `markers` and only
+--- activate when `bin` exists in that root's environment. Also accepts a
+--- directory path instead of a buffer (see `accepts_path`), so clients can be
+--- started eagerly without a buffer. `on_skip` (not passed by Neovim) is
+--- called when the server does not apply, so eager callers can count results.
+---@param markers (string|string[])[]
+---@param bin string
+---@return fun(source: integer|string, on_dir: fun(root_dir?: string), on_skip?: fun())
+function M.lsp_root_dir(markers, bin)
+    local fn = function(source, on_dir, on_skip)
+        on_skip = on_skip or function() end
+        local root = vim.fs.root(source, markers)
+        if not root then
+            on_skip()
+            return
+        end
+        M.executable(M.of(root) or root, bin, function(path)
+            if path then
+                on_dir(root)
+            else
+                on_skip()
+            end
+        end)
+    end
+    path_aware[fn] = true
+    return fn
+end
+
+--- Whether a `root_dir` function was created by `lsp_root_dir()`.
+---@param fn any
+---@return boolean
+function M.accepts_path(fn)
+    return path_aware[fn] == true
+end
+
 function M.reload()
     roots, roots_for = nil, nil
+    envs = {}
     M.load()
 end
 

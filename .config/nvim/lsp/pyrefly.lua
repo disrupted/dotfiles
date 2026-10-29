@@ -50,15 +50,20 @@ local function is_parameter_name_hint(hint)
     return inlay_hint_label_text(hint.label):match('=%s$') ~= nil
 end
 
+local project = require('conf.project')
+
+local root_markers = {
+    { 'pyrefly.toml', 'uv.lock' },
+    { 'pyproject.toml' },
+    '.git',
+}
+
 ---@type vim.lsp.Config
 return {
-    cmd = { 'pyrefly', 'lsp' },
+    cmd = project.lsp_cmd({ 'pyrefly', 'lsp' }),
     filetypes = { 'python' },
-    root_markers = {
-        'pyrefly.toml',
-        'pyproject.toml',
-        '.git',
-    },
+    root_markers = root_markers,
+    root_dir = project.lsp_root_dir(root_markers, 'pyrefly'),
     on_attach = function(client, bufnr)
         vim.api.nvim_create_autocmd('LspTokenUpdate', {
             buffer = bufnr,

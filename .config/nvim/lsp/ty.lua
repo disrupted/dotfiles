@@ -1,10 +1,13 @@
+local project = require('conf.project')
+
+local root_markers = { { 'ty.toml', 'uv.lock' }, { 'pyproject.toml' } }
+
 ---@type vim.lsp.Config
 return {
-    cmd = { 'ty', 'server' },
+    cmd = project.lsp_cmd({ 'ty', 'server' }),
     filetypes = { 'python' },
-    -- nested list = priority groups: prefer the uv workspace root (e.g.
-    -- backend/) over the nearest member package pyproject.toml
-    root_markers = { { 'ty.toml', 'uv.lock' }, { 'pyproject.toml' } },
+    root_markers = root_markers,
+    root_dir = project.lsp_root_dir(root_markers, 'ty'),
     settings = {
         ty = {
             diagnosticMode = 'workspace',

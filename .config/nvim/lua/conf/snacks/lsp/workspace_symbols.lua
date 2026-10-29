@@ -1,3 +1,8 @@
+--- Workspace symbols across all project LSP clients.
+---
+--- In a monorepo several servers provide workspace symbols (e.g. ty for
+--- backend/, tsc for frontend/). By default all of them are queried and the
+--- results ranked together; `<C-l>` cycles to a single server and back.
 local M = {}
 
 ---@param root string
@@ -14,14 +19,26 @@ local function scope_label(root, scope_dir)
     return scope_dir
 end
 
----@param client vim.lsp.Client?
+---@param clients vim.lsp.Client[]
+---@return string[] unique client names in order
+local function client_names(clients)
+    local names = {}
+    for _, client in ipairs(clients) do
+        if not vim.list_contains(names, client.name) then
+            names[#names + 1] = client.name
+        end
+    end
+    return names
+end
+
+---@param clients vim.lsp.Client[]
 ---@param root string
 ---@param scope_dir string?
 ---@return string
-local function picker_title(client, root, scope_dir)
+local function picker_title(clients, root, scope_dir)
     local title = 'LSP Workspace Symbols'
-    if client then
-        title = ('%s [%s]'):format(title, client.name)
+    if #clients > 0 then
+        title = ('%s [%s]'):format(title, table.concat(client_names(clients), '+'))
     end
     local label = scope_label(root, scope_dir)
     if label then
@@ -32,36 +49,12 @@ end
 
 ---@param file string?
 ---@param scope_dir string
----@param root string
 ---@return boolean
-local function in_scope(file, scope_dir, root)
+local function in_scope(file, scope_dir)
     if type(file) ~= 'string' or file == '' then
         return false
     end
-    if file == scope_dir then
-        return true
-    end
-
-    local rel_file = vim.fs.relpath(root, file)
-    local rel_scope = vim.fs.relpath(root, scope_dir)
-    if rel_file and rel_scope then
-        if rel_file == rel_scope then
-            return true
-        end
-        local rel_prefix = rel_scope
-        if not rel_prefix:match('/$') then
-            rel_prefix = rel_prefix .. '/'
-        end
-        if vim.startswith(rel_file, rel_prefix) then
-            return true
-        end
-    end
-
-    local prefix = scope_dir
-    if not prefix:match('/$') then
-        prefix = prefix .. '/'
-    end
-    return vim.startswith(file, prefix)
+    return vim.fs.relpath(scope_dir, file) ~= nil
 end
 
 ---@param client vim.lsp.Client
@@ -72,76 +65,73 @@ local function supports_workspace_symbols(client)
 end
 
 ---@param client vim.lsp.Client
----@param root string
----@return boolean
-local function client_matches_root(client, root)
-    local config_root = client.config and client.config.root_dir
-    if config_root == root then
-        return true
-    end
-
-    for _, folder in ipairs(client.workspace_folders or {}) do
-        local folder_root = vim.uri_to_fname(folder.uri)
-        if folder_root == root then
-            return true
-        end
-    end
-
-    return false
+---@return string[]
+local function client_filetypes(client)
+    -- client.config is a vim.lsp.ClientConfig, which doesn't declare
+    -- filetypes in the runtime types
+    return client.config and (client.config --[[@as vim.lsp.Config]]).filetypes or {}
 end
 
+--- Clients providing workspace symbols for the project at `root`: rooted
+--- inside it and serving one of the project's filetypes.
 ---@param root string
----@param filetype string?
----@return vim.lsp.Client?
-local function workspace_symbol_client(root, filetype)
-    local clients = vim.lsp.get_clients()
-    local best_client = nil
-    local best_score = -1
-
-    for _, client in ipairs(clients) do
-        if supports_workspace_symbols(client) then
-            local score = 0
-            if client_matches_root(client, root) then
-                score = score + 2
+---@param only? string restrict to clients with this name
+---@return vim.lsp.Client[]
+local function project_clients(root, only)
+    local filetypes = require('conf.workspace').project_filetypes({ buffers = false })
+    local clients = vim.iter(vim.lsp.get_clients())
+        :filter(function(client)
+            if client:is_stopped() or not supports_workspace_symbols(client) then
+                return false
             end
-            if
-                filetype
-                and vim.list_contains(
-                    -- client.config is a vim.lsp.ClientConfig, which doesn't
-                    -- declare filetypes in the runtime types
-                    client.config and (client.config --[[@as vim.lsp.Config]]).filetypes
-                        or {},
-                    filetype
-                )
-            then
-                score = score + 1
+            if only and client.name ~= only then
+                return false
             end
-
-            if
-                not best_client
-                or score > best_score
-                or (score == best_score and client.id < best_client.id)
-            then
-                best_client = client
-                best_score = score
+            if not client.root_dir or not vim.fs.relpath(root, client.root_dir) then
+                return false
             end
+            if #filetypes == 0 then
+                return true
+            end
+            return vim.iter(client_filetypes(client)):any(function(ft)
+                return vim.list_contains(filetypes, ft)
+            end)
+        end)
+        :totable()
+    -- stable order (by root, then name) regardless of which server started first
+    table.sort(clients, function(a, b)
+        if a.root_dir ~= b.root_dir then
+            return a.root_dir < b.root_dir
         end
-    end
-
-    return best_client
+        return a.name < b.name
+    end)
+    return clients
 end
 
+--- Symbol kind filter for a client, from the picker's per-filetype filters.
+---@param filters table<string, boolean|string[]>
+---@param client vim.lsp.Client
+---@return boolean|string[]
+local function kind_filter(filters, client)
+    for _, ft in ipairs(client_filetypes(client)) do
+        if filters[ft] ~= nil then
+            return filters[ft]
+        end
+    end
+    if filters.default ~= nil then
+        return filters.default
+    end
+    return true
+end
+
+--- The finder coroutine may run in a fast event context, so everything that
+--- needs the main loop (resolving clients, loading the fuzzy backend) happens
+--- beforehand; `state.clients` is kept up to date by `M.pick`.
 ---@param root string
----@param project_filetype string?
----@param selected_client vim.lsp.Client?
+---@param state {clients: vim.lsp.Client[]}
 ---@param scope_dir string?
 ---@return fun(opts: snacks.picker.lsp.symbols.Config, ctx: snacks.picker.finder.ctx): fun(cb: async fun(item: snacks.picker.finder.Item))
-local function workspace_symbols_finder(
-    root,
-    project_filetype,
-    selected_client,
-    scope_dir
-)
+local function workspace_symbols_finder(root, state, scope_dir)
     ---@param opts snacks.picker.lsp.symbols.Config
     ---@param ctx snacks.picker.finder.ctx
     return function(opts, ctx)
@@ -151,89 +141,108 @@ local function workspace_symbols_finder(
         end
 
         local filters = opts.filter or {}
-        local filter = project_filetype and filters[project_filetype] or nil
-        if filter == nil then
-            filter = filters.default or true
-        end
-
-        ---@param kind string?
-        ---@return boolean
-        local function want(kind)
-            kind = kind or 'Unknown'
-            return type(filter) == 'boolean' or vim.tbl_contains(filter, kind)
-        end
+        local query = ctx.filter.search or ''
 
         ---@async
         ---@param cb async fun(item: snacks.picker.finder.Item)
         return function(cb)
-            local active_client = selected_client
-                or workspace_symbol_client(root, project_filetype)
-            if not active_client then
-                return
-            end
-            selected_client = active_client
             local lsp_source = require('snacks.picker.source.lsp')
+            local items = {} ---@type snacks.picker.finder.Item[]
 
-            local query = ctx.filter.search or ''
+            for _, client in ipairs(state.clients) do
+                local filter = kind_filter(filters, client)
+                ---@diagnostic disable-next-line: param-type-mismatch
+                lsp_source.request(client, 'workspace/symbol', function()
+                    return { query = query }
+                end, function(request_client, result)
+                    local client_items =
+                        lsp_source.results_to_items(request_client, result, {
+                            text_with_file = true,
+                            filter = function(item)
+                                if type(filter) == 'boolean' then
+                                    return filter
+                                end
+                                local kind = item.kind
+                                    and lsp_source.symbol_kind(item.kind)
+                                    or 'Unknown'
+                                return vim.list_contains(filter, kind)
+                            end,
+                        })
+                    vim.list_extend(items, client_items)
+                end)
+            end
 
-            ---@diagnostic disable-next-line: param-type-mismatch
-            lsp_source.request(active_client, 'workspace/symbol', function()
-                return { query = query }
-            end, function(request_client, result)
-                local items = lsp_source.results_to_items(request_client, result, {
-                    text_with_file = true,
-                    filter = function(item)
-                        local kind = item.kind
-                        if not kind then
-                            return want('Unknown')
-                        end
-                        return want(lsp_source.symbol_kind(kind))
-                    end,
-                })
+            local effective_scope = scope_dir or root
+            items = vim.tbl_filter(function(item)
+                return in_scope(item.file, effective_scope)
+            end, items)
 
-                local effective_scope = scope_dir or root
-                items = vim.tbl_filter(function(item)
-                    return in_scope(item.file, effective_scope, root)
-                end, items)
-
-                items = require('conf.snacks.fuzzy').rank_items(
-                    items,
-                    query,
-                    nil,
-                    function(item)
-                        return item.name or item.text or ''
-                    end
-                )
-
-                for _, item in ipairs(items) do
-                    item.tree = opts.tree
-                    ---@diagnostic disable-next-line: await-in-sync
-                    cb(item)
-                end
+            items = require('conf.snacks.fuzzy').rank_items(items, query, nil, function(item)
+                return item.name or item.text or ''
             end)
+
+            for _, item in ipairs(items) do
+                item.tree = opts.tree
+                ---@diagnostic disable-next-line: await-in-sync
+                cb(item)
+            end
         end
     end
 end
 
----@param opts? {search?:string,scope_dir?:string}
+--- Refresh the picker once all `ids` are initialized (or after a timeout).
+---@param picker snacks.Picker
+---@param ids integer[]
+---@param on_ready fun()
+local function when_initialized(picker, ids, on_ready)
+    local deadline = vim.uv.now() + 10000
+    local function poll()
+        if picker.closed then
+            return
+        end
+        local ready = vim.iter(ids):all(function(id)
+            local client = vim.lsp.get_client_by_id(id)
+            return client == nil or client.initialized == true
+        end)
+        if ready or vim.uv.now() > deadline then
+            on_ready()
+        else
+            vim.defer_fn(poll, 50)
+        end
+    end
+    poll()
+end
+
+---@param opts? {search?:string, scope_dir?:string, client?:string}
 ---@return snacks.Picker?
 function M.pick(opts)
     opts = opts or {}
-    local root = vim.g.workspace_root or vim.uv.cwd()
-    local project_filetype = vim.g.project_filetype
+    local root = vim.g.workspace_root or assert(vim.uv.cwd())
     local scope_dir = opts.scope_dir
-    local client = workspace_symbol_client(root, project_filetype)
+    local only = opts.client
+    local clients = project_clients(root, only)
+    local state = { clients = clients }
+    require('conf.fuzzy').preload()
 
-    if not client then
-        require('conf.workspace.lsp').start_project_clients()
+    ---@param overrides {search?:string, scope_dir?:string|false, client?:string|false}
+    ---@param picker snacks.Picker
+    local function reopen(picker, overrides)
+        local next_opts = {
+            search = picker.input:get(),
+            scope_dir = scope_dir,
+            client = only,
+        }
+        for key, value in pairs(overrides) do
+            next_opts[key] = value or nil
+        end
+        picker:close()
+        M.pick(next_opts)
     end
 
-    local title = picker_title(client, root, scope_dir)
-
     local picker = Snacks.picker.lsp_workspace_symbols({
-        title = title,
+        title = picker_title(clients, root, scope_dir),
         cwd = root,
-        finder = workspace_symbols_finder(root, project_filetype, client, scope_dir),
+        finder = workspace_symbols_finder(root, state, scope_dir),
         search = opts.search,
         matcher = {
             fuzzy = true,
@@ -242,39 +251,33 @@ function M.pick(opts)
         },
         actions = {
             pick_scope_dir = function(self, _)
-                local current_search = self.input:get()
                 ---@diagnostic disable-next-line: undefined-field
                 Snacks.picker.dirs({
                     title = 'Pick Symbol Scope Directory',
                     cwd = root,
                     confirm = function(dir_picker, item)
-                        if not item then
+                        if not item or not item.file then
                             return
                         end
-
-                        local dir = item.file
-                        local cwd = root
-                        if dir and cwd then
-                            dir = vim.fs.joinpath(cwd, dir)
-                        end
                         dir_picker:close()
-                        self:close()
-                        M.pick({
-                            search = current_search,
-                            scope_dir = dir,
-                        })
+                        reopen(self, { scope_dir = vim.fs.joinpath(root, item.file) })
                     end,
                 })
             end,
             clear_scope_dir = function(self, _)
-                if not scope_dir then
+                if scope_dir then
+                    reopen(self, { scope_dir = false })
+                end
+            end,
+            cycle_client = function(self, _)
+                -- all -> each client name -> all
+                local names = client_names(project_clients(root))
+                if #names < 2 and not only then
                     return
                 end
-                local current_search = self.input:get()
-                self:close()
-                M.pick({
-                    search = current_search,
-                })
+                -- position of the current client (0 = all, unknown name -> 0)
+                local idx = only and vim.fn.index(names, only) + 1 or 0
+                reopen(self, { client = names[idx + 1] or false })
             end,
         },
         win = {
@@ -290,6 +293,11 @@ function M.pick(opts)
                         mode = { 'i', 'n' },
                         desc = 'Clear symbol scope directory',
                     },
+                    ['<C-l>'] = {
+                        'cycle_client',
+                        mode = { 'i', 'n' },
+                        desc = 'Cycle LSP client (all/single)',
+                    },
                 },
             },
         },
@@ -303,18 +311,26 @@ function M.pick(opts)
         return nil
     end
 
-    if not client then
-        vim.defer_fn(function()
-            local current_client = workspace_symbol_client(root, project_filetype)
-            if not current_client then
+    if #clients == 0 then
+        require('conf.workspace.lsp').start_project_clients(function(ids)
+            if #ids == 0 then
                 Snacks.notify.warn('No client supporting workspace symbols')
                 picker:close()
                 return
             end
-            picker.title = picker_title(current_client, root, scope_dir)
-            picker:update_titles()
-            picker:refresh()
-        end, 500)
+            when_initialized(picker, ids, function()
+                local current = project_clients(root, only)
+                if #current == 0 then
+                    Snacks.notify.warn('No client supporting workspace symbols')
+                    picker:close()
+                    return
+                end
+                state.clients = current
+                picker.title = picker_title(current, root, scope_dir)
+                picker:update_titles()
+                picker:find({ refresh = true })
+            end)
+        end)
     end
 
     return picker

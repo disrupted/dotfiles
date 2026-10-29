@@ -1,7 +1,13 @@
+local project = require('conf.project')
+
+local root_markers =
+    { { 'ruff.toml', '.ruff.toml', 'uv.lock' }, { 'pyproject.toml' }, '.git' }
+
 ---@type vim.lsp.Config
 return {
-    cmd = { 'ruff', 'server' },
+    cmd = project.lsp_cmd({ 'ruff', 'server' }),
     filetypes = { 'python' },
-    root_markers = { 'pyproject.toml', 'ruff.toml', '.ruff.toml', '.git' },
+    root_markers = root_markers,
+    root_dir = project.lsp_root_dir(root_markers, 'ruff'),
     settings = {},
 }
