@@ -39,7 +39,10 @@ describe('dap python (mise monorepo)', function()
         py.resolve({ request = 'launch', program = backend .. '/app/main.py' }, function(c)
             result = c
         end)
-        assert.same({ 'mise', '-C', backend, 'exec', '--', 'python' }, result.python)
+        assert.same(
+            { 'mise', '-C', backend, 'exec', '--', backend .. '/.venv/bin/python' },
+            result.python
+        )
         assert.equal(backend, result.cwd)
         assert.equal(backend .. '/.venv/bin/python', result.debugLauncherPython)
     end)
@@ -54,6 +57,10 @@ describe('dap python (mise monorepo)', function()
         }, function(c)
             result = c
         end)
+        assert.same(
+            { 'mise', '-C', backend, 'exec', '--', backend .. '/.venv/bin/python' },
+            result.python
+        )
         assert.equal(backend, result.cwd)
         assert.equal(backend .. '/.venv/bin/python', result.debugLauncherPython)
     end)

@@ -1,13 +1,10 @@
 --- Run debugpy launch targets in the mise environment of their config root.
 ---
---- In a mise monorepo the debuggee must run in e.g. backend/ (its .venv and
---- env), not in Neovim's environment at the workspace root. debugpy accepts
---- `python` as a command list, so the debuggee is spawned via `project.exec()`
---- (`mise -C <root> exec -- python`), like neotest-python does.
+--- debugpy accepts `python` as a command list, so the debuggee is spawned via
+--- `mise -C <root> exec -- python` instead of in Neovim's own environment.
 ---
---- Caveat: debugpy spawns its launcher with only `python[1]` (here `mise`),
---- which never connects back and hangs the session. `debugLauncherPython`
---- fixes this; any Python works for the launcher, so use the root's own.
+--- debugpy starts its launcher with only `python[1]` (`mise`), which hangs the
+--- session. `debugLauncherPython` works around that.
 local M = {}
 
 --- Config root that `python` (a `project.exec()` command list) runs in.
@@ -63,12 +60,20 @@ function M.resolve(config, cb)
     if not config.cwd or config.cwd == vim.g.workspace_root then
         config.cwd = root
     end
-    if config.debugLauncherPython or not M.exec_root(config.python) then
+    local python = config.python
+    if not M.exec_root(python) then
         cb(config)
         return
     end
     project.executable(root, 'python', function(path)
-        config.debugLauncherPython = path or vim.fn.exepath('python3')
+        -- a bare `python` can resolve to the mise shim instead of the venv
+        local program = #python == 6 and python[6] or nil
+        if path and (program == 'python' or program == 'python3') then
+            config.python = project.exec(root, { path })
+        end
+        config.debugLauncherPython = config.debugLauncherPython
+            or path
+            or vim.fn.exepath('python3')
         cb(config)
     end)
 end
