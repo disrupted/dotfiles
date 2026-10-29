@@ -72,7 +72,11 @@ M.project_filetypes = function(opts)
             :totable()
     end
 
-    -- check marker files
+    -- check marker files in the workspace root and every monorepo config root
+    local dirs = require('conf.project').dirs()
+    if #dirs == 0 then
+        dirs = { vim.uv.cwd() }
+    end
     local markers = opts.markers or {}
     for filetype, files in pairs(markers) do
         if
@@ -81,7 +85,9 @@ M.project_filetypes = function(opts)
                 if type(file_predicate) == 'function' then
                     return false -- TODO: handle these
                 end
-                return vim.uv.fs_stat(file_predicate) ~= nil
+                return vim.iter(dirs):any(function(dir)
+                    return vim.uv.fs_stat(vim.fs.joinpath(dir, file_predicate)) ~= nil
+                end)
             end)
         then
             table.insert(project_filetypes, filetype)
@@ -118,8 +124,8 @@ M.get_root = function(cwd)
             return root
         end
     end
-    if vim.g.git_repo then
-        return vim.fs.dirname(vim.g.git_repo)
+    if vim.g.git_root then
+        return vim.g.git_root
     end
     local config = vim.fn.stdpath('config')
     local rel_to_config = vim.fs.relpath(config, cwd)
@@ -423,6 +429,7 @@ M.setup = function()
     if not vim.g.git_repo then
         require('yadm').setup()
     end
+    require('conf.project').setup()
     -- change global working directory to workspace root
     -- vim.api.nvim_set_current_dir(vim.g.workspace_root)
 
@@ -440,7 +447,6 @@ M.setup = function()
         return
     end
 
-    vim.g.project_tabs = true
     if not vim.g.project_tabs or not vim.g.workspace_type then
         return
     end

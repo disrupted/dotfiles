@@ -67,9 +67,12 @@ return {
                     return
                 end
 
-                local target = require('conf.workspace').find_or_create_tab('tests')
-                if vim.api.nvim_get_current_tabpage() ~= target then
-                    vim.api.nvim_set_current_tabpage(target)
+                local target = vim.api.nvim_get_current_tabpage()
+                if vim.g.project_tabs then
+                    target = require('conf.workspace').find_or_create_tab('tests')
+                    if vim.api.nvim_get_current_tabpage() ~= target then
+                        vim.api.nvim_set_current_tabpage(target)
+                    end
                 end
 
                 for _, win in ipairs(vim.api.nvim_tabpage_list_wins(target)) do

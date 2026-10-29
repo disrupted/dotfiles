@@ -69,6 +69,12 @@ end
 
 ---@param cwd string
 ---@return string?
+--- Find the Git dir and work tree root for a directory.
+--- In a linked worktree the Git dir is `<main>/.git/worktrees/<name>`, so the
+--- work tree root must come from `--show-toplevel`, never from the Git dir.
+---@param cwd string
+---@return string? git_dir absolute Git dir
+---@return string? toplevel work tree root (nil for bare repos or inside .git)
 M.find_repo = function(cwd)
     local out = vim.system({
         'git',
@@ -76,9 +82,16 @@ M.find_repo = function(cwd)
         cwd,
         'rev-parse',
         '--absolute-git-dir',
+        '--show-toplevel',
     }):wait()
     if out.code == 0 and out.stdout and out.stdout ~= '' then
-        return vim.trim(out.stdout)
+        local lines = vim.split(vim.trim(out.stdout), '\n', { plain = true })
+        return lines[1], lines[2]
+    end
+    -- --show-toplevel fails outside a work tree (bare repo, inside .git)
+    out = vim.system({ 'git', '-C', cwd, 'rev-parse', '--absolute-git-dir' }):wait()
+    if out.code == 0 and out.stdout and out.stdout ~= '' then
+        return vim.trim(out.stdout), nil
     end
 end
 
@@ -358,7 +371,7 @@ end
 
 ---@param cwd string
 M.setup = function(cwd)
-    vim.g.git_repo = M.find_repo(cwd)
+    vim.g.git_repo, vim.g.git_root = M.find_repo(cwd)
     if vim.g.git_repo then
         M.watch()
         vim.api.nvim_create_autocmd('DirChanged', {
@@ -368,7 +381,8 @@ M.setup = function(cwd)
                 if new_cwd == vim.g.workspace_root then
                     return
                 end
-                local new_repo = M.find_repo(new_cwd)
+                local new_repo, new_root = M.find_repo(new_cwd)
+                vim.g.git_root = new_root
                 if new_repo ~= vim.g.git_repo then
                     vim.g.git_repo = new_repo
                     if new_repo then

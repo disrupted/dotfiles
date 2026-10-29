@@ -69,6 +69,8 @@ vim.o.sessionoptions = table.concat({
     'winpos',
 }, ',')
 
+-- code/tests tab routing: disabled, evaluate later whether it's still needed
+vim.g.project_tabs = false
 require('conf.workspace').setup()
 -- disable global shada; create separate shadafile for each workspace
 -- ensures project-scoped jumplist, marks, etc.
