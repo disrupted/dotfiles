@@ -88,17 +88,21 @@ return {
         -- the filetype on the RHS will use the parser and queries on the LHS
         vim.treesitter.language.register('terraform', 'terraform-vars')
 
+        -- get_available() reloads the parsers (firing TSUpdate) on every call,
+        -- so cache it
+        local available ---@type string[]?
         vim.api.nvim_create_autocmd('FileType', {
             group = vim.api.nvim_create_augroup('treesitter.setup', {}),
             callback = function(args)
                 local lang = vim.treesitter.language.get_lang(args.match)
+                available = available or treesitter.get_available()
                 if vim.list_contains(treesitter.get_installed(), lang) then
                     vim.treesitter.start(args.buf, lang)
                     -- vim.wo.foldmethod = 'expr'
                     -- vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
                     vim.bo[args.buf].indentexpr =
                         'v:lua.require\'nvim-treesitter\'.indentexpr()'
-                elseif vim.list_contains(treesitter.get_available(), lang) then
+                elseif vim.list_contains(available, lang) then
                     -- HACK: try starting it anyways, some external parsers (e.g. ghostty) aren't correctly detected as installed
                     local ok = pcall(vim.treesitter.start, args.buf, lang)
                     if not ok then
