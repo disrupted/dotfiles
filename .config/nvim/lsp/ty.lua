@@ -2,7 +2,9 @@
 return {
     cmd = { 'ty', 'server' },
     filetypes = { 'python' },
-    root_markers = { 'ty.toml', 'pyproject.toml' },
+    -- nested list = priority groups: prefer the uv workspace root (e.g.
+    -- backend/) over the nearest member package pyproject.toml
+    root_markers = { { 'ty.toml', 'uv.lock' }, { 'pyproject.toml' } },
     settings = {
         ty = {
             diagnosticMode = 'workspace',

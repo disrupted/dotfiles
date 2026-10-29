@@ -116,7 +116,7 @@ return {
         python = {
             pyrefly = {
                 displayTypeErrors = 'force-on',
-                -- diagnosticMode = 'workspace', -- TODO: pending feature https://github.com/facebook/pyrefly/commit/74787015787ea28da79b4d0f617cfb82ce4c66f7
+                diagnosticMode = 'workspace',
                 analysis = {
                     inlayHints = {
                         callArgumentNames = 'all',
