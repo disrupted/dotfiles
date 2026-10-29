@@ -14,9 +14,12 @@ return {
             console = 'internalConsole',
         }
         local py = require('dap-python')
-        py.setup('uv', opts) -- FIXME: currently debugpy only works from the Python root, not the global root in a monorepo
+        -- the adapter runs anywhere (`uv run --with debugpy`); the debuggee runs
+        -- in the mise env of the file's config root (see conf.dap.python)
+        py.setup('uv', opts)
         py.test_runner = 'pytest'
         local dap = require('dap')
+        require('conf.dap.python').wrap(dap)
         local configs = dap.configurations.python or {}
         dap.configurations.python = configs
         table.insert(configs, {
@@ -60,7 +63,6 @@ return {
                     '--use-colors',
                 }
             end,
-            pythonPath = 'python',
             console = 'integratedTerminal',
         })
         table.insert(configs, {
