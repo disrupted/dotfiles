@@ -19,6 +19,9 @@ return {
             form = {
                 border = 'rounded',
             },
+            -- replaced by overseer/template/mise_project.lua
+            -- (whole project, incl. monorepo config roots, without global tasks)
+            disable_template_modules = { 'overseer.template.mise' },
             task_win = {
                 border = 'rounded',
                 padding = 10,
