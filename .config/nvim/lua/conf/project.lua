@@ -16,6 +16,22 @@ local roots_for = nil
 ---@type integer generation counter to drop stale async results
 local generation = 0
 
+---@type boolean?
+local has_mise = nil
+
+--- Whether mise is installed. Cached, since callers may run in a fast event
+--- context (e.g. neotest's async build_spec) where vim.fn is not allowed.
+---@return boolean
+local function mise_available()
+    if has_mise == nil then
+        if vim.in_fast_event() then
+            return true -- resolved on the main loop by setup()
+        end
+        has_mise = vim.fn.executable('mise') == 1
+    end
+    return has_mise
+end
+
 ---@param root string
 ---@return string[]
 local function cmd(root)
@@ -55,7 +71,7 @@ end
 ---@param root? string defaults to vim.g.workspace_root
 function M.load(root)
     root = root or vim.g.workspace_root
-    if not root or vim.fn.executable('mise') == 0 then
+    if not root or not mise_available() then
         return
     end
     generation = generation + 1
@@ -69,7 +85,8 @@ function M.load(root)
 end
 
 --- Config roots (absolute). Non-blocking once loaded; before that, falls back
---- to a short blocking call so callers never act on incomplete information.
+--- to a short blocking call so callers never act on incomplete information
+--- (except in a fast event context, where blocking is not allowed).
 ---@return string[]
 function M.roots()
     local root = vim.g.workspace_root
@@ -79,7 +96,10 @@ function M.roots()
     if roots and roots_for == root then
         return roots
     end
-    if vim.fn.executable('mise') == 0 then
+    if vim.in_fast_event() then
+        return {}
+    end
+    if not mise_available() then
         store(root, {})
         return {}
     end
@@ -128,7 +148,7 @@ end
 ---@param command string[]
 ---@return string[]
 function M.exec(root, command)
-    if root == vim.g.workspace_root or vim.fn.executable('mise') == 0 then
+    if root == vim.g.workspace_root or not mise_available() then
         return command
     end
     return vim.list_extend({ 'mise', '-C', root, 'exec', '--' }, command)
@@ -190,7 +210,7 @@ end
 ---@param bin string
 ---@param cb fun(path: string?) called on the main loop
 function M.executable(root, bin, cb)
-    if root == vim.g.workspace_root or vim.fn.executable('mise') == 0 then
+    if root == vim.g.workspace_root or not mise_available() then
         local path = vim.fn.exepath(bin)
         cb(path ~= '' and path or nil)
         return
@@ -260,6 +280,7 @@ function M.reload()
 end
 
 function M.setup()
+    mise_available()
     M.load()
     local group = vim.api.nvim_create_augroup('conf.project', { clear = true })
     vim.api.nvim_create_autocmd('BufWritePost', {

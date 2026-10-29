@@ -15,11 +15,21 @@ return {
         end
     end,
     config = function()
+        local project = require('conf.project')
         local opts = {
-            jestCommand = 'npm test --',
+            -- run from the package manager workspace root like Nx does
+            -- the jest config defaults to the nearest jest.config.{ts,js} (i.e. the Nx project)
+            jestCommand = function(path)
+                local root = project.of(path)
+                if not root or root == vim.g.workspace_root then
+                    -- nearest node_modules/.bin/jest
+                    return require('neotest-jest.jest-util').getJestCommand(path)
+                end
+                return table.concat(project.exec(root, { 'jest' }), ' ')
+            end,
             env = { CI = true },
-            cwd = function()
-                return vim.uv.cwd()
+            cwd = function(path)
+                return project.of(path) or vim.g.workspace_root
             end,
         }
         ---@diagnostic disable-next-line: call-non-callable

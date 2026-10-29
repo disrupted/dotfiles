@@ -49,6 +49,17 @@ return {
         local opts = {
             dap = { justMyCode = true },
             runner = 'pytest',
+            -- `root` is the nearest pyproject.toml (e.g. backend/packages/foo).
+            -- In a mise monorepo run pytest in the env of its config root (backend/: .venv, VIRTUAL_ENV)
+            -- `mise -C` also makes that the cwd, so pytest picks up backend/pyproject.toml as rootdir/config.
+            python = function(root)
+                local project = require('conf.project')
+                local config_root = project.of(root)
+                if not config_root or config_root == vim.g.workspace_root then
+                    return require('neotest-python.base').get_python_command(root)
+                end
+                return project.exec(config_root, { 'python' })
+            end,
             args = {
                 '-s', -- don't capture console output
                 '--log-level',
