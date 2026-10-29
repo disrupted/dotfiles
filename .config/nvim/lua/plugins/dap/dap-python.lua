@@ -14,9 +14,11 @@ return {
             console = 'internalConsole',
         }
         local py = require('dap-python')
-        -- the adapter runs anywhere (`uv run --with debugpy`); the debuggee runs
-        -- in the mise env of the file's config root (see conf.dap.python)
-        py.setup('uv', opts)
+        -- the adapter comes from the global `pypi:debugpy` mise tool, so its env
+        -- (unlike `uv run --with debugpy`) doesn't leak into the debuggee; that
+        -- runs in the mise env of the file's config root (see conf.dap.python)
+        local adapter = vim.fn.exepath('debugpy-adapter')
+        py.setup(adapter ~= '' and adapter or 'uv', opts)
         py.test_runner = 'pytest'
         local dap = require('dap')
         require('conf.dap.python').wrap(dap)
