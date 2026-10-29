@@ -75,62 +75,7 @@ return {
             {
                 '<Leader>f',
                 function()
-                    ---@type snacks.picker.Config
-                    local source = {}
-
-                    if pcall(require, 'fff') and pcall(require, 'fff-snacks') then
-                        source = require('fff-snacks.find_files').source
-                        source.formatters = nil
-                    else
-                        Snacks.notify(
-                            'fff unavailable, falling back to builtin smart picker'
-                        )
-                        source = {
-                            source = 'smart',
-                            finders = {
-                                'buffers',
-                                'recent',
-                                vim.g.git_repo and 'git_files' or 'files',
-                            },
-                            hidden = true,
-                            matcher = { sort_empty = true },
-                            filter = { cwd = true },
-                        }
-                    end
-
-                    source = vim.tbl_deep_extend('force', source, {
-                        title = 'Files',
-                        actions = {
-                            calculate_file_truncate_width = function(self)
-                                local width = self.list.win:size().width
-                                self.opts.formatters.file.truncate = width - 6
-                            end,
-                        },
-                        win = {
-                            list = {
-                                on_buf = function(self)
-                                    self:execute('calculate_file_truncate_width')
-                                end,
-                            },
-                            preview = {
-                                on_buf = function(self)
-                                    self:execute('calculate_file_truncate_width')
-                                end,
-                                on_close = function(self)
-                                    self:execute('calculate_file_truncate_width')
-                                end,
-                            },
-                        },
-                    })
-                    local picker = Snacks.picker(source)
-
-                    if not picker then
-                        return -- abort if picker was closed
-                    end
-
-                    picker.list.win:on('VimResized', function()
-                        picker:action('calculate_file_truncate_width')
-                    end)
+                    require('conf.snacks.files').pick()
                 end,
                 desc = 'Files',
                 icon = icons.documents.files,
