@@ -40,6 +40,21 @@ end
 local function fff_source(dirs)
     local source = vim.deepcopy(require('fff-snacks.find_files').source)
     source.formatters = nil
+    -- fff-snacks pads files without git status with a virtual "  " (to align
+    -- with the status icon); snacks' own file format (grep etc.) doesn't
+    local format = source.format --[[@as snacks.picker.format]]
+    source.format = function(item, picker)
+        local ret = format(item, picker)
+        if not item.status then
+            for i, chunk in ipairs(ret) do
+                if chunk.virtual and chunk[1] == '  ' then
+                    table.remove(ret, i)
+                    break
+                end
+            end
+        end
+        return ret
+    end
     local finder = source.finder --[[@as fun(opts: table, ctx: snacks.picker.finder.ctx): any]]
     local glob = M.glob(dirs)
     if glob then
