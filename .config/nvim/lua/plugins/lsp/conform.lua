@@ -41,7 +41,15 @@ return {
                 end
             end
 
+            -- the nearest config wins: in a monorepo the root's dprint.jsonc may
+            -- not handle TS (dprint then no-ops), while frontend/ uses prettier
             local dprint_prettier_none = function(bufnr)
+                local conform = require('conform')
+                local dprint_cwd = conform.get_formatter_info('dprint', bufnr).cwd
+                local prettier_cwd = conform.get_formatter_info('prettier', bufnr).cwd
+                if prettier_cwd and (not dprint_cwd or #prettier_cwd > #dprint_cwd) then
+                    return check_prettier(bufnr) or {}
+                end
                 return check_dprint(bufnr) or check_prettier(bufnr) or {}
             end
 
@@ -123,6 +131,18 @@ return {
 
         local conform = require('conform')
         conform.setup(opts)
+
+        -- node-based formatters run in the mise env of their config root
+        -- (e.g. frontend's node) without paying for `mise exec` per run
+        local function project_env(_, ctx)
+            local project = require('conf.project')
+            local root = project.of(ctx.filename)
+            if root and root ~= vim.g.workspace_root then
+                return project.env_cached(root)
+            end
+        end
+        conform.formatters.prettier = { env = project_env }
+        conform.formatters.prettierd = { env = project_env }
 
         conform.formatters.dprint = {
             ---@return string[]?

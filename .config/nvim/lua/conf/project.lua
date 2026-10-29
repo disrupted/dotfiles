@@ -19,8 +19,7 @@ local generation = 0
 ---@type boolean?
 local has_mise = nil
 
---- Whether mise is installed. Cached, since callers may run in a fast event
---- context (e.g. neotest's async build_spec) where vim.fn is not allowed.
+--- Cached because callers may run in a fast event context where vim.fn is not allowed.
 ---@return boolean
 local function mise_available()
     if has_mise == nil then
@@ -38,7 +37,6 @@ local function cmd(root)
     return { 'mise', '-C', root, 'config', 'get', 'monorepo.config_roots' }
 end
 
---- Parse `mise config get monorepo.config_roots` output into absolute paths.
 ---@param root string workspace root
 ---@param out vim.SystemCompleted
 ---@return string[]
@@ -84,9 +82,8 @@ function M.load(root)
     end)
 end
 
---- Config roots (absolute). Non-blocking once loaded; before that, falls back
---- to a short blocking call so callers never act on incomplete information
---- (except in a fast event context, where blocking is not allowed).
+--- Config roots (absolute). Blocks briefly on the first call if they aren't
+--- loaded yet, unless in a fast event context.
 ---@return string[]
 function M.roots()
     local root = vim.g.workspace_root
@@ -114,8 +111,7 @@ function M.is_monorepo()
     return #M.roots() > 0
 end
 
---- Workspace root followed by all config roots: the directories in which
---- project markers (pyproject.toml, package.json, ...) are looked up.
+--- Workspace root followed by all config roots, for project marker lookups.
 ---@return string[]
 function M.dirs()
     local root = vim.g.workspace_root
@@ -159,8 +155,7 @@ local envs = {}
 ---@type table<string, fun(env: table<string, string>?)[]> pending callbacks
 local env_waiters = {}
 
---- Resolved mise environment of a config root (`mise env --json`), cached.
---- Used to look up executables; processes are spawned via `exec()`.
+--- Cached `mise env --json` of a config root, used to look up executables.
 ---@param root string
 ---@param cb fun(env: table<string, string>?) called on the main loop
 function M.env(root, cb)
@@ -192,6 +187,17 @@ function M.env(root, cb)
     end)
 end
 
+--- Synchronous variant of `env()`. Returns nil and starts loading if not cached yet.
+---@param root string
+---@return table<string, string>?
+function M.env_cached(root)
+    local cached = envs[root]
+    if cached == nil then
+        M.env(root, function() end)
+    end
+    return cached or nil
+end
+
 ---@param bin string
 ---@param path string PATH-style list
 ---@return string?
@@ -204,8 +210,7 @@ local function search_path(bin, path)
     end
 end
 
---- Find `bin` in the environment of `root`: Neovim's own PATH for the
---- workspace root, the root's mise env for monorepo config roots.
+--- Find `bin` in the environment of `root`.
 ---@param root string
 ---@param bin string
 ---@param cb fun(path: string?) called on the main loop
@@ -238,11 +243,9 @@ end
 ---@type table<function, true>
 local path_aware = setmetatable({}, { __mode = 'k' })
 
---- `root_dir` for vim.lsp.Config: resolve the root from `markers` and only
---- activate when `bin` exists in that root's environment. Also accepts a
---- directory path instead of a buffer (see `accepts_path`), so clients can be
---- started eagerly without a buffer. `on_skip` (not passed by Neovim) is
---- called when the server does not apply, so eager callers can count results.
+--- `root_dir` for vim.lsp.Config. Only activates when `bin` exists in the root's
+--- environment. Also accepts a directory instead of a buffer so clients can be
+--- started eagerly. `on_skip` is called when the server doesn't apply.
 ---@param markers (string|string[])[]
 ---@param bin string
 ---@return fun(source: integer|string, on_dir: fun(root_dir?: string), on_skip?: fun())
@@ -266,7 +269,6 @@ function M.lsp_root_dir(markers, bin)
     return fn
 end
 
---- Whether a `root_dir` function was created by `lsp_root_dir()`.
 ---@param fn any
 ---@return boolean
 function M.accepts_path(fn)
