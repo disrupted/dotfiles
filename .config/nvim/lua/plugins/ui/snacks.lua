@@ -81,6 +81,14 @@ return {
                 icon = icons.documents.files,
             },
             {
+                '<Leader>p',
+                function()
+                    require('conf.snacks.project_tabs').pick()
+                end,
+                desc = 'Project tabs',
+                icon = '󰓩',
+            },
+            {
                 '<Leader>/',
                 function()
                     ---@diagnostic disable-next-line: undefined-field
