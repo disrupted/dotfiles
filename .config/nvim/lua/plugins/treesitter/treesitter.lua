@@ -18,6 +18,7 @@ return {
                 'comment',
                 'css',
                 'csv',
+                'dap_repl', -- registered by nvim-dap-repl-highlights
                 'diff',
                 'dockerfile',
                 'dot',
