@@ -132,7 +132,6 @@ tinymist = "latest"
 "npm:@mistweaverco/kulala-fmt" = { version = "latest", allow_low_downloads = true, postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:typescript-svelte-plugin" = "latest"                                                                                                                                                                                 # library plugin, no bin/ -> no runtime to patch
 "github:ewhauser/shuck" = "latest"
-"github:agavra/tuicr" = "latest"
 
 # Tinycast: installed straight from the GitHub release zip via the `http`
 # backend + a postinstall hook (no Homebrew cask, no Ruby). The hook copies
@@ -150,6 +149,7 @@ postinstall = { run = "$HOME/.config/mise/scripts/install-tinycast.sh", when = "
 self_update.auto = true
 experimental = true
 idiomatic_version_file_enable_tools = ["python", "rust", "node"]
+trusted_config_paths = ["~/bakdata", "~/bayer", "~/spectrumk"]
 
 [settings.python]
 compile = false
