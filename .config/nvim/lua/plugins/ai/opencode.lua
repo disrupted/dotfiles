@@ -84,6 +84,7 @@ return {
                     return vim.fn.jobpid(job)
                 end,
             },
+            program_status = { enabled = true },
             preferred_picker = 'snacks',
             default_global_keymaps = false,
             keymap_prefix = '<leader>a',

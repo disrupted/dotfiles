@@ -3,7 +3,7 @@ return {
     'L3MON4D3/LuaSnip',
     main = 'luasnip',
     module = 'luasnip',
-    version = vim.version.range('v2.*'),
+    version = 'v2.*',
     build = 'make install_jsregexp',
     keys = {
         {

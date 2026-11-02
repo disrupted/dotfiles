@@ -236,14 +236,44 @@ return {
         {
             '<C-f>',
             function()
+                ---@type string?
+                local current_file = vim.api.nvim_buf_get_name(0)
+                if current_file == '' then
+                    current_file = nil
+                elseif current_file ~= nil then
+                    current_file = vim.fs.normalize(current_file)
+                end
+                ---@return string
+                local function buf_parent_dir()
+                    if not current_file then
+                        return vim.g.workspace_root
+                    end
+                    return vim.fs.dirname(current_file)
+                end
+
+                local start_cwd = buf_parent_dir()
+
+                -- Picker root: the workspace when the file is inside it, otherwise the
+                -- file's own directory, so the picker still has a boundary to stop at.
+                local root = vim.g.workspace_root
+                if not root or not vim.fs.relpath(root, start_cwd) then
+                    root = start_cwd
+                end
+
                 ---@param cwd string
                 ---@return string
                 local function cwd_title(cwd)
-                    if cwd == vim.g.workspace_root then
-                        return '.'
+                    local relpath = vim.fs.relpath(root, cwd)
+                    if relpath then
+                        return relpath == '.' and '.' or relpath .. '/'
                     end
-                    local relpath = assert(vim.fs.relpath(vim.g.workspace_root, cwd))
-                    return relpath .. '/'
+                    -- Outside the picker root (e.g. a file outside the workspace):
+                    -- fall back to a ~-abbreviated absolute path.
+                    local from_home = vim.env.HOME and vim.fs.relpath(vim.env.HOME, cwd)
+                    if from_home then
+                        return (from_home == '.' and '~' or '~/' .. from_home) .. '/'
+                    end
+                    return cwd .. '/'
                 end
 
                 ---@param picker snacks.Picker
@@ -256,7 +286,7 @@ return {
                 ---@param picker snacks.Picker
                 local function dir_up(picker)
                     local cwd = picker:cwd()
-                    if cwd == vim.g.workspace_root then
+                    if vim.fs.normalize(cwd) == root then
                         return
                     end
 
@@ -316,21 +346,6 @@ return {
                     local name = vim.fs.basename(vim.fs.normalize(path))
                     return name:sub(1, 1) == '.', name
                 end
-
-                ---@type string?
-                local current_file = vim.api.nvim_buf_get_name(0)
-                if current_file == '' then
-                    current_file = nil
-                end
-                ---@return string
-                local function buf_parent_dir()
-                    if not current_file then
-                        return vim.g.workspace_root
-                    end
-                    return vim.fs.dirname(current_file)
-                end
-
-                local start_cwd = buf_parent_dir()
 
                 ---@diagnostic disable-next-line: param-type-mismatch
                 Snacks.picker.pick({

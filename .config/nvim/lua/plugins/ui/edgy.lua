@@ -87,6 +87,7 @@ return {
                 wo = {
                     cursorline = false,
                     winbar = false,
+                    winfixbuf = true,
                 },
             },
             {

@@ -32,8 +32,4 @@ function M.picker()
     })
 end
 
-function M.setup()
-    vim.keymap.set('n', '<leader>m', M.picker, { desc = 'Marks' })
-end
-
 return M

@@ -54,6 +54,7 @@ return {
                         -- on_complete = 'failure',
                     },
                     'on_exit_set_status',
+                    'progress',
                     'on_complete_dispose',
                 },
             },

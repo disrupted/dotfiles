@@ -1,7 +1,6 @@
 local M = {}
 
 local system = require('conf.async').system
-local icons = require('conf.icons')
 
 ---@type any, any, any
 local n, renderer, signal
@@ -487,7 +486,7 @@ local function create_or_open(provider)
 end
 
 ---@async
-local function create_or_open_current()
+function M.create_or_open_current()
     local remote_url = require('git').async.remote_url()
     local provider = M.detect(remote_url)
     if not provider then
@@ -498,20 +497,6 @@ local function create_or_open_current()
     end
 
     create_or_open(provider)
-end
-
-function M.setup()
-    require('which-key').add({
-        {
-            '<Leader>gP',
-            function()
-                local task = vim.async.run(create_or_open_current)
-                task:raise_on_error()
-            end,
-            icon = icons.git.pull_request,
-            desc = 'View or create PR',
-        },
-    })
 end
 
 return M

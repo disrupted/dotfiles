@@ -186,7 +186,7 @@ function M.lookup()
     return last_dict[matched] or matched
 end
 
-local function subvert(opts)
+function M.command(opts)
     local bad, good, flags = parse_args(opts.args)
     if not bad then
         vim.notify('S: argument required', vim.log.levels.ERROR)
@@ -229,19 +229,6 @@ local function subvert(opts)
     if not ok then
         vim.notify('S: ' .. tostring(err), vim.log.levels.ERROR)
     end
-end
-
-function M.setup()
-    local command_opts = {
-        nargs = 1,
-        range = true,
-        bang = true,
-        desc = 'Subvert: case-preserving substitution with brace variants',
-    }
-    if vim.fn.exists(':S') ~= 2 then
-        vim.api.nvim_create_user_command('S', subvert, command_opts)
-    end
-    vim.api.nvim_create_user_command('Subvert', subvert, command_opts)
 end
 
 return M

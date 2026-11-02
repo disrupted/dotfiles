@@ -13,7 +13,7 @@ return {
     main = 'blink.cmp',
     module = 'blink.cmp',
     event = { 'InsertEnter', 'CmdlineEnter' },
-    version = vim.version.range('*'),
+    version = '*',
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
     opts = {

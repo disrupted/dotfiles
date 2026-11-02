@@ -12,7 +12,6 @@ vim.pack.add({ 'https://github.com/disrupted/laze' }) -- temporary fork of https
 require('laze.extra').setup() -- optional :Laze update/clean/health/reload
 
 require('plugins').setup()
-require('conf.emmylua').setup()
 
 local disabled_builtin_plugins = {
     '2html_plugin',
@@ -52,7 +51,6 @@ for _, plugin in pairs(disabled_builtin_plugins) do
     vim.g['loaded_' .. plugin] = 1
 end
 require('conf.lsp')
-require('conf.subvert').setup() -- pure-Lua :S / :Subvert (vim-abolish substitution)
 vim.o.exrc = true
 vim.g.health = { style = 'float' }
 -----------------------------------------------------------------------------//
@@ -86,8 +84,6 @@ local shadafile = function()
     )
 end
 vim.o.shadafile = shadafile() or 'NONE'
-require('conf.marks').setup()
-require('conf.forge').setup()
 
 vim.o.completeopt = table.concat({ 'menu', 'menuone', 'noselect' }, ',') -- Completion options
 vim.o.clipboard = 'unnamedplus'
