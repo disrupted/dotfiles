@@ -42,6 +42,17 @@ if ($brew_prefix != null and (($brew_prefix | path join "opt") | path exists)) {
 prepend-path [/usr/local/bin]
 prepend-path [($env.HOME | path join ".local" "bin")]
 
+# mise activation (official): regenerated on every startup so its embedded PATH
+# baseline is never stale and it follows mise upgrades; `use`d in config.nu.
+# Named mise-activate.nu so its exported `main` doesn't shadow the `mise` command.
+const mise_activate = ($nu.cache-dir | path join "mise-activate.nu")
+mkdir ($mise_activate | path dirname)
+if (which mise | is-not-empty) {
+  ^mise activate nu | save -f $mise_activate
+} else {
+  "" | save -f $mise_activate
+}
+
 # Core environment
 $env.SHELL = $nu.current-exe
 $env.EDITOR = "nvim"
