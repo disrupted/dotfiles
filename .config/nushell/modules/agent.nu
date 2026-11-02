@@ -91,7 +91,11 @@ export def ask [
     job spawn {
       let worker_result = (
         try {
-          let api_key = ($env.OPENROUTER_API_KEY? | default "")
+          let api_key = if ($env.OPENROUTER_API_KEY? | is-not-empty) {
+            $env.OPENROUTER_API_KEY
+          } else {
+            do -i { ^fnox get OPENROUTER_API_KEY } | default "" | str trim
+          }
           if (($api_key | str length) == 0) {
             error make --unspanned {msg: "ask: OPENROUTER_API_KEY is not set"}
           }
