@@ -1,9 +1,8 @@
 ---@type LazeSpec
 return {
     'numToStr/Navigator.nvim',
-    main = 'Navigator',
     module = 'Navigator',
-    cond = vim.env.TMUX ~= nil,
+    cond = vim.env.REX_SESSION ~= nil or vim.env.TMUX ~= nil,
     keys = {
         {
             '<C-w>j',
@@ -30,5 +29,12 @@ return {
             end,
         },
     },
-    opts = { auto_save = false, disable_on_zoom = false },
+    config = function()
+        local opts = { auto_save = false, disable_on_zoom = false }
+        if vim.env.REX_SESSION then
+            opts.mux = require('conf.navigator.rex'):new()
+        end
+        ---@cast opts Config
+        require('Navigator').setup(opts)
+    end,
 }
