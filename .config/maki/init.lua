@@ -1,15 +1,6 @@
 -- vim: ft=luau
 
-local home = maki.uv.os_homedir() or ""
-local cwd = maki.uv.cwd() or ""
-local is_work = false
-for _, dir in ipairs({ "bakdata", "spectrumk", "bayer" }) do
-	local root = home .. "/" .. dir
-	if cwd == root or cwd:sub(1, #root + 1) == root .. "/" then
-		is_work = true
-		break
-	end
-end
+local WORK = maki.uv.os_getenv("WORK")
 
 maki.setup({
 	always_yolo = true,
@@ -17,6 +8,7 @@ maki.setup({
 	ui = {
 		splash_animation = false,
 		theme = "ansi",
+		-- theme = "system",
 		thinking_lines = 0,
 		tool_output_lines = {
 			bash = 1,
@@ -30,7 +22,7 @@ maki.setup({
 			other = 1,
 		},
 	},
-	provider = is_work and {
+	provider = WORK and {
 		default_model = "anthropic/claude-sonnet-5-5",
 		allowed_models = {
 			"openai/gpt-6*-{luna,sol}",
@@ -92,13 +84,40 @@ Most efficient tools: batch, code_execution, task, index.
 ]],
 })
 
+maki.ui.input_rules({
+	ns = "md",
+	treesitter = {
+		lang = "markdown",
+		query = { markdown_inline = [[ (strong_emphasis (emphasis_delimiter) @hidden) @strong ]] },
+		captures = {
+			hidden = { conceal = "", reveal = "cursor" },
+			strong = { hl = { bold = true } },
+		},
+	},
+})
+
+local VIM = true
+
+maki.keymap.set({ "n", "i" }, "<M-i>", function()
+	maki.ui.set_mode("i")
+end, { desc = "Force insert mode" })
+
+if VIM then
+	local ok, err = pcall(function()
+		require("vim").setup()
+	end)
+	if not ok then
+		maki.log.error("vim: " .. tostring(err))
+	end
+end
+
 local ListPicker = (require :: any)("maki.list_picker")
 
-maki.keymap.set("n", "<M-p>", function()
+maki.keymap.set({ "n", "i" }, "<M-p>", function()
 	maki.ui.action("model_picker")
 end, { desc = "Pick model" })
 
-maki.keymap.set("n", "<M-r>", function()
+maki.keymap.set({ "n", "i" }, "<M-r>", function()
 	local m, err = maki.model.get()
 	if err then
 		maki.ui.flash("thinking: " .. err)
@@ -132,7 +151,7 @@ maki.keymap.set("n", "<M-r>", function()
 	end
 end, { desc = "Pick thinking level" })
 
-maki.keymap.set("n", "<S-tab>", function()
+maki.keymap.set({ "n", "i" }, "<S-tab>", function()
 	local s, err = maki.session.read()
 	if err then
 		maki.ui.flash("mode: " .. err)
@@ -145,7 +164,7 @@ maki.keymap.set("n", "<S-tab>", function()
 	end
 end, { desc = "Toggle plan/build mode" })
 
-maki.keymap.set("n", "<C-b>", function()
+maki.keymap.set({ "n", "i" }, "<C-b>", function()
 	local _, err = maki.task.focus("main")
 	if err then
 		maki.ui.flash(err)

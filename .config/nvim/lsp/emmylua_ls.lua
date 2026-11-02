@@ -7,7 +7,7 @@ return {
         '.luarc.json',
         '.git',
     },
-    workspace_required = false,
+    workspace_required = true,
 }
 
 -- settings: .emmyrc.json; libraries: .luarc.json (generated, see lua/conf/emmylua.lua)
