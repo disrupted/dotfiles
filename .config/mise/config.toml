@@ -78,8 +78,6 @@ docker-cli = "latest"
 docker-compose = { version = "latest", depends = ["docker-cli"] }
 "aqua:docker/buildx" = { version = "latest", depends = ["docker-cli"] }
 nono = "latest"
-"github:eugene1g/agent-safehouse" = { version = "latest", asset_pattern = "safehouse.sh", bin = "safehouse" }
-# "npm:@opencode/cli" = { version = "latest", depends = ["bun"], postinstall = { run = "bun \"$MISE_TOOL_INSTALL_PATH/node_modules/@opencode/cli/postinstall.mjs\"", when = "always" } }
 "npm:@opencode/cli" = { version = "latest", depends = [
   "node",
 ], allow_builds = [
@@ -132,6 +130,7 @@ tinymist = "latest"
 "npm:@mistweaverco/kulala-fmt" = { version = "latest", allow_low_downloads = true, postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:typescript-svelte-plugin" = "latest"                                                                                                                                                                                 # library plugin, no bin/ -> no runtime to patch
 "github:ewhauser/shuck" = "latest"
+claude = "latest"
 
 # Tinycast: installed straight from the GitHub release zip via the `http`
 # backend + a postinstall hook (no Homebrew cask, no Ruby). The hook copies

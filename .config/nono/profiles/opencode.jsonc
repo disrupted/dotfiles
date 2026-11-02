@@ -1,0 +1,29 @@
+{
+  "$schema": "./.nono-profile.schema.json",
+  "extends": "agent",
+  "meta": { "name": "opencode", "description": "OpenCode v2 (standalone server inside the sandbox)" },
+  "filesystem": {
+    "allow": [
+      "$XDG_CONFIG_HOME/opencode", // plugins are bun-installed into the config dir
+      "$XDG_CACHE_HOME/opencode",
+      "$XDG_DATA_HOME/opencode",
+      "$XDG_DATA_HOME/opentui",
+      "$XDG_STATE_HOME/opencode",
+    ],
+    "deny": [
+      // Shared background service discovery: without it a bare `opencode` can't hand tool
+      // execution to a server outside the sandbox.
+      "$XDG_STATE_HOME/opencode/service.json",
+      "$XDG_CONFIG_HOME/opencode/service.json",
+      "$XDG_CONFIG_HOME/opencode/service.json.tmp",
+    ],
+  },
+  // --standalone runs `opencode serve --stdio --port 0`. In proxy mode (any credential route
+  // active) binding a TCP port needs an explicit grant. Port 0 = localhost:* on macOS only;
+  // Linux needs explicit ports (--standalone there is UNTESTED).
+  "platform_overrides": {
+    "macos": {
+      "network": { "open_port": [0] },
+    },
+  },
+}

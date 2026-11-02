@@ -1,0 +1,204 @@
+// Shared base for coding agents.
+// Debug: nono why --profile agent --path <path> --op write
+{
+  "$schema": "./.nono-profile.schema.json",
+  "extends": "default",
+  "meta": {
+    "name": "agent",
+    "description": "Base profile for coding agents: mise toolchains, git, gh, local dev caches, fnox-backed phantom credentials",
+  },
+  "groups": {
+    "include": [
+      "mise_manager",
+      "node_runtime",
+      "bun_runtime",
+      "python_runtime",
+      "rust_runtime",
+      "git_config",
+      "unlink_protection",
+      // pre-commit, hk, dprint, helm, aube, mise caches
+      { "name": "user_caches_macos", "when": "macos" },
+      { "name": "user_caches_linux", "when": "linux" },
+      { "name": "linux_sysfs_read", "when": "linux" },
+    ],
+  },
+  "workdir": { "access": "readwrite" },
+  "filesystem": {
+    "read": [
+      // mise state incl. the trust DB: readable, but the agent must not be able to `mise trust` its own edits
+      "$XDG_STATE_HOME/mise",
+      "$XDG_DATA_HOME/gh",
+      "$HOME/.agents/skills",
+      // Policy is readable; changes go through profile-drafts + `nono profile promote`
+      "$NONO_CONFIG/profiles",
+    ],
+    "read_file": [
+      // Included from ~/.gitconfig (yadm alternates, resolved per OS)
+      "$HOME/.gitconfig_os",
+      "$HOME/.gitconfig_private",
+      "$HOME/.gitignore",
+      // gh refuses to start without both. Read-only because `!` aliases in config.yml run shell
+      // commands, so writes would be a host escape. hosts.yml holds no token (phantom GITHUB_TOKEN).
+      "$XDG_CONFIG_HOME/gh/config.yml",
+      "$XDG_CONFIG_HOME/gh/hosts.yml",
+    ],
+    "allow": [
+      "$HOME/.npm",
+      "$HOME/.nx",
+      "$XDG_DATA_HOME/aube",
+      { "path": "$HOME/Library/Preferences/helm", "when": "macos" },
+      { "path": "$XDG_CONFIG_HOME/helm", "when": "linux" },
+      "$NONO_CONFIG/profile-drafts",
+    ],
+    "deny": [
+      "$XDG_CONFIG_HOME/fnox",
+      "$WORKDIR/.env",
+    ],
+    // Nx plugin workers use $TMPDIR/plugin*.sock
+    "unix_socket_dir_bind": ["$TMPDIR"],
+    "suppress_save_prompt": [
+      "$XDG_CONFIG_HOME/gh", // `gh auth setup-git`, `gh config set`, ... are expected to fail
+    ],
+  },
+  // Write-protect files the *host* later executes outside the sandbox: git hooks, git config
+  // (core.fsmonitor, core.hooksPath, ...; so git can't record upstream tracking), and nono's own
+  // launchers and profiles (reachable when ~/.config is granted). profile-drafts stays writable.
+  // macOS only, see platform_overrides.linux.
+  "unsafe_macos_seatbelt_rules": [
+    "(deny file-write* (regex #\"/\\.git/hooks(/|$)\"))",
+    "(deny file-write* (regex #\"/\\.git/config(\\.lock)?$\"))",
+    "(deny file-write* (regex #\"/\\.config/nono/(bin|profiles)(/|$)\"))",
+  ],
+  "environment": {
+    // The fnox shell hook exports real secrets and nono passes the environment through by
+    // default. Phantom tokens and --env-credential-map values are injected after this filter.
+    // Exact names in deny_vars are redacted from audit logs too.
+    "deny_vars": ["*_API_KEY", "*_TOKEN", "__FNOX_*", "FNOX_*", "OP_*", "GH_TOKEN", "GH_ENTERPRISE_TOKEN"],
+    "set_vars": {
+      // Agent commits stay unsigned: a signature should mean "a human vouches for this".
+      // Re-sign on review: git rebase --exec 'git commit --amend --no-edit -S'
+      // http.proxyAuthMethod: git's default probes the proxy without credentials first, which
+      // nono logs as "deny connect_intercept github.com:443 (proxy auth missing or invalid)".
+      "GIT_CONFIG_COUNT": "3",
+      "GIT_CONFIG_KEY_0": "commit.gpgsign",
+      "GIT_CONFIG_VALUE_0": "false",
+      "GIT_CONFIG_KEY_1": "tag.gpgsign",
+      "GIT_CONFIG_VALUE_1": "false",
+      "GIT_CONFIG_KEY_2": "http.proxyAuthMethod",
+      "GIT_CONFIG_VALUE_2": "basic",
+    },
+  },
+  // Host-side commands that produce the real secrets. They run unsandboxed in the launch
+  // directory, lazily on the first request that needs the secret.
+  "credential_capture": {
+    "fnox_anthropic": { "command": ["fnox", "get", "ANTHROPIC_API_KEY"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
+    "fnox_openai": { "command": ["fnox", "get", "OPENAI_API_KEY"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
+    "fnox_gemini": { "command": ["fnox", "get", "GEMINI_API_KEY"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
+    "fnox_openrouter": { "command": ["fnox", "get", "OPENROUTER_API_KEY"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
+    "fnox_context7": { "command": ["fnox", "get", "CONTEXT7_API_KEY"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
+    "fnox_github": { "command": ["fnox", "get", "GITHUB_TOKEN"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
+    // git over HTTPS sends Basic auth; the proxy base64-encodes "user:password"
+    "fnox_github_git": {
+      "command": ["/bin/sh", "-c", "printf 'x-access-token:%s' \"$(fnox get GITHUB_TOKEN)\""],
+      "timeout_secs": 60,
+      "cache_ttl_secs": 3600,
+    },
+  },
+  "network": {
+    // Phantom-token routes, activated per run with `--credential <name>`. The child only sees a
+    // per-session phantom in `env_var`. Clients that can't take a base URL (gh, git, MCP headers)
+    // still work: the proxy TLS-intercepts the upstream host and swaps the phantom (see tls_intercept).
+    // `env_var` is mandatory for cmd:// keys, otherwise no phantom is injected.
+    "custom_credentials": {
+      "anthropic": {
+        "upstream": "https://api.anthropic.com",
+        "credential_key": "cmd://fnox_anthropic",
+        "env_var": "ANTHROPIC_API_KEY",
+        "inject_header": "x-api-key",
+        "credential_format": "{}",
+      },
+      "openai": {
+        "upstream": "https://api.openai.com/v1",
+        "credential_key": "cmd://fnox_openai",
+        "env_var": "OPENAI_API_KEY",
+        "inject_header": "Authorization",
+        "credential_format": "Bearer {}",
+      },
+      "gemini": {
+        "upstream": "https://generativelanguage.googleapis.com",
+        "credential_key": "cmd://fnox_gemini",
+        "env_var": "GEMINI_API_KEY",
+        "inject_header": "x-goog-api-key",
+        "credential_format": "{}",
+      },
+      "openrouter": {
+        "upstream": "https://openrouter.ai",
+        "credential_key": "cmd://fnox_openrouter",
+        "env_var": "OPENROUTER_API_KEY",
+        "inject_header": "Authorization",
+        "credential_format": "Bearer {}",
+      },
+      // MCP server, configured with `Authorization: Bearer ${CONTEXT7_API_KEY}`
+      "context7": {
+        "upstream": "https://mcp.context7.com",
+        "credential_key": "cmd://fnox_context7",
+        "env_var": "CONTEXT7_API_KEY",
+        "inject_header": "Authorization",
+        "credential_format": "Bearer {}",
+      },
+      "github": {
+        "upstream": "https://api.github.com",
+        "credential_key": "cmd://fnox_github",
+        "env_var": "GITHUB_TOKEN",
+        "inject_header": "Authorization",
+        "credential_format": "Bearer {}",
+        "endpoint_policy": {
+          "default": { "decision": "allow" },
+          "deny": [
+            // REST only: `gh issue create` uses GraphQL (POST /graphql) and is NOT caught by this.
+            { "method": "POST", "path": "/repos/*/*/issues", "reason": "agents may not open issues" },
+            { "method": "PUT", "path": "/repos/*/*/pulls/*/merge", "reason": "humans merge PRs" },
+            { "method": "DELETE", "path": "/**", "reason": "no deletions via API" },
+            // Blocks gh issue create, but also gh issue list / pr view
+            // { "method": "POST", "path": "/graphql", "reason": "GraphQL disabled" },
+          ],
+        },
+      },
+      // git over HTTPS: git-credential-fnox sends the phantom GITHUB_TOKEN, the proxy replaces it
+      "github_git": {
+        "upstream": "https://github.com",
+        "credential_key": "cmd://fnox_github_git",
+        "env_var": "NONO_GITHUB_GIT_PHANTOM",
+        "inject_mode": "basic_auth",
+        "endpoint_policy": {
+          "default": { "decision": "allow" },
+          "deny": [
+            // { "method": "POST", "path": "/**/git-receive-pack", "reason": "agents may not push" },
+          ],
+        },
+      },
+    },
+    // Go binaries (gh) ignore SSL_CERT_FILE on macOS and only trust the system trust store.
+    // "trusted" keeps one nono CA in the login Keychain (one prompt on first use).
+    "tls_intercept": {
+      "ca_lifecycle": "trusted",
+      "ca_env_vars": ["GIT_SSL_CAINFO"],
+    },
+    // Network is open apart from the proxy routes. For an allowlist ("developer" = LLM APIs,
+    // package registries, GitHub, GitLab.com, docs), uncomment:
+    // "network_profile": "developer",
+    // "allow_domain": ["pi.dev", "mcp.context7.com", "openrouter.ai", "opencode.ai"],
+  },
+  "rollback": {
+    "exclude_patterns": ["node_modules", ".venv", "__pycache__", "target", ".nx", "dist"],
+  },
+  "platform_overrides": {
+    // UNTESTED. Landlock can't carve a deny out of a broader grant, so nono refuses to start when
+    // filesystem.deny overlaps an allow; supervised mode enforces those via seccomp-notify instead.
+    // The seatbelt rules above have no Linux equivalent: .git/hooks, .git/config and nono's own
+    // config stay writable there.
+    "linux": {
+      "security": { "capability_elevation": true },
+    },
+  },
+}

@@ -1,0 +1,5 @@
+{
+  "$schema": "./.nono-profile.schema.json",
+  "extends": "agent",
+  "meta": { "name": "pi", "description": "Pi coding agent" },
+}

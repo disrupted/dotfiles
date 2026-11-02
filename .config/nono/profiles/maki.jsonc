@@ -1,0 +1,14 @@
+{
+  "$schema": "./.nono-profile.schema.json",
+  "extends": "agent",
+  "meta": { "name": "maki", "description": "maki coding agent" },
+  "filesystem": {
+    "allow": [
+      "$XDG_CONFIG_HOME/maki", // Lua plugins write their pack lock into the config dir
+      "$XDG_CACHE_HOME/maki",
+      "$XDG_DATA_HOME/maki",
+      "$XDG_STATE_HOME/maki",
+      "$HOME/.local/logs/maki",
+    ],
+  },
+}

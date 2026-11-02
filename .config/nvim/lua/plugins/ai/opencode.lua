@@ -47,7 +47,7 @@ return {
         local opts = {
             backend = vim.env.WORK and 'opencode' or 'pi',
             pi = {
-                executable = vim.fs.normalize('~/.config/pi/safehouse_pi.sh'),
+                executable = vim.fs.normalize('~/.config/nono/bin/pi.sh'),
             },
             server = {
                 url = '127.0.0.1',
@@ -70,7 +70,7 @@ return {
                     server_spawn_attempted = true
 
                     local job = vim.fn.jobstart({
-                        vim.fs.normalize('~/.config/opencode/safehouse_opencode.sh'),
+                        vim.fs.normalize('~/.config/nono/bin/opencode.sh'),
                         'serve',
                         '--port',
                         tostring(port),
