@@ -31,10 +31,14 @@ dotfiles_grants=(
 )
 
 safehouse_args=(
-    --enable="1password,ssh,kubectl,docker,keychain,playwright-chrome"
-    --append-profile="$home_dir/.config/safehouse/local-ssh.sb"
+    --enable="kubectl,docker,playwright-chrome"
     --append-profile="$home_dir/.config/safehouse/local-dev.sb"
 )
+
+# Agent commits stay unsigned.
+export GIT_CONFIG_COUNT=2
+export GIT_CONFIG_KEY_0=commit.gpgsign GIT_CONFIG_VALUE_0=false
+export GIT_CONFIG_KEY_1=tag.gpgsign GIT_CONFIG_VALUE_1=false
 
 if launched_in .config dev .local; then
     safehouse_args+=("${dotfiles_grants[@]}")
@@ -65,6 +69,7 @@ mise_env_get() {
 
 safehouse_exec() {
     local names
+    safehouse_args+=(--env-pass="GIT_CONFIG_COUNT,GIT_CONFIG_KEY_0,GIT_CONFIG_VALUE_0,GIT_CONFIG_KEY_1,GIT_CONFIG_VALUE_1")
     for names in "$mise_env_names" "$mise_secret_names"; do
         if [ -n "$names" ]; then safehouse_args+=(--env-pass="$names"); fi
     done
