@@ -72,8 +72,6 @@ skim = "latest"
 "cargo:sleek" = "latest"
 "cargo:somo" = "latest"
 "aqua:TheLocehiliosan/yadm" = "latest"
-lima = "latest"
-colima = { version = "latest", depends = ["lima"] }
 docker-cli = "latest"
 docker-compose = { version = "latest", depends = ["docker-cli"] }
 "aqua:docker/buildx" = { version = "latest", depends = ["docker-cli"] }
@@ -214,7 +212,7 @@ docker buildx prune -a -f
 "brew-cask:iina" = "latest"
 # "brew-cask:keka" = "latest"
 "brew-cask:mimestream" = "latest"
-"brew-cask:otty" = "latest"
+"brew-cask:orbstack" = "latest"
 "brew-cask:pearcleaner" = "latest"
 # "brew-cask:pictogram" = "latest"
 "brew-cask:plexamp" = "latest"

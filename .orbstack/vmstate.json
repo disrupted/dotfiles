@@ -1,0 +1,11 @@
+{
+	"version": 2,
+	"majorVersion": 0,
+	"minorVersion": 4,
+	"arch": "arm64",
+	"setupState": {
+		"pathUpdateRequested": true,
+		"editedShellProfiles": [],
+		"sshEdited": true
+	}
+}
