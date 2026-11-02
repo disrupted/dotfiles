@@ -9,7 +9,6 @@ bun = "latest"
 node = "latest"
 
 uv = "latest"
-"pypi:poetry" = "latest" # for legacy projects
 
 fnox = "latest"
 age = "latest"
@@ -18,58 +17,33 @@ bat = "latest"
 delta = "latest"
 dust = "latest"
 duf = "latest"
-eza = "latest"
 fd = "latest"
-helm = "latest"
-telepresence = "latest"
 hyperfine = "latest"
 jq = "latest"
-kubectl = "latest"
-k9s = "latest"
-kubeconform = "latest"
-kubectx = "latest"
-kubeseal = "latest"
 ripgrep = "latest"
 sd = "latest"
-trivy = "latest"
 vale = "latest"
 xh = "latest"
 yq = "latest"
 zoxide = "latest"
-glab = "latest"
 rclone = "latest"
 ast-grep = "latest"
 carapace = "latest"
-dive = "latest"
 gh = "latest"
 git-lfs = "latest"
-grex = "latest"
-htmlq = "latest"
 jless = "latest"
-railway = "latest"
 stylua = "latest"
-television = "latest"
 tree-sitter = "latest"
-websocat = "latest"
-xcbeautify = "latest"
 yazi = "latest"
-"aqua:nextest-rs/nextest/cargo-nextest" = "latest"
 dprint = "latest"
 pkl = "latest"
-# HACK: prebuilt nickel releases are Nix-linked (broken libiconv), so build from source
-# https://github.com/nickel-lang/nickel/issues/2608
-"cargo:nickel-lang-cli" = "latest"
 usage = "latest"
-hk = "latest"
-lefthook = "latest"
 typst = "latest"
 fzf = "latest"
 "conda:curl" = "latest"
-"aqua:zaghaghi/openapi-tui" = "latest"
 "github:ouch-org/ouch" = "latest"
 "aqua:ms-jpq/sad" = "latest"
 skim = "latest"
-"cargo:sleek" = "latest"
 "cargo:somo" = "latest"
 "aqua:TheLocehiliosan/yadm" = "latest"
 docker-cli = "latest"
@@ -85,11 +59,7 @@ pi = "latest"
 "github:Mapika/portview" = "latest"
 "github:topiary/topiary" = "latest"
 "github:pruner-formatter/pruner" = "v1.0.0-alpha.11"
-"pypi:pymobiledevice3" = "latest"
-"pypi:visidata" = "latest"
 "github:tontinton/maki" = "latest"
-"aqua:nklmilojevic/sofka" = "latest"
-"github:nushell/nufmt" = "latest"
 
 # language servers, formatters, linters
 shellcheck = "latest"
@@ -99,8 +69,6 @@ tinymist = "latest"
 "aqua:mrjosh/helm-ls" = "latest"
 "aqua:hashicorp/terraform-ls" = "latest"
 "github:tombi-toml/tombi" = "latest"
-"github:clangd/clangd" = "latest"
-"github:latex-lsp/texlab" = "latest"
 "github:ribru17/ts_query_ls" = "latest"
 "github:vale-cli/vale-ls" = "latest"
 "github:stubbedev/shell-lsp" = "latest"
@@ -123,7 +91,6 @@ tinymist = "latest"
   "svelte@4.2.20",
 ], postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:@tailwindcss/language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
-"npm:@vtsls/language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:yaml-language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:@mistweaverco/kulala-fmt" = { version = "latest", allow_low_downloads = true, postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:typescript-svelte-plugin" = "latest"                                                                                                                                                                                 # library plugin, no bin/ -> no runtime to patch
@@ -145,7 +112,6 @@ postinstall = { run = "$HOME/.config/mise/scripts/install-tinycast.sh", when = "
 [settings]
 self_update.auto = true
 experimental = true
-idiomatic_version_file_enable_tools = ["python", "rust", "node"]
 trusted_config_paths = ["~/bakdata", "~/bayer", "~/spectrumk"]
 
 [settings.python]
