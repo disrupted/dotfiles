@@ -4,7 +4,17 @@ return {
     main = 'atlas',
     module = 'atlas',
     cmd = 'Atlas',
-    keys = {},
+    keys = {
+        {
+            '<Leader>gci',
+            function()
+                local pipelines = require('atlas.commands.pipelines')
+                local number = vim.g.git_pr and vim.g.git_pr.number
+                pipelines.open(number and tostring(number) or '.')
+            end,
+            desc = 'CI: current PR',
+        },
+    },
     config = function()
         ---@module 'atlas'
         ---@type AtlasConfig
@@ -16,7 +26,11 @@ return {
                     ---@param context "atlas"|"diff"
                     ---@return boolean
                     enable = function(buf)
-                        if vim.tbl_contains({ 'atlas-ui.detail' }, vim.bo[buf].ft) then
+                        if
+                            vim.tbl_contains({
+                                'atlas-ui.detail',
+                            }, vim.bo[buf].ft)
+                        then
                             return false
                         end
                         return true

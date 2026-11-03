@@ -1,6 +1,6 @@
 ---@type LazeSpec
 return {
-    'https://forge.barrettruth.com/barrettruth/diffs.nvim',
+    'barrettruth/diffs.nvim',
     main = 'diffs',
     module = 'diffs',
     lazy = false,

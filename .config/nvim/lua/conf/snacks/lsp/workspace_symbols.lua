@@ -163,7 +163,7 @@ local function workspace_symbols_finder(root, state, scope_dir)
                                     return filter
                                 end
                                 local kind = item.kind
-                                    and lsp_source.symbol_kind(item.kind)
+                                        and lsp_source.symbol_kind(item.kind)
                                     or 'Unknown'
                                 return vim.list_contains(filter, kind)
                             end,
@@ -177,9 +177,14 @@ local function workspace_symbols_finder(root, state, scope_dir)
                 return in_scope(item.file, effective_scope)
             end, items)
 
-            items = require('conf.snacks.fuzzy').rank_items(items, query, nil, function(item)
-                return item.name or item.text or ''
-            end)
+            items = require('conf.snacks.fuzzy').rank_items(
+                items,
+                query,
+                nil,
+                function(item)
+                    return item.name or item.text or ''
+                end
+            )
 
             for _, item in ipairs(items) do
                 item.tree = opts.tree
@@ -303,7 +308,10 @@ function M.pick(opts)
         },
         layout = {
             preset = 'dropdown',
-            layout = { width = 0.5 },
+            layout = {
+                width = 0.7,
+                max_width = 120,
+            },
         },
     })
 

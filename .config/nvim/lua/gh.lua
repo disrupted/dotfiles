@@ -100,7 +100,7 @@ M.pr.refresh = function()
         vim.g.git_branch
         and vim.g.git_branch ~= require('git').async.default_branch()
     then
-        vim.g.git_pr = M.pr.json({ 'state', 'title' })
+        vim.g.git_pr = M.pr.json({ 'state', 'title', 'number' })
     else
         vim.g.git_pr = nil
     end

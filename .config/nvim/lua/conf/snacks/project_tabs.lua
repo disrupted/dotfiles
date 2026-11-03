@@ -70,7 +70,10 @@ function M.pick()
         items = items,
         format = function(item)
             local ret = {
-                { item.file == workspace and '󰉋 ' or '󰉖 ', 'SnacksPickerDirectory' },
+                {
+                    item.file == workspace and '󰉋 ' or '󰉖 ',
+                    'SnacksPickerDirectory',
+                },
                 { item.text, 'SnacksPickerFile' },
             }
             if item.open then
@@ -78,7 +81,14 @@ function M.pick()
             end
             return ret
         end,
-        layout = { preset = 'select' },
+        layout = {
+            preset = 'dropdown',
+            layout = {
+                width = 0.7,
+                max_width = 60,
+                max_height = 30,
+            },
+        },
         confirm = function(picker, item)
             picker:close()
             if item and item.file then

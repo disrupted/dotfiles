@@ -471,18 +471,6 @@ return {
         })
 
         vim.api.nvim_create_autocmd('User', {
-            pattern = {
-                'OpencodeEvent:permission.asked',
-                'OpencodeEvent:question.asked',
-            },
-            callback = function()
-                io.stdout:write('\a')
-                io.stdout:flush()
-            end,
-            desc = 'Ring terminal bell when agent needs attention',
-        })
-
-        vim.api.nvim_create_autocmd('User', {
             pattern = 'OpencodeEvent:permission.asked',
             callback = function()
                 require('which-key').add({

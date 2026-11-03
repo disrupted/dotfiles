@@ -69,8 +69,11 @@ return {
                 },
             },
             {
-                ft = 'pipeline',
+                ft = 'atlas-ui.pipelines',
                 title = 'CI',
+                wo = {
+                    winfixbuf = true,
+                },
             },
             {
                 ft = 'codediff-explorer',

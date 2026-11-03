@@ -117,6 +117,7 @@ M.mr.refresh = function()
             -- closed
         }
         json.state = state_map[json.state]
+        json.number = json.number or json.iid
         return json
     end
 
