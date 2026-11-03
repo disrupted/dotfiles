@@ -52,6 +52,8 @@
       "$HOME/.npm",
       "$HOME/.nx",
       "$XDG_DATA_HOME/aube",
+      "$XDG_STATE_HOME/mise/tracked-configs",
+      "$XDG_STATE_HOME/mise/deps",
       { "path": "$HOME/Library/Preferences/helm", "when": "macos" },
       { "path": "$XDG_CONFIG_HOME/helm", "when": "linux" },
       "$NONO_CONFIG/profile-drafts",
