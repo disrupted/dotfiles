@@ -22,6 +22,11 @@
       { "name": "linux_sysfs_read", "when": "linux" },
     ],
   },
+  "security": {
+    // Default "shared_memory_only" denies POSIX semaphores (sem_open -> EPERM), which Python
+    // multiprocessing needs. SysV semaphores (lmdb) are a separate seatbelt rule, see below.
+    "ipc_mode": "full",
+  },
   "workdir": { "access": "readwrite" },
   "filesystem": {
     "read": [
@@ -29,7 +34,8 @@
       "$XDG_STATE_HOME/mise",
       "$XDG_DATA_HOME/gh",
       "$HOME/.agents/skills",
-      // Policy is readable; changes go through profile-drafts + `nono profile promote`
+      // Policy is readable, not writable. Agents propose changes as full .jsonc copies in
+      // profile-drafts; a human reviews (diff) and moves them into profiles/, then commits via yadm.
       "$NONO_CONFIG/profiles",
     ],
     "read_file": [
@@ -65,6 +71,10 @@
   // launchers and profiles (reachable when ~/.config is granted). profile-drafts stays writable.
   // macOS only, see platform_overrides.linux.
   "unsafe_macos_seatbelt_rules": [
+    // SysV semaphores: semget works, but semop/semctl fail with EPERM even with ipc_mode "full"
+    // (that only covers POSIX semaphores). The prebuilt lmdb-js binary (Angular build cache,
+    // Nx) locks with SysV semaphores and aborts (SIGABRT, exit 134) without them.
+    "(allow ipc-sysv-sem)",
     "(deny file-write* (regex #\"/\\.git/hooks(/|$)\"))",
     "(deny file-write* (regex #\"/\\.git/config(\\.lock)?$\"))",
     "(deny file-write* (regex #\"/\\.config/nono/(bin|profiles)(/|$)\"))",
