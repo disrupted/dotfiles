@@ -72,19 +72,16 @@
     commitGraph = true
 
 [diff]
-    tool = Kaleidoscope # or diffsitter
+    tool = diffsitter
 
 [difftool]
     prompt = false
-
-[difftool "Kaleidoscope"]
-    cmd = ksdiff --partial-changeset --relative-path "$MERGED" -- "$LOCAL" "$REMOTE"
 
 [difftool "diffsitter"]
     cmd = diffsitter "$LOCAL" "$REMOTE"
 
 [merge]
-    tool = Kaleidoscope
+    tool = nvimdiff
     conflictstyle = zdiff3
 
 [rerere]
@@ -96,10 +93,6 @@
 
 [mergetool "nvimdiff"]
     cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
-
-[mergetool "Kaleidoscope"]
-    cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
-    trustExitCode = true
 
 [filter "lfs"]
     clean = git-lfs clean -- %f
