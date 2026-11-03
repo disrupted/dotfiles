@@ -23,7 +23,6 @@ return {
                 statusline = {
                     ---@param buf integer
                     ---@param win integer
-                    ---@param context "atlas"|"diff"
                     ---@return boolean
                     enable = function(buf)
                         if
@@ -34,6 +33,32 @@ return {
                             return false
                         end
                         return true
+                    end,
+                    ---@param buf integer
+                    ---@param win integer
+                    layout = function()
+                        local components = require('atlas.ui.statusline.components')
+                        return {
+                            components.user,
+                            ---@param ctx AtlasStatuslineContext
+                            function(ctx)
+                                if ctx.pr then
+                                    ---@type AtlasStatuslineSegment[]
+                                    return {
+                                        {
+                                            text = '#' .. ctx.pr.id,
+                                            hl_group = 'AtlasFooterInfo',
+                                        },
+                                        {
+                                            text = ctx.pr.title,
+                                            hl_group = 'StatusLine',
+                                        },
+                                    }
+                                end
+                            end,
+                            '%=',
+                            components.help,
+                        }
                     end,
                 },
             },
