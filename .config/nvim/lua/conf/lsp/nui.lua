@@ -65,7 +65,7 @@ local function notify_renamed(result, curr_name, new_name)
                 ('- [%s] (%d changes)'):format(
                     vim.fs.relpath(
                         assert(vim.uv.cwd()),
-                        vim.uri_to_fname(changes.textDocument.uri)
+                        vim.uri.to_fname(changes.textDocument.uri)
                     ),
                     #changes.edits
                 )
@@ -162,7 +162,7 @@ local function open_rename_input(bufnr, win, client, position_params, curr_name)
                     -- skip multi-line ranges
                     if
                         range.start.line == range['end'].line
-                        and vim.uri_to_bufnr(ref.uri) == bufnr
+                        and vim.uri.to_buf(ref.uri) == bufnr
                     then
                         local line_nr = range.start.line
                         local text = vim.api.nvim_buf_get_lines(

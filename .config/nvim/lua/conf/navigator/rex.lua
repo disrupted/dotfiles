@@ -1,4 +1,6 @@
 ---@class Rex: Vi
+---@field bin string
+---@field session string
 local Rex = require('Navigator.mux.vi'):new()
 
 local directions = { h = 'left', j = 'down', k = 'up', l = 'right' }

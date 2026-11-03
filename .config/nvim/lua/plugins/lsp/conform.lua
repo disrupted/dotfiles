@@ -6,6 +6,7 @@ return {
     event = 'BufWritePre',
     cmd = 'ConformInfo',
     config = function()
+        ---@type conform.setupOpts
         local opts = (function()
             local dprint = {
                 'dprint',
@@ -79,8 +80,6 @@ return {
                 end
             end
 
-            ---@module 'conform.types'
-            ---@type conform.setupOpts
             return {
                 formatters_by_ft = {
                     -- python = { 'ruff', lsp_format = 'last' }, -- provides `ruff check --fix`

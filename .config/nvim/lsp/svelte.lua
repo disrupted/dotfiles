@@ -51,21 +51,21 @@ local config = {
             client:exec_cmd({
                 title = 'Svelte: Organize imports',
                 command = 'source.organizeImports',
-                arguments = { vim.uri_from_bufnr(bufnr) },
+                arguments = { vim.uri.from_buf(bufnr) },
             })
         end, { desc = 'Svelte: Organize imports' })
         vim.api.nvim_buf_create_user_command(bufnr, 'LspRemoveUnusedImports', function()
             client:exec_cmd({
                 title = 'Svelte: Remove unused imports',
                 command = 'source.removeUnusedImports',
-                arguments = { vim.uri_from_bufnr(bufnr) },
+                arguments = { vim.uri.from_buf(bufnr) },
             })
         end, { desc = 'Svelte: Remove unused imports' })
         vim.api.nvim_buf_create_user_command(bufnr, 'LspMigrateToSvelte5', function()
             client:exec_cmd({
                 title = 'Migrate Component to Svelte 5 Syntax',
                 command = 'migrate_to_svelte_5',
-                arguments = { vim.uri_from_bufnr(bufnr) },
+                arguments = { vim.uri.from_buf(bufnr) },
             })
         end, { desc = 'Migrate Component to Svelte 5 Syntax' })
     end,

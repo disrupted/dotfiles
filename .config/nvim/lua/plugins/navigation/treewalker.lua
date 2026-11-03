@@ -8,56 +8,56 @@ return {
         {
             '<Up>',
             function()
-                require('treewalker').move_up()
+                require('treewalker').up()
             end,
             desc = 'Up to prev neighbor node',
         },
         {
             '<Down>',
             function()
-                require('treewalker').move_down()
+                require('treewalker').down()
             end,
             desc = 'Down to next neighbor node',
         },
         {
             '<Left>',
             function()
-                require('treewalker').move_out()
+                require('treewalker').left()
             end,
             desc = 'Prev good child node',
         },
         {
             '<Right>',
             function()
-                require('treewalker').move_in()
+                require('treewalker').right()
             end,
             desc = 'Next good child node',
         },
         {
             '<M-k>',
             function()
-                require('treewalker').move_up()
+                require('treewalker').up()
             end,
             desc = 'Up to prev neighbor node',
         },
         {
             '<M-j>',
             function()
-                require('treewalker').move_down()
+                require('treewalker').down()
             end,
             desc = 'Down to next neighbor node',
         },
         {
             '<M-h>',
             function()
-                require('treewalker').move_out()
+                require('treewalker').left()
             end,
             desc = 'Prev good child node',
         },
         {
             '<M-l>',
             function()
-                require('treewalker').move_in()
+                require('treewalker').right()
             end,
             desc = 'Next good child node',
         },

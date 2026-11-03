@@ -42,7 +42,7 @@ return {
             client:exec_cmd({
                 title = 'Organize TypeScript imports',
                 command = '_typescript.organizeImports',
-                arguments = { vim.uri_from_bufnr(bufnr) },
+                arguments = { vim.uri.from_buf(bufnr) },
             })
         end, { desc = 'Organize TypeScript imports' })
     end,
