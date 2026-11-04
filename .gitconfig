@@ -215,6 +215,11 @@
 
     root = rev-parse --show-toplevel
 
+[include]
+    # OS-specific
+    path = ~/.gitconfig_os
+    path = ~/.gitconfig_private
+
 [includeIf "gitdir:~/bakdata/"]
     path = ~/bakdata/.gitconfig
 
@@ -223,8 +228,3 @@
 
 [includeIf "gitdir:~/spectrumk/"]
     path = ~/bakdata/.gitconfig
-
-[include]
-    path = ~/.gitconfig_private
-    # OS-specific
-    path = ~/.gitconfig_os
