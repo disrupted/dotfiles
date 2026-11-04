@@ -1,0 +1,4 @@
+[submodule ".config/rex/rex-worktrunk"]
+	path = .config/rex/rex-worktrunk
+	url = https://github.com/disrupted/rex-worktrunk.git
+	branch = label-option

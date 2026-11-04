@@ -96,6 +96,7 @@ tinymist = "latest"
 "npm:typescript-svelte-plugin" = "latest"                                                                                                                                                                                 # library plugin, no bin/ -> no runtime to patch
 "github:ewhauser/shuck" = "latest"
 claude = "latest"
+worktrunk = { version = "latest", workflow = "release.yaml" }
 
 # Tinycast: installed straight from the GitHub release zip via the `http`
 # backend + a postinstall hook (no Homebrew cask, no Ruby). The hook copies

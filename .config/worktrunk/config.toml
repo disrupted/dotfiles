@@ -1,0 +1,6 @@
+# Worktrees live next to the repo in "<repo>.worktrees/", e.g. ~/work/foobar.worktrees/fix-login
+worktree-path = "{{ repo_path }}/../{{ repo }}.worktrees/{{ branch | sanitize }}"
+
+[list]
+# rex-worktrunk reads the original bare-array JSON; worktrunk 0.81 defaults to schema 2.
+json-schema = 1

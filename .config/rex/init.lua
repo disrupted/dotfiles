@@ -173,6 +173,58 @@ rex.action{
 }
 rex.bind("ctrl+\\", "scratch_toggle")
 
+-- "<repo>" in the main checkout, "<repo>   󰙅 <worktree>" in a linked worktree,
+-- otherwise the folder name. Names come straight from the folder names.
+-- main is the main checkout when the caller knows it, as rex-worktrunk does
+-- after removing a worktree, when git can no longer be asked about dir.
+local function session_name_for(dir, main)
+  if main and dir ~= main then
+    -- nf-md-file_tree as UTF-8 bytes, since Lua 5.1 has no \u escapes.
+    return main:match("([^/]+)/?$") .. " \243\176\153\133 " .. dir:match("([^/]+)/?$")
+  end
+  local r = rex.exec({ "git", "rev-parse", "--path-format=absolute", "--git-common-dir", "--show-toplevel" }, { cwd = dir })
+  if not (r and r.ok) then
+    return dir:match("([^/]+)/?$")
+  end
+  local common, top = r.stdout:match("^(.-)\n(.-)\n?$")
+  local main = (common:gsub("/%.git/?$", ""))
+  local repo = main:match("([^/]+)$")
+  if top == main then
+    return repo
+  end
+  -- nf-md-file_tree as UTF-8 bytes, since Lua 5.1 has no \u escapes.
+  return repo .. "   \243\176\153\133 " .. top:match("([^/]+)$")
+end
+
+rex.action{
+  name = "session_name_from_dir",
+  title = "Name Session After Repo or Worktree",
+  keywords = "rename session worktree git repo",
+  run = function(ctx)
+    local ok, proc = pcall(rex.block.call, TERMINAL, "process", { block_id = ctx.block_id })
+    local dir = ok and proc and proc.foreground and proc.foreground.cwd or cwd_of(ctx.block_id)
+    if not dir then
+      error("can't tell which folder this pane is in", 0)
+    end
+    local _, err = rex.session.set_label{ label = session_name_for(dir) }
+    if err then
+      error(err, 0)
+    end
+  end,
+}
+
+-- Worktree pickers with a session per worktree. The label option comes from the
+-- label-option branch of my fork, until https://github.com/haxybaxy/rex-worktrunk/pull/2 lands.
+require("rex-worktrunk").setup{
+  base = "@",
+  label = session_name_for,
+  script = "~/.config/rex/worktrunk-picker.sh",
+  bounds = { 0.2, 0.25, 0.6, 0.5 }, -- x, y, width, height as fractions of the window
+}
+rex.bind("ctrl+space>g", "worktree")
+rex.bind("ctrl+space>d", "worktree_remove")
+rex.bind("ctrl+space>ctrl+space", "pane.send_key", { key = "ctrl+space" })
+
 local prefix = "ctrl+z>"
 local function bind(key, action, args)
   rex.bind(prefix .. key, action, args)
@@ -181,6 +233,7 @@ end
 bind("r", "client.config.reload")
 bind("shift+;", "client.palette.toggle")
 bind("s", "session.switch")
+bind("shift+4", "session_name_from_dir")
 
 bind("c", "client.tab.new")
 bind("n", "client.tab.next")
