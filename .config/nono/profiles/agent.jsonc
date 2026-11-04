@@ -117,6 +117,8 @@
     },
   },
   "network": {
+    // allow outbound TCP to localhost:* (dev stack: Postgres, APIs, …)
+    "open_port_range": [[3000, 9000]],
     // Phantom-token routes, activated per run with `--credential <name>`. The child only sees a
     // per-session phantom in `env_var`. Clients that can't take a base URL (gh, git, MCP headers)
     // still work: the proxy TLS-intercepts the upstream host and swaps the phantom (see tls_intercept).
