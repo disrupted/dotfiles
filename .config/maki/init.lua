@@ -175,3 +175,30 @@ maki.api.set_slot("tool.bash.input", function(prev, input, ctx)
 	input.command = input.command:gsub("^grep %-r ", "rg ")
 	return prev(input, ctx)
 end)
+
+-- window title: "maki - <session title>"
+local function update_title(session_title: string?)
+	if session_title == nil then
+		local s = maki.session.read()
+		session_title = s and s.title
+	end
+	local title = "maki"
+	if session_title and session_title ~= "" and session_title ~= "New session" then
+		title ..= " - " .. session_title
+	end
+	maki.ui.set_window_title(title)
+end
+
+maki.api.create_autocmd("SessionFocusChanged", {
+	callback = function()
+		update_title()
+	end,
+})
+
+maki.api.create_autocmd("SessionTitleChanged", {
+	callback = function(ev)
+		if ev.data.focused then
+			update_title(ev.data.title)
+		end
+	end,
+})
