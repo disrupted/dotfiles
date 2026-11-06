@@ -4,3 +4,8 @@ worktree-path = "{{ repo_path }}/../{{ repo }}.worktrees/{{ branch | sanitize }}
 [list]
 # rex-worktrunk reads the original bare-array JSON; worktrunk 0.81 defaults to schema 2.
 json-schema = 1
+
+# Close the worktree's Rex session however it was removed: the Rex picker,
+# wt remove, wt merge or wt step prune. Closing an already closed one is a no-op.
+[post-remove]
+rex = "rex do worktree_close path={{ worktree_path }} main={{ primary_worktree_path }} >/dev/null"

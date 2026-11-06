@@ -173,29 +173,19 @@ rex.action{
 }
 rex.bind("ctrl+\\", "scratch_toggle")
 
--- "<repo>" in the main checkout, "<repo>   󰙅 <worktree>" in a linked worktree,
--- otherwise the folder name. Names come straight from the folder names.
--- main is the main checkout when the caller knows it, as rex-worktrunk does
--- after removing a worktree, when git can no longer be asked about dir.
-local function session_name_for(dir, main)
-  if main and dir ~= main then
+-- "<repo>   󰙅 <worktree>" for <repo>.worktrees/<worktree> (see worktrunk's
+-- worktree-path), else the folder name. Path only: the folder may be gone.
+local function session_name_for(dir)
+  dir = dir:gsub("/+$", "")
+  local repo, worktree = dir:match("([^/]+)%.worktrees/([^/]+)$")
+  if repo then
     -- nf-md-file_tree as UTF-8 bytes, since Lua 5.1 has no \u escapes.
-    return main:match("([^/]+)/?$") .. " \243\176\153\133 " .. dir:match("([^/]+)/?$")
+    return repo .. "   \243\176\153\133 " .. worktree
   end
-  local r = rex.exec({ "git", "rev-parse", "--path-format=absolute", "--git-common-dir", "--show-toplevel" }, { cwd = dir })
-  if not (r and r.ok) then
-    return dir:match("([^/]+)/?$")
-  end
-  local common, top = r.stdout:match("^(.-)\n(.-)\n?$")
-  local main = (common:gsub("/%.git/?$", ""))
-  local repo = main:match("([^/]+)$")
-  if top == main then
-    return repo
-  end
-  -- nf-md-file_tree as UTF-8 bytes, since Lua 5.1 has no \u escapes.
-  return repo .. "   \243\176\153\133 " .. top:match("([^/]+)$")
+  return dir:match("([^/]+)$") or dir
 end
 
+-- For sessions opened by hand; the worktree picker names its own.
 rex.action{
   name = "session_name_from_dir",
   title = "Name Session After Repo or Worktree",
@@ -221,41 +211,51 @@ require("rex-worktrunk").setup{
   script = "~/.config/rex/worktrunk-picker.sh",
   bounds = { 0.2, 0.25, 0.6, 0.5 }, -- x, y, width, height as fractions of the window
 }
-rex.bind("ctrl+space>g", "worktree")
-rex.bind("ctrl+space>d", "worktree_remove")
-rex.bind("ctrl+space>ctrl+space", "pane.send_key", { key = "ctrl+space" })
 
-local prefix = "ctrl+z>"
-local function bind(key, action, args)
-  rex.bind(prefix .. key, action, args)
-end
+local WT = os.getenv("HOME") .. "/.local/share/mise/shims/wt"
 
-bind("r", "client.config.reload")
-bind("shift+;", "client.palette.toggle")
-bind("s", "session.switch")
-bind("shift+4", "session_name_from_dir")
+rex.action{
+  name = "worktree_prune",
+  title = "Worktree: remove merged…",
+  category = "Worktree",
+  keywords = "git worktree prune merged cleanup worktrunk wt",
+  run = function(ctx)
+    local ok, proc = pcall(rex.block.call, TERMINAL, "process", { block_id = ctx.block_id })
+    local dir = ok and proc and proc.foreground and proc.foreground.cwd or cwd_of(ctx.block_id)
+    if not dir then
+      error("can't tell which folder this pane is in", 0)
+    end
+    rex.exec({ "git", "fetch", "--prune", "--quiet" }, { cwd = dir })
+    local r = rex.exec({ WT, "step", "prune", "--dry-run", "--min-age", "0", "--format", "json" }, { cwd = dir })
+    if not (r and r.ok) then
+      error("not in a git repository", 0)
+    end
+    if r.stdout:match("^%s*%[%s*%]%s*$") then
+      error("no merged worktrees to remove", 0)
+    end
+    local _, err = rex.session.new_layer{
+      bounds = { 0.2, 0.25, 0.6, 0.5 },
+      focus = true,
+      layout = rex.layout.block{
+        flavor = "com.superlogical.terminal.shell",
+        label = "worktree prune",
+        options = { cwd = dir, command = { os.getenv("HOME") .. "/.config/rex/worktrunk-prune.sh" } },
+      },
+    }
+    if err then
+      error(err, 0)
+    end
+  end,
+}
 
-bind("c", "client.tab.new")
-bind("n", "client.tab.next")
-bind("p", "client.tab.previous")
-bind(",", "client.tab.rename")
-bind("shift+7", "client.tab.close")
-for i = 1, 9 do
-  bind(tostring(i), "client.tab.goto", { index = i })
-end
+rex.bind("cmd+o", "worktree")
+rex.bind("alt+cmd+o", "worktree_remove")
+rex.bind("shift+cmd+o", "worktree_prune")
 
-bind("shift+\\", "pane.split", { direction = "right" })
-bind("-", "pane.split", { direction = "down" })
-bind("z", "pane.zoom")
-bind("x", "pane.close")
-
-bind("h", "pane.focus", { direction = "left" })
-bind("j", "pane.focus", { direction = "down" })
-bind("k", "pane.focus", { direction = "up" })
-bind("l", "pane.focus", { direction = "right" })
+rex.bind("shift+cmd+r", "session_name_from_dir")
 
 rex.mode("resize", { exclusive = true })
-bind("shift+r", "client.mode.enter", { name = "resize" })
+rex.bind("cmd+;", "client.mode.enter", { name = "resize" })
 for key, direction in pairs({ h = "left", j = "down", k = "up", l = "right" }) do
   rex.bind("resize/" .. key, "pane.resize", { direction = direction })
   rex.bind("resize/shift+" .. key, "pane.resize", { direction = direction, amount = 15 })
