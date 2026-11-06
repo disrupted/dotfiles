@@ -97,6 +97,7 @@ tinymist = "latest"
 "github:ewhauser/shuck" = "latest"
 claude = "latest"
 worktrunk = { version = "latest", workflow = "release.yaml" }
+"github:JohnnyMorganz/luau-lsp" = "1.70.1"
 
 # Tinycast: installed straight from the GitHub release zip via the `http`
 # backend + a postinstall hook (no Homebrew cask, no Ruby). The hook copies

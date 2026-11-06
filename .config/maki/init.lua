@@ -2,13 +2,22 @@
 
 local WORK = maki.uv.os_getenv("WORK")
 
+if not WORK then
+	maki.pack.add({
+		{
+			src = assert(maki.uv.os_getenv("HOME")) .. "/dev/maki-claude-code",
+			name = "maki-claude-code",
+		},
+	}, { confirm = false })
+end
+
 maki.setup({
 	always_yolo = true,
 	always_thinking = true,
 	ui = {
 		splash_animation = false,
-		theme = "ansi",
-		-- theme = "system",
+		flash_duration_ms = 5000,
+		theme = { light = "catppuccin_latte", dark = "catppuccin_macchiato" },
 		thinking_lines = 0,
 		tool_output_lines = {
 			bash = 1,
@@ -23,7 +32,7 @@ maki.setup({
 		},
 	},
 	provider = WORK and {
-		default_model = "anthropic/claude-sonnet-5-5",
+		default_model = maki.uv.os_getenv("ANTHROPIC_API_KEY") and "anthropic/claude-sonnet-5-5" or nil,
 		allowed_models = {
 			"openai/gpt-6*-{luna,sol}",
 			"anthropic/claude-{haiku,sonnet,opus}-5-5",
@@ -40,14 +49,14 @@ maki.setup({
 		},
 	} or {
 		default_model = "opencode-go/deepseek-v4.1-flash",
-		allowed_models = { "opencode-go/*" },
+		allowed_models = { "opencode-go/*", "claude-code/*" },
 		-- excluded_models = { "*/*:batch" },
 	},
 	agent = {
 		rtk = false,
 	},
 	plugins = {
-		bash = { timeout_secs = 15 },
+		bash = { timeout_secs = 10 }, -- background_on_timeout = true
 		task = { max_concurrent = 4 },
 		list = { enabled = false },
 		edit = { edit_lines = true, insert_lines = false, multiedit = true },
@@ -103,6 +112,17 @@ maki.keymap.set({ "n", "i" }, "<M-i>", function()
 end, { desc = "Force insert mode" })
 
 if VIM then
+	-- cursor shape per mode: block in normal, bar in insert
+	-- (guarded: maki builds before #1479 lack set_cursor_shape)
+	if (maki.ui :: any).set_cursor_shape then
+		maki.ui.set_cursor_shape("bar")
+		maki.api.create_autocmd("ModeChanged", {
+			callback = function(ev)
+				maki.ui.set_cursor_shape(ev.data.new_mode == "n" and "block" or "bar")
+			end,
+		})
+	end
+
 	local ok, err = pcall(function()
 		require("vim").setup()
 	end)

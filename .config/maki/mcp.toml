@@ -2,3 +2,7 @@
 url = "https://mcp.context7.com/mcp"
 headers = { Authorization = "Bearer ${CONTEXT7_API_KEY}" }
 enabled = true
+
+[mcp.superlogical]
+url = "https://www.superlogical.com/rex/community-mcp"
+enabled = true
