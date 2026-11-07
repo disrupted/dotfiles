@@ -1,7 +1,0 @@
-# vim: ft=dosini
-[mypy]
-show_error_codes = True
-ignore_missing_imports = True
-disable_error_code = name-defined
-warn_return_any = True
-warn_unused_configs = True

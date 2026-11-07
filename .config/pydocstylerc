@@ -1,6 +1,0 @@
-# vim: ft=cfg
-[pydocstyle]
-add_ignore = 
-    D4,
-    D100,
-    D400

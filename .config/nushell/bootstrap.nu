@@ -8,4 +8,3 @@ zoxide init nushell | save -f ($autoload | path join "zoxide.nu")
 carapace _carapace nushell | save -f ($autoload | path join "carapace.nu")
 # mise activation is regenerated on every startup in env.nu (official setup)
 # fnox integration is intentionally maintained in ~/.config/nushell/fnox-hooks.nu
-# tv init nu | save -f ($autoload | path join "tv.nu")
