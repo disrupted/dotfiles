@@ -80,15 +80,14 @@ credential_routes=(
     gemini:GEMINI_API_KEY
     openrouter:OPENROUTER_API_KEY
     context7:CONTEXT7_API_KEY
+    opencode:OPENCODE_API_KEY
     github:GITHUB_TOKEN
     github_git:GITHUB_TOKEN
 )
 
 # Secrets the agent gets as *real* values because they can't be proxied. Everything else goes
 # through a route above or is stripped by `environment.deny_vars`.
-# OPENCODE_API_KEY: opencode.ai/inference mixes Bearer, x-api-key and x-goog-api-key auth on
-# one host, but a nono route injects a single header style.
-raw_secrets=(OPENCODE_API_KEY)
+raw_secrets=()
 
 # Runs inside `fnox exec --only ...`. Only maps secrets fnox actually set (it skips
 # `env = false` ones), because nono aborts on an unset env:// source.

@@ -107,6 +107,7 @@
     "fnox_openai": { "command": ["fnox", "get", "OPENAI_API_KEY"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
     "fnox_gemini": { "command": ["fnox", "get", "GEMINI_API_KEY"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
     "fnox_openrouter": { "command": ["fnox", "get", "OPENROUTER_API_KEY"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
+    "fnox_opencode": { "command": ["fnox", "get", "OPENCODE_API_KEY"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
     "fnox_context7": { "command": ["fnox", "get", "CONTEXT7_API_KEY"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
     "fnox_github": { "command": ["fnox", "get", "GITHUB_TOKEN"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
     // git over HTTPS sends Basic auth; the proxy base64-encodes "user:password"
@@ -149,6 +150,13 @@
         "upstream": "https://openrouter.ai",
         "credential_key": "cmd://fnox_openrouter",
         "env_var": "OPENROUTER_API_KEY",
+        "inject_header": "Authorization",
+        "credential_format": "Bearer {}",
+      },
+      "opencode": {
+        "upstream": "https://opencode.ai",
+        "credential_key": "cmd://fnox_opencode",
+        "env_var": "OPENCODE_API_KEY",
         "inject_header": "Authorization",
         "credential_format": "Bearer {}",
       },
