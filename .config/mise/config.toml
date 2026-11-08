@@ -58,7 +58,7 @@ pi = "latest"
 "github:Mapika/portview" = "latest"
 "github:topiary/topiary" = "latest"
 "github:pruner-formatter/pruner" = "v1.0.0-alpha.11"
-"github:tontinton/maki" = "latest"
+# "github:tontinton/maki" = "latest"
 
 # language servers, formatters, linters
 shellcheck = "latest"
@@ -93,7 +93,7 @@ tinymist = "latest"
 "npm:@tailwindcss/language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:yaml-language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:@mistweaverco/kulala-fmt" = { version = "latest", allow_low_downloads = true, postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
-"npm:typescript-svelte-plugin" = "latest"  # library plugin, no bin/ -> no runtime to patch
+"npm:typescript-svelte-plugin" = "latest"                                                                                                                                                                                                                                                                                                                                                                                                                  # library plugin, no bin/ -> no runtime to patch
 "github:ewhauser/shuck" = "latest"
 claude = "latest"
 worktrunk = { version = "latest", workflow = "release.yaml" }
@@ -145,7 +145,14 @@ PI_CODING_AGENT_DIR = "{{ env.HOME }}/.config/pi"
 root = "."
 target = "~"
 manifest = "git"
-exclude = ["/README.md", "/AGENTS.md", "/.gitignore", "/.config/_screens", "/os", ".DS_Store"]
+exclude = [
+  "/README.md",
+  "/AGENTS.md",
+  "/.gitignore",
+  "/.config/_screens",
+  "/os",
+  ".DS_Store",
+]
 
 # link whole dir: new files land in the repo; pickers skip per-file symlinks
 [dotfile_groups.home.entries]

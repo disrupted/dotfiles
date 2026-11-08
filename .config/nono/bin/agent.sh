@@ -38,9 +38,9 @@ fi
 if launched_in .config dev .local; then
     nono_args+=(
         --allow "$home_dir/.config"
+        --allow "$home_dir/.dotfiles"
         --allow "$home_dir/dev"
         --allow "$home_dir/.local/share/nvim"
-        --allow "$home_dir/.local/share/yadm/repo.git"
     )
 fi
 

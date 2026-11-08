@@ -35,11 +35,11 @@
       "$XDG_DATA_HOME/gh",
       "$HOME/.agents/skills",
       // Policy is readable, not writable. Agents propose changes as full .jsonc copies in
-      // profile-drafts; a human reviews (diff) and moves them into profiles/, then commits via yadm.
+      // profile-drafts; a human reviews (diff) and moves them into profiles/, then commits to dotfiles.
       "$NONO_CONFIG/profiles",
     ],
     "read_file": [
-      // Included from ~/.gitconfig (yadm alternates, resolved per OS)
+      // Included from ~/.gitconfig
       "$HOME/.gitconfig_os",
       "$HOME/.gitconfig_private",
       "$HOME/.gitignore",

@@ -205,61 +205,6 @@ export def gcp [] {
   git cherry-pick $commit
 }
 
-# yadm variants of forgit commands
-
-# ya - interactive yadm add (modified files only)
-export def yadd [] {
-  let files = (
-    yadm diff --name-only | lines | where { $in != "" } | each { $"~/($in)" } | str join (char newline) | fzf --height=60% --layout=reverse --multi --preview 'bash -c "yadm diff -- ${1/#\\~/$HOME} | delta" _ {}'
-  )
-  if ($files | is-empty) { return }
-  $files | lines | each { yadm add ($in | path expand) }
-  yadm status --short
-}
-
-# ylo - interactive yadm log
-export def ylo [] {
-  yadm log --oneline --color=always | fzf --height=80% --layout=reverse --ansi --preview 'yadm show {1} | delta' | split row ' ' | first | if ($in | is-empty) { } else { yadm show $in }
-}
-
-# yd - interactive yadm diff
-export def yd [] {
-  let files = (
-    yadm diff --name-only | lines | each { $"~/($in)" } | str join (char newline) | fzf --height=60% --layout=reverse --multi --preview 'bash -c "yadm diff -- ${1/#\\~/$HOME} | delta" _ {}'
-  )
-  if ($files | is-empty) { return }
-  $files | lines | each { yadm diff -- ($in | path expand) } | str join "\n"
-}
-
-# yrh - interactive yadm reset HEAD (unstage)
-export def yrh [] {
-  let files = (
-    yadm diff --cached --name-only | lines | each { $"~/($in)" } | str join (char newline) | fzf --height=60% --layout=reverse --multi --preview 'bash -c "yadm diff --cached -- ${1/#\\~/$HOME} | delta" _ {}'
-  )
-  if ($files | is-empty) { return }
-  $files | lines | each { yadm reset HEAD ($in | path expand) }
-  yadm status --short
-}
-
-# ycf - interactive yadm checkout file (discard changes)
-export def ycf [] {
-  let files = (
-    yadm diff --name-only | lines | each { $"~/($in)" } | str join (char newline) | fzf --height=60% --layout=reverse --multi --preview 'bash -c "yadm diff -- ${1/#\\~/$HOME} | delta" _ {}'
-  )
-  if ($files | is-empty) { return }
-  $files | lines | each { yadm checkout ($in | path expand) }
-  yadm status --short
-}
-
-# yss - interactive yadm stash show
-export def yss [] {
-  let stash = (
-    yadm stash list | lines | each {|line| ($line | split row ':' | first) + ' ' + ($line | split row ':' | skip 1 | str join ':') } | str join (char newline) | fzf --height=60% --layout=reverse --preview 'yadm stash show -p {1} | delta' --preview-window=right:60% | split row ' ' | first
-  )
-  if ($stash | is-empty) { return }
-  yadm stash show -p $stash | delta
-}
-
 export def git_main_branch [] {
   if (do { git rev-parse --is-inside-work-tree } | complete).exit_code != 0 {
     return null

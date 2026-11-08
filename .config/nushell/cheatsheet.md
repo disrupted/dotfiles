@@ -126,7 +126,7 @@ exec nu
 
 ## Setup on New Device
 
-After pulling dotfiles with yadm, run these commands to initialize auto-generated files:
+After pulling dotfiles, run these commands to initialize auto-generated files:
 
 ```bash
 # macOS: Create symlink from Application Support to ~/.config/nushell
