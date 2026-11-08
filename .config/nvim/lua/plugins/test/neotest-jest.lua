@@ -16,6 +16,7 @@ return {
     end,
     config = function()
         local project = require('conf.project')
+        local runner = require('conf.neotest.runner')
         local opts = {
             -- run from the package manager workspace root like Nx does
             -- the jest config defaults to the nearest jest.config.{ts,js} (i.e. the Nx project)
@@ -31,6 +32,7 @@ return {
             cwd = function(path)
                 return project.of(path) or vim.g.workspace_root
             end,
+            isTestFile = runner.is_test_file('jest'),
         }
         ---@diagnostic disable-next-line: call-non-callable
         local adapter = require('neotest-jest')(opts)

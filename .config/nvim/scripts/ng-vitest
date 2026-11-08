@@ -1,0 +1,38 @@
+#!/bin/sh
+# Translates neotest-vitest's vitest flags into `ng test` options.
+# usage: ng-vitest <workspace> <project> <project-root> <ng command...> -- <vitest args...>
+set -eu
+
+workspace=$1 project=$2 root=$3
+shift 3
+
+ng=''
+while [ $# -gt 0 ] && [ "$1" != '--' ]; do
+	ng="$ng $1"
+	shift
+done
+[ $# -gt 0 ] && shift
+
+# append the translated command to "$@" while consuming the original args
+count=$#
+set -- "$@" $ng test "$project"
+while [ "$count" -gt 0 ]; do
+	arg=$1
+	shift
+	count=$((count - 1))
+	case $arg in
+	--reporter=*) set -- "$@" --reporters "${arg#*=}" ;;
+	--outputFile=*) set -- "$@" --output-file "${arg#*=}" ;;
+	--testNamePattern=*) set -- "$@" --filter "${arg#*=}" ;;
+	--watch=false | --run | run) set -- "$@" --no-watch ;;
+	--watch=true | --watch | -w) set -- "$@" --watch ;;
+	--config=*) ;;
+	-*) set -- "$@" "$arg" ;;
+	"$root") ;;
+	"$root"/*) set -- "$@" --include "${arg#"$root"/}" ;;
+	*) set -- "$@" --include "$arg" ;;
+	esac
+done
+
+cd "$workspace"
+exec "$@"

@@ -147,6 +147,10 @@
       "rev": "1b56ca4ba51c6014f986d6548ee629bdc95589d1",
       "src": "https://github.com/nvim-neotest/neotest-python"
     },
+    "neotest-vitest": {
+      "rev": "b0c265743c877058068dbc40d104ea5d40e6b257",
+      "src": "https://github.com/marilari88/neotest-vitest"
+    },
     "nui-components.nvim": {
       "rev": "1654dd709f13874089eefc80d82e0eb667f7fdfb",
       "src": "https://github.com/grapp-dev/nui-components.nvim"

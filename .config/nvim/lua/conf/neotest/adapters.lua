@@ -1,10 +1,11 @@
+--- Adapter modules per filetype
 ---@class conf.neotest.AdapterRegistry
 ---@field register fun(filetype: string, module: string)
 ---@field load fun(filetype: string): boolean
 ---@field load_project fun()
 ---@field attach fun(adapter: table): table
 
----@type table<string, string>
+---@type table<string, string[]>
 local modules_by_filetype = {}
 ---@type table<string, boolean>
 local loaded_filetypes = {}
@@ -12,7 +13,15 @@ local loaded_filetypes = {}
 ---@param filetype string
 ---@param module string
 local function register(filetype, module)
-    modules_by_filetype[filetype] = module
+    local modules = modules_by_filetype[filetype]
+    if not modules then
+        modules = {}
+        modules_by_filetype[filetype] = modules
+    end
+    if vim.list_contains(modules, module) then
+        return
+    end
+    modules[#modules + 1] = module
     loaded_filetypes[filetype] = nil
 end
 
@@ -23,13 +32,16 @@ local function load(filetype)
         return true
     end
 
-    local module = modules_by_filetype[filetype]
-    if not module then
+    local modules = modules_by_filetype[filetype]
+    if not modules then
         return false
     end
 
     loaded_filetypes[filetype] = true
-    local ok = pcall(require, module)
+    local ok = true
+    for _, module in ipairs(modules) do
+        ok = pcall(require, module) and ok
+    end
     if not ok then
         loaded_filetypes[filetype] = nil
     end
