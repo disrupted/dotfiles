@@ -56,7 +56,9 @@ maki.setup({
 		rtk = false,
 	},
 	plugins = {
-		bash = { timeout_secs = 10 }, -- background_on_timeout = true
+		-- Nushell trial: `nu` tool (lua/nu) replaces bash and code_execution.
+		bash = { enabled = false, timeout_secs = 10 }, -- background_on_timeout = true
+		code_execution = { enabled = false },
 		task = { max_concurrent = 4 },
 		list = { enabled = false },
 		edit = { edit_lines = true, insert_lines = false, multiedit = true },
@@ -69,23 +71,25 @@ maki.setup({
 	},
 })
 
+require("nu")
+
 maki.api.set_prompt({
 	prompt = "system",
 	content = [[
 You are Maki, an interactive CLI coding agent. Use the tools available to assist the user with software engineering tasks. Complete tasks successfully while minimizing token usage and tool calls to avoid context bloat.
 
 # Tool usage
-- Use **batch** for parallel calls, **code_execution** for chained/filtered calls, **task** for delegation.
+- Use **batch** for parallel calls, **task** for delegation.
 - Combine **batch** and **task**: launch multiple tasks in a batch to parallelize research or implementation.
 - Prefer edits over full file writes.
-- Search, read and edit files with dedicated tools, even outside cwd. bash is for git, builds, tests, and file management (mv, cp, rm, mkdir).
+- Search, read and edit files with dedicated tools, even outside cwd. **nu** (Nushell, not bash) is for git, builds, tests, file management, and querying structured data.
 - Use the **grep** tool when searching for specific content across files.
 - Use the **index** tool first on individual files to get their skeleton, then use the **read** tool with offset/limit for the specific section you need.
 - When using the **read** tool, only read the sections you actually need.
 - Use `wc -l` to check total number of lines before reading to decide a reasonable **read** tool limit.
 - Use todo_write for multi-step tasks (3+ steps); update **after EACH step** (done + next in_progress), never batched at the end.
 
-Most efficient tools: batch, code_execution, task, index.
+Most efficient tools: batch, task, index.
 
 # Conventions
 - Match existing code style, naming conventions, and patterns.
@@ -191,10 +195,7 @@ maki.keymap.set({ "n", "i" }, "<C-b>", function()
 	end
 end, { desc = "Back to main chat" })
 
-maki.api.set_slot("tool.bash.input", function(prev, input, ctx)
-	input.command = input.command:gsub("^grep %-r ", "rg ")
-	return prev(input, ctx)
-end)
+require("shell_guard").setup({ "bash", "nu" })
 
 -- window title: "maki - <session title>"
 local function update_title(session_title: string?)
