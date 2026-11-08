@@ -77,9 +77,10 @@ tinymist = "latest"
 "cargo:gitlab-ci-ls" = "latest"
 "cargo:nickel-lang-lsp" = "latest"
 "cargo:vimdoc-language-server" = "latest"
-# Native pkl-lsp binary, temporarily pulled from a GitHub Actions CI artifact (expires 2026-11-02)
+# Native pkl-lsp binaries, temporarily pulled from GitHub Actions CI artifacts (expire 2027-01-05)
+# Built from apple/pkl-lsp@3c3c9de3 (run 37673597423); native builds were removed from CI again in apple/pkl-lsp#270
 # TODO: switch to `github:apple/pkl-lsp` once a release ships the native executable
-"http:pkl-lsp" = { version = "0.8.0-native", url = "https://api.github.com/repos/apple/pkl-lsp/actions/artifacts/8879496175/zip", format = "zip", strip_components = 1, bin_path = "executable", rename_exe = "pkl-lsp" }
+"http:pkl-lsp" = { version = "0.8.0-native", format = "zip", strip_components = 1, bin_path = "executable", rename_exe = "pkl-lsp", platforms = { macos-arm64 = { url = "https://api.github.com/repos/apple/pkl-lsp/actions/artifacts/11506096249/zip" }, linux-x64 = { url = "https://api.github.com/repos/apple/pkl-lsp/actions/artifacts/11506251195/zip" }, linux-arm64 = { url = "https://api.github.com/repos/apple/pkl-lsp/actions/artifacts/11506216550/zip" } } }
 "pypi:debugpy" = "latest"
 "npm:@astrojs/language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:vscode-langservers-extracted" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
