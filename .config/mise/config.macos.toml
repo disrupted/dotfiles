@@ -1,3 +1,6 @@
+[tools]
+"github:lgalabru/axel" = "latest"
+
 # Tinycast: installed straight from the GitHub release zip via the `http`
 # backend + a postinstall hook (no Homebrew cask, no Ruby). The hook copies
 # Tinycast.app into /Applications and strips quarantine.
@@ -60,7 +63,7 @@ postinstall = { run = "$HOME/.config/mise/scripts/install-tinycast.sh", when = "
 [env]
 _.path = [
   "/opt/homebrew/opt/gnu-sed/libexec/gnubin",
-] # shadow BSD sed with gnu-sed
+]  # shadow BSD sed with gnu-sed
 
 [dotfile_groups.macos]
 root = "os/macos"
@@ -99,8 +102,8 @@ save_new_documents_to_cloud = false
 
 [bootstrap.macos.defaults]
 NSGlobalDomain = { NSWindowShouldDragOnGesture = "YES", AppleShowAllExtensions = true, NSAutomaticQuoteSubstitutionEnabled = false, NSAutomaticDashSubstitutionEnabled = false, NSAutomaticPeriodSubstitutionEnabled = false, AppleKeyboardUIMode = 2, NSNavPanelExpandedStateForSaveMode = true, NSNavPanelExpandedStateForSaveMode2 = true, PMPrintingExpandedStateForPrint = true, PMPrintingExpandedStateForPrint2 = true }
-"com.apple.dock" = { tilesize = 44.0 } # Dock stores it as a float
-"com.apple.finder" = { FXDefaultSearchScope = "SCcf" } # search current folder
+"com.apple.dock" = { tilesize = 44.0 }  # Dock stores it as a float
+"com.apple.finder" = { FXDefaultSearchScope = "SCcf" }  # search current folder
 "com.apple.desktopservices" = { DSDontWriteNetworkStores = true, DSDontWriteUSBStores = true }
 "com.apple.TimeMachine" = { DoNotOfferNewDisksForBackup = true }
 "com.apple.screencapture" = { name = "screen", location = "~/Pictures/Screenshots" }

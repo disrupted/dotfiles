@@ -92,12 +92,11 @@ tinymist = "latest"
 "npm:@tailwindcss/language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:yaml-language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:@mistweaverco/kulala-fmt" = { version = "latest", allow_low_downloads = true, postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
-"npm:typescript-svelte-plugin" = "latest"                                                                                                                                                                                 # library plugin, no bin/ -> no runtime to patch
+"npm:typescript-svelte-plugin" = "latest"  # library plugin, no bin/ -> no runtime to patch
 "github:ewhauser/shuck" = "latest"
 claude = "latest"
 worktrunk = { version = "latest", workflow = "release.yaml" }
 "github:JohnnyMorganz/luau-lsp" = "1.70.1"
-"github:lgalabru/axel" = "latest"
 
 [settings]
 self_update.auto = true
