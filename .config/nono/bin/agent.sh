@@ -8,7 +8,6 @@
 # directory (directory grants, which fnox secrets exist) is added here as CLI flags.
 #
 # Extra nono flags for one run: NONO_ARGS="--rollback --network-profile developer"
-# Extra raw secrets for one run: NONO_RAW_SECRET_NAMES="FOO,BAR"
 
 # Physical paths, so prefix matching works through symlinks.
 home_dir="$(cd "$HOME" 2>/dev/null && pwd -P)" || home_dir="$HOME"
@@ -85,27 +84,9 @@ credential_routes=(
     github_git:GITHUB_TOKEN
 )
 
-# Secrets the agent gets as *real* values because they can't be proxied. Everything else goes
-# through a route above or is stripped by `environment.deny_vars`.
-raw_secrets=()
-
-# Runs inside `fnox exec --only ...`. Only maps secrets fnox actually set (it skips
-# `env = false` ones), because nono aborts on an unset env:// source.
-# Args: <space-separated names> <nono run args...>
-# shellcheck disable=SC2016
-raw_secrets_trampoline='
-names=$1; shift
-maps=()
-for name in $names; do
-    if [ -n "${!name:-}" ]; then maps+=(--env-credential-map "env://$name" "$name"); fi
-done
-exec nono run ${maps[@]+"${maps[@]}"} "$@"
-'
-
 nono_exec() {
-    local profile="$1" route name
+    local profile="$1" route
     shift
-    local requested=() raw=() fnox_x=()
 
     for route in "${credential_routes[@]}"; do
         if secret_available "${route#*:}"; then
@@ -113,21 +94,5 @@ nono_exec() {
         fi
     done
 
-    # `fnox exec` resolves raw secrets the shell doesn't export (`env = "exec"`).
-    # --env-credential-map passes them through `environment.deny_vars`.
-    IFS=, read -r -a requested <<<"${NONO_RAW_SECRET_NAMES:-}"
-    # ${a[@]+...}: empty arrays are "unbound" under set -u in macOS' bash 3.2
-    for name in ${raw_secrets[@]+"${raw_secrets[@]}"} ${requested[@]+"${requested[@]}"}; do
-        if secret_available "$name"; then
-            raw+=("$name")
-            fnox_x+=(--only "$name")
-        fi
-    done
-
-    if [ "${#raw[@]}" -gt 0 ]; then
-        exec mise x -- fnox exec "${fnox_x[@]}" -- \
-            bash -c "$raw_secrets_trampoline" nono-raw-secrets "${raw[*]}" \
-            --profile "$profile" "${nono_args[@]}" -- "$@"
-    fi
     exec mise x -- nono run --profile "$profile" "${nono_args[@]}" -- "$@"
 }

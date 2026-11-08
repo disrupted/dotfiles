@@ -82,10 +82,11 @@
     "(deny file-write* (regex #\"/\\.config/nono/(bin|profiles)(/|$)\"))",
   ],
   "environment": {
-    // The fnox shell hook exports real secrets and nono passes the environment through by
-    // default. Phantom tokens and --env-credential-map values are injected after this filter.
+    // nono passes the environment through, so project secrets the fnox hook exports reach the
+    // agent. Only the secret tooling's own credentials are stripped. Routed secrets
+    // (GITHUB_TOKEN, *_API_KEY, ...) are overwritten with phantoms after this filter.
     // Exact names in deny_vars are redacted from audit logs too.
-    "deny_vars": ["*_API_KEY", "*_TOKEN", "__FNOX_*", "FNOX_*", "OP_*", "GH_TOKEN", "GH_ENTERPRISE_TOKEN"],
+    "deny_vars": ["__FNOX_*", "FNOX_*", "OP_*", "GH_TOKEN", "GH_ENTERPRISE_TOKEN"],
     "set_vars": {
       // Agent commits stay unsigned: a signature should mean "a human vouches for this".
       // Re-sign on review: git rebase --exec 'git commit --amend --no-edit -S'
