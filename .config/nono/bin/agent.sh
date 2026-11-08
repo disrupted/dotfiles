@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SL2001
 # Shared launcher for coding agents in nono.
 # Source it, add agent-specific flags to `nono_args`, then call
 # `nono_exec <profile> <command> [args...]`.

@@ -98,6 +98,7 @@ tinymist = "latest"
 claude = "latest"
 worktrunk = { version = "latest", workflow = "release.yaml" }
 "github:JohnnyMorganz/luau-lsp" = "1.70.1"
+"github:lgalabru/axel" = "latest"
 
 # Tinycast: installed straight from the GitHub release zip via the `http`
 # backend + a postinstall hook (no Homebrew cask, no Ruby). The hook copies
@@ -191,6 +192,7 @@ docker buildx prune -a -f
 "brew-cask:timemachineeditor" = "latest"
 "brew-cask:yaak" = "latest"
 "brew-cask:zen" = "latest"
+"brew-cask:tailscale" = "latest"
 
 [env]
 PI_CODING_AGENT_DIR = "{{ env.HOME }}/.config/pi"

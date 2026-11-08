@@ -793,6 +793,7 @@ return {
                     },
                     grep_interactive = {
                         multi = { 'grep', 'dirs' },
+                        hidden = true,
                         glob = {},
                         dirs = {},
                         filter = {
