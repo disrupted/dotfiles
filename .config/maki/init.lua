@@ -188,6 +188,23 @@ maki.keymap.set({ "n", "i" }, "<S-tab>", function()
 	end
 end, { desc = "Toggle plan/build mode" })
 
+local function session_picker()
+	local ok, err = maki.api.run_command("/sessions")
+	if not ok then
+		maki.ui.flash("sessions: " .. tostring(err))
+	end
+end
+maki.keymap.set({ "n", "i" }, "<C-s>", session_picker, { desc = "Session picker" })
+maki.keymap.set({ "n", "i" }, "<M-s>", session_picker, { desc = "Session picker" })
+
+maki.keymap.set({ "n", "i" }, "<C-f>", function()
+	maki.ui.action("file_picker")
+end, { desc = "File picker" })
+
+maki.keymap.set("n", "/", function()
+	maki.ui.action("search")
+end, { desc = "Search messages" })
+
 maki.keymap.set({ "n", "i" }, "<C-b>", function()
 	local _, err = maki.task.focus("main")
 	if err then
