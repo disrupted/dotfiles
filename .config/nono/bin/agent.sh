@@ -26,6 +26,7 @@ launched_in() {
 nono_args=(
     --allow-cwd
     --no-rollback-prompt
+    --allow "$home_dir/.dotfiles"
 )
 
 if [ -n "${NONO_ARGS:-}" ]; then
@@ -34,10 +35,9 @@ if [ -n "${NONO_ARGS:-}" ]; then
 fi
 
 # dotfiles mode. ~/.local itself can't be granted: it contains nono's state dir.
-if launched_in .config dev .local; then
+if launched_in .config .dotfiles dev .local; then
     nono_args+=(
         --allow "$home_dir/.config"
-        --allow "$home_dir/.dotfiles"
         --allow "$home_dir/dev"
         --allow "$home_dir/.local/share/nvim"
     )
