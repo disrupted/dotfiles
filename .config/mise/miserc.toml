@@ -1,0 +1,2 @@
+# load config.<os>.toml for the current platform
+auto_env = true

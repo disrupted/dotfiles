@@ -220,11 +220,3 @@
     path = ~/.gitconfig_os
     path = ~/.gitconfig_private
 
-[includeIf "gitdir:~/bakdata/"]
-    path = ~/bakdata/.gitconfig
-
-[includeIf "gitdir:~/bayer/"]
-    path = ~/bakdata/.gitconfig
-
-[includeIf "gitdir:~/spectrumk/"]
-    path = ~/bakdata/.gitconfig

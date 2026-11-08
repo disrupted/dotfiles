@@ -1,0 +1,17 @@
+[dotfile_groups.linux]
+root = "os/linux"
+target = "~"
+manifest = "git"
+
+# https://www.nushell.sh/book/installation.html
+[bootstrap.apt.sources.nushell]
+uris = "https://apt.fury.io/nushell/"
+suites = "/"
+key = "https://apt.fury.io/nushell/gpg.key"
+fingerprint = "F793 9B75 0FA1 7898 32D6 7A80 9E75 5FC3 65BF 00D5"
+
+[bootstrap.packages]
+"apt:nushell" = "latest"
+
+[bootstrap.user]
+login_shell = "/usr/bin/nu"

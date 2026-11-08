@@ -502,16 +502,17 @@ return {
         {
             '<leader>gl',
             function()
-                if vim.g.git_repo == require('yadm').config.repo then
+                local dotfiles = require('dotfiles').config
+                if vim.g.git_repo == dotfiles.repo then
                     Snacks.picker.git_status({
-                        title = 'YADM status',
-                        finder = require('conf.snacks.finder').yadm_status,
+                        title = 'Dotfiles status',
+                        cwd = dotfiles.root,
                     })
                 else
                     Snacks.picker.git_status()
                 end
             end,
-            desc = 'Git/YADM status',
+            desc = 'Git/dotfiles status',
         },
         {
             '<C-g>',

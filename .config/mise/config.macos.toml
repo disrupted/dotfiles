@@ -1,0 +1,112 @@
+# Tinycast: installed straight from the GitHub release zip via the `http`
+# backend + a postinstall hook (no Homebrew cask, no Ruby). The hook copies
+# Tinycast.app into /Applications and strips quarantine.
+[tools."http:tinycast"]
+version = "latest"
+url = "https://github.com/abue-ammar/tinycast/releases/download/v{{ version }}/Tinycast-Universal-{{ version }}.zip"
+format = "zip"
+strip_components = 0
+version_list_url = "https://api.github.com/repos/abue-ammar/tinycast/releases/latest"
+version_json_path = ".tag_name"
+postinstall = { run = "$HOME/.config/mise/scripts/install-tinycast.sh", when = "always" }
+
+[bootstrap.packages]
+# login shell: needs a real binary at a fixed path (/opt/homebrew/bin/nu).
+# not a mise tool: shims reject login(1)'s `-nu` argv0, and install paths
+# under ~/.local/share/mise change or vanish on upgrade/prune.
+"brew:nushell" = "latest"
+"brew:wget" = "latest"
+"brew:pv" = "latest"
+"brew:gnu-sed" = "latest"
+"brew:gnupg" = "latest"
+"brew:bzip2" = "latest"
+"brew:zlib" = "latest"
+"brew:llvm" = "latest"
+"brew:cmake" = "latest"
+"brew:automake" = "latest"
+"brew:pkgconf" = "latest"
+"brew:htop" = "latest"
+"brew:prettyping" = "latest"
+"brew:macos-trash" = "latest"
+"brew:duti" = "latest"
+
+"brew-cask:ghostty" = "latest"
+"brew-cask:sf-symbols" = "latest"
+"brew-cask:1password" = "latest"
+# "brew-cask:affinity" = "latest"
+"brew-cask:arc" = "latest"
+"brew-cask:betterdisplay" = "latest"
+"brew-cask:coconutbattery" = "latest"
+"brew-cask:datagrip" = "latest"
+"brew-cask:deskpad" = "latest"
+"brew-cask:font-meslo-lg-nerd-font" = "latest"
+"brew-cask:home-assistant" = "latest"
+"brew-cask:iina" = "latest"
+# "brew-cask:keka" = "latest"
+"brew-cask:mimestream" = "latest"
+"brew-cask:orbstack" = "latest"
+"brew-cask:pearcleaner" = "latest"
+# "brew-cask:pictogram" = "latest"
+"brew-cask:plexamp" = "latest"
+"brew-cask:proxyman" = "latest"
+"brew-cask:rapidapi" = "latest"
+"brew-cask:slack" = "latest"
+"brew-cask:thingsmacsandboxhelper" = "latest"
+"brew-cask:timemachineeditor" = "latest"
+"brew-cask:yaak" = "latest"
+"brew-cask:zen" = "latest"
+"brew-cask:tailscale" = "latest"
+
+[env]
+_.path = [
+  "/opt/homebrew/opt/gnu-sed/libexec/gnubin",
+] # shadow BSD sed with gnu-sed
+
+[dotfile_groups.macos]
+root = "os/macos"
+target = "~"
+manifest = "git"
+
+[bootstrap.user]
+login_shell = "/opt/homebrew/bin/nu"
+
+[bootstrap.macos.keyboard]
+initial_key_repeat = 10
+key_repeat = 1
+press_and_hold = false
+automatic_capitalization = false
+automatic_spelling_correction = false
+
+[bootstrap.macos.trackpad]
+tap_to_click = true
+three_finger_drag = true
+
+[bootstrap.macos.dock]
+autohide = true
+show_recents = false
+mru_spaces = false
+autohide_delay = 0
+autohide_time_modifier = 0.3
+
+[bootstrap.macos.finder]
+preferred_view_style = "list"
+show_extensions_warning = false
+show_pathbar = true
+show_status_bar = true
+sort_folders_first = true
+show_all_files = true
+save_new_documents_to_cloud = false
+
+[bootstrap.macos.defaults]
+NSGlobalDomain = { NSWindowShouldDragOnGesture = "YES", AppleShowAllExtensions = true, NSAutomaticQuoteSubstitutionEnabled = false, NSAutomaticDashSubstitutionEnabled = false, NSAutomaticPeriodSubstitutionEnabled = false, AppleKeyboardUIMode = 2, NSNavPanelExpandedStateForSaveMode = true, NSNavPanelExpandedStateForSaveMode2 = true, PMPrintingExpandedStateForPrint = true, PMPrintingExpandedStateForPrint2 = true }
+"com.apple.dock" = { tilesize = 44.0 } # Dock stores it as a float
+"com.apple.finder" = { FXDefaultSearchScope = "SCcf" } # search current folder
+"com.apple.desktopservices" = { DSDontWriteNetworkStores = true, DSDontWriteUSBStores = true }
+"com.apple.TimeMachine" = { DoNotOfferNewDisksForBackup = true }
+"com.apple.screencapture" = { name = "screen", location = "~/Pictures/Screenshots" }
+# disable universal clipboard between iCloud devices while keeping Handoff on
+# (requires full disk access for the terminal app)
+"com.apple.coreservices.useractivityd" = { ClipboardSharingEnabled = 0 }
+
+[bootstrap.hooks]
+post-defaults = "killall Dock Finder SystemUIServer || true"

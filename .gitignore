@@ -149,3 +149,6 @@ fnox.local.toml
 # Agents
 .plans/
 AGENTS.local.md
+
+# Neovim (generated)
+.config/nvim/nvim.log

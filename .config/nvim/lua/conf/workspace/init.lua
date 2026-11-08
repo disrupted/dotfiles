@@ -427,7 +427,7 @@ M.setup = function()
     require('git').setup(cwd)
     vim.g.workspace_root = M.get_root(cwd)
     if not vim.g.git_repo then
-        require('yadm').setup()
+        require('dotfiles').setup()
     end
     require('conf.project').setup()
     -- change global working directory to workspace root
