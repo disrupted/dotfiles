@@ -6,3 +6,4 @@
 root = "~/.dotfiles-private/work"
 target = "~"
 manifest = "git"
+mode = "copy"
