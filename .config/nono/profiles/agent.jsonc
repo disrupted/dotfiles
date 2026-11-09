@@ -42,6 +42,7 @@
       // Included from ~/.gitconfig
       "$HOME/.gitconfig_os",
       "$HOME/.gitconfig_private",
+      "$HOME/bakdata/.gitconfig",
       "$HOME/.gitignore",
       // gh refuses to start without both. Read-only because `!` aliases in config.yml run shell
       // commands, so writes would be a host escape. hosts.yml holds no token (phantom GITHUB_TOKEN).
@@ -64,9 +65,7 @@
     ],
     // Nx plugin workers use $TMPDIR/plugin*.sock
     "unix_socket_dir_bind": ["$TMPDIR"],
-    "suppress_save_prompt": [
-      "$XDG_CONFIG_HOME/gh", // `gh auth setup-git`, `gh config set`, ... are expected to fail
-    ],
+    "suppress_save_prompt": ["/"],
   },
   // Write-protect files the *host* later executes outside the sandbox: git hooks, git config
   // (core.fsmonitor, core.hooksPath, ...; so git can't record upstream tracking), and nono's own

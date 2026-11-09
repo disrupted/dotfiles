@@ -26,7 +26,7 @@ launched_in() {
 nono_args=(
     --allow-cwd
     --no-rollback-prompt
-    --allow "$home_dir/.dotfiles"
+    --read "$home_dir/.dotfiles"
 )
 
 if [ -n "${NONO_ARGS:-}" ]; then
@@ -38,6 +38,7 @@ fi
 if launched_in .config .dotfiles dev .local; then
     nono_args+=(
         --allow "$home_dir/.config"
+        --allow "$home_dir/.dotfiles"
         --allow "$home_dir/dev"
         --allow "$home_dir/.local/share/nvim"
     )
