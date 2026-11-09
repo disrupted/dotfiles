@@ -143,6 +143,10 @@
       "rev": "0e7979d51301dfae5ef839d771bd28cf593fde3f",
       "src": "https://github.com/haydenmeade/neotest-jest"
     },
+    "neotest-ntf": {
+      "rev": "2b29f6223a24bd332cfbf5552b9c508adba3b8df",
+      "src": "https://github.com/disrupted/neotest-ntf"
+    },
     "neotest-python": {
       "rev": "1b56ca4ba51c6014f986d6548ee629bdc95589d1",
       "src": "https://github.com/nvim-neotest/neotest-python"

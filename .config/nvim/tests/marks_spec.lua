@@ -55,7 +55,7 @@ describe('native file marks', function()
     end)
 
     it('maps the picker to <leader>m only', function()
-        marks.setup()
+        dofile(vim.fs.joinpath(vim.uv.cwd(), 'plugin', 'marks.lua'))
 
         assert.equal(1, #mappings)
         assert.equal('n', mappings[1].mode)

@@ -3,7 +3,7 @@ local describe, it = ntf.describe, ntf.it
 local assert = ntf.assert
 
 describe('subvert (:S/:Subvert)', function()
-    require('conf.subvert').setup()
+    dofile(vim.fs.joinpath(vim.uv.cwd(), 'plugin', 'subvert.lua'))
 
     vim.o.ignorecase = true
     vim.o.smartcase = true
