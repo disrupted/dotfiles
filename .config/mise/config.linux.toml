@@ -1,3 +1,8 @@
+[tools]
+docker-cli = "latest"
+docker-compose = { version = "latest", depends = ["docker-cli"] }
+"aqua:docker/buildx" = { version = "latest", depends = ["docker-cli"] }
+
 [dotfile_groups.linux]
 root = "os/linux"
 target = "~"

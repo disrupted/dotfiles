@@ -45,9 +45,6 @@ fzf = "latest"
 "aqua:ms-jpq/sad" = "latest"
 skim = "latest"
 "cargo:somo" = "latest"
-docker-cli = "latest"
-docker-compose = { version = "latest", depends = ["docker-cli"] }
-"aqua:docker/buildx" = { version = "latest", depends = ["docker-cli"] }
 nono = "latest"
 "npm:@opencode/cli" = { version = "latest", depends = [
   "node",
