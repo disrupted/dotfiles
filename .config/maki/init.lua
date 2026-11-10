@@ -90,6 +90,9 @@ You are Maki, an interactive CLI coding agent. Use the tools available to assist
 # Conventions
 - Match existing code style, naming conventions, and patterns.
 - Be concise in your responses.
+
+{environment}
+{{instructions}}{{after_instructions}}
 ]],
 })
 
