@@ -109,12 +109,24 @@
     "fnox_openrouter": { "command": ["fnox", "get", "OPENROUTER_API_KEY"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
     "fnox_opencode": { "command": ["fnox", "get", "OPENCODE_API_KEY"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
     "fnox_context7": { "command": ["fnox", "get", "CONTEXT7_API_KEY"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
-    "fnox_github": { "command": ["fnox", "get", "GITHUB_TOKEN"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
+    // GitHub App token instead of the PAT, so agent actions show "via disrupted-agent"
+    // below fnox's 5 min reuse margin, so the cache never serves an expired token
+    // -c: captures run in the launch dir, where ~/fnox.toml isn't always found
+    // re-auth: fnox -P agent lease create github_agent
+    "fnox_github": {
+      "command": ["/bin/sh", "-c", "FNOX_NON_INTERACTIVE=1 exec fnox -c \"$HOME/fnox.toml\" -P agent get AGENT_GITHUB_TOKEN"],
+      "timeout_secs": 60,
+      "cache_ttl_secs": 240,
+    },
     // git over HTTPS sends Basic auth; the proxy base64-encodes "user:password"
     "fnox_github_git": {
-      "command": ["/bin/sh", "-c", "printf 'x-access-token:%s' \"$(fnox get GITHUB_TOKEN)\""],
+      "command": [
+        "/bin/sh",
+        "-c",
+        "t=$(FNOX_NON_INTERACTIVE=1 fnox -c \"$HOME/fnox.toml\" -P agent get AGENT_GITHUB_TOKEN) && [ -n \"$t\" ] && printf 'x-access-token:%s' \"$t\"",
+      ],
       "timeout_secs": 60,
-      "cache_ttl_secs": 3600,
+      "cache_ttl_secs": 240,
     },
   },
   "network": {
