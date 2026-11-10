@@ -155,5 +155,16 @@ exclude = [
 [dotfile_groups.home.entries]
 "~/.config/nvim" = { mode = "symlink" }
 
+[dotfile_groups.private]
+root = "~/.dotfiles-private/home"
+target = "~"
+manifest = "git"
+
+[dotfile_groups.private.entries]
+"~/.config/maki/AGENTS.md" = { source = ".config/agents/AGENTS.md" }
+"~/.config/opencode/AGENTS.md" = { source = ".config/agents/AGENTS.md" }
+"~/.config/pi/AGENTS.md" = { source = ".config/agents/AGENTS.md" }
+
 [bootstrap.repos]
+"~/.dotfiles-private" = { url = "git@github.com:disrupted/dotfiles-private.git" }
 "~/.config/rex/rex-worktrunk" = { url = "https://github.com/disrupted/rex-worktrunk.git", ref = "label-option" }

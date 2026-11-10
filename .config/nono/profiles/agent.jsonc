@@ -39,6 +39,8 @@
       "$NONO_CONFIG/profiles",
     ],
     "read_file": [
+      // read-only: agents must not rewrite their own instructions
+      "$HOME/.dotfiles-private/home/.config/agents/AGENTS.md",
       // Included from ~/.gitconfig
       "$HOME/.gitconfig_os",
       "$HOME/.gitconfig_private",

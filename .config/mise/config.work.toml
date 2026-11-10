@@ -1,7 +1,4 @@
 # enabled per machine: env = ["work"] in ~/.config/mise/miserc.local.toml
-[bootstrap.repos]
-"~/.dotfiles-private" = { url = "git@github.com:disrupted/dotfiles-private.git" }
-
 [dotfile_groups.work]
 root = "~/.dotfiles-private/work"
 target = "~"
