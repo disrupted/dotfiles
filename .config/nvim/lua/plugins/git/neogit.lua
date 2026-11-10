@@ -31,6 +31,11 @@ return {
                 recent_commit_count = 50,
             },
             process_spinner = true,
+            mappings = {
+                commit_editor = {
+                    ['q'] = 'Abort',
+                },
+            },
         }
         local neogit = require('neogit')
         neogit.setup(opts)
