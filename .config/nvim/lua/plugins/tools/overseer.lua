@@ -3,15 +3,12 @@ return {
     'stevearc/overseer.nvim',
     main = 'overseer',
     module = 'overseer',
+    dependencies = { 'rextask' },
     cmd = {
         'OverseerOpen',
         'OverseerToggle',
         'OverseerRun',
         'OverseerShell',
-    },
-    keys = {
-        { '<Bslash>', '<cmd>OverseerToggle<cr>', desc = 'Toggle Overseer' },
-        { '<M-Bslash>', '<cmd>OverseerRun<cr>', desc = 'Overseer run' },
     },
     config = function()
         ---@type overseer.SetupOpts
@@ -46,13 +43,6 @@ return {
             },
             component_aliases = {
                 default_neotest = {
-                    {
-                        'open_output',
-                        direction = 'dock',
-                        focus = false,
-                        -- on_start = 'never',
-                        -- on_complete = 'failure',
-                    },
                     'on_exit_set_status',
                     'progress',
                     'on_complete_dispose',
@@ -62,6 +52,8 @@ return {
         local overseer = require('overseer')
         local STATUS = require('overseer.constants').STATUS
         overseer.setup(opts)
+
+        require('rextask.overseer').set_default_strategy()
 
         -- Monkey-patch the JobstartStrategy to use a fixed width
         local JobstartStrategy = require('overseer.strategy.jobstart')

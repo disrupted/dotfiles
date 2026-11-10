@@ -6,6 +6,34 @@ local function is_uv_pyproject()
     return vim.uv.fs_stat('uv.lock') ~= nil
 end
 
+---@param cmd string
+---@return overseer.TaskDefinition
+local function step(cmd)
+    if require('rextask').available() then
+        return {
+            cmd = cmd,
+            strategy = { 'rextask', minimized = true, key = 'uv' },
+            components = {
+                { 'rextask.window', show = 'failure', close = 'success', close_delay = 2 },
+                'default',
+            },
+        }
+    end
+    return {
+        cmd = cmd,
+        components = {
+            {
+                'open_output',
+                direction = 'dock',
+                focus = true,
+                on_start = 'never',
+                on_complete = 'failure',
+            },
+            'default',
+        },
+    }
+end
+
 ---@module 'overseer'
 ---@type overseer.TemplateFileDefinition
 return {
@@ -16,34 +44,7 @@ return {
             cmd = 'uv',
             strategy = {
                 'orchestrator',
-                tasks = {
-                    {
-                        cmd = 'uv lock',
-                        components = {
-                            {
-                                'open_output',
-                                direction = 'dock',
-                                focus = true,
-                                on_start = 'never',
-                                on_complete = 'failure',
-                            },
-                            'default',
-                        },
-                    },
-                    {
-                        cmd = 'uv sync',
-                        components = {
-                            {
-                                'open_output',
-                                direction = 'dock',
-                                focus = true,
-                                on_start = 'never',
-                                on_complete = 'failure',
-                            },
-                            'default',
-                        },
-                    },
-                },
+                tasks = { step('uv lock'), step('uv sync') },
             },
             components = { 'default' },
         }

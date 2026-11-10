@@ -216,11 +216,17 @@ return {
                     components = {
                         'default_neotest',
                     },
-                    strategy = { 'jobstart_no_footer', use_terminal = true },
+                    strategy = {
+                        'rextask',
+                        minimized = true,
+                        key = 'neotest',
+                        fallback = { 'jobstart_no_footer', use_terminal = true },
+                    },
                 },
             },
         }) --[[@as neotest.Config]]
         require('neotest').setup(opts)
+        require('rextask.neotest').setup({ key = 'neotest' })
 
         -- lazy-load adapters
         require('conf.neotest.adapters').load_project()
