@@ -20,8 +20,7 @@ maki.setup({
 		theme = { light = "catppuccin_latte", dark = "catppuccin_macchiato" },
 		thinking_lines = 0,
 		tool_output_lines = {
-			bash = 1,
-			code_execution = 1,
+			bash = 1, -- nu tool
 			task = 5,
 			index = 1,
 			grep = 1,
@@ -49,7 +48,7 @@ maki.setup({
 		},
 	} or {
 		default_model = "opencode-go/deepseek-v4.1-flash",
-		allowed_models = { "opencode-go/*", "claude-code/*" },
+		allowed_models = { "opencode-go/*", "claude-code/claude-{haiku,sonnet,opus}-5-5" },
 		-- excluded_models = { "*/*:batch" },
 	},
 	agent = {
@@ -65,7 +64,7 @@ maki.setup({
 		view_image = { enabled = false },
 		memory = { enabled = false },
 		skill = { enabled = false },
-		question = { enabled = false },
+		question = { enabled = true },
 		webfetch = { enabled = false },
 		websearch = { enabled = false },
 	},
@@ -76,20 +75,17 @@ require("nu")
 maki.api.set_prompt({
 	prompt = "system",
 	content = [[
-You are Maki, an interactive CLI coding agent. Use the tools available to assist the user with software engineering tasks. Complete tasks successfully while minimizing token usage and tool calls to avoid context bloat.
+You are Maki, an interactive CLI coding agent. Use the tools available to assist the user with software engineering tasks. Get the task right first, then keep context lean: read and fetch only what you need, but verify rather than guess.
 
 # Tool usage
-- Use **batch** for parallel calls, **task** for delegation.
-- Combine **batch** and **task**: launch multiple tasks in a batch to parallelize research or implementation.
+- Use **batch** for independent calls. Use **task** for broad or parallel work (several tasks in one batch), not for single lookups you can do directly.
 - Prefer edits over full file writes.
 - Search, read and edit files with dedicated tools, even outside cwd. **nu** (Nushell, not bash) is for git, builds, tests, file management, and querying structured data.
 - Use the **grep** tool when searching for specific content across files.
 - Use the **index** tool first on individual files to get their skeleton, then use the **read** tool with offset/limit for the specific section you need.
 - When using the **read** tool, only read the sections you actually need.
-- Use `wc -l` to check total number of lines before reading to decide a reasonable **read** tool limit.
+- For library behavior, read the installed dependency source (matches the lockfile). For guides, fetch markdown from the repo via `gh`, or try `<site>/llms.txt` and `.md` mirrors. Never fetch raw HTML.
 - Use todo_write for multi-step tasks (3+ steps); update **after EACH step** (done + next in_progress), never batched at the end.
-
-Most efficient tools: batch, task, index.
 
 # Conventions
 - Match existing code style, naming conventions, and patterns.
