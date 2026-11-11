@@ -62,6 +62,9 @@
       // agents install here, never into the host's mise dirs, which run unsandboxed
       "$XDG_DATA_HOME/mise-agent",
       "$XDG_CACHE_HOME/mise-agent",
+      // rust_runtime only covers ~/.cargo; cargo/bin stays read-only since the host runs it
+      "$XDG_DATA_HOME/mise/cargo/registry",
+      "$XDG_DATA_HOME/mise/cargo/git",
       { "path": "$HOME/Library/Preferences/helm", "when": "macos" },
       { "path": "$XDG_CONFIG_HOME/helm", "when": "linux" },
       "$NONO_CONFIG/profile-drafts",
