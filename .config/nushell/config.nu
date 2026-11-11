@@ -251,7 +251,7 @@ $env.config.keybindings ++= [
     mode: [emacs]
     event: {
       send: ExecuteHostCommand
-      cmd: "cd (fd -t d -d 3 | fzf --preview 'eza --no-quotes -1 --icons --git-ignore {}' | str trim)"
+      cmd: "cd (fd -t d -d 3 | fzf --preview 'fd -d 1 --color=always --base-directory {}' | str trim)"
     }
   }
   # Global history search (Ctrl+R) - fzf
