@@ -95,6 +95,9 @@ tinymist = "latest"
 claude = "latest"
 worktrunk = { version = "latest", workflow = "release.yaml" }
 "github:JohnnyMorganz/luau-lsp" = "1.70.1"
+# no releases yet, pinned to a main commit; Rex only loads modules from beside its init.lua.
+# Only link host installs, never a sandboxed agent's copy in mise-agent.
+"http:rex-worktrunk" = { version = "3b4f122affb8e8c62f7fbde085babd1abf0f891f", url = "https://github.com/haxybaxy/rex-worktrunk/archive/{{ version }}.tar.gz", strip_components = 1, postinstall = 'case "$MISE_TOOL_INSTALL_PATH" in "$HOME/.local/share/mise/"*) ln -sfn "$MISE_TOOL_INSTALL_PATH" "$HOME/.config/rex/rex-worktrunk" ;; esac' }
 
 [settings]
 self_update.auto = true
@@ -167,4 +170,3 @@ manifest = "git"
 
 [bootstrap.repos]
 "~/.dotfiles-private" = { url = "git@github.com:disrupted/dotfiles-private.git" }
-"~/.config/rex/rex-worktrunk" = { url = "https://github.com/disrupted/rex-worktrunk.git", ref = "label-option" }

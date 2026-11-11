@@ -224,8 +224,6 @@ rex.action({
 	end,
 })
 
--- Worktree pickers with a session per worktree. The label option comes from the
--- label-option branch of my fork, until https://github.com/haxybaxy/rex-worktrunk/pull/2 lands.
 require("rex-worktrunk").setup({
 	base = "@",
 	label = session_name_for,
