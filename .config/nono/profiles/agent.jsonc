@@ -51,12 +51,17 @@
       "$XDG_CONFIG_HOME/gh/config.yml",
       "$XDG_CONFIG_HOME/gh/hosts.yml",
     ],
+    "allow_file": ["$XDG_STATE_HOME/mise/tool-purgatory.json"],
     "allow": [
       "$HOME/.npm",
       "$HOME/.nx",
       "$XDG_DATA_HOME/aube",
       "$XDG_STATE_HOME/mise/tracked-configs",
       "$XDG_STATE_HOME/mise/deps",
+      "$XDG_STATE_HOME/mise/incomplete-installs",
+      // agents install here, never into the host's mise dirs, which run unsandboxed
+      "$XDG_DATA_HOME/mise-agent",
+      "$XDG_CACHE_HOME/mise-agent",
       { "path": "$HOME/Library/Preferences/helm", "when": "macos" },
       { "path": "$XDG_CONFIG_HOME/helm", "when": "linux" },
       "$NONO_CONFIG/profile-drafts",
@@ -81,6 +86,11 @@
     "(deny file-write* (regex #\"/\\.git/hooks(/|$)\"))",
     "(deny file-write* (regex #\"/\\.git/config(\\.lock)?$\"))",
     "(deny file-write* (regex #\"/\\.config/nono/(bin|profiles)(/|$)\"))",
+    // Global mise config is implicitly trusted: its postinstall, tasks and env run on the host.
+    "(deny file-write* (regex #\"^/Users/[^/]+/\\.config/mise(/|$)\"))",
+    "(deny file-write* (regex #\"/\\.dotfiles(-private/home|/os/[^/]+)?/\\.config/mise(/|$)\"))",
+    // mise plugins are git clones; the host never runs anything from mise-agent
+    "(allow file-write* (regex #\"^/Users/[^/]+/\\.local/share/mise-agent/\"))",
   ],
   "environment": {
     // nono passes the environment through, so project secrets the fnox hook exports reach the
@@ -100,6 +110,10 @@
       "GIT_CONFIG_VALUE_1": "false",
       "GIT_CONFIG_KEY_2": "http.proxyAuthMethod",
       "GIT_CONFIG_VALUE_2": "basic",
+      // Host installs are reused read-only. Agent-only tools get no shim on PATH: use `mise x`.
+      "MISE_DATA_DIR": "$XDG_DATA_HOME/mise-agent",
+      "MISE_CACHE_DIR": "$XDG_CACHE_HOME/mise-agent",
+      "MISE_SHARED_INSTALL_DIRS": "$XDG_DATA_HOME/mise/installs",
     },
   },
   // Host-side commands that produce the real secrets. They run unsandboxed in the launch

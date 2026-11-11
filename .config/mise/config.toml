@@ -136,6 +136,10 @@ docker builder prune -a -f
 docker buildx prune -a -f
 """
 
+[tasks."agent:prune"]
+description = "Prune tools installed by sandboxed agents"
+run = "rm -rf ~/.local/share/mise-agent ~/.cache/mise-agent"
+
 [env]
 PI_CODING_AGENT_DIR = "{{ env.HOME }}/.config/pi"
 
