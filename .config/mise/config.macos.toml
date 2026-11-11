@@ -1,18 +1,6 @@
 [tools]
 "github:lgalabru/axel" = "latest"
 
-# Tinycast: installed straight from the GitHub release zip via the `http`
-# backend + a postinstall hook (no Homebrew cask, no Ruby). The hook copies
-# Tinycast.app into /Applications and strips quarantine.
-[tools."http:tinycast"]
-version = "latest"
-url = "https://github.com/abue-ammar/tinycast/releases/download/v{{ version }}/Tinycast-Universal-{{ version }}.zip"
-format = "zip"
-strip_components = 0
-version_list_url = "https://api.github.com/repos/abue-ammar/tinycast/releases/latest"
-version_json_path = ".tag_name"
-postinstall = { run = "$HOME/.config/mise/scripts/install-tinycast.sh", when = "always" }
-
 [bootstrap.packages]
 # login shell: needs a real binary at a fixed path (/opt/homebrew/bin/nu).
 # not a mise tool: shims reject login(1)'s `-nu` argv0, and install paths
