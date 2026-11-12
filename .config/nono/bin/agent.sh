@@ -95,5 +95,5 @@ nono_exec() {
         fi
     done
 
-    exec mise x -- nono run --profile "$profile" "${nono_args[@]}" -- "$@"
+    AI_AGENT="$1" exec mise x -- nono run --profile "$profile" "${nono_args[@]}" -- "$@"
 }
