@@ -48,32 +48,37 @@ return {
             integrations = {
                 neogit = true,
             },
-            extra_filetypes = { 'diff' },
-            conflict = {
-                keymaps = {
-                    ours = '<Leader>gxo',
-                    theirs = '<Leader>gxt',
-                    both = '<Leader>gxa',
-                    none = '<Leader>gx0',
-                    next = ']x',
-                    prev = '[x',
-                },
-            },
             highlights = {
                 warn_max_lines = false,
                 blend_alpha = 0.6,
-                intra = {
-                    enabled = true,
-                    algorithm = 'vscode',
-                },
-                overrides = {
-                    DiffsAddText = { link = 'OneDiffAddText' },
-                    DiffsDeleteText = { link = 'OneDiffDeleteText' },
-                },
             },
         }
+
+        vim.api.nvim_create_autocmd('FileType', {
+            group = vim.api.nvim_create_augroup(
+                'diffs_extra_filetypes',
+                { clear = true }
+            ),
+            pattern = 'diff',
+            callback = function(event)
+                require('diffs').attach(event.buf)
+            end,
+        })
     end,
     config = function()
+        local function set_highlights()
+            vim.api.nvim_set_hl(0, 'DiffsAddText', { link = 'OneDiffAddText' })
+            vim.api.nvim_set_hl(0, 'DiffsDeleteText', { link = 'OneDiffDeleteText' })
+        end
+        vim.api.nvim_create_autocmd('ColorScheme', {
+            group = vim.api.nvim_create_augroup('diffs_highlights', { clear = true }),
+            callback = function()
+                -- diffs.nvim recomputes its groups on ColorScheme, so apply ours after
+                vim.schedule(set_highlights)
+            end,
+        })
+        vim.schedule(set_highlights)
+
         vim.api.nvim_create_autocmd('User', {
             pattern = 'DiffsConflictResolved',
             callback = function()
