@@ -1,7 +1,6 @@
 ---@type LazeSpec
 return {
-    dir = vim.fn.expand('~/dev/rextask'),
-    name = 'rextask',
+    'disrupted/rextask',
     module = 'rextask',
     keys = {
         {
@@ -31,6 +30,6 @@ return {
         },
     },
     config = function()
-        require('rextask').setup({})
+        require('rextask').setup()
     end,
 }

@@ -255,6 +255,10 @@
       "rev": "714d5512aaec5565d55652480c16c26f8d95645d",
       "src": "https://github.com/rest-nvim/rest.nvim"
     },
+    "rextask": {
+      "rev": "3224887d4eae15eb16770987a720ea86857e465c",
+      "src": "https://github.com/disrupted/rextask"
+    },
     "ripple.nvim": {
       "rev": "8009919a22bee1ae84b7e6b24c6a05e777644761",
       "src": "https://github.com/ian-howell/ripple.nvim"
