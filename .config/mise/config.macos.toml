@@ -99,5 +99,48 @@ NSGlobalDomain = { NSWindowShouldDragOnGesture = "YES", AppleShowAllExtensions =
 # (requires full disk access for the terminal app)
 "com.apple.coreservices.useractivityd" = { ClipboardSharingEnabled = 0 }
 
+# Rex GUI settings; themes are binary blobs, import those from Ghostty
+[bootstrap.macos.defaults."com.superlogical.rex"]
+RexAppUpdateChannel = "snapshot"
+"Workspace.appearance" = "system"
+"Workspace.appIconVisibility" = "dockOnly"
+"Workspace.interfaceStyle" = "useTheme"
+"Workspace.cursorShader" = "warp"
+"Workspace.cursorShadersEnabled" = false
+"Workspace.inactivePaneFadeMode" = "styling"
+"Workspace.paneDensity" = "comfortable"
+"Workspace.paneHeaderVisibility" = "onHover"
+"Workspace.prefersGeneratedTitles" = true
+"Workspace.shellIconTheme" = "themed"
+"Workspace.showsActivePaneBorder" = false
+"Workspace.showsIdleProgramsInActivity" = true
+"Workspace.showsPaneHeaders" = false
+"Workspace.showsProcessesInActivity" = false
+"Workspace.sidebarPosition" = "left"
+"Workspace.sidebarShowsActivity" = false
+"Workspace.tabIconColorMode" = "activeTabs"
+"Workspace.tabIconCount" = 3
+"Workspace.tabIconTintMode" = "off"
+"Workspace.tabStyle" = "vertical"
+"Workspace.tabsFillAvailableSpace" = false
+"Workspace.terminalAllowsLigatures" = true
+"Workspace.terminalCopyOnSelect" = true
+"Workspace.terminalCursorStyle" = "bar"
+"Workspace.terminalFontName" = "MesloLGS Nerd Font Mono"
+"Workspace.terminalFontPointSize" = 13.0
+"Workspace.terminalFontSmoothing" = true
+"Workspace.terminalImproveTextContrast" = false
+"Workspace.terminalPaddingColor" = "extend"
+"Workspace.terminalPaddingX" = 10.0
+"Workspace.terminalPaddingY" = 3.0
+"Workspace.terminalSelectionBackground" = "cellForeground"
+"Workspace.terminalSelectionForeground" = "cellBackground"
+"Workspace.terminalSmoothScrolling" = true
+"Workspace.terminalUseThemePalette" = false
+"Workspace.tintsPanesWithProgramBackground" = true
+"Workspace.usesPaneGlass" = false
+"Workspace.usesStandardInactiveWindowPaneStyles" = false
+"rex.developer-mode-enabled" = true
+
 [bootstrap.hooks]
 post-defaults = "killall Dock Finder SystemUIServer || true"
