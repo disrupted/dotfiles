@@ -174,19 +174,6 @@ maki.keymap.set({ "n", "i" }, "<M-r>", function()
 	end
 end, { desc = "Pick thinking level" })
 
-maki.keymap.set({ "n", "i" }, "<S-tab>", function()
-	local s, err = maki.session.read()
-	if err then
-		maki.ui.flash("mode: " .. err)
-		return
-	end
-	local mode = s.mode == "plan" and "build" or "plan"
-	local _, set_err = maki.session.set_mode(mode)
-	if set_err then
-		maki.ui.flash("mode: " .. set_err)
-	end
-end, { desc = "Toggle plan/build mode" })
-
 local function session_picker()
 	local ok, err = maki.api.run_command("/sessions")
 	if not ok then
