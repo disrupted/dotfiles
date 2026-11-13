@@ -147,7 +147,7 @@ mise.local.toml
 fnox.local.toml
 
 # Agents
-.plans/
+.agents/plans/
 AGENTS.local.md
 
 # Neovim (generated)
