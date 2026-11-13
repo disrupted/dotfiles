@@ -1,5 +1,6 @@
 [tools]
 "github:lgalabru/axel" = "latest"
+"github:qu8n/mddog" = "latest"
 
 [bootstrap.packages]
 # login shell: needs a real binary at a fixed path (/opt/homebrew/bin/nu).
