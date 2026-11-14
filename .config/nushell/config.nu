@@ -21,12 +21,14 @@ $env.config = {
     case_sensitive: false
     quick: true
     partial: true
-    algorithm: "fuzzy"
+    # fuzzy also matches "cd " against unrelated subcommands like `commandline complete`
+    # depends on https://github.com/nushell/nushell/issues/16075
+    algorithm: "substring"
+    persistent_menus: true
     use_ls_colors: true
     external: {
       enable: true
       max_results: 100
-      completer: null
     }
   }
   use_kitty_protocol: true # Better keyboard handling in kitty terminal
@@ -44,6 +46,19 @@ $env.config = {
     }
     header_on_separator: false
   }
+}
+
+# carapace only matches prefixes, so ask it for every candidate (keeping the token's directory or dashes) and let nushell fuzzy-filter them.
+# Not cached: branches and files change without nushell noticing.
+$env.config.completions.external.completer = {|place|
+  let spans = $place.command
+  let expansion = scope aliases | where name == $spans.0 | get 0?.expansion?
+  let spans = if $expansion == null { $spans } else { $spans | skip 1 | prepend ($expansion | split row ' ' | first) }
+  if ($spans | length) == 1 { return null }
+  let prefix = $spans | last | parse --regex '^(?<prefix>-{1,2}|.*/)?' | get 0.prefix | default ''
+  let results = with-env {CARAPACE_SHELL: nushell} { ^carapace $spans.0 nushell ...($spans | drop | append $prefix) | from json }
+  if ($results | is-empty) { return null }
+  {completions: $results options: {filter: true completion_algorithm: fuzzy cache: false}}
 }
 
 use ~/.config/nushell/modules/user.nu *
@@ -137,12 +152,6 @@ $env.config.color_config = {
 
   shape_matching_brackets: {attr: u}
 }
-
-$env.config = (
-  $env.config | merge {
-    keybindings: ($env.config.keybindings | default [])
-  }
-)
 
 $env.config.keybindings ++= [
   {
