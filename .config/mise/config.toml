@@ -115,6 +115,18 @@ uv_venv_auto = true
 rustup_home = "~/.local/share/mise/rustup"
 cargo_home = "~/.local/share/mise/cargo"
 
+[settings.github]
+credential_command = 'fnox -c "$HOME/fnox.toml" get GITHUB_TOKEN'
+
+# a preset token (nono's phantom for agents) wins over the PAT
+[wrappers.gh]
+command = "sh"
+args = [
+  "-c",
+  '[ -n "${GH_TOKEN:-}${GITHUB_TOKEN:-}" ] && exec gh "$@"; exec fnox -c "$HOME/fnox.toml" exec --only GITHUB_TOKEN -- gh "$@"',
+  "gh",
+]
+
 [tasks."docker:stop-all"]
 description = "Docker stop all containers"
 run = """

@@ -6,9 +6,5 @@ return {
     lazy = false,
     ---@module 'github-actions.config'
     ---@type github_actions.Opts
-    opts = {
-        token_provider = function(callback)
-            callback(vim.env.GITHUB_TOKEN)
-        end,
-    },
+    opts = {},
 }
