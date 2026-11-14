@@ -62,25 +62,24 @@ manifest = "git"
 [bootstrap.user]
 login_shell = "/opt/homebrew/bin/nu"
 
-[bootstrap.macos.keyboard]
+[bootstrap.settings.macos.keyboard]
 initial_key_repeat = 10
 key_repeat = 1
 press_and_hold = false
 automatic_capitalization = false
 automatic_spelling_correction = false
 
-[bootstrap.macos.trackpad]
+[bootstrap.settings.macos.trackpad]
 tap_to_click = true
 three_finger_drag = true
 
-[bootstrap.macos.dock]
-autohide = true
+[bootstrap.settings.macos.dock]
 show_recents = false
 mru_spaces = false
 autohide_delay = 0
 autohide_time_modifier = 0.3
 
-[bootstrap.macos.finder]
+[bootstrap.settings.macos.finder]
 preferred_view_style = "list"
 show_extensions_warning = false
 show_pathbar = true
@@ -89,8 +88,8 @@ sort_folders_first = true
 show_all_files = true
 save_new_documents_to_cloud = false
 
-[bootstrap.macos.defaults]
-NSGlobalDomain = { NSWindowShouldDragOnGesture = "YES", AppleShowAllExtensions = true, NSAutomaticQuoteSubstitutionEnabled = false, NSAutomaticDashSubstitutionEnabled = false, NSAutomaticPeriodSubstitutionEnabled = false, AppleKeyboardUIMode = 2, NSNavPanelExpandedStateForSaveMode = true, NSNavPanelExpandedStateForSaveMode2 = true, PMPrintingExpandedStateForPrint = true, PMPrintingExpandedStateForPrint2 = true }
+[bootstrap.settings.macos.defaults]
+NSGlobalDomain = { NSWindowShouldDragOnGesture = "YES", AppleShowAllExtensions = true, NSAutomaticQuoteSubstitutionEnabled = false, NSAutomaticDashSubstitutionEnabled = false, NSAutomaticPeriodSubstitutionEnabled = false, NSNavPanelExpandedStateForSaveMode = true, NSNavPanelExpandedStateForSaveMode2 = true, PMPrintingExpandedStateForPrint = true, PMPrintingExpandedStateForPrint2 = true }
 "com.apple.dock" = { tilesize = 44.0 }  # Dock stores it as a float
 "com.apple.finder" = { FXDefaultSearchScope = "SCcf" }  # search current folder
 "com.apple.desktopservices" = { DSDontWriteNetworkStores = true, DSDontWriteUSBStores = true }
@@ -101,7 +100,7 @@ NSGlobalDomain = { NSWindowShouldDragOnGesture = "YES", AppleShowAllExtensions =
 "com.apple.coreservices.useractivityd" = { ClipboardSharingEnabled = 0 }
 
 # Rex GUI settings; themes are binary blobs, import those from Ghostty
-[bootstrap.macos.defaults."com.superlogical.rex"]
+[bootstrap.settings.macos.defaults."com.superlogical.rex"]
 RexAppUpdateChannel = "snapshot"
 "Workspace.appearance" = "system"
 "Workspace.appIconVisibility" = "dockOnly"
