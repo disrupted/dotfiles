@@ -139,5 +139,37 @@ return {
             },
         }
         require('atlas').setup(opts)
+
+        vim.api.nvim_create_autocmd('FileType', {
+            pattern = 'atlas-ui.dashboard',
+            group = vim.api.nvim_create_augroup('atlas_dashboard_cr', { clear = true }),
+            callback = function(args)
+                local kind = vim.api.nvim_buf_get_name(args.buf):match('Atlas Pulls')
+                        and 'pulls'
+                    or 'issues'
+                local field = kind == 'pulls' and 'pr' or 'issue'
+                -- defer so this runs after atlas sets its own buffer keymaps
+                vim.schedule(function()
+                    if not vim.api.nvim_buf_is_valid(args.buf) then
+                        return
+                    end
+                    vim.keymap.set('n', '<CR>', function()
+                        local base = 'atlas.' .. kind .. '.ui.dashboard'
+                        local node = require(base .. '.navigation').current_item()
+                        if not node then
+                            return
+                        end
+                        if node.kind == 'bookmark' or node.kind == 'starred' then
+                            require(base .. '.controller').select_bookmark(node)
+                        elseif
+                            node[field]
+                            and not require('atlas.' .. kind .. '.ui.detail').is_open()
+                        then
+                            require(base).toggle_detail()
+                        end
+                    end, { buffer = args.buf, desc = 'Open details' })
+                end)
+            end,
+        })
     end,
 }
