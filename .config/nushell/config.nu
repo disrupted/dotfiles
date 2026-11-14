@@ -50,7 +50,6 @@ use ~/.config/nushell/modules/user.nu *
 use ~/.config/nushell/modules/agent.nu *
 use ~/.config/nushell/modules/tmux.nu *
 use ($nu.cache-dir | path join "mise-activate.nu") # generated in env.nu
-use ~/.config/nushell/fnox-hooks.nu *
 use ~/.config/nushell/modules/nono-agents.nu *
 use std/config *
 
