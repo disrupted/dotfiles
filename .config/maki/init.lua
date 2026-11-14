@@ -47,8 +47,12 @@ maki.setup({
 			"*-1m",
 		},
 	} or {
-		default_model = "opencode-go/deepseek-v4.1-flash",
-		allowed_models = { "opencode-go/*", "claude-code/claude-{haiku,sonnet,opus}-5-5" },
+		default_model = "claude-code/claude-opus-5-5",
+		allowed_models = {
+			"opencode-go/*",
+			"claude-code/claude-{haiku,sonnet,opus}-5-5",
+			"claude-code/claude-fable-5-2",
+		},
 		-- excluded_models = { "*/*:batch" },
 	},
 	agent = {

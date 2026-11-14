@@ -125,7 +125,6 @@
     "fnox_anthropic": { "command": ["fnox", "get", "ANTHROPIC_API_KEY"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
     "fnox_openai": { "command": ["fnox", "get", "OPENAI_API_KEY"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
     "fnox_gemini": { "command": ["fnox", "get", "GEMINI_API_KEY"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
-    "fnox_openrouter": { "command": ["fnox", "get", "OPENROUTER_API_KEY"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
     "fnox_opencode": { "command": ["fnox", "get", "OPENCODE_API_KEY"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
     "fnox_context7": { "command": ["fnox", "get", "CONTEXT7_API_KEY"], "timeout_secs": 60, "cache_ttl_secs": 3600 },
     // GitHub App token instead of the PAT, so agent actions show "via disrupted-agent"
@@ -133,7 +132,11 @@
     // -c: captures run in the launch dir, where ~/fnox.toml isn't always found
     // re-auth: fnox -P agent lease create github_agent
     "fnox_github": {
-      "command": ["/bin/sh", "-c", "FNOX_NON_INTERACTIVE=1 exec fnox -c \"$HOME/fnox.toml\" -P agent get AGENT_GITHUB_TOKEN"],
+      "command": [
+        "/bin/sh",
+        "-c",
+        "FNOX_NON_INTERACTIVE=1 exec fnox -c \"$HOME/fnox.toml\" -P agent get AGENT_GITHUB_TOKEN"
+      ],
       "timeout_secs": 60,
       "cache_ttl_secs": 240,
     },
@@ -176,13 +179,6 @@
         "env_var": "GEMINI_API_KEY",
         "inject_header": "x-goog-api-key",
         "credential_format": "{}",
-      },
-      "openrouter": {
-        "upstream": "https://openrouter.ai",
-        "credential_key": "cmd://fnox_openrouter",
-        "env_var": "OPENROUTER_API_KEY",
-        "inject_header": "Authorization",
-        "credential_format": "Bearer {}",
       },
       "opencode": {
         "upstream": "https://opencode.ai",
