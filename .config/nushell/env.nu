@@ -77,21 +77,6 @@ if $nu.is-interactive {
   $env.GPG_TTY = (tty)
 }
 
-# Theme colors
-const FZF_COLORS_DARK = '
---color=fg:-1,bg:-1,border:#4B5164,hl:#d19a66
---color=fg+:#f7f7f7,bg+:#2c323d,hl+:#e5c07b
---color=info:#828997,prompt:#4fb5f7,pointer:#45cdff
---color=marker:#98c379,spinner:#e06c75,header:#98c379
---color=gutter:#2c323d'
-
-const FZF_COLORS_LIGHT = '
---color=fg:-1,bg:-1,border:#d0d0d0,hl:#d75f00
---color=fg+:#1a1a1a,bg+:#e8e8e8,hl+:#d75f00
---color=info:#878787,prompt:#ff6a00,pointer:#0087af
---color=marker:#5f8700,spinner:#d7005f,header:#5f8700
---color=gutter:#e8e8e8'
-
 # Returns "dark", "light" or null.
 # tmux doesn't reply to ?996n when it doesn't know the theme and `term query`
 # has no timeout, so also send DSR (6n), which is always answered.
@@ -132,17 +117,11 @@ def --env update-theme [] {
   $env.THEME = $system_theme
   $env.BAT_THEME = if $system_theme == "dark" { "OneHalfDark" } else { "OneHalfLight" }
   $env.DELTA_FEATURES = $system_theme
-  $env.FZF_DEFAULT_OPTS = $"
---style=minimal
---no-separator
---info=hidden
---ansi 
-  (if $system_theme == "dark" { $FZF_COLORS_DARK } else { $FZF_COLORS_LIGHT })"
-  $env._ZO_FZF_OPTS = $"($env.FZF_DEFAULT_OPTS)\n--height=7"
 }
 
-# FZF settings
-$env.FZF_DEFAULT_COMMAND = 'rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*"'
+# ANSI palette indices so skim follows the terminal's light/dark switch
+$env.SKIM_DEFAULT_COMMAND = 'rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*"'
+$env.SKIM_DEFAULT_OPTIONS = '--no-separator --info=hidden --ansi --selector=▌ --color=fg:-1,bg:-1,matched:3,current:-1:b,bg+:-1,current_match:3:b,info:8,prompt:4,cursor:6,selected:2,spinner:1,border:8,header:2'
 
 # Carapace completions
 $env.CARAPACE_BRIDGES = "zsh"

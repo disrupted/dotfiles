@@ -91,7 +91,7 @@ export def "t pick" [] {
       $"($status) ($row.name)  ($row.root)"
     }
     | str join "\n"
-    | fzf --prompt="session> " --no-sort
+    | ^sk --prompt="session> " --no-sort
     | str trim
   )
 

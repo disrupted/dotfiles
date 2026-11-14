@@ -228,6 +228,7 @@ require("rex-worktrunk").setup({
 	base = "@",
 	label = session_name_for,
 	script = "~/.config/rex/worktrunk-picker.sh",
+	finder = "sk",
 	bounds = { 0.2, 0.25, 0.6, 0.5 }, -- x, y, width, height as fractions of the window
 })
 

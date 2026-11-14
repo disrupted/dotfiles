@@ -34,7 +34,7 @@ export def --env zoxide_top_level_dir [query: string] {
 
   if ($results | is-empty) {
     print "no result in top level dir found, fallback to regular zoxide"
-    let selected = (zoxide query --interactive $query | str trim)
+    let selected = (zoxide query --list $query | ^sk --no-sort | str trim)
     if ($selected | is-empty) { return }
     cd $selected
     return
@@ -74,7 +74,7 @@ export def ga [] {
     [
       (git diff --name-only)
       (git ls-files --others --exclude-standard)
-    ] | str join (char newline) | fzf --height=60% --layout=reverse --multi --preview 'bash -c "if git ls-files --error-unmatch {} &>/dev/null; then git diff --color=always {} | delta; else bat --color=always --style=header {}; fi"'
+    ] | str join (char newline) | ^sk --height=60% --layout=reverse --multi --preview 'bash -c "if git ls-files --error-unmatch {} &>/dev/null; then git diff --color=always {} | delta; else bat --color=always --style=header {}; fi"'
   )
   if ($files | is-empty) { return }
   $files | lines | each { git add $in }
@@ -84,7 +84,7 @@ export def ga [] {
 # gr - interactive git restore
 export def gr [] {
   let files = (
-    git diff --name-only | fzf --height=60% --layout=reverse --multi --preview 'git diff {} | delta'
+    git diff --name-only | ^sk --height=60% --layout=reverse --multi --preview 'git diff {} | delta'
   )
   if ($files | is-empty) { return }
   $files | lines | each { git restore $in }
@@ -94,7 +94,7 @@ export def gr [] {
 # gcf - interactive git checkout file (discard changes)
 export def gcf [] {
   let files = (
-    git diff --name-only | fzf --height=60% --layout=reverse --multi --preview 'git diff {} | delta'
+    git diff --name-only | ^sk --height=60% --layout=reverse --multi --preview 'git diff {} | delta'
   )
   if ($files | is-empty) { return }
   $files | lines | each { git checkout $in }
@@ -103,46 +103,7 @@ export def gcf [] {
 
 # glo - interactive git log
 export def glo [] {
-  git log --oneline --color=always | fzf --height=80% --layout=reverse --ansi --preview 'git show {1} | delta' | split row ' ' | first | if ($in | is-empty) { } else { git show $in }
-}
-
-# glo-sk - interactive git log (skim binary version - compare performance)
-export def glo-sk [] {
-  let colors = if $env.THEME == "dark" {
-    "fg:-1,bg:-1,matched:#d19a66,current:-1:b,bg+:#2c323d,current_match:#e5c07b:b,info:#828997,prompt:#e06c75,cursor:#45cdff,spinner:#e06c75,border:#4B5164"
-  } else {
-    "fg:-1,bg:-1,matched:#d75f00,current:-1:b,bg+:#e8e8e8,current_match:#d75f00:b,info:#878787,prompt:#d7005f,cursor:#0087af,spinner:#d7005f,border:#d0d0d0"
-  }
-  git log --oneline --color=always | ^sk --height=80% --layout=reverse --ansi --color $colors --preview 'git show {1} | delta' | split row ' ' | first | if ($in | is-empty) { } else { git show $in }
-}
-
-# glos - interactive git log with skim (fast, no preview in TUI)
-# Shows full diff after selection - trades preview for speed
-export def glos [] {
-  git log --pretty="format:%H|%h|%an|%ar|%s" -n 200
-  | lines
-  | each {|line|
-    let parts = ($line | split row '|')
-    {
-      hash: $parts.0
-      short: $parts.1
-      author: $parts.2
-      date: $parts.3
-      message: $parts.4
-    }
-  }
-  | (
-    sk
-    --height "80%"
-    --format {
-      $"($in.short) ($in.message) \(($in.author), ($in.date)\)"
-    }
-  )
-  | if ($in | is-empty) {
-    return
-  } else {
-    git show $in.hash
-  }
+  git log --oneline --color=always | ^sk --no-sort --height=80% --layout=reverse --preview 'git show {1} | delta' | split row ' ' | first | if ($in | is-empty) { } else { git show $in }
 }
 
 # gd - interactive git diff
@@ -154,7 +115,7 @@ export def gd [
   let preview_flags = if $staged { "--staged" } else { "" }
   let preview_cmd = $"git -C '($root)' diff ($preview_flags) -- '{}' | delta"
   let files = (
-    git diff --name-only ...$flags | fzf --height=60% --layout=reverse --multi --preview $preview_cmd
+    git diff --name-only ...$flags | ^sk --height=60% --layout=reverse --multi --preview $preview_cmd
   )
   if ($files | is-empty) { return }
   $files | lines | each {|it| git diff ...$flags -- ($root | path join $it) } | str join (char newline)
@@ -163,7 +124,7 @@ export def gd [
 # gsw - interactive git switch branch
 export def gsw [] {
   let branch = (
-    git branch --all --color=always | lines | str trim | where { not ($in | str starts-with '*') } | each { $in | ansi strip | str replace 'remotes/origin/' '' } | uniq | str join (char newline) | fzf --height=40% --layout=reverse --ansi
+    git branch --all --color=always | lines | str trim | where { not ($in | str starts-with '*') } | each { $in | ansi strip | str replace 'remotes/origin/' '' } | uniq | str join (char newline) | ^sk --height=40% --layout=reverse
   )
   if ($branch | is-empty) { return }
   git switch ($branch | str trim)
@@ -172,7 +133,7 @@ export def gsw [] {
 # gbd - interactive git branch delete
 export def gbd [] {
   let branches = (
-    git branch | lines | str trim | where { not ($in | str starts-with '*') } | str join (char newline) | fzf --height=40% --layout=reverse --multi
+    git branch | lines | str trim | where { not ($in | str starts-with '*') } | str join (char newline) | ^sk --height=40% --layout=reverse --multi
   )
   if ($branches | is-empty) { return }
   $branches | lines | each { git branch -d $in }
@@ -181,7 +142,7 @@ export def gbd [] {
 # gss - interactive git stash show
 export def gss [] {
   let stash = (
-    git stash list | lines | each {|line| ($line | split row ':' | first) + ' ' + ($line | split row ':' | skip 1 | str join ':') } | str join (char newline) | fzf --height=60% --layout=reverse --preview 'git stash show -p {1} | delta' --preview-window=right:60% | split row ' ' | first
+    git stash list | lines | each {|line| ($line | split row ':' | first) + ' ' + ($line | split row ':' | skip 1 | str join ':') } | str join (char newline) | ^sk --no-sort --height=60% --layout=reverse --preview 'git stash show -p {1} | delta' --preview-window=right:60% | split row ' ' | first
   )
   if ($stash | is-empty) { return }
   git stash show -p $stash | delta
@@ -190,7 +151,7 @@ export def gss [] {
 # gsa - interactive git stash apply
 export def gsa [] {
   let stash = (
-    git stash list | lines | each {|line| ($line | split row ':' | first) + ' ' + ($line | split row ':' | skip 1 | str join ':') } | str join (char newline) | fzf --height=60% --layout=reverse --preview 'git stash show -p {1} | delta' --preview-window=right:60% | split row ' ' | first
+    git stash list | lines | each {|line| ($line | split row ':' | first) + ' ' + ($line | split row ':' | skip 1 | str join ':') } | str join (char newline) | ^sk --no-sort --height=60% --layout=reverse --preview 'git stash show -p {1} | delta' --preview-window=right:60% | split row ' ' | first
   )
   if ($stash | is-empty) { return }
   git stash apply $stash
@@ -199,7 +160,7 @@ export def gsa [] {
 # gcp - interactive git cherry-pick
 export def gcp [] {
   let commit = (
-    git log --all --oneline --color=always | fzf --height=60% --layout=reverse --ansi --preview 'git show {1} | delta' | split row ' ' | first
+    git log --all --oneline --color=always | ^sk --no-sort --height=60% --layout=reverse --preview 'git show {1} | delta' | split row ' ' | first
   )
   if ($commit | is-empty) { return }
   git cherry-pick $commit
@@ -321,69 +282,4 @@ export def --env hproj_pick [] {
   let choice = (hproj | input list --fuzzy "Project history")
   if ($choice | is-empty) { return }
   commandline edit --replace $choice
-}
-
-# skim-enhanced commands (structured data aware)
-
-# sk-ps - interactive process selector
-export def sk-ps [] {
-  ps
-  | where pid != 0
-  | sk --format { $"($in.name) \(pid: ($in.pid), cpu: ($in.cpu)%\)" }
-}
-
-# sk-kill - interactive process killer
-export def sk-kill [] {
-  ps
-  | where pid != 0
-  | sk --format { $"($in.name) \(pid: ($in.pid), cpu: ($in.cpu)%\)" }
-  | kill $in.pid
-}
-
-# sk-env - browse environment variables
-export def sk-env [] {
-  $env
-  | transpose key value
-  | sk --format { $in.key }
-}
-
-# sk-history - smarter history search with structured data
-export def sk-history [] {
-  history
-  | reverse
-  | sk --format { $in.command }
-}
-
-# sk-ga - interactive git add using structured data
-export def sk-ga [] {
-  git status --short
-  | lines
-  | where { not ($in | is-empty) }
-  | each {|line|
-    {
-      status: ($line | str substring 0..2 | str trim)
-      file: ($line | str substring 3..)
-    }
-  }
-  | sk --multi --format { $"($in.status) ($in.file)" }
-  | each {|f| git add $f.file }
-
-  git status --short
-}
-
-# sk-gsw - git branch switcher with structured preview
-export def sk-gsw [] {
-  git branch --all --format="%(refname:short)|%(committerdate:relative)|%(subject)"
-  | lines
-  | each {|line|
-    let parts = ($line | split row '|')
-    {
-      branch: ($parts.0 | str replace 'remotes/origin/' '')
-      date: $parts.1
-      subject: $parts.2
-    }
-  }
-  | uniq-by branch
-  | sk --format { $"($in.branch) \(($in.date)\)" }
-  | git switch $in.branch
 }

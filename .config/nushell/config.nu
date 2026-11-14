@@ -189,7 +189,7 @@ $env.config.keybindings ++= [
     mode: emacs
     event: {
       send: ExecuteHostCommand
-      cmd: "commandline edit --insert (fzf --layout=reverse)"
+      cmd: "commandline edit --insert (^sk --layout=reverse)"
     }
   }
   # History substring search with up/down
@@ -240,31 +240,31 @@ $env.config.keybindings ++= [
     mode: [emacs]
     event: {edit: BackspaceWord}
   }
-  # FZF file picker (Ctrl+F)
+  # file picker (Ctrl+F)
   {
-    name: fzf_file_picker
+    name: file_picker
     modifier: control
     keycode: char_f
     mode: [emacs]
     event: {
       send: ExecuteHostCommand
-      cmd: "commandline edit --insert (fd --type f --hidden --follow --exclude .git --exclude node_modules | fzf --preview 'bat --color=always --style=header-filename {}' --preview-window=right:60%:wrap)"
+      cmd: "commandline edit --insert (fd --type f --hidden --follow --exclude .git --exclude node_modules | ^sk --preview 'bat --color=always --style=header-filename {}' --preview-window=right:60%:wrap)"
     }
   }
-  # FZF directory picker (Alt+C, like zsh)
+  # directory picker (Alt+C, like zsh)
   {
-    name: fzf_cd
+    name: cd_picker
     modifier: alt
     keycode: char_c
     mode: [emacs]
     event: {
       send: ExecuteHostCommand
-      cmd: "cd (fd -t d -d 3 | fzf --preview 'fd -d 1 --color=always --base-directory {}' | str trim)"
+      cmd: "cd (fd -t d -d 3 | ^sk --preview 'fd -d 1 --color=always --base-directory {}' | str trim)"
     }
   }
-  # Global history search (Ctrl+R) - fzf
+  # Global history search (Ctrl+R)
   {
-    name: fuzzy_history_fzf
+    name: fuzzy_history_skim
     modifier: control
     keycode: char_r
     mode: [emacs vi_normal vi_insert]
@@ -277,7 +277,7 @@ $env.config.keybindings ++= [
           | reverse
           | uniq
           | str join (char -i 0)
-          | fzf --scheme=history --read0 --tiebreak=chunk --layout=reverse --preview='echo {..}' --preview-window='bottom:3:wrap' --bind alt-up:preview-up,alt-down:preview-down --height=~40% -q (commandline) --preview='echo {} | nu --stdin -c \'nu-highlight\''
+          | ^sk --scheme=history --read0 --layout=reverse --height=40% --preview-window='down:3:wrap' --bind alt-up:preview-up,alt-down:preview-down -q (commandline) --preview='echo {} | nu --stdin -c \'nu-highlight\''
           | decode utf-8
           | str trim
       )"

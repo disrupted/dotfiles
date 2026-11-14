@@ -19,8 +19,8 @@ prepend_keymap = [
 
   { on = "R", run = "refresh", desc = "Refresh" },
 
-  # fzf jump (moved off `z`, which is now the toggle prefix group)
-  { on = "<C-g>", run = "plugin fzf", desc = "Jump to a file/directory via fzf" },
+  # fuzzy jump (moved off `z`, which is now the toggle prefix group)
+  { on = "<C-g>", run = "plugin sk", desc = "Jump to a file/directory via skim" },
 
   # toggle visibility
   { on = ["z", "h"], run = "hidden toggle", desc = "Toggle hidden files" },
