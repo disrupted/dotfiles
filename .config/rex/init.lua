@@ -141,6 +141,11 @@ local function cwd_of(block_id)
 	return type(url) == "string" and url:gsub("^file://[^/]*", "") or nil
 end
 
+local function pane_dir(block_id)
+	local ok, proc = pcall(rex.block.call, TERMINAL, "process", { block_id = block_id })
+	return ok and proc and proc.foreground and proc.foreground.cwd or cwd_of(block_id)
+end
+
 rex.action({
 	name = "scratch_toggle",
 	title = "Toggle Scratch Terminal",
@@ -224,12 +229,10 @@ rex.action({
 	end,
 })
 
-require("rex-worktrunk").setup({
-	base = "@",
+require("worktree").setup({
 	label = session_name_for,
-	script = "~/.config/rex/worktrunk-picker.sh",
-	finder = "sk",
-	bounds = { 0.2, 0.25, 0.6, 0.5 }, -- x, y, width, height as fractions of the window
+	dir_of = pane_dir,
+	bounds = { 0.1, 0.1, 0.8, 0.8 }, -- x, y, width, height as fractions of the window
 })
 
 local WT = os.getenv("HOME") .. "/.local/share/mise/shims/wt"
@@ -269,7 +272,6 @@ rex.action({
 })
 
 rex.bind("cmd+o", "worktree")
-rex.bind("alt+cmd+o", "worktree_remove")
 rex.bind("shift+cmd+o", "worktree_prune")
 
 rex.bind("shift+cmd+r", "session_name_from_dir")
@@ -279,11 +281,6 @@ local REXTASK = {
 	bin = os.getenv("HOME") .. "/.local/share/mise/cargo/bin/rextask",
 	size = "100x30",
 }
-
-local function pane_dir(block_id)
-	local ok, proc = pcall(rex.block.call, TERMINAL, "process", { block_id = block_id })
-	return ok and proc and proc.foreground and proc.foreground.cwd or cwd_of(block_id)
-end
 
 rex.action({
 	name = "rextask_pick",
