@@ -56,7 +56,6 @@ if [ -n "${WORK:-}" ]; then
     esac
 fi
 
-mise_env_json="$(mise env --json 2>/dev/null)" || mise_env_json='{}'
 # Secrets fnox can resolve here, regardless of their `env` setting. Type "env var" means the
 # value comes from the environment (e.g. a masked `env = false` entry): keep those only if set.
 fnox_secret_names=" $(fnox list 2>/dev/null | awk 'NR > 1 && !($2 == "env" && $3 == "var") { print $1 }' | tr '\n' ' ') "
@@ -66,7 +65,7 @@ done < <(fnox list 2>/dev/null | awk 'NR > 1 && $2 == "env" && $3 == "var" { pri
 
 # Value of a mise env var, before `mise x` has set it.
 mise_env_get() {
-    jq -r --arg k "$1" '.[$k] // empty' <<<"$mise_env_json"
+    mise x -- printenv "$1" 2>/dev/null || true
 }
 
 secret_available() {
