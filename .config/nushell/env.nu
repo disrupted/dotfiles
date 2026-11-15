@@ -121,7 +121,7 @@ def --env update-theme [] {
 
 # ANSI palette indices so skim follows the terminal's light/dark switch
 $env.SKIM_DEFAULT_COMMAND = 'rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*"'
-$env.SKIM_DEFAULT_OPTIONS = '--no-separator --info=hidden --ansi --selector=▌ --color=fg:-1,bg:-1,matched:3,current:-1:b,bg+:-1,current_match:3:b,info:8,prompt:4,cursor:6,selected:2,spinner:1,border:8,header:2'
+$env.SKIM_DEFAULT_OPTIONS = '--no-separator --info=hidden --ansi --selector=▌ --color=fg:-1,bg:-1,matched:3,current:-1:b,bg+:-1,current_match:3:b,matched-bg:-1,current_match-bg:-1,info:8,prompt:4,cursor:6,selected:2,spinner:1,border:8,header:2'
 
 # Carapace completions
 $env.CARAPACE_BRIDGES = "zsh"

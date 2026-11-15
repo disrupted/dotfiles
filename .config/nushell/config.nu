@@ -62,6 +62,7 @@ $env.config.completions.external.completer = {|place|
 }
 
 use ~/.config/nushell/modules/user.nu *
+use ~/.config/nushell/modules/forgit.nu *
 use ~/.config/nushell/modules/agent.nu *
 use ~/.config/nushell/modules/tmux.nu *
 use ($nu.cache-dir | path join "mise-activate.nu") # generated in env.nu

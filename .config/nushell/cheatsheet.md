@@ -123,6 +123,7 @@ exec nu
 - `~/.config/nushell/config.nu`
 - `~/.config/nushell/env.nu`
 - `~/.config/nushell/modules/user.nu`
+- `~/.config/nushell/modules/forgit.nu` (git pickers: `ga`, `gr`, `gcf`, `glo`, `gd`, `gsw`, `gbd`, `gss`, `gsa`, `gcp`)
 
 ## Setup on New Device
 
