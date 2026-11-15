@@ -7,6 +7,11 @@ local function is_opencode_completion()
     return item and vim.startswith(item.source_id, 'opencode_')
 end
 
+-- blink requires a provider as soon as it's listed, before checking `enabled`
+local function git_source_enabled()
+    return vim.bo.filetype == 'markdown.forge'
+end
+
 ---@type LazeSpec
 return {
     'saghen/blink.cmp',
@@ -121,7 +126,6 @@ return {
                 if vim.bo.filetype == 'gitcommit' then
                     return {
                         'conventional_commits',
-                        'git',
                         'path',
                         'buffer',
                     }
@@ -142,8 +146,10 @@ return {
                     'path',
                     'snippets',
                     'buffer',
-                    'git',
                 }
+                if git_source_enabled() then
+                    table.insert(sources, 'git')
+                end
                 return sources
             end,
             providers = {
@@ -151,12 +157,7 @@ return {
                     name = 'Git',
                     module = 'blink-cmp-git',
                     score_offset = 10,
-                    enabled = function()
-                        return vim.tbl_contains(
-                            { 'gitcommit', 'markdown' },
-                            vim.bo.filetype
-                        )
-                    end,
+                    enabled = git_source_enabled,
                     should_show_items = function(ctx)
                         return ctx.trigger.initial_kind ~= 'trigger_character' -- hide after trigger character
                     end,

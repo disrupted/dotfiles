@@ -304,7 +304,7 @@ local function create_form(provider, opts)
         n.text_input({
             id = 'body',
             border_label = ' Body ',
-            filetype = 'markdown',
+            filetype = 'markdown.forge',
             size = 7,
             autoresize = true,
             on_change = function(_, component)
