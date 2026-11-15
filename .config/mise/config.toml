@@ -43,11 +43,6 @@ typst = "latest"
 skim = "latest"
 "cargo:somo" = "latest"
 nono = "latest"
-"npm:@opencode/cli" = { version = "latest", depends = [
-  "node",
-], allow_builds = [
-  "@opencode/cli",
-] }
 pi = "latest"
 "github:Mapika/portview" = "latest"
 "github:topiary/topiary" = "latest"
@@ -87,7 +82,7 @@ tinymist = "latest"
 "npm:@tailwindcss/language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:yaml-language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:@mistweaverco/kulala-fmt" = { version = "latest", allow_low_downloads = true, postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
-"npm:typescript-svelte-plugin" = "latest"                                                                                                                                                                                                                                                                                                                                                                                                                  # library plugin, no bin/ -> no runtime to patch
+"npm:typescript-svelte-plugin" = "latest"  # library plugin, no bin/ -> no runtime to patch
 "github:ewhauser/shuck" = "latest"
 claude = "latest"
 worktrunk = { version = "latest", workflow = "release.yaml" }
@@ -175,7 +170,6 @@ manifest = "git"
 
 [dotfile_groups.private.entries]
 "~/.config/maki/AGENTS.md" = { source = ".config/agents/AGENTS.md" }
-"~/.config/opencode/AGENTS.md" = { source = ".config/agents/AGENTS.md" }
 "~/.config/pi/AGENTS.md" = { source = ".config/agents/AGENTS.md" }
 
 [bootstrap.repos]

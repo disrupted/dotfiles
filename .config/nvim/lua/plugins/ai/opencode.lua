@@ -1,7 +1,5 @@
 local icons = require('conf.icons')
 
-local server_spawn_attempted = false
-
 ---@type LazeSpec
 return {
     'disrupted/opencode.nvim',
@@ -45,44 +43,9 @@ return {
         ---@module 'opencode'
         ---@type OpencodeConfig
         local opts = {
-            backend = vim.env.WORK and 'opencode' or 'pi',
+            backend = 'pi',
             pi = {
                 executable = vim.fs.normalize('~/.config/nono/bin/pi.sh'),
-            },
-            server = {
-                url = '127.0.0.1',
-                port = 'auto',
-                timeout = 30,
-                retry_delay = 3000,
-                auto_kill = true,
-                -- deterministic per-directory credential so a second nvim in the same
-                -- project can reconnect to the already-running project server
-                password = function()
-                    return vim.fn.sha256(assert(vim.uv.cwd())):sub(1, 32)
-                end,
-                spawn_command = function(port, _url, env)
-                    -- Spawn at most once per session
-                    if server_spawn_attempted then
-                        error(
-                            'opencode server spawn already attempted this session; not retrying'
-                        )
-                    end
-                    server_spawn_attempted = true
-
-                    local job = vim.fn.jobstart({
-                        vim.fs.normalize('~/.config/nono/bin/opencode.sh'),
-                        'serve',
-                        '--port',
-                        tostring(port),
-                    }, {
-                        env = env,
-                    })
-                    if job <= 0 then
-                        Snacks.notify.error('opencode server failed to start')
-                        error('failed to start opencode server')
-                    end
-                    return vim.fn.jobpid(job)
-                end,
             },
             program_status = { enabled = true },
             preferred_picker = 'snacks',
