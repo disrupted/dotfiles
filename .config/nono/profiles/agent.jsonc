@@ -231,6 +231,7 @@
     // "trusted" keeps one nono CA in the login Keychain (one prompt on first use).
     "tls_intercept": {
       "ca_lifecycle": "trusted",
+      "ca_validity": "30d",
       "ca_env_vars": ["GIT_SSL_CAINFO"],
     },
     // Network is open apart from the proxy routes. For an allowlist ("developer" = LLM APIs,
