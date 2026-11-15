@@ -63,6 +63,22 @@ export alias y = yazi
 export alias c = clear
 export def l [path: path = "."] { ls $path | sort-by modified -r | sort-by type | table --index false }
 
+export def ports [--all] {
+  let rows = (^somo --json | from json)
+  let shown = if $all { $rows } else { $rows | where state == listen }
+  let cols = if $all {
+    [local_port proto program pid state cwd remote_address remote_port]
+  } else {
+    [local_port program pid cwd]
+  }
+  $shown
+  | update pid { into int }
+  | update local_port { into int }
+  | join --left (ps --long | select pid cwd) pid
+  | select ...$cols
+  | sort-by local_port
+}
+
 export alias gs = git status -sb
 export alias gc = git commit
 

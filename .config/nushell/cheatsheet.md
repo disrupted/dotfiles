@@ -80,19 +80,35 @@ mkcd dir    # mkdir + cd
 
 ## Process tools
 ```nu
-ps          # uses procs
-cpu         # sorted by cpu
-mem         # sorted by mem
-ram safari  # RAM usage (MB)
-rams safari # live RAM usage
+ps | where cpu > 10 | sort-by cpu -r
+ps --long | where command =~ "python"
+sys mem
+```
+
+## Ports
+```nu
+somo                                       # interactive: filter, inspect, kill
+ports                                      # listening sockets, with the owner's cwd
+ports | uniq                               # collapse the IPv4/IPv6 duplicate rows
+ports | where local_port == 3000
+ports --all | where state == established   # outbound connections, adds proto and remote address
+ports | uniq | join (ps --long | select pid command) pid   # full argv, not just the program name
+somo --json | from json                    # raw fields somo emits
+```
+
+## Replaced tools
+```nu
+du -d 2 | sort-by physical -r    # dust
+sys disks                        # duf
+http get https://example.com     # xh
+open data.json | explore         # jless
+glob **/*.rs | each {|f| open --raw $f | str replace -a 'old' 'new' | save -f $f }   # sad
 ```
 
 ## Docker
 ```nu
-d           # sudo docker
-dc          # sudo docker compose
-dcu         # pull + up -d
-dexec ...   # exec with terminal size
+mise run docker:stop-all   # stop every container
+mise run docker:prune      # stop-all, then prune images, builders, cache
 ```
 
 ## External commands
