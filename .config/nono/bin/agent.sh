@@ -94,5 +94,9 @@ nono_exec() {
         fi
     done
 
+    if [ -n "${NONO_SMOKE_TEST:-}" ]; then
+        set -- /bin/bash "$NONO_SMOKE_TEST" "$agent"
+    fi
+
     AI_AGENT="$agent" exec mise x -- nono run --profile "$profile" "${nono_args[@]}" -- "$@"
 }

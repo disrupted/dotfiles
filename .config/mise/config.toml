@@ -132,6 +132,14 @@ docker buildx prune -a -f
 description = "Prune tools installed by sandboxed agents"
 run = "rm -rf ~/.local/share/mise-agent ~/.cache/mise-agent"
 
+[tasks."agent:smoke-test"]
+description = "Run agent workflows in the nono sandbox to catch regressions after updates"
+usage = '''
+flag "--network" help="Also check the credential proxy (gh, git over HTTPS)"
+arg "[agent]..." help="Agents to test, default all launchers"
+'''
+run = '~/.config/nono/bin/smoke-test.sh ${usage_network:+--network} ${usage_agent:-}'
+
 [env]
 PI_CODING_AGENT_DIR = "{{ env.HOME }}/.config/pi"
 
