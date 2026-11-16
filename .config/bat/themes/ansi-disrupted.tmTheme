@@ -39,6 +39,8 @@
                 <string>comment, punctuation.definition.comment</string>
                 <key>settings</key>
                 <dict>
+                    <key>fontStyle</key>
+                    <string>italic</string>
                     <key>foreground</key>
                     <string>#08000000</string> <!-- brightblack -->
                 </dict>
@@ -133,6 +135,17 @@
             </dict>
             <dict>
                 <key>name</key>
+                <string>Mapping Keys</string>
+                <key>scope</key>
+                <string>meta.mapping.key string</string>
+                <key>settings</key>
+                <dict>
+                    <key>foreground</key>
+                    <string>#01000000</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>name</key>
                 <string>Integers</string>
                 <key>scope</key>
                 <string>constant.numeric</string>
@@ -155,13 +168,13 @@
             </dict>
             <dict>
                 <key>name</key>
-                <string>Boolean</string>
+                <string>Booleans, Null</string>
                 <key>scope</key>
-                <string>none</string>
+                <string>constant.language</string>
                 <key>settings</key>
                 <dict>
                     <key>foreground</key>
-                    <string>#03000000</string>
+                    <string>#05000000</string>
                 </dict>
             </dict>
             <dict>
@@ -177,6 +190,17 @@
             </dict>
             <dict>
                 <key>name</key>
+                <string>Code Fence Language</string>
+                <key>scope</key>
+                <string>constant.other.language-name</string>
+                <key>settings</key>
+                <dict>
+                    <key>foreground</key>
+                    <string>#00000001</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>name</key>
                 <string>Tags</string>
                 <key>scope</key>
                 <string>entity.name.tag</string>
@@ -184,17 +208,6 @@
                 <dict>
                     <key>foreground</key>
                     <string>#01000000</string>
-                </dict>
-            </dict>
-            <dict>
-                <key>name</key>
-                <string>Attributes</string>
-                <key>scope</key>
-                <string>entity.other.attribute-name</string>
-                <key>settings</key>
-                <dict>
-                    <key>foreground</key>
-                    <string>#03000000</string>
                 </dict>
             </dict>
             <dict>
@@ -234,13 +247,13 @@
                 <key>name</key>
                 <string>Headings</string>
                 <key>scope</key>
-                <string>markup.heading punctuation.definition.heading, entity.name.section</string>
+                <string>markup.heading, entity.name.section</string>
                 <key>settings</key>
                 <dict>
                     <key>fontStyle</key>
-                    <string></string>
+                    <string>bold</string>
                     <key>foreground</key>
-                    <string>#04000000</string>
+                    <string>#00000001</string>
                 </dict>
             </dict>
             <dict>
@@ -263,8 +276,6 @@
                 <dict>
                     <key>fontStyle</key>
                     <string>bold</string>
-                    <key>foreground</key>
-                    <string>#03000000</string>
                 </dict>
             </dict>
             <dict>
@@ -282,35 +293,15 @@
             </dict>
             <dict>
                 <key>name</key>
-                <string>Code</string>
-                <key>scope</key>
-                <string>markup.raw.inline</string>
-                <key>settings</key>
-                <dict>
-                    <key>foreground</key>
-                    <string>#02000000</string>
-                </dict>
-            </dict>
-            <dict>
-                <key>name</key>
-                <string>Link Text</string>
-                <key>scope</key>
-                <string>string.other.link, punctuation.definition.string.end.markdown, punctuation.definition.string.begin.markdown</string>
-                <key>settings</key>
-                <dict>
-                    <key>foreground</key>
-                    <string>#01000000</string>
-                </dict>
-            </dict>
-            <dict>
-                <key>name</key>
                 <string>Link Url</string>
                 <key>scope</key>
-                <string>meta.link</string>
+                <string>markup.underline.link</string>
                 <key>settings</key>
                 <dict>
+                    <key>fontStyle</key>
+                    <string>underline</string>
                     <key>foreground</key>
-                    <string>#03000000</string>
+                    <string>#08000000</string>
                 </dict>
             </dict>
             <dict>
@@ -320,8 +311,8 @@
                 <string>markup.quote</string>
                 <key>settings</key>
                 <dict>
-                    <key>foreground</key>
-                    <string>#03000000</string>
+                    <key>fontStyle</key>
+                    <string>italic</string>
                 </dict>
             </dict>
             <dict>
