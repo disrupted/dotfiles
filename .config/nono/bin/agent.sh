@@ -79,19 +79,20 @@ credential_routes=(
     gemini:GEMINI_API_KEY
     context7:CONTEXT7_API_KEY
     opencode:OPENCODE_API_KEY
-    github:GITHUB_TOKEN
-    github_git:GITHUB_TOKEN
 )
 
 nono_exec() {
-    local profile="$1" route
+    local profile="$1" agent="$2" route
     shift
 
+    # Their capture reads ~/fnox.toml explicitly, so they work from any launch dir. nono also
+    # needs at least one route, or it refuses to start with the proxy CA settings.
+    nono_args+=(--credential github --credential github_git)
     for route in "${credential_routes[@]}"; do
         if secret_available "${route#*:}"; then
             nono_args+=(--credential "${route%%:*}")
         fi
     done
 
-    AI_AGENT="$1" exec mise x -- nono run --profile "$profile" "${nono_args[@]}" -- "$@"
+    AI_AGENT="$agent" exec mise x -- nono run --profile "$profile" "${nono_args[@]}" -- "$@"
 }
