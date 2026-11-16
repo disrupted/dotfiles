@@ -30,9 +30,11 @@
   "workdir": { "access": "readwrite" },
   "filesystem": {
     "read": [
+      "/usr/local/bin",
       // mise state incl. the trust DB: readable, but the agent must not be able to `mise trust` its own edits
       "$XDG_STATE_HOME/mise",
       "$XDG_DATA_HOME/gh",
+      "$HOME/.pkl",
       "$HOME/.agents/skills",
       // Policy is readable, not writable. Agents propose changes as full .jsonc copies in
       // profile-drafts; a human reviews (diff) and moves them into profiles/, then commits to dotfiles.
