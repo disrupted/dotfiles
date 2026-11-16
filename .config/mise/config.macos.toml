@@ -31,6 +31,7 @@
 "brew-cask:datagrip" = "latest"
 "brew-cask:deskpad" = "latest"
 "brew-cask:font-meslo-lg-nerd-font" = "latest"
+"brew-cask:hammerspoon" = "latest"
 "brew-cask:home-assistant" = "latest"
 "brew-cask:iina" = "latest"
 # "brew-cask:keka" = "latest"
@@ -94,6 +95,7 @@ NSGlobalDomain = { NSWindowShouldDragOnGesture = "YES", AppleShowAllExtensions =
 "com.apple.desktopservices" = { DSDontWriteNetworkStores = true, DSDontWriteUSBStores = true }
 "com.apple.TimeMachine" = { DoNotOfferNewDisksForBackup = true }
 "com.apple.screencapture" = { name = "screen", location = "~/Pictures/Screenshots" }
+"org.hammerspoon.Hammerspoon" = { MJConfigFile = "~/.config/hammerspoon/init.lua" }
 # disable universal clipboard between iCloud devices while keeping Handoff on
 # (requires full disk access for the terminal app)
 "com.apple.coreservices.useractivityd" = { ClipboardSharingEnabled = 0 }
