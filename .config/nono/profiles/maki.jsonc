@@ -3,6 +3,9 @@
   "extends": "agent",
   "meta": { "name": "maki", "description": "maki coding agent" },
   "filesystem": {
+    "read": ["/usr/local/bin"],
+    // /usr/local/bin/maki symlinks to the fork's build
+    "read_file": ["$HOME/dev/maki/target/release/maki"],
     "allow": [
       "$XDG_CONFIG_HOME/maki", // Lua plugins write their pack lock into the config dir
       "$XDG_CACHE_HOME/maki",
