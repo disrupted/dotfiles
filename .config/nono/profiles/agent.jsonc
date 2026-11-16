@@ -50,6 +50,7 @@
       // commands, so writes would be a host escape. hosts.yml holds no token (phantom GITHUB_TOKEN).
       "$XDG_CONFIG_HOME/gh/config.yml",
       "$XDG_CONFIG_HOME/gh/hosts.yml",
+      { "path": "$HOME/Library/Application Support/nushell/plugin.msgpackz", "when": "macos" },
     ],
     "allow_file": ["$XDG_STATE_HOME/mise/tool-purgatory.json"],
     "allow": [
@@ -117,6 +118,9 @@
       "MISE_DATA_DIR": "$XDG_DATA_HOME/mise-agent",
       "MISE_CACHE_DIR": "$XDG_CACHE_HOME/mise-agent",
       "MISE_SHARED_INSTALL_DIRS": "$XDG_DATA_HOME/mise/installs",
+      // `mise x`/`run`/`install` otherwise record trust for already-trusted configs (e.g. via
+      // trusted_config_paths), which fails on the read-only trust DB and aborts the command
+      "__MISE_REQUIRE_EXPLICIT_TRUST": "1",
     },
   },
   // Host-side commands that produce the real secrets. They run unsandboxed in the launch
