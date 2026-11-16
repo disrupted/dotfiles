@@ -340,3 +340,23 @@ $env.config.hooks.env_change.PWD ++= [
 
 # detect theme on load
 update-theme
+
+let mime_to_lang = {
+  application/json: json
+  application/xml: xml
+  application/yaml: yaml
+  text/x-toml: toml
+  text/markdown: markdown
+}
+
+$env.config.hooks.display_output = {
+  metadata access {|meta|
+    match $meta.content_type? {
+      null => { }
+      "application/x-nuscript" | "application/x-nuon" | "text/x-nushell" => { nu-highlight }
+      $mimetype if $mimetype in $mime_to_lang => { ^bat -ppf --theme=ansi-disrupted --language=($mime_to_lang | get $mimetype) }
+      _ => { }
+    }
+  }
+  | if (term size).columns >= 100 { table -e } else { table }
+}
