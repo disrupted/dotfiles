@@ -377,23 +377,7 @@ function M.open(provider, id)
         return
     end
 
-    Snacks.notify(
-        ('Opening %s #%d in browser...'):format(provider.noun, number),
-        { title = provider.name }
-    )
-    local out = system({
-        provider.bin,
-        provider.sub,
-        'view',
-        tostring(number),
-        '--web',
-    })
-    if out.code ~= 0 then
-        Snacks.notify.error(
-            out.stderr or ('Failed to open ' .. provider.noun),
-            { title = provider.name }
-        )
-    end
+    vim.cmd.Atlas({ 'open', '.' })
 end
 
 ---@async
