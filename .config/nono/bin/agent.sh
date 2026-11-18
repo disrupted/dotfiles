@@ -68,6 +68,17 @@ mise_env_get() {
     mise x -- printenv "$1" 2>/dev/null || true
 }
 
+# The trust DB is read-only in the sandbox, so throwaway projects can't be `mise trust`ed there.
+# The env var replaces the setting rather than extending it, so the host's entries are kept.
+sandbox_trusted_config_paths() {
+    local paths entry
+    paths="$(cd "${TMPDIR:-/tmp}" && pwd -P):$(cd /tmp && pwd -P)"
+    while read -r entry; do
+        if [ -n "$entry" ]; then paths+=":${entry/#\~/$home_dir}"; fi
+    done < <(mise settings get trusted_config_paths 2>/dev/null | tr -d '[]"' | tr ',' '\n')
+    printf '%s' "$paths"
+}
+
 secret_available() {
     [[ "$fnox_secret_names" == *" $1 "* ]]
 }
@@ -98,5 +109,7 @@ nono_exec() {
         set -- /bin/bash "$NONO_SMOKE_TEST" "$agent"
     fi
 
-    AI_AGENT="$agent" exec mise x -- nono run --profile "$profile" "${nono_args[@]}" -- "$@"
+    # `env` after `mise x`: the host must not trust temp dirs
+    AI_AGENT="$agent" exec mise x -- env MISE_TRUSTED_CONFIG_PATHS="$(sandbox_trusted_config_paths)" \
+        nono run --profile "$profile" "${nono_args[@]}" -- "$@"
 }
