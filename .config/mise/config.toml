@@ -82,6 +82,8 @@ worktrunk = { version = "latest", workflow = "release.yaml" }
 [settings]
 self_update.auto = true
 experimental = true
+task.run_auto_install = false
+exec_auto_install = false
 
 # dotfiles are versioned in ~/.dotfiles (git), not mise's own history/capture
 [settings.history]
