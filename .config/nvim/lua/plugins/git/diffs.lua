@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'barrettruth/diffs.nvim',
-    main = 'diffs',
-    module = 'diffs',
+    src = 'https://github.com/barrettruth/diffs.nvim',
     lazy = false,
     keys = {
         {

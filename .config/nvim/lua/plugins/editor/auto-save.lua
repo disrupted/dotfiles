@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'disrupted/auto-save.nvim',
-    main = 'auto-save',
-    module = 'auto-save',
+    src = 'https://github.com/disrupted/auto-save.nvim',
     event = { 'InsertLeave', 'TextChanged' },
     config = function()
         require('auto-save').setup({

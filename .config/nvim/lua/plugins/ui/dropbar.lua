@@ -1,10 +1,8 @@
 local icons = require('conf.icons')
 
----@type LazeSpec
+---@type doze.Spec
 return {
-    'Bekaboo/dropbar.nvim',
-    main = 'dropbar',
-    module = 'dropbar',
+    src = 'https://github.com/Bekaboo/dropbar.nvim',
     event = 'FileType',
     config = function()
         ---@module 'dropbar.configs'

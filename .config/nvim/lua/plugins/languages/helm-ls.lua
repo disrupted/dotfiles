@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'qvalentin/helm-ls.nvim',
-    main = 'helm-ls',
-    module = 'helm-ls',
+    src = 'https://github.com/qvalentin/helm-ls.nvim',
     ft = 'helm',
     opts = {},
 }

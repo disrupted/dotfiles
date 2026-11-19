@@ -1,9 +1,7 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'nvim-neotest/neotest-python',
-    main = 'neotest-python',
-    module = 'neotest-python',
-    dependencies = { 'nvim-neotest/neotest' },
+    src = 'https://github.com/nvim-neotest/neotest-python',
+    dependencies = { 'neotest' },
     init = function()
         require('conf.neotest.adapters').register('python', 'neotest-python')
         local group =

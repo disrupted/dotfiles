@@ -1,5 +1,4 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'JoosepAlviste/nvim-ts-context-commentstring',
-    module = 'ts_context_commentstring',
+    src = 'https://github.com/JoosepAlviste/nvim-ts-context-commentstring',
 }

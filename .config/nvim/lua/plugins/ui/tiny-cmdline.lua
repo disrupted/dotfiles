@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'rachartier/tiny-cmdline.nvim',
-    main = 'tiny-cmdline',
-    module = 'tiny-cmdline',
+    src = 'https://github.com/rachartier/tiny-cmdline.nvim',
     event = 'UIEnter',
     opts = {},
 }

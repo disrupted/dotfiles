@@ -1,9 +1,7 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'altermo/ultimate-autopair.nvim',
-    branch = 'v0.6',
-    main = 'ultimate-autopair',
-    module = 'ultimate-autopair',
+    src = 'https://github.com/altermo/ultimate-autopair.nvim',
+    version = 'v0.6',
     event = {
         'InsertEnter',
         -- 'CmdlineEnter'

@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'stevearc/resession.nvim',
-    main = 'resession',
-    module = 'resession',
+    src = 'https://github.com/stevearc/resession.nvim',
     keys = {
         {
             '<Leader>z',

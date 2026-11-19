@@ -1,7 +1,5 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'jghauser/mkdir.nvim',
-    main = 'mkdir',
-    module = 'mkdir',
+    src = 'https://github.com/jghauser/mkdir.nvim',
     event = 'BufWritePre',
 }

@@ -1,2 +1,2 @@
----@type LazeSpec
-return { 'nvim-neotest/nvim-nio', module = 'nio' }
+---@type doze.Spec
+return { src = 'https://github.com/nvim-neotest/nvim-nio' }

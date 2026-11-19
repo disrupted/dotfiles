@@ -1,9 +1,7 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'marilari88/neotest-vitest',
-    main = 'neotest-vitest',
-    module = 'neotest-vitest',
-    dependencies = { 'nvim-neotest/neotest' },
+    src = 'https://github.com/marilari88/neotest-vitest',
+    dependencies = { 'neotest' },
     init = function()
         for _, filetype in ipairs({
             'javascript',

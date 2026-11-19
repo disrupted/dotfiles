@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'hat0uma/csvview.nvim',
-    main = 'csvview',
-    module = 'csvview',
+    src = 'https://github.com/hat0uma/csvview.nvim',
     cmd = { 'CsvViewEnable', 'CsvViewDisable', 'CsvViewToggle' },
     ft = 'csv',
     config = function()

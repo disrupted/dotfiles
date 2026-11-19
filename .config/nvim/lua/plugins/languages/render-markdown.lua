@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'MeanderingProgrammer/render-markdown.nvim',
-    main = 'render-markdown',
-    module = 'render-markdown',
+    src = 'https://github.com/MeanderingProgrammer/render-markdown.nvim',
     cmd = 'RenderMarkdown',
     ft = { 'opencode_output' },
     opts = {

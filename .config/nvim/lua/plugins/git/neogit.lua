@@ -1,10 +1,8 @@
----@type LazeSpec
+---@type doze.Spec
 return {
     -- 'NeogitOrg/neogit',
-    'disrupted/neogit',
-    branch = 'fix/git-dir-relative-to-repo',
-    main = 'neogit',
-    module = 'neogit',
+    src = 'https://github.com/disrupted/neogit',
+    version = 'fix/git-dir-relative-to-repo',
     keys = {
         {
             '<Leader>gg',

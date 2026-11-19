@@ -1,10 +1,8 @@
 local icons = require('conf.icons')
 
----@type LazeSpec
+---@type doze.Spec
 return {
-    'esmuellert/codediff.nvim',
-    main = 'codediff',
-    module = 'codediff',
+    src = 'https://github.com/esmuellert/codediff.nvim',
     cmd = 'CodeDiff',
     init = function()
         require('which-key').add({

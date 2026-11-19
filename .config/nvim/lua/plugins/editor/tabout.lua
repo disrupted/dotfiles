@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'abecodes/tabout.nvim',
-    main = 'tabout',
-    module = 'tabout',
+    src = 'https://github.com/abecodes/tabout.nvim',
     event = 'InsertEnter',
     ---@module 'tabout.config'
     ---@type TaboutOptions

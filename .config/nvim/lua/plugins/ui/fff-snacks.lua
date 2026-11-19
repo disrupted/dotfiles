@@ -1,6 +1,4 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'madmaxieee/fff-snacks.nvim',
-    main = 'fff-snacks',
-    module = 'fff-snacks',
+    src = 'https://github.com/madmaxieee/fff-snacks.nvim',
 }

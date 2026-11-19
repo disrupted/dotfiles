@@ -1,8 +1,7 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'rest-nvim/rest.nvim',
+    src = 'https://github.com/rest-nvim/rest.nvim',
     main = 'rest-nvim',
-    module = 'rest-nvim',
     cmd = 'Rest',
     init = function()
         local group = vim.api.nvim_create_augroup('rest_http_keys', { clear = true })

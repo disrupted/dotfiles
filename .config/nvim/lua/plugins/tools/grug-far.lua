@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'MagicDuck/grug-far.nvim',
-    main = 'grug-far',
-    module = 'grug-far',
+    src = 'https://github.com/MagicDuck/grug-far.nvim',
     keys = {
         {
             '<C-_>', -- ctrl + /

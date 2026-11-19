@@ -1,9 +1,7 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'mfussenegger/nvim-dap-python',
-    main = 'dap-python',
-    module = 'dap-python',
-    dependencies = { 'mfussenegger/nvim-dap' },
+    src = 'https://github.com/mfussenegger/nvim-dap-python',
+    dependencies = { 'nvim-dap' },
     init = function()
         require('conf.dap.adapters').register('python', 'dap-python')
     end,

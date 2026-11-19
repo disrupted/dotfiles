@@ -33,11 +33,9 @@ local function work_repo_paths()
     return paths
 end
 
----@type LazeSpec
+---@type doze.Spec
 return {
-    'emrearmagan/atlas.nvim',
-    main = 'atlas',
-    module = 'atlas',
+    src = 'https://github.com/emrearmagan/atlas.nvim',
     cmd = 'Atlas',
     keys = {
         {

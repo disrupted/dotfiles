@@ -1,11 +1,9 @@
 ---@diagnostic disable: param-type-mismatch, inject-field
 local icons = require('conf.icons')
 
----@type LazeSpec
+---@type doze.Spec
 return {
-    'rebelot/heirline.nvim',
-    main = 'heirline',
-    module = 'heirline',
+    src = 'https://github.com/rebelot/heirline.nvim',
     event = 'UIEnter',
     config = function()
         local conditions = require('heirline.conditions')

@@ -1,9 +1,7 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'disrupted/neotest-ntf',
-    main = 'neotest-ntf',
-    module = 'neotest-ntf',
-    dependencies = { 'nvim-neotest/neotest' },
+    src = 'https://github.com/disrupted/neotest-ntf',
+    dependencies = { 'neotest' },
     init = function()
         require('conf.neotest.adapters').register('lua', 'neotest-ntf')
     end,

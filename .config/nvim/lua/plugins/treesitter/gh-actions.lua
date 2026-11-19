@@ -1,8 +1,8 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'Hdoc1509/gh-actions.nvim',
+    src = 'https://github.com/Hdoc1509/gh-actions.nvim',
     lazy = false,
-    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    dependencies = { 'nvim-treesitter' },
     build = function()
         require('nvim-treesitter').install('gh_actions_expressions', { force = true })
     end,

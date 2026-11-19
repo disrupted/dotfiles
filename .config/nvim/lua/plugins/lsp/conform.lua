@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'stevearc/conform.nvim',
-    main = 'conform',
-    module = 'conform',
+    src = 'https://github.com/stevearc/conform.nvim',
     event = 'BufWritePre',
     cmd = 'ConformInfo',
     config = function()

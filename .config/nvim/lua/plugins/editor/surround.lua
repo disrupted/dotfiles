@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'kylechui/nvim-surround',
-    main = 'nvim-surround',
-    module = 'nvim-surround',
+    src = 'https://github.com/kylechui/nvim-surround',
     keys = {
         -- {
         --     '<C-g>s',

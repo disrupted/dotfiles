@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return { -- inituitive window splits resizing
-    'ian-howell/ripple.nvim',
-    main = 'ripple',
-    module = 'ripple',
+    src = 'https://github.com/ian-howell/ripple.nvim',
     keys = {
         {
             '<C-S-k>',

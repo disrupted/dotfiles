@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'johmsalas/text-case.nvim',
-    main = 'textcase',
-    module = 'textcase',
+    src = 'https://github.com/johmsalas/text-case.nvim',
     init = function()
         require('which-key').add({
             { 'cr', mode = { 'n', 'v' }, group = 'Coerce', icon = '󰬴' },

@@ -8,9 +8,6 @@ require('conf.diagnostics')
 vim.g.mapleader = ' ' -- set leader to space
 vim.g.maplocalleader = ','
 
-vim.pack.add({ 'https://github.com/disrupted/laze' }) -- temporary fork of https://github.com/sys9kdr/laze
-require('laze.extra').setup() -- optional :Laze update/clean/health/reload
-
 require('plugins').setup()
 
 local disabled_builtin_plugins = {

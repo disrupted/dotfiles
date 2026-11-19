@@ -1,9 +1,7 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'nvim-treesitter/nvim-treesitter',
-    branch = 'main',
-    main = 'nvim-treesitter',
-    module = 'nvim-treesitter',
+    src = 'https://github.com/nvim-treesitter/nvim-treesitter',
+    version = 'main',
     event = { 'BufReadPost', 'BufNewFile', 'FileType' },
     lazy = vim.fn.argc(-1) == 0, -- load Treesitter early when opening a file from the cmdline
     build = ':TSUpdate',

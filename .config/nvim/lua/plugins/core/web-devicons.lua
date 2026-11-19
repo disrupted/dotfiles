@@ -1,6 +1,4 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'kyazdani42/nvim-web-devicons',
-    main = 'nvim-web-devicons',
-    module = 'nvim-web-devicons',
+    src = 'https://github.com/kyazdani42/nvim-web-devicons',
 }

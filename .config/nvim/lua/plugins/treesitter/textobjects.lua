@@ -1,9 +1,7 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'nvim-treesitter/nvim-treesitter-textobjects',
-    branch = 'main',
-    main = 'nvim-treesitter-textobjects',
-    module = 'nvim-treesitter-textobjects',
+    src = 'https://github.com/nvim-treesitter/nvim-treesitter-textobjects',
+    version = 'main',
     keys = {
         {
             'af',

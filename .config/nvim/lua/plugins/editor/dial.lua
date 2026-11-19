@@ -1,7 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'monaqa/dial.nvim',
-    main = 'dial',
+    src = 'https://github.com/monaqa/dial.nvim',
     init = function()
         require('which-key').add({
             mode = { 'n', 'v' },

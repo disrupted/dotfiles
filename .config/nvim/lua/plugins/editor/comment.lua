@@ -1,13 +1,11 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'numToStr/Comment.nvim',
-    main = 'Comment',
-    module = 'Comment',
+    src = 'https://github.com/numToStr/Comment.nvim',
     keys = {
         { 'gc', mode = { 'n', 'v' }, desc = 'Toggle linewise comment' },
         { 'gb', mode = { 'n', 'v' }, desc = 'Toggle blockwise comment' },
     },
-    dependencies = { 'JoosepAlviste/nvim-ts-context-commentstring' },
+    dependencies = { 'nvim-ts-context-commentstring' },
     config = function()
         local opts = {
             ignore = '^$', -- ignore empty lines

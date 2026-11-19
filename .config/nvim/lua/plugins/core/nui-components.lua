@@ -1,7 +1,5 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'grapp-dev/nui-components.nvim',
-    main = 'nui-components',
-    module = 'nui-components',
-    dependencies = { 'MunifTanjim/nui.nvim' },
+    src = 'https://github.com/grapp-dev/nui-components.nvim',
+    dependencies = { 'nui.nvim' },
 }

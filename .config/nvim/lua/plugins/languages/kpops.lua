@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'disrupted/kpops.nvim',
-    main = 'kpops',
-    module = 'kpops',
+    src = 'https://github.com/disrupted/kpops.nvim',
     lazy = false,
     ---@module 'kpops.config'
     ---@type kpops.Opts

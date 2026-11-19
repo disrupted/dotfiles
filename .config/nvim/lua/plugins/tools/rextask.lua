@@ -1,7 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'disrupted/rextask',
-    module = 'rextask',
+    src = 'https://github.com/disrupted/rextask',
     keys = {
         {
             '<Bslash>',

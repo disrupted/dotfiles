@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'aaronik/treewalker.nvim',
-    main = 'treewalker',
-    module = 'treewalker',
+    src = 'https://github.com/aaronik/treewalker.nvim',
     cmd = 'Treewalker',
     keys = {
         {

@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'disrupted/github-actions.nvim',
-    main = 'github-actions',
-    module = 'github-actions',
+    src = 'https://github.com/disrupted/github-actions.nvim',
     lazy = false,
     ---@module 'github-actions.config'
     ---@type github_actions.Opts

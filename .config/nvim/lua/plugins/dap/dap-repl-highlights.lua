@@ -1,9 +1,8 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'LiadOz/nvim-dap-repl-highlights',
-    module = 'nvim-dap-repl-highlights',
+    src = 'https://github.com/LiadOz/nvim-dap-repl-highlights',
     ft = 'dap-repl', -- its ftplugin injects the session's language into the REPL
-    dependencies = { 'mfussenegger/nvim-dap' },
+    dependencies = { 'nvim-dap' },
     init = function()
         -- Register the dap_repl parser with nvim-treesitter. This must happen
         -- before nvim-treesitter.parsers loads, so it can't wait for setup().

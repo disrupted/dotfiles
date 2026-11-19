@@ -1,7 +1,5 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'disrupted/frizbee.nvim',
-    main = 'frizbee',
-    module = 'frizbee',
+    src = 'https://github.com/disrupted/frizbee.nvim',
     build = 'cargo build --release',
 }

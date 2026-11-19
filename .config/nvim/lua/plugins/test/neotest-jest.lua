@@ -1,9 +1,7 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'haydenmeade/neotest-jest',
-    main = 'neotest-jest',
-    module = 'neotest-jest',
-    dependencies = { 'nvim-neotest/neotest' },
+    src = 'https://github.com/haydenmeade/neotest-jest',
+    dependencies = { 'neotest' },
     init = function()
         for _, filetype in ipairs({
             'javascript',

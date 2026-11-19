@@ -147,7 +147,7 @@ local function finder(opts, ctx)
     local Snacks = require('snacks')
     local cwd = ctx:cwd()
 
-    -- `require("atlas")` also lets laze load/configure the plugin on first use
+    -- `require("atlas")` also lets doze load/configure the plugin on first use
     -- if it has not been opened through `:Atlas` yet. Do it before entering the
     -- async finder, where Neovim API calls would be disallowed.
     local ok, atlas_err = pcall(require, 'atlas')
@@ -700,7 +700,7 @@ local function issue_finder(opts, ctx)
     local Snacks = require('snacks')
     local cwd = ctx:cwd()
 
-    -- `require("atlas")` also lets laze load/configure the plugin on first use
+    -- `require("atlas")` also lets doze load/configure the plugin on first use
     -- if it has not been opened through `:Atlas` yet. Do it before entering the
     -- async finder, where Neovim API calls would be disallowed.
     local ok, atlas_err = pcall(require, 'atlas')

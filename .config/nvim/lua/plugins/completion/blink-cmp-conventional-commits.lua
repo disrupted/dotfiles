@@ -1,6 +1,4 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'disrupted/blink-cmp-conventional-commits',
-    main = 'blink-cmp-conventional-commits',
-    module = 'blink-cmp-conventional-commits',
+    src = 'https://github.com/disrupted/blink-cmp-conventional-commits',
 }

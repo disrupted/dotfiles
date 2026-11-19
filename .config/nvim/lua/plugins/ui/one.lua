@@ -1,6 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'disrupted/one.nvim', -- personal tweaked colorscheme
+    src = 'https://github.com/disrupted/one.nvim', -- personal tweaked colorscheme
     lazy = false,
     priority = 1000,
     config = function()

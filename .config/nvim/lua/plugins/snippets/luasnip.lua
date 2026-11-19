@@ -1,9 +1,7 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'L3MON4D3/LuaSnip',
-    main = 'luasnip',
-    module = 'luasnip',
-    version = 'v2.*',
+    src = 'https://github.com/L3MON4D3/LuaSnip',
+    version = vim.version.range('2.*'),
     build = 'make install_jsregexp',
     keys = {
         {

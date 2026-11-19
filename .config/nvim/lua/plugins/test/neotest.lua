@@ -1,11 +1,9 @@
 local icons = require('conf.icons')
 
----@type LazeSpec
+---@type doze.Spec
 return {
-    'nvim-neotest/neotest',
-    main = 'neotest',
-    module = 'neotest',
-    dependencies = { 'nvim-neotest/nvim-nio', 'stevearc/overseer.nvim' },
+    src = 'https://github.com/nvim-neotest/neotest',
+    dependencies = { 'nvim-nio', 'overseer.nvim' },
     init = function()
         require('which-key').add({
             { '<Leader>t', group = 'Test', icon = '' },

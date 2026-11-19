@@ -12,13 +12,12 @@ local function git_source_enabled()
     return vim.bo.filetype == 'markdown.forge'
 end
 
----@type LazeSpec
+---@type doze.Spec
 return {
-    'saghen/blink.cmp',
+    src = 'https://github.com/saghen/blink.cmp',
     main = 'blink.cmp',
-    module = 'blink.cmp',
     event = { 'InsertEnter', 'CmdlineEnter' },
-    version = '*',
+    version = vim.version.range('*'),
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
     opts = {

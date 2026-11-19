@@ -1,7 +1,7 @@
 local dir = vim.fs.joinpath(vim.fn.stdpath('config'), 'skeletons')
 
 local skeletons = {
-    { pattern = 'lua/plugins/**.lua', file = 'laze-spec.lua' },
+    { pattern = 'lua/plugins/**.lua', file = 'doze-spec.lua' },
     { pattern = 'lsp/*.lua', file = 'lsp.lua' },
     { pattern = '*.tsx', file = 'typescript-react.tsx' },
     { pattern = 'tests/**.py', file = 'python-pytest.py' },

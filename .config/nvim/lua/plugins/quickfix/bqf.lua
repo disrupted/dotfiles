@@ -1,10 +1,8 @@
----@type LazeSpec
+---@type doze.Spec
 return {
     -- 'kevinhwang91/nvim-bqf',
-    'ofseed/nvim-bqf',
-    branch = 'native-open',
-    main = 'bqf',
-    module = 'bqf',
+    src = 'https://github.com/ofseed/nvim-bqf',
+    version = 'native-open',
     ft = 'qf',
     ---@module 'bqf.config'
     ---@type BqfConfig

@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'mfussenegger/nvim-dap',
-    main = 'dap',
-    module = 'dap',
+    src = 'https://github.com/mfussenegger/nvim-dap',
     init = function()
         require('which-key').add({
             {

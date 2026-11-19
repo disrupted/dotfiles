@@ -1,9 +1,7 @@
 ---@diagnostic disable: undefined-field
----@type LazeSpec
+---@type doze.Spec
 return {
-    'folke/edgy.nvim',
-    main = 'edgy',
-    module = 'edgy',
+    src = 'https://github.com/folke/edgy.nvim',
     event = 'VeryLazy',
     ---@module 'edgy'
     ---@type Edgy.Config

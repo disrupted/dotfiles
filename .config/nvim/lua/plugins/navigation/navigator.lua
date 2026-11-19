@@ -1,8 +1,7 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'numToStr/Navigator.nvim',
-    module = 'Navigator',
-    cond = vim.env.REX_SESSION ~= nil or vim.env.TMUX ~= nil,
+    src = 'https://github.com/numToStr/Navigator.nvim',
+    enabled = vim.env.REX_SESSION ~= nil or vim.env.TMUX ~= nil,
     keys = {
         {
             '<C-w>j',

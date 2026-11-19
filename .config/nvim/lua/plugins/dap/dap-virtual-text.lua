@@ -1,9 +1,7 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'theHamsta/nvim-dap-virtual-text',
-    main = 'nvim-dap-virtual-text',
-    module = 'nvim-dap-virtual-text',
-    dependencies = { 'mfussenegger/nvim-dap' },
+    src = 'https://github.com/theHamsta/nvim-dap-virtual-text',
+    dependencies = { 'nvim-dap' },
     opts = {
         enabled = true,
         enabled_commands = false,

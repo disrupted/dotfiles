@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'tiagovla/scope.nvim', -- tab-scoped buffers
-    main = 'scope',
-    module = 'scope',
+    src = 'https://github.com/tiagovla/scope.nvim', -- tab-scoped buffers
     event = 'TabNew',
     opts = {},
 }

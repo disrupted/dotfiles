@@ -1,9 +1,7 @@
----@type LazeSpec
+---@type doze.Spec
 return {
     -- move through camelCase, snake_case words better
-    'chrisgrieser/nvim-spider',
-    main = 'spider',
-    module = 'spider',
+    src = 'https://github.com/chrisgrieser/nvim-spider',
     keys = {
         {
             'w',

@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'lewis6991/gitsigns.nvim',
-    main = 'gitsigns',
-    module = 'gitsigns',
+    src = 'https://github.com/lewis6991/gitsigns.nvim',
     event = { 'BufWinEnter', 'BufNewFile' },
     init = function()
         require('which-key').add({

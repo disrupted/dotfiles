@@ -1,6 +1,4 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'Kaiser-Yang/blink-cmp-git',
-    main = 'blink-cmp-git',
-    module = 'blink-cmp-git',
+    src = 'https://github.com/Kaiser-Yang/blink-cmp-git',
 }

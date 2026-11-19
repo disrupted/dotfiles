@@ -1,11 +1,9 @@
 local icons = require('conf.icons')
 
----@type LazeSpec
+---@type doze.Spec
 return {
-    'sindrets/diffview.nvim',
+    src = 'https://github.com/sindrets/diffview.nvim',
     enabled = false, -- disables in favor of codediff.nvim
-    main = 'diffview',
-    module = 'diffview',
     cmd = { 'DiffviewOpen', 'DiffviewFileHistory' },
     init = function()
         require('which-key').add({

@@ -1,10 +1,8 @@
 local icons = require('conf.icons')
 
----@type LazeSpec
+---@type doze.Spec
 return {
-    'disrupted/opencode.nvim',
-    main = 'opencode',
-    module = 'opencode',
+    src = 'https://github.com/disrupted/opencode.nvim',
     cmd = 'Opencode',
     keys = {
         { '<BS>', '<cmd>Opencode<CR>', desc = 'Toggle Agent' },

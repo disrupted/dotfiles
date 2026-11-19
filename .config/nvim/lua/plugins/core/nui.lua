@@ -1,2 +1,2 @@
----@type LazeSpec
-return { 'MunifTanjim/nui.nvim', lazy = false }
+---@type doze.Spec
+return { src = 'https://github.com/MunifTanjim/nui.nvim', lazy = false }

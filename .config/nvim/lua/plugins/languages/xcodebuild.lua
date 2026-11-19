@@ -1,9 +1,7 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'wojciech-kulik/xcodebuild.nvim',
-    main = 'xcodebuild',
-    module = 'xcodebuild',
+    src = 'https://github.com/wojciech-kulik/xcodebuild.nvim',
     ft = 'swift',
-    dependencies = { 'MunifTanjim/nui.nvim' },
+    dependencies = { 'nui.nvim' },
     opts = {},
 }

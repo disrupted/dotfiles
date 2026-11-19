@@ -1,9 +1,7 @@
----@type LazeSpec
+---@type doze.Spec
 return {
     -- 'folke/which-key.nvim',
-    'disrupted/which-key.nvim',
-    main = 'which-key',
-    module = 'which-key',
+    src = 'https://github.com/disrupted/which-key.nvim',
     lazy = false,
     priority = 999,
     init = function()

@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'stevearc/overseer.nvim',
-    main = 'overseer',
-    module = 'overseer',
+    src = 'https://github.com/stevearc/overseer.nvim',
     dependencies = { 'rextask' },
     cmd = {
         'OverseerOpen',

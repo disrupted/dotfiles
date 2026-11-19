@@ -2,11 +2,9 @@ local icons = require('conf.icons')
 
 local atlas = require('conf.snacks.atlas')
 
----@type LazeSpec
+---@type doze.Spec
 return {
-    'disrupted/snacks.nvim',
-    main = 'snacks',
-    module = 'snacks',
+    src = 'https://github.com/disrupted/snacks.nvim',
     lazy = false,
     priority = 998,
     init = function()

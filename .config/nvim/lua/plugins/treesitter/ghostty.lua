@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'bezhermoso/tree-sitter-ghostty',
-    main = 'tree-sitter-ghostty',
-    module = 'tree-sitter-ghostty',
+    src = 'https://github.com/bezhermoso/tree-sitter-ghostty',
     ft = 'ghostty',
     build = 'make nvim_install',
 }

@@ -1,10 +1,8 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'mrcjkb/rustaceanvim',
-    main = 'rustaceanvim',
-    module = 'rustaceanvim',
+    src = 'https://github.com/mrcjkb/rustaceanvim',
     ft = 'rust',
-    dependencies = { 'nvim-neotest/neotest' },
+    dependencies = { 'neotest' },
     init = function()
         require('conf.neotest.adapters').register('rust', 'rustaceanvim.neotest')
     end,

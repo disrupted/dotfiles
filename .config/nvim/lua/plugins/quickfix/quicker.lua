@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'stevearc/quicker.nvim',
-    main = 'quicker',
-    module = 'quicker',
+    src = 'https://github.com/stevearc/quicker.nvim',
     ft = 'qf',
     init = function()
         require('which-key').add({

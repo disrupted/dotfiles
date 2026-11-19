@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'Davidyz/inlayhint-filler.nvim',
-    main = 'inlayhint-filler',
-    module = 'inlayhint-filler',
+    src = 'https://github.com/Davidyz/inlayhint-filler.nvim',
     init = function()
         vim.api.nvim_create_autocmd('LspAttach', {
             desc = 'LSP inlayhint-filler',

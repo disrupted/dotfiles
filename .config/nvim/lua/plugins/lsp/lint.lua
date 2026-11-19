@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'mfussenegger/nvim-lint',
-    main = 'lint',
-    module = 'lint',
+    src = 'https://github.com/mfussenegger/nvim-lint',
     ft = { 'yaml.github' },
     config = function()
         local opts = {

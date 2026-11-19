@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'danymat/neogen',
-    main = 'neogen',
-    module = 'neogen',
+    src = 'https://github.com/danymat/neogen',
     cmd = 'Neogen',
     init = function()
         require('which-key').add({

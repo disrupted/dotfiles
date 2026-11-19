@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'folke/trouble.nvim',
-    main = 'trouble',
-    module = 'trouble',
+    src = 'https://github.com/folke/trouble.nvim',
     cmd = 'Trouble',
     init = function()
         require('which-key').add({

@@ -1,8 +1,6 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'dmtrKovalenko/fff',
-    main = 'fff',
-    module = 'fff',
+    src = 'https://github.com/dmtrKovalenko/fff',
     lazy = false,
     build = 'cargo build --release --lib',
     opts = {},

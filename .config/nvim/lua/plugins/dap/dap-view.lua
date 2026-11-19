@@ -1,9 +1,7 @@
----@type LazeSpec
+---@type doze.Spec
 return {
-    'igorlfs/nvim-dap-view',
-    main = 'dap-view',
-    module = 'dap-view',
-    dependencies = { 'mfussenegger/nvim-dap' },
+    src = 'https://github.com/igorlfs/nvim-dap-view',
+    dependencies = { 'nvim-dap' },
     keys = {
         {
             '<Leader>dv',
