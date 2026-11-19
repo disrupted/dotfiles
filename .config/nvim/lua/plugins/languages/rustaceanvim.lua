@@ -7,7 +7,6 @@ return {
         require('conf.neotest.adapters').register('rust', 'rustaceanvim.neotest')
     end,
     config = function()
-        ---@module 'rustaceanvim.config'
         ---@type rustaceanvim.Opts
         local opts = {}
         vim.g.rustaceanvim = opts

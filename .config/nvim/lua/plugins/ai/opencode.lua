@@ -38,14 +38,13 @@ return {
         })
     end,
     config = function()
-        ---@module 'opencode'
         ---@type OpencodeConfig
         local opts = {
             backend = 'pi',
             pi = {
                 executable = vim.fs.normalize('~/.config/nono/bin/pi.sh'),
-            },
-            program_status = { enabled = true },
+            } --[[@as OpencodeConfig['pi'] ]],
+            program_status = { enabled = true } --[[@as OpencodeConfig['program_status'] ]],
             preferred_picker = 'snacks',
             default_global_keymaps = false,
             keymap_prefix = '<leader>a',
@@ -82,14 +81,18 @@ return {
                         desc = 'Select session',
                         mode = 'n',
                     },
+                    ---@diagnostic disable-next-line: assign-type-mismatch
                     ['<cr>'] = false, -- use <S-CR> instead
+                    ---@diagnostic disable-next-line: assign-type-mismatch
                     ['<esc>'] = false,
                     ['<C-c>'] = { 'cancel', mode = { 'n', 'i' } },
                     ['q'] = { 'toggle_pane' }, -- Toggle between input and output panes
+                    ---@diagnostic disable-next-line: assign-type-mismatch
                     ['~'] = false, -- disabled since I use Snacks file picker instead
                     ['@'] = { 'mention', mode = 'i' }, -- Insert mention (file/agent)
                     ['/'] = { 'slash_commands', mode = 'i' },
                     ['#'] = { 'context_items', mode = 'i' }, -- Manage context items (current file, selection, diagnostics, mentioned files)
+                    ---@diagnostic disable-next-line: assign-type-mismatch
                     ['<tab>'] = false,
                     ['<S-tab>'] = { 'switch_mode', mode = { 'n', 'i' } }, -- Switch between modes (build/plan)
                     ['<M-m>'] = {
@@ -141,6 +144,7 @@ return {
                         desc = 'Toggle reasoning visibility',
                     },
                     ['q'] = { 'close' },
+                    ---@diagnostic disable-next-line: assign-type-mismatch
                     ['<esc>'] = false,
                     ['<C-c>'] = { 'cancel', mode = 'n' },
                     ['i'] = {
@@ -167,6 +171,7 @@ return {
                         end,
                         mode = 'n',
                     },
+                    ---@diagnostic disable-next-line: assign-type-mismatch
                     ['<tab>'] = false,
                     ['<S-tab>'] = { 'switch_mode' }, -- Switch between modes (build/plan)
                     ['<M-r>'] = { 'cycle_variant' }, -- Cycle through available model variants
@@ -174,6 +179,7 @@ return {
                         'configure_provider',
                         desc = 'Pick model',
                     },
+                    ---@diagnostic disable-next-line: assign-type-mismatch
                     ['<M-i>'] = false,
                     ['<LocalLeader>S'] = {
                         'navigate_session_tree',
@@ -208,16 +214,16 @@ return {
                     },
                 },
                 picker = {
-                    ---@module 'snacks'
                     ---@type snacks.picker.layout.Config?
                     snacks_layout = {
                         preset = 'dropdown',
+                        ---@diagnostic disable-next-line: assign-type-mismatch
                         preview = false,
                         layout = {
                             row = 0.2,
                             width = 105,
                             height = 0.4,
-                        },
+                        } --[[@as snacks.layout.Box]],
                     },
                 },
                 window_highlight = 'Normal:OpencodeBackground,FloatBorder:OpencodeBorder,SignColumn:OpencodeSignColumn,WinSeparator:OpencodeWinSeparator',
@@ -262,7 +268,7 @@ return {
                         preferred = ' ',
                         last_used = ' ',
                     },
-                },
+                } --[[@as OpencodeUIConfig['icons'] ]],
             },
             context = {
                 diagnostics = {
@@ -270,7 +276,7 @@ return {
                     warn = false,
                     error = false,
                     only_closest = true,
-                },
+                } --[[@as OpencodeContextConfig['diagnostics'] ]],
                 current_file = {
                     enabled = false,
                     show_full_path = false,

@@ -159,7 +159,6 @@ return {
                         should_show_items = function(ctx)
                             return ctx.trigger.initial_kind ~= 'trigger_character' -- hide after trigger character
                         end,
-                        ---@module 'blink-cmp-git'
                         ---@type blink-cmp-git.Options
                         opts = {
                             kind_highlight = function()
@@ -196,7 +195,7 @@ return {
                                                 'blink-cmp-git.default.gitlab'
                                             ).issue.enable()
                                             if enable then
-                                                return enable
+                                                return true
                                             end
 
                                             ---@type string?
@@ -256,7 +255,6 @@ return {
                         score_offset = 11,
                         name = 'Conventional Commits',
                         module = 'blink-cmp-conventional-commits',
-                        ---@module 'blink-cmp-conventional-commits'
                         ---@type blink-cmp-conventional-commits.Options
                         opts = {},
                     },

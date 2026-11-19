@@ -43,7 +43,6 @@ return {
         },
     },
     config = function()
-        ---@module 'diffview.config'
         ---@type DiffviewConfig
         local opts = {
             enhanced_diff_hl = true,

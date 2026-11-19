@@ -37,7 +37,6 @@ return {
     init = function()
         require('which-key').add({ { '<Leader>gx', group = 'Conflict' } })
 
-        ---@module 'diffs'
         ---@type diffs.Config
         vim.g.diffs = {
             view = {

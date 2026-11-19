@@ -13,14 +13,17 @@ return {
         })
     end,
     config = function()
-        ---@module 'gitsigns.config'
         ---@type Gitsigns.Config
         local opts = {
             diff_opts = {
                 -- Include whitespace-only changes in git hunks regardless of 'diffopt'
+                ---@diagnostic disable-next-line: assign-type-mismatch
                 ignore_whitespace_change = false,
+                ---@diagnostic disable-next-line: assign-type-mismatch
                 ignore_blank_lines = false,
+                ---@diagnostic disable-next-line: assign-type-mismatch
                 ignore_whitespace = false,
+                ---@diagnostic disable-next-line: assign-type-mismatch
                 ignore_whitespace_change_at_eol = false,
             },
             signs = {

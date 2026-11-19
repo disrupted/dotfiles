@@ -122,7 +122,6 @@ return {
         },
     },
     config = function()
-        ---@module 'neotest.config'
         ---@type neotest.Config
         local opts = {
             floating = { border = 'single' },

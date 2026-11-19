@@ -42,7 +42,6 @@ return {
         end
     end,
     config = function()
-        ---@module 'neotest-python.adapter'
         ---@type neotest-python._AdapterConfig
         local opts = {
             dap = { justMyCode = true },

@@ -12,7 +12,6 @@ return {
         },
     },
     config = function()
-        ---@module 'neogit.config'
         ---@type NeogitConfig
         local opts = {
             disable_hint = true,
@@ -20,7 +19,7 @@ return {
             integrations = {
                 codediff = true,
                 snacks = true,
-            },
+            } --[[@as NeogitConfig['integrations'] ]],
             diff_viewer = 'codediff',
             graph_style = 'kitty',
             status = {

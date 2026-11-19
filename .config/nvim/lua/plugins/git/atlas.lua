@@ -49,7 +49,6 @@ return {
         },
     },
     config = function()
-        ---@module 'atlas'
         ---@type AtlasConfig
         local opts = {
             ui = {
