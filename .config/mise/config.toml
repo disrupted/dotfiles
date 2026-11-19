@@ -36,7 +36,8 @@ typst = "latest"
 "github:ouch-org/ouch" = "latest"
 skim = "latest"
 "cargo:somo" = "latest"
-nono = "latest"
+# bump together with mise (`mise self-update <version>`), then run `mise run agent:smoke-test`
+nono = "0.82.0"
 pi = "latest"
 # "github:tontinton/maki" = "latest"
 "github:topiary/topiary" = "latest"
@@ -81,7 +82,6 @@ worktrunk = { version = "latest", workflow = "release.yaml" }
 "github:JohnnyMorganz/luau-lsp" = "1.70.1"
 
 [settings]
-self_update.auto = true
 experimental = true
 task.run_auto_install = false
 exec_auto_install = false
