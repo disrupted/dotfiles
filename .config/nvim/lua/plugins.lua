@@ -14,7 +14,16 @@ function M.specs()
     -- Spec order decides init order and breaks priority ties.
     table.sort(files)
 
-    return vim.iter(files):map(dofile):totable()
+    -- loadfile goes through vim.loader's bytecode cache, dofile always compiles the source
+    return vim.iter(files)
+        :map(function(file)
+            local chunk, err = loadfile(file)
+            if not chunk then
+                error(err, 0)
+            end
+            return chunk()
+        end)
+        :totable()
 end
 
 function M.setup()
