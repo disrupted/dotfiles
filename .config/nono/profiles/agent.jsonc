@@ -46,12 +46,14 @@
       // Included from ~/.gitconfig
       "$HOME/.gitconfig_os",
       "$HOME/.gitconfig_private",
-      "$HOME/bakdata/.gitconfig",
       "$HOME/.gitignore",
       // gh refuses to start without both. Read-only because `!` aliases in config.yml run shell
       // commands, so writes would be a host escape. hosts.yml holds no token (phantom GITHUB_TOKEN).
       "$XDG_CONFIG_HOME/gh/config.yml",
       "$XDG_CONFIG_HOME/gh/hosts.yml",
+      // read-only like gh: aliases run shell commands
+      "$XDG_CONFIG_HOME/glab-cli/config.yml",
+      "$XDG_CONFIG_HOME/glab-cli/aliases.yml",
       { "path": "$HOME/Library/Application Support/nushell/plugin.msgpackz", "when": "macos" },
     ],
     "allow_file": ["$XDG_STATE_HOME/mise/tool-purgatory.json"],
