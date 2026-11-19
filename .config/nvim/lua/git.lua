@@ -67,31 +67,58 @@ local function git(args)
     return vim.trim(assert(out.stdout))
 end
 
----@param cwd string
+---@param path string `.git` file of a linked worktree or submodule
 ---@return string?
+local function read_gitdir(path)
+    local f = io.open(path)
+    if not f then
+        return
+    end
+    local line = f:read('*l')
+    f:close()
+    local dir = line and line:match('^gitdir: (.+)$')
+    if not dir then
+        return
+    end
+    if not vim.startswith(dir, '/') then
+        dir = vim.fs.joinpath(vim.fs.dirname(path), dir)
+    end
+    return vim.fs.normalize(dir)
+end
+
+---@param dir string
+---@return boolean
+local function is_git_dir(dir)
+    return vim.uv.fs_stat(dir .. '/HEAD') ~= nil
+        and (
+            vim.uv.fs_stat(dir .. '/objects') ~= nil
+            or vim.uv.fs_stat(dir .. '/commondir') ~= nil
+        )
+end
+
 --- Find the Git dir and work tree root for a directory.
---- In a linked worktree the Git dir is `<main>/.git/worktrees/<name>`, so the
---- work tree root must come from `--show-toplevel`, never from the Git dir.
+--- Walks the file system instead of spawning git, which is too slow for startup.
 ---@param cwd string
 ---@return string? git_dir absolute Git dir
 ---@return string? toplevel work tree root (nil for bare repos or inside .git)
 M.find_repo = function(cwd)
-    local out = vim.system({
-        'git',
-        '-C',
-        cwd,
-        'rev-parse',
-        '--absolute-git-dir',
-        '--show-toplevel',
-    }):wait()
-    if out.code == 0 and out.stdout and out.stdout ~= '' then
-        local lines = vim.split(vim.trim(out.stdout), '\n', { plain = true })
-        return lines[1], lines[2]
-    end
-    -- --show-toplevel fails outside a work tree (bare repo, inside .git)
-    out = vim.system({ 'git', '-C', cwd, 'rev-parse', '--absolute-git-dir' }):wait()
-    if out.code == 0 and out.stdout and out.stdout ~= '' then
-        return vim.trim(out.stdout), nil
+    local dir = vim.fs.normalize(vim.fs.abspath(cwd)) ---@type string?
+    while dir do
+        local dotgit = vim.fs.joinpath(dir, '.git')
+        local stat = vim.uv.fs_stat(dotgit)
+        if stat and stat.type == 'directory' then
+            return dotgit, dir
+        elseif stat then
+            local gitdir = read_gitdir(dotgit)
+            if gitdir then
+                return gitdir, dir
+            end
+        end
+        if is_git_dir(dir) then
+            return dir, nil
+        end
+        local parent = vim.fs.dirname(dir)
+        dir = parent ~= dir and parent or nil
     end
 end
 
