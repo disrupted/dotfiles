@@ -3,6 +3,7 @@ return {
     src = 'https://github.com/theHamsta/nvim-dap-virtual-text',
     dependencies = { 'nvim-dap' },
     config = function()
+        ---@type Partial<nvim_dap_virtual_text_options>
         local opts = {
             enabled = true,
             enabled_commands = false,
@@ -28,7 +29,8 @@ return {
                 end
             end,
         }
-        ---@diagnostic disable-next-line: param-type-mismatch
-        require('nvim-dap-virtual-text').setup(opts)
+        require('nvim-dap-virtual-text').setup(
+            opts --[[@as nvim_dap_virtual_text_options]]
+        )
     end,
 }

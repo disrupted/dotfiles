@@ -132,8 +132,7 @@ return {
             {
                 '<A-d>',
                 function()
-                    ---@diagnostic disable-next-line: param-type-mismatch
-                    Snacks.scratch({ ft = 'lua' })
+                    Snacks.scratch({ ft = 'lua' } --[[@as snacks.scratch.Config]])
                 end,
                 desc = 'Toggle Scratch Buffer',
             },
@@ -351,7 +350,6 @@ return {
                     return name:sub(1, 1) == '.', name
                 end
 
-                ---@diagnostic disable-next-line: param-type-mismatch
                 Snacks.picker.pick({
                     source = 'files',
                     hidden = true,
@@ -453,7 +451,7 @@ return {
                             },
                         },
                     },
-                })
+                } --[[@as snacks.picker.Config]])
             end,
             desc = 'Files',
         },
@@ -553,7 +551,6 @@ return {
         {
             '<Leader>gy',
             function()
-                ---@diagnostic disable-next-line: missing-fields, param-type-mismatch
                 Snacks.gitbrowse.open({
                     what = 'permalink',
                     notify = false,
@@ -561,7 +558,7 @@ return {
                         vim.fn.setreg('+', url)
                         Snacks.notify({ 'Yanked permlink to clipboard', url })
                     end,
-                })
+                } --[[@as snacks.gitbrowse.Config]])
             end,
             mode = { 'n', 'v' },
             desc = 'Yank permalink for Git remote',
@@ -574,8 +571,8 @@ return {
             desc = 'Rename current buffer file',
         },
     },
-    ---@type snacks.Config
     config = function()
+        ---@type Partial<snacks.Config>
         local opts = {
             scratch = {},
             bigfile = { enabled = true },
@@ -821,11 +818,11 @@ return {
                         actions = {
                             pick_glob = function(self, _)
                                 local default = '*.'
-                                ---@diagnostic disable-next-line: param-type-mismatch
-                                Snacks.input.input({
+                                local input_opts = {
                                     prompt = 'Grep glob',
                                     default = default,
-                                }, function(input)
+                                } --[[@as snacks.input.Opts]]
+                                Snacks.input.input(input_opts, function(input)
                                     if not input or input == '' or input == default then
                                         return
                                     end
@@ -997,7 +994,6 @@ return {
                     },
                     preview = { minimal = true },
                 },
-                ---@diagnostic disable-next-line: missing-fields
                 icons = {
                     git = require('conf.icons').git,
                     diagnostics = { Hint = '' },
@@ -1013,13 +1009,11 @@ return {
             },
             words = { enabled = true },
             styles = {
-                ---@diagnostic disable-next-line: missing-fields
                 notification_history = {
                     keys = { ['<Esc>'] = 'close' },
-                },
+                } --[[@as snacks.win.Config]],
             },
         }
-        ---@diagnostic disable-next-line: param-type-mismatch
         require('snacks').setup(opts)
 
         -- remap submit for consistency and to avoid conflict with blink.cmp

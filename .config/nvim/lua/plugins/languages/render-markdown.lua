@@ -4,6 +4,7 @@ return {
     cmd = 'RenderMarkdown',
     ft = { 'opencode_output' },
     config = function()
+        ---@type render.md.UserConfig
         local opts = {
             debounce = 50,
             file_types = { 'opencode_output' },
@@ -105,7 +106,7 @@ return {
             },
             yaml = { enabled = false },
         }
-        ---@diagnostic disable-next-line: undefined-field
-        require('render-markdown').setup(opts)
+        local render_markdown = require('render-markdown') --[[@as render.md.Init]]
+        render_markdown.setup(opts)
     end,
 }

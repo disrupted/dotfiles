@@ -125,7 +125,6 @@ return {
         ---@module 'neotest.config'
         ---@type neotest.Config
         local opts = {
-            ---@diagnostic disable-next-line: missing-fields
             floating = { border = 'single' },
             adapters = {},
             consumers = {

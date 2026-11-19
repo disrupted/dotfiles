@@ -5,7 +5,6 @@ return {
     src = 'https://github.com/Bekaboo/dropbar.nvim',
     event = 'FileType',
     config = function()
-        ---@module 'dropbar.configs'
         ---@type dropbar_configs_t
         local opts = {
             bar = {
@@ -246,7 +245,6 @@ return {
                 },
             },
         }
-        ---@diagnostic disable-next-line: param-type-mismatch
         require('dropbar').setup(opts)
         require('which-key').add({
             {

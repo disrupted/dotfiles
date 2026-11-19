@@ -9,7 +9,6 @@ return {
         local opts = {
             auto_enable = true,
             auto_resize_height = true,
-            ---@diagnostic disable-next-line: missing-fields
             preview = {
                 auto_preview = true,
                 win_height = 12,

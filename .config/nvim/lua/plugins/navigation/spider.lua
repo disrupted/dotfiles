@@ -16,8 +16,9 @@ return {
         {
             'w',
             function()
-                ---@diagnostic disable-next-line: param-type-mismatch
-                require('spider').motion('w', { skipInsignificantPunctuation = false })
+                ---@type Partial<Spider.config>
+                local opts = { skipInsignificantPunctuation = false }
+                require('spider').motion('w', opts --[[@as Spider.config]])
             end,
             desc = 'Spider-w',
             mode = { 'o', 'x' },
@@ -48,10 +49,10 @@ return {
         },
     },
     config = function()
+        ---@type Partial<Spider.config>
         local opts = {
             skipInsignificantPunctuation = true,
         }
-        ---@diagnostic disable-next-line: param-type-mismatch
-        require('spider').setup(opts)
+        require('spider').setup(opts --[[@as Spider.config]])
     end,
 }

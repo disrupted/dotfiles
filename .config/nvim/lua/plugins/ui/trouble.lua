@@ -63,7 +63,6 @@ return {
     },
     config = function()
         ---@type trouble.Config
-        ---@diagnostic disable-next-line: missing-fields
         local opts = {
             focus = true,
             auto_refresh = false,
@@ -158,7 +157,7 @@ return {
                 },
             },
         }
-        ---@diagnostic disable-next-line: undefined-field
-        require('trouble').setup(opts)
+        local trouble = require('trouble') --[[@as trouble]]
+        trouble.setup(opts)
     end,
 }

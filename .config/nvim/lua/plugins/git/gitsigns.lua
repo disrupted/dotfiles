@@ -15,9 +15,7 @@ return {
     config = function()
         ---@module 'gitsigns.config'
         ---@type Gitsigns.Config
-        ---@diagnostic disable-next-line: missing-fields
         local opts = {
-            ---@diagnostic disable-next-line: missing-fields
             diff_opts = {
                 -- Include whitespace-only changes in git hunks regardless of 'diffopt'
                 ignore_whitespace_change = false,
@@ -99,7 +97,6 @@ return {
                 local gs = package.loaded.gitsigns
                 ---@cast gs gitsigns.main
 
-                ---@diagnostic disable-next-line: missing-fields
                 local nav_opts = { target = 'all' } --[[@as Gitsigns.NavOpts]]
 
                 -- Navigation

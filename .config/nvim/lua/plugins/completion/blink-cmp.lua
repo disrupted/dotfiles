@@ -1,4 +1,3 @@
----@diagnostic disable: assign-type-mismatch
 local function is_inside_opencode_prompt()
     return vim.bo.filetype == 'opencode'
 end
@@ -76,7 +75,7 @@ return {
                     end,
                     'fallback',
                 },
-            },
+            } --[[@as blink.cmp.KeymapConfig]],
             snippets = { preset = 'luasnip' },
             completion = {
                 documentation = {
@@ -119,7 +118,7 @@ return {
                         },
                     },
                 },
-            },
+            } --[[@as blink.cmp.CompletionConfigPartial]],
             sources = {
                 default = function()
                     if vim.bo.filetype == 'gitcommit' then
@@ -262,7 +261,7 @@ return {
                         opts = {},
                     },
                 },
-            },
+            } --[[@as blink.cmp.SourceConfigPartial]],
             signature = {
                 enabled = true,
                 window = { border = 'rounded' },

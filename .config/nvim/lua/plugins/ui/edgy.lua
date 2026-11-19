@@ -1,4 +1,4 @@
----@diagnostic disable: undefined-field, param-type-mismatch, assign-type-mismatch
+---@diagnostic disable: undefined-field
 ---@type doze.Spec
 return {
     src = 'https://github.com/folke/edgy.nvim',
@@ -19,7 +19,7 @@ return {
                 right = { size = 78 },
             },
             wo = {
-                winbar = true,
+                winbar = true --[[@as string]],
                 fillchars = 'eob: ,fold: ,foldopen:,foldclose:,foldsep: ,foldinner: ',
                 winhighlight = 'WinBar:EdgyWinBar,WinBarNC:EdgyWinBarNC,Normal:EdgyNormal,WinSeparator:EdgyWinSeparator',
             },
@@ -49,6 +49,7 @@ return {
                 {
                     ft = 'snacks_layout_box',
                     title = 'Explorer',
+                    ---@param win integer
                     filter = function(_buf, win)
                         -- exclude floating windows
                         return vim.api.nvim_win_get_config(win).relative == ''
@@ -56,7 +57,7 @@ return {
                     wo = {
                         winbar = false,
                     },
-                },
+                } --[[@as Edgy.View.Opts]],
                 {
                     ft = 'neotest-summary',
                     title = 'Tests',
@@ -65,14 +66,14 @@ return {
                         wrap = false,
                         winhighlight = 'WinBar:EdgyWinBar,WinBarNC:EdgyWinBarNC,Normal:EdgyNormal,WinSeparator:EdgyWinSeparator,CursorLine:Visual',
                     },
-                },
+                } --[[@as Edgy.View.Opts]],
                 {
                     ft = 'atlas-ui.pipelines',
                     title = 'CI',
                     wo = {
                         winfixbuf = true,
                     },
-                },
+                } --[[@as Edgy.View.Opts]],
                 {
                     ft = 'codediff-explorer',
                     title = 'CodeDiff Explorer',
@@ -80,7 +81,7 @@ return {
                         winbar = false,
                         listchars = 'extends: ',
                     },
-                },
+                } --[[@as Edgy.View.Opts]],
             },
             right = {
                 {
@@ -90,7 +91,7 @@ return {
                         winbar = false,
                         winfixbuf = true,
                     },
-                },
+                } --[[@as Edgy.View.Opts]],
                 {
                     ft = 'opencode_output',
                     wo = {
@@ -100,7 +101,7 @@ return {
                         conceallevel = 3,
                         concealcursor = 'n',
                     },
-                },
+                } --[[@as Edgy.View.Opts]],
                 {
                     ft = 'opencode',
                     size = { height = 10 },
@@ -110,7 +111,7 @@ return {
                         winhighlight = 'Normal:OpencodeBackground',
                         statuscolumn = '',
                     },
-                },
+                } --[[@as Edgy.View.Opts]],
                 {
                     ft = 'help',
                     size = { height = 40 },
@@ -139,7 +140,7 @@ return {
                             and not vim.w[win].trouble_preview
                     end,
                     wo = { winbar = false },
-                },
+                } --[[@as Edgy.View.Opts]],
                 {
                     ft = 'trouble',
                     filter = function(_buf, win)
@@ -149,13 +150,13 @@ return {
                             and not vim.w[win].trouble_preview
                     end,
                     wo = { winbar = false },
-                },
-                { ft = 'qf', title = 'QuickFix' },
+                } --[[@as Edgy.View.Opts]],
+                { ft = 'qf', title = 'QuickFix' } --[[@as Edgy.View.Opts]],
                 {
                     ft = 'dap-view',
                     title = 'DAP',
                     size = { height = 15 },
-                },
+                } --[[@as Edgy.View.Opts]],
                 {
                     ft = 'OverseerList',
                     title = 'Tasks',
@@ -163,16 +164,17 @@ return {
                     wo = {
                         winhighlight = 'WinBar:EdgyWinBar,WinBarNC:EdgyWinBarNC,Normal:EdgyNormal,WinSeparator:EdgyWinSeparator,CursorLine:Visual',
                     },
-                },
+                } --[[@as Edgy.View.Opts]],
                 {
                     ft = 'OverseerOutput',
+                    ---@param win integer
                     filter = function(_buf, win)
                         -- exclude floating windows
                         return vim.api.nvim_win_get_config(win).relative == ''
                     end,
                     title = 'Output',
                     size = { height = 20 },
-                },
+                } --[[@as Edgy.View.Opts]],
                 {
                     ft = 'codediff-history',
                     title = 'Commit History',
@@ -180,9 +182,10 @@ return {
                         winbar = false,
                         listchars = 'extends: ',
                     },
-                },
+                } --[[@as Edgy.View.Opts]],
             },
         }
-        require('edgy').setup(opts)
+        local edgy = require('edgy') --[[@as Edgy]]
+        edgy.setup(opts)
     end,
 }

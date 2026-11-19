@@ -3,7 +3,7 @@ return {
     src = 'https://github.com/abecodes/tabout.nvim',
     event = 'InsertEnter',
     config = function()
-        ---@type TaboutOptions
+        ---@type Partial<TaboutOptions>
         local opts = {
             completion = false,
             tabouts = {
@@ -18,6 +18,6 @@ return {
             },
             ignore_beginning = true,
         }
-        require('tabout').setup(opts)
+        require('tabout').setup(opts --[[@as TaboutOptions]])
     end,
 }

@@ -30,11 +30,11 @@ return {
         -- },
     },
     config = function()
-        ---@diagnostic disable-next-line: param-type-mismatch
-        require('dap-view').setup({
-            ---@diagnostic disable-next-line: missing-fields
-            windows = { terminal = { hide = { 'go' } } },
-        })
+        ---@type dapview.Config
+        local opts = {
+            windows = { terminal = { hide = { 'go' } } } --[[@as dapview.WindowsConfigPartial]],
+        }
+        require('dap-view').setup(opts)
 
         vim.api.nvim_create_autocmd('FileType', {
             pattern = { 'dap-view' },
