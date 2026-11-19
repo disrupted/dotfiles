@@ -433,14 +433,19 @@ M.setup = function()
     -- change global working directory to workspace root
     -- vim.api.nvim_set_current_dir(vim.g.workspace_root)
 
-    Snacks.notify({
-        string.format(
-            '%s [%s %s]',
-            vim.g.workspace_root,
-            vim.g.workspace_type,
-            vim.g.project_filetype
-        ),
-    }, { title = 'Workspace', level = vim.log.levels.DEBUG })
+    -- scheduled so snacks.notifier isn't loaded during startup
+    local message = string.format(
+        '%s [%s %s]',
+        vim.g.workspace_root,
+        vim.g.workspace_type,
+        vim.g.project_filetype
+    )
+    vim.schedule(function()
+        Snacks.notify(
+            { message },
+            { title = 'Workspace', level = vim.log.levels.DEBUG }
+        )
+    end)
 
     local argv = vim.fn.argv(0)
     if type(argv) == 'string' and argv:match('.git/COMMIT_EDITMSG') ~= nil then

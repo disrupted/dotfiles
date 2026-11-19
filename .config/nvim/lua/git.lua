@@ -382,10 +382,13 @@ M.watch = function()
     watcher = assert(vim.uv.new_fs_event())
     local file_to_watch = vim.g.git_repo .. '/HEAD'
     watcher:start(file_to_watch, {}, vim.schedule_wrap(on_file_change))
-    Snacks.notify(
-        { ('initialized watcher on %s'):format(file_to_watch) },
-        { title = 'Git', level = vim.log.levels.DEBUG }
-    )
+    -- scheduled so snacks.notifier isn't loaded during startup
+    vim.schedule(function()
+        Snacks.notify(
+            { ('initialized watcher on %s'):format(file_to_watch) },
+            { title = 'Git', level = vim.log.levels.DEBUG }
+        )
+    end)
 end
 
 M.close = function()
