@@ -47,7 +47,23 @@ local disabled_builtin_plugins = {
 for _, plugin in pairs(disabled_builtin_plugins) do
     vim.g['loaded_' .. plugin] = 1
 end
-require('conf.lsp')
+-- off the startup path, but before the first file's FileType can start a client
+local au_lsp = vim.api.nvim_create_augroup('lsp_setup', { clear = true })
+local function setup_lsp()
+    vim.api.nvim_del_augroup_by_id(au_lsp)
+    require('conf.lsp')
+end
+vim.api.nvim_create_autocmd({ 'BufReadPre', 'BufNewFile' }, {
+    group = au_lsp,
+    once = true,
+    callback = setup_lsp,
+})
+vim.api.nvim_create_autocmd('User', {
+    group = au_lsp,
+    pattern = 'VeryLazy',
+    once = true,
+    callback = setup_lsp,
+})
 vim.o.exrc = true
 vim.g.health = { style = 'float' }
 -----------------------------------------------------------------------------//
