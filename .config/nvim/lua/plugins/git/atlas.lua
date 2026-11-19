@@ -1,3 +1,38 @@
+---@return table<string, string> paths `namespace/repo` of each remote -> checkout under ~/work
+local function work_repo_paths()
+    local paths, scores = {}, {}
+    for _, git_dir in ipairs(vim.fn.glob('~/work/*/*/.git', true, true)) do
+        if vim.fn.isdirectory(git_dir) == 1 then
+            local dir = vim.fs.dirname(git_dir)
+            local remote
+            for _, line in ipairs(vim.fn.readfile(git_dir .. '/config')) do
+                local section = line:match('^%[(.*)%]')
+                if section then
+                    remote = section:match('^remote "(.+)"$')
+                end
+                local url = remote and line:match('^%s*url%s*=%s*(%S+)')
+                local repo = url
+                    and (
+                        url:match('^%a[%w+.-]*://[^/]+/(.+)$')
+                        or url:match('^[^/:]+:(.+)$')
+                    )
+                if repo then
+                    repo = repo:gsub('/+$', ''):gsub('%.git$', '')
+                    -- extra remotes (forks, upstreams) must not claim another checkout's repo
+                    local score = (
+                        vim.fs.basename(repo) == vim.fs.basename(dir) and 2 or 0
+                    )
+                        + (remote == 'origin' and 1 or 0)
+                    if score > (scores[repo] or -1) then
+                        paths[repo], scores[repo] = dir, score
+                    end
+                end
+            end
+        end
+    end
+    return paths
+end
+
 ---@type LazeSpec
 return {
     'emrearmagan/atlas.nvim',
@@ -75,9 +110,7 @@ return {
                     lsp = { enabled = true },
                 },
                 repo_config = {
-                    paths = {
-                        ['bakdata/*'] = '~/bakdata/*',
-                    },
+                    paths = work_repo_paths(),
                 },
                 github = {
                     views = {
