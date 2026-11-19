@@ -273,7 +273,7 @@ return {
             context = {
                 diagnostics = {
                     info = false,
-                    warn = false,
+                    warning = false,
                     error = false,
                     only_closest = true,
                 } --[[@as OpencodeContextConfig['diagnostics'] ]],
