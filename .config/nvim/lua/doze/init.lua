@@ -13,25 +13,19 @@ function M.setup(specs)
     -- PackChanged fires inside vim.pack.add() for fresh installs, so the subscription must come first.
     build.subscribe(loader.plugins)
 
-    local eager, lazy = {}, {}
+    -- Startup plugins too: loader.load() below runs their :packadd, letting vim.pack do it would run it twice.
+    local packs = {}
     for _, plugin in ipairs(plugins) do
         local spec = plugin.spec
-        local pack = {
+        table.insert(packs, {
             src = spec.src,
             name = plugin.name,
             version = spec.version,
             data = spec.data,
-        }
-        table.insert(
-            (spec.lazy == false and loader.enabled(plugin)) and eager or lazy,
-            pack
-        )
+        })
     end
-    if #eager > 0 then
-        vim.pack.add(eager, { load = false })
-    end
-    if #lazy > 0 then
-        vim.pack.add(lazy, { load = function() end })
+    if #packs > 0 then
+        vim.pack.add(packs, { load = function() end })
     end
     build.wait()
     loader.install_searcher()
