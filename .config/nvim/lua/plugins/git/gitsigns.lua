@@ -1,7 +1,9 @@
 ---@type doze.Spec
 return {
     src = 'https://github.com/lewis6991/gitsigns.nvim',
-    event = { 'BufWinEnter', 'BufNewFile' },
+    -- not BufWinEnter: it fires for the empty startup buffer
+    event = { 'BufReadPost', 'BufNewFile', 'BufWritePost' },
+    cmd = 'Gitsigns',
     init = function()
         require('which-key').add({
             {
