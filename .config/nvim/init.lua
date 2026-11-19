@@ -651,22 +651,7 @@ end, {
 -----------------------------------------------------------------------------//
 -- }}}1
 -----------------------------------------------------------------------------//
----@param mode string
----@param key string
-local function keymap_exists(mode, key)
-    local mappings = vim.api.nvim_get_keymap(mode)
-
-    local lhs_mappings = vim.tbl_map(function(mapping)
-        return mapping.lhs
-    end, mappings)
-
-    return vim.tbl_contains(lhs_mappings, key)
-end
-
 -- remove some default keymaps
-local nmaps_to_delete = { 'gra', 'gri', 'grn', 'grr', 'grt', 'grx', 'gO', 'gx', 'gcc' }
-for _, nmap in ipairs(nmaps_to_delete) do
-    if keymap_exists('n', nmap) then
-        vim.keymap.del('n', nmap)
-    end
+for _, nmap in ipairs({ 'gra', 'gri', 'grn', 'grr', 'grt', 'grx', 'gO', 'gx', 'gcc' }) do
+    pcall(vim.keymap.del, 'n', nmap)
 end
