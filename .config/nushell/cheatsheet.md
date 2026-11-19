@@ -31,9 +31,9 @@ jsonr file.json
 yamlr file.yaml
 ```
 
-## Project history
-- Alt+R: project-local history (fuzzy picker)
-- Ctrl+R: global history search
+## History
+- Ctrl+R: history search (exact match, newest first)
+- Alt+R inside it: toggle between all history and the current directory
 
 ## Files and paths
 ```nu

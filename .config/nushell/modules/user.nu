@@ -182,20 +182,33 @@ export def dl [url: string output?: path] {
   }
 }
 
-def hproj [path?: path --table] {
-  let base = (if $path == null { $env.PWD } else { $path }) | path expand
-  let h = (try { history --long } catch { [] })
-  if ($h | is-empty) { return }
-  if ('cwd' in ($h | columns)) {
-    let rows = ($h | where {|row| ($row.cwd | path expand | str starts-with $base) })
-    if $table { $rows } else { $rows | get command }
-  } else {
-    if $table { $h } else { $h | get command }
+export def history_pick [] {
+  let base = $env.PWD
+  let history = history --long | where exit_status == 0
+  mut here = false
+  mut query = commandline
+  loop {
+    let prompt = if $here { $"($base | str replace $nu.home-dir '~')> " } else { "history> " }
+    let commands = if $here {
+      $history | where {|row| $row.cwd? == $base or ($row.cwd? | default '' | str starts-with $"($base)/") }
+    } else { $history }
+    let out = try {
+      $commands
+      | get command
+      | reverse
+      | uniq
+      | str join (char -i 0)
+      | ^sk --exact --scheme=history --read0 --print0 --print-query --prompt $prompt --layout=reverse --height=40% --preview-window='down:3:wrap' --bind 'alt-up:preview-up,alt-down:preview-down,alt-r:accept(alt-r)' -q $query --preview='echo {} | nu --stdin -c \'nu-highlight\''
+      | decode utf-8
+    } catch { null }
+    if $out == null { return }
+    let parts = $out | split row (char -i 0)
+    if $parts.1? == 'alt-r' {
+      $here = not $here
+      $query = $parts.0
+      continue
+    }
+    commandline edit --replace ($parts.1? | default '' | str trim)
+    return
   }
-}
-
-export def --env hproj_pick [] {
-  let choice = (hproj | input list --fuzzy "Project history")
-  if ($choice | is-empty) { return }
-  commandline edit --replace $choice
 }

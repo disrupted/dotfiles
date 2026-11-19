@@ -168,13 +168,6 @@ $env.config.keybindings ++= [
     #   ]
     # }
   }
-  {
-    name: project_history
-    modifier: alt
-    keycode: char_r
-    mode: [emacs]
-    event: {send: ExecuteHostCommand cmd: "hproj_pick"}
-  }
   # Edit command line in $EDITOR (Ctrl+v)
   {
     name: edit_command_line
@@ -269,20 +262,7 @@ $env.config.keybindings ++= [
     modifier: control
     keycode: char_r
     mode: [emacs vi_normal vi_insert]
-    event: {
-      send: ExecuteHostCommand
-      cmd: "commandline edit --replace (
-        history
-          | where exit_status == 0
-          | get command
-          | reverse
-          | uniq
-          | str join (char -i 0)
-          | ^sk --scheme=history --read0 --layout=reverse --height=40% --preview-window='down:3:wrap' --bind alt-up:preview-up,alt-down:preview-down -q (commandline) --preview='echo {} | nu --stdin -c \'nu-highlight\''
-          | decode utf-8
-          | str trim
-      )"
-    }
+    event: {send: ExecuteHostCommand cmd: "history_pick"}
   }
   {
     name: ask_agent
