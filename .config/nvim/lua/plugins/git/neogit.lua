@@ -1,8 +1,6 @@
 ---@type doze.Spec
 return {
-    -- 'NeogitOrg/neogit',
-    src = 'https://github.com/disrupted/neogit',
-    version = 'fix/git-dir-relative-to-repo',
+    src = 'https://github.com/NeogitOrg/neogit',
     keys = {
         {
             '<Leader>gg',
