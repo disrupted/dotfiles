@@ -283,8 +283,22 @@ end
 
 function M.setup()
     mise_available()
-    M.load()
     local group = vim.api.nvim_create_augroup('conf.project', { clear = true })
+    -- spawning mise blocks for a few ms, so keep it off the startup path
+    if vim.v.vim_did_enter == 1 then
+        M.load()
+    else
+        vim.api.nvim_create_autocmd('VimEnter', {
+            group = group,
+            once = true,
+            callback = function()
+                if roots_for ~= vim.g.workspace_root then
+                    M.load()
+                end
+            end,
+            desc = 'Load mise monorepo config roots',
+        })
+    end
     vim.api.nvim_create_autocmd('BufWritePost', {
         group = group,
         pattern = { 'mise.toml', '.mise.toml', 'mise.*.toml' },
