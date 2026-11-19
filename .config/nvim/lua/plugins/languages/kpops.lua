@@ -2,7 +2,9 @@
 return {
     src = 'https://github.com/disrupted/kpops.nvim',
     lazy = false,
-    ---@module 'kpops.config'
-    ---@type kpops.Opts
-    opts = {},
+    config = function()
+        ---@type kpops.Opts
+        local opts = {}
+        require('kpops').setup(opts)
+    end,
 }

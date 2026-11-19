@@ -2,5 +2,7 @@
 return {
     src = 'https://github.com/tiagovla/scope.nvim', -- tab-scoped buffers
     event = 'TabNew',
-    opts = {},
+    config = function()
+        require('scope').setup({})
+    end,
 }

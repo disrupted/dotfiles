@@ -17,6 +17,27 @@ local function default_name(src)
     return name or src
 end
 
+local FIELDS = {}
+for _, field in ipairs({
+    'src',
+    'name',
+    'version',
+    'data',
+    'lazy',
+    'enabled',
+    'priority',
+    'dependencies',
+    'event',
+    'ft',
+    'cmd',
+    'keys',
+    'init',
+    'config',
+    'build',
+}) do
+    FIELDS[field] = true
+end
+
 ---@param specs doze.Spec[]
 ---@return doze.Plugin[]
 function M.register(specs)
@@ -27,6 +48,14 @@ function M.register(specs)
             table.insert(errors, ('spec #%d has no `src`'):format(i))
         else
             local name = spec.name or default_name(spec.src)
+            for field in pairs(spec) do
+                if not FIELDS[field] then
+                    table.insert(
+                        errors,
+                        ('%s has unknown field `%s`'):format(name, field)
+                    )
+                end
+            end
             if M.plugins[name] then
                 table.insert(errors, ('duplicate plugin name %s'):format(name))
             else
@@ -45,12 +74,6 @@ function M.register(specs)
                     ('%s depends on undeclared %s'):format(plugin.name, dep)
                 )
             end
-        end
-        if plugin.spec.opts and plugin.spec.config then
-            table.insert(
-                errors,
-                ('%s sets both `opts` and `config`'):format(plugin.name)
-            )
         end
     end
     if #errors > 0 then
@@ -78,34 +101,6 @@ local function top_modules(path)
     end
     table.sort(mods)
     return mods
-end
-
--- Same normalization as lazy.nvim, so `foo.nvim` and `nvim-foo` both map to module `foo`.
----@param name string
----@return string
-local function normname(name)
-    local n =
-        name:lower():gsub('^n?vim%-', ''):gsub('%.n?vim$', ''):gsub('[%.%-]lua', '')
-    return (n:gsub('[^a-z]+', ''))
-end
-
----@param plugin doze.Plugin
----@return string
-function M.main(plugin)
-    if plugin.spec.main then
-        return plugin.spec.main
-    end
-    local mods = top_modules(plugin.path)
-    local want = normname(plugin.name)
-    for _, mod in ipairs(mods) do
-        if normname(mod) == want then
-            return mod
-        end
-    end
-    if #mods == 1 and mods[1] then
-        return mods[1]
-    end
-    error(('cannot tell the main module of %s, set `main`'):format(plugin.name), 0)
 end
 
 ---@type doze.Plugin[]
@@ -195,14 +190,11 @@ end
 
 ---@param plugin doze.Plugin
 local function configure(plugin)
-    local spec = plugin.spec
-    local ok, err = pcall(function()
-        if spec.config then
-            spec.config(plugin)
-        elseif spec.opts then
-            require(M.main(plugin)).setup(spec.opts)
-        end
-    end)
+    local config = plugin.spec.config
+    if not config then
+        return
+    end
+    local ok, err = pcall(config, plugin)
     if not ok then
         warn(('config of %s failed: %s'):format(plugin.name, err))
     end

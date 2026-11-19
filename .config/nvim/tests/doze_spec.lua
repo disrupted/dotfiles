@@ -144,10 +144,6 @@ vim.api.nvim_create_autocmd('FileType', {
         })
         r.off = make_repo(root, 'off', { ['lua/off/init.lua'] = 'return {}' })
         r.vl = make_repo(root, 'vl', { ['lua/vl.lua'] = 'return {}' })
-        r.optmod = make_repo(root, 'optmod.nvim', {
-            ['lua/optmod/init.lua'] = 'return { setup = function(o) R.opts_value = o.value end }',
-            ['lua/optmod/util.lua'] = 'return {}',
-        })
 
         local function cfg(name)
             return ('config = function() table.insert(R.order, %q) end'):format(name)
@@ -178,7 +174,6 @@ vim.api.nvim_create_autocmd('FileType', {
             ),
             ('{ src = %q, enabled = false },'):format(r.off),
             ('{ src = %q, event = "VeryLazy", %s },'):format(r.vl, cfg('vl')),
-            ('{ src = %q, lazy = false, opts = { value = 42 } },'):format(r.optmod),
             '})',
             'R.lib_at_init = require("lib").name',
             'R.lib_configured = vim.tbl_contains(R.order, "lib")',
@@ -232,7 +227,6 @@ vim.api.nvim_create_autocmd('FileType', {
             assert.is_false(res.off_loaded, run)
             assert.is_true(res.off_installed, run)
             assert.is_false(res.idle_on_rtp, run)
-            assert.equal(42, res.opts_value, run)
         end
     end)
 
@@ -340,14 +334,16 @@ vim.api.nvim_create_autocmd('FileType', {
         assert.equal('fnb', res.fn_built)
     end)
 
-    it('rejects undeclared dependencies', function()
+    it('rejects undeclared dependencies and unknown fields', function()
         package.loaded['doze.loader'] = nil
         local ok, err = pcall(require('doze.loader').register, {
             { src = 'https://example.com/a', dependencies = { 'missing' } },
+            { src = 'https://example.com/b', opts = {} },
         })
         package.loaded['doze.loader'] = nil
         assert.is_false(ok)
         assert.match('a depends on undeclared missing', err)
+        assert.match('b has unknown field `opts`', err)
     end)
 
     it('runs shell builds without blocking', function()

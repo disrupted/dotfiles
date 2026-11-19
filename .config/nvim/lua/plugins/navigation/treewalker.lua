@@ -88,5 +88,7 @@ return {
             desc = 'Treewalker swap right',
         },
     },
-    opts = {},
+    config = function()
+        require('treewalker').setup({})
+    end,
 }

@@ -4,5 +4,7 @@ return {
     src = 'https://github.com/gerazov/presenting.nvim',
     version = 'add_title_to_footer',
     cmd = 'Presenting',
-    opts = {},
+    config = function()
+        require('presenting').setup({})
+    end,
 }

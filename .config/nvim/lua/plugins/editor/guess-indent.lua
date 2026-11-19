@@ -3,5 +3,7 @@ return {
     src = 'https://github.com/NMAC427/guess-indent.nvim',
     cmd = 'GuessIndent',
     event = { 'BufReadPre', 'BufNewFile' },
-    opts = {},
+    config = function()
+        require('guess-indent').setup({})
+    end,
 }

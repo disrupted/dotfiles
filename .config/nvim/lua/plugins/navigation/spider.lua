@@ -47,7 +47,11 @@ return {
             mode = { 'n', 'o', 'x' },
         },
     },
-    opts = {
-        skipInsignificantPunctuation = true,
-    },
+    config = function()
+        local opts = {
+            skipInsignificantPunctuation = true,
+        }
+        ---@diagnostic disable-next-line: param-type-mismatch
+        require('spider').setup(opts)
+    end,
 }

@@ -23,19 +23,22 @@ return {
             desc = 'Class',
         },
     },
-    opts = {
-        snippet_engine = 'luasnip',
-        languages = {
-            python = {
-                template = {
-                    annotation_convention = 'reST',
+    config = function()
+        local opts = {
+            snippet_engine = 'luasnip',
+            languages = {
+                python = {
+                    template = {
+                        annotation_convention = 'reST',
+                    },
+                },
+                lua = {
+                    template = {
+                        annotation_convention = 'emmylua',
+                    },
                 },
             },
-            lua = {
-                template = {
-                    annotation_convention = 'emmylua',
-                },
-            },
-        },
-    },
+        }
+        require('neogen').setup(opts)
+    end,
 }

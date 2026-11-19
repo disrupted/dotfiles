@@ -13,12 +13,14 @@ return {
             desc = 'Find and Replace',
         },
     },
-    ---@module 'grug-far'
-    ---@type grug.far.OptionsOverride
-    opts = {
-        keymaps = {
-            nextInput = { n = '<C-n>', i = '<C-n>' },
-            prevInput = { n = '<C-p>', i = '<C-p>' },
-        },
-    },
+    config = function()
+        ---@type grug.far.OptionsOverride
+        local opts = {
+            keymaps = {
+                nextInput = { n = '<C-n>', i = '<C-n>' },
+                prevInput = { n = '<C-p>', i = '<C-p>' },
+            },
+        }
+        require('grug-far').setup(opts)
+    end,
 }

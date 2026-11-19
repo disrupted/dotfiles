@@ -35,9 +35,12 @@ return { -- inituitive window splits resizing
             desc = 'Expand window right',
         },
     },
-    opts = {
-        disable_keymaps = true,
-        vertical_step_size = 2,
-        horizontal_step_size = 2,
-    },
+    config = function()
+        local opts = {
+            disable_keymaps = true,
+            vertical_step_size = 2,
+            horizontal_step_size = 2,
+        }
+        require('ripple').setup(opts)
+    end,
 }

@@ -3,5 +3,7 @@ return {
     src = 'https://github.com/dmtrKovalenko/fff',
     lazy = false,
     build = 'cargo build --release --lib',
-    opts = {},
+    config = function()
+        require('fff').setup({})
+    end,
 }

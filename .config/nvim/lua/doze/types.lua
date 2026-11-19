@@ -20,8 +20,6 @@
 ---@field ft? string|string[]
 ---@field cmd? string|string[]
 ---@field keys? doze.KeySpec[]
----@field main? string
----@field opts? table passed to `require(main).setup()`
 ---@field init? fun(plugin: doze.Plugin)
 ---@field config? fun(plugin: doze.Plugin)
 ---@field build? string|fun(plugin: doze.Plugin)

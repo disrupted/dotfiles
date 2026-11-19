@@ -62,7 +62,9 @@ return {
         --     desc = 'Change a surrounding pair, putting replacements on new lines',
         -- },
     },
-    ---@module 'nvim-surround.config'
-    ---@type user_options
-    opts = {},
+    config = function()
+        ---@type user_options
+        local opts = {}
+        require('nvim-surround').setup(opts)
+    end,
 }

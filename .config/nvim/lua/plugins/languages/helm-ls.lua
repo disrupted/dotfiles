@@ -2,5 +2,7 @@
 return {
     src = 'https://github.com/qvalentin/helm-ls.nvim',
     ft = 'helm',
-    opts = {},
+    config = function()
+        require('helm-ls').setup()
+    end,
 }

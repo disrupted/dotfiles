@@ -3,10 +3,12 @@ return {
     src = 'https://github.com/tar80/matchwith.nvim',
     enabled = false, -- FIXME: plugin bugs cause some errors
     event = { 'BufWinEnter', 'BufNewFile' },
-    ---@module 'matchwith.config'
-    ---@type Options
-    opts = {
-        jump_key = '%',
-        ignore_filetypes = {},
-    },
+    config = function()
+        ---@type Options
+        local opts = {
+            jump_key = '%',
+            ignore_filetypes = {},
+        }
+        require('matchwith').setup(opts)
+    end,
 }

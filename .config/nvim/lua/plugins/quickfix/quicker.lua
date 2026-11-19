@@ -14,18 +14,20 @@ return {
             },
         })
     end,
-    ---@module 'quicker'
-    ---@type quicker.SetupOptions
-    opts = {
-        opts = { winhighlight = 'CursorLine:Visual,Delimiter:WinSeparator' },
-        borders = { vert = ' ' },
-        -- TODO: can we enable this with async TreeSitter
-        -- highlight = {
-        --     -- Load the referenced buffers to apply more accurate highlights (may be slow)
-        --     load_buffers = true,
-        -- },
-        max_filename_width = function()
-            return math.floor(math.min(95, vim.o.columns / 2))
-        end,
-    },
+    config = function()
+        ---@type quicker.SetupOptions
+        local opts = {
+            opts = { winhighlight = 'CursorLine:Visual,Delimiter:WinSeparator' },
+            borders = { vert = ' ' },
+            -- TODO: can we enable this with async TreeSitter
+            -- highlight = {
+            --     -- Load the referenced buffers to apply more accurate highlights (may be slow)
+            --     load_buffers = true,
+            -- },
+            max_filename_width = function()
+                return math.floor(math.min(95, vim.o.columns / 2))
+            end,
+        }
+        require('quicker').setup(opts)
+    end,
 }

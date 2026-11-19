@@ -2,7 +2,9 @@
 return {
     src = 'https://github.com/disrupted/github-actions.nvim',
     lazy = false,
-    ---@module 'github-actions.config'
-    ---@type github_actions.Opts
-    opts = {},
+    config = function()
+        ---@type github_actions.Opts
+        local opts = {}
+        require('github-actions').setup(opts)
+    end,
 }

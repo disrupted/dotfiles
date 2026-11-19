@@ -2,5 +2,7 @@
 return {
     src = 'https://github.com/rachartier/tiny-cmdline.nvim',
     event = 'UIEnter',
-    opts = {},
+    config = function()
+        require('tiny-cmdline').setup()
+    end,
 }
