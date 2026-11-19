@@ -9,6 +9,7 @@ bun = "latest"
 node = "latest"
 
 uv = "latest"
+cargo-binstall = "latest"
 
 fnox = "latest"
 age = "latest"
@@ -45,10 +46,10 @@ pi = "latest"
 shellcheck = "latest"
 jactionlint = { version = "latest", depends = ["shellcheck"] }
 tinymist = "latest"
-"aqua:expert-lsp/expert" = "latest"
-"aqua:mrjosh/helm-ls" = "latest"
-"aqua:hashicorp/terraform-ls" = "latest"
-"github:tombi-toml/tombi" = "latest"
+expert = "latest"
+helm-ls = "latest"
+terraform-ls = "latest"
+tombi = "latest"
 "github:ribru17/ts_query_ls" = "latest"
 "github:vale-cli/vale-ls" = "latest"
 "github:stubbedev/shell-lsp" = "latest"
@@ -56,7 +57,7 @@ tinymist = "latest"
 "cargo:emmylua_formatter" = "0.25.1"
 "cargo:emmylua_ls" = "0.25.1"
 "cargo:gitlab-ci-ls" = "latest"
-"cargo:nickel-lang-lsp" = "latest"
+"github:tweag/nickel" = { version = "latest", matching_regex = "^nls-", rename_exe = "nls" }
 "cargo:vimdoc-language-server" = "latest"
 # Native pkl-lsp binaries, temporarily pulled from GitHub Actions CI artifacts (expire 2027-01-05)
 # Built from apple/pkl-lsp@3c3c9de3 (run 37673597423); native builds were removed from CI again in apple/pkl-lsp#270
@@ -75,7 +76,7 @@ tinymist = "latest"
 "npm:yaml-language-server" = { version = "latest", postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:@mistweaverco/kulala-fmt" = { version = "latest", allow_low_downloads = true, postinstall = { run = "$HOME/.config/mise/scripts/overwrite-node-with-bun-runtime.sh", when = "always" } }
 "npm:typescript-svelte-plugin" = "latest"  # library plugin, no bin/ -> no runtime to patch
-"github:ewhauser/shuck" = "latest"
+"aqua:ewhauser/shuck" = "latest"
 worktrunk = { version = "latest", workflow = "release.yaml" }
 "github:JohnnyMorganz/luau-lsp" = "1.70.1"
 
@@ -84,6 +85,8 @@ self_update.auto = true
 experimental = true
 task.run_auto_install = false
 exec_auto_install = false
+# experimental and slows down `mise search`; opt in per project
+disable_backends = ["truebrew"]
 
 # dotfiles are versioned in ~/.dotfiles (git), not mise's own history/capture
 [settings.history]
