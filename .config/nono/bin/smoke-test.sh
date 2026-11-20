@@ -143,6 +143,9 @@ check "~/.ssh stays hidden" denied "$HOME/.ssh"
 check "fnox config stays hidden" denied "${XDG_CONFIG_HOME:-$HOME/.config}/fnox"
 check "no writes outside granted dirs" cannot_write "$HOME/.nono-smoke-probe"
 check "caches and package manager homes are writable" package_homes_writable
+if command -v docker >/dev/null; then
+    check "docker reaches the daemon" docker version --format '{{.Server.Version}}'
+fi
 cd "$SMOKE_WORKTREE"
 check "mise x in a fresh worktree" mise x -- true
 check "mise run" mise run smoke
