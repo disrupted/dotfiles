@@ -70,13 +70,8 @@ if launched_in .config .dotfiles dev .local; then
     )
 fi
 
-if [ -n "${WORK:-}" ]; then
-    case "$launch_dir" in
-    "$home_dir"/*)
-        client="${launch_dir#"$home_dir"/}"
-        nono_args+=(--allow "$home_dir/${client%%/*}")
-        ;;
-    esac
+if launched_in work; then
+    nono_args+=(--allow "$home_dir/work")
 fi
 
 # Secrets fnox can resolve here, regardless of their `env` setting. Type "env var" means the
