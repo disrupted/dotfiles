@@ -31,8 +31,6 @@
   "filesystem": {
     "read": [
       "/usr/local/bin",
-      // mise state incl. the trust DB: readable, but the agent must not be able to `mise trust` its own edits
-      "$XDG_STATE_HOME/mise",
       "$XDG_DATA_HOME/gh",
       "$HOME/.pkl",
       "$HOME/.agents/skills",
@@ -56,22 +54,26 @@
       "$XDG_CONFIG_HOME/glab-cli/aliases.yml",
       { "path": "$HOME/Library/Application Support/nushell/plugin.msgpackz", "when": "macos" },
     ],
-    "allow_file": ["$XDG_STATE_HOME/mise/tool-purgatory.json"],
     "allow": [
+      // user_caches_macos grants this too, but the launcher's --read on it would win
+      "$XDG_CACHE_HOME",
+      // Package manager homes: caches, stores and global installs. The runtime groups only
+      // grant read access to them.
       "$HOME/.npm",
+      "$HOME/.bun",
+      "$XDG_DATA_HOME/pnpm",
+      "$XDG_DATA_HOME/uv",
+      "$HOME/go",
+      "$HOME/.gradle",
+      "$HOME/.m2",
+      // CARGO_HOME, set in the mise config
+      "$XDG_DATA_HOME/mise/cargo",
       "$HOME/.nx",
       "$XDG_DATA_HOME/aube",
-      "$XDG_STATE_HOME/mise/tracked-configs",
-      "$XDG_STATE_HOME/mise/deps",
-      "$XDG_STATE_HOME/mise/incomplete-installs",
-      // display-only (`mise tasks history`), nothing replays it
-      "$XDG_STATE_HOME/mise/task-history",
+      "$XDG_STATE_HOME/mise",
       // agents install here, never into the host's mise dirs, which run unsandboxed
       "$XDG_DATA_HOME/mise-agent",
       "$XDG_CACHE_HOME/mise-agent",
-      // rust_runtime only covers ~/.cargo; cargo/bin stays read-only since the host runs it
-      "$XDG_DATA_HOME/mise/cargo/registry",
-      "$XDG_DATA_HOME/mise/cargo/git",
       { "path": "$HOME/Library/Preferences/helm", "when": "macos" },
       { "path": "$XDG_CONFIG_HOME/helm", "when": "linux" },
       "$NONO_CONFIG/profile-drafts",
@@ -84,23 +86,15 @@
     "unix_socket_dir_bind": ["$TMPDIR"],
     "suppress_save_prompt": ["/"],
   },
-  // Write-protect files the *host* later executes outside the sandbox: git hooks, git config
-  // (core.fsmonitor, core.hooksPath, ...; so git can't record upstream tracking), and nono's own
-  // launchers and profiles (reachable when ~/.config is granted). profile-drafts stays writable.
   // macOS only, see platform_overrides.linux.
   "unsafe_macos_seatbelt_rules": [
     // SysV semaphores: semget works, but semop/semctl fail with EPERM even with ipc_mode "full"
     // (that only covers POSIX semaphores). The prebuilt lmdb-js binary (Angular build cache,
     // Nx) locks with SysV semaphores and aborts (SIGABRT, exit 134) without them.
     "(allow ipc-sysv-sem)",
-    "(deny file-write* (regex #\"/\\.git/hooks(/|$)\"))",
-    "(deny file-write* (regex #\"/\\.git/config(\\.lock)?$\"))",
+    // Agents must not loosen their own sandbox, e.g. to get past a denial. profile-drafts stays
+    // writable. Needed because ~/.config is writable in dotfiles mode.
     "(deny file-write* (regex #\"/\\.config/nono/(bin|profiles)(/|$)\"))",
-    // Global mise config is implicitly trusted: its postinstall, tasks and env run on the host.
-    "(deny file-write* (regex #\"^/Users/[^/]+/\\.config/mise(/|$)\"))",
-    "(deny file-write* (regex #\"/\\.dotfiles(-private/home|/os/[^/]+)?/\\.config/mise(/|$)\"))",
-    // mise plugins are git clones; the host never runs anything from mise-agent
-    "(allow file-write* (regex #\"^/Users/[^/]+/\\.local/share/mise-agent/\"))",
   ],
   "environment": {
     // nono passes the environment through, so project secrets the fnox hook exports reach the
@@ -124,9 +118,6 @@
       "MISE_DATA_DIR": "$XDG_DATA_HOME/mise-agent",
       "MISE_CACHE_DIR": "$XDG_CACHE_HOME/mise-agent",
       "MISE_SHARED_INSTALL_DIRS": "$XDG_DATA_HOME/mise/installs",
-      // `mise x`/`run`/`install` otherwise record trust for already-trusted configs (e.g. via
-      // trusted_config_paths), which fails on the read-only trust DB and aborts the command
-      "__MISE_REQUIRE_EXPLICIT_TRUST": "1",
     },
   },
   // Host-side commands that produce the real secrets. They run unsandboxed in the launch
@@ -255,8 +246,7 @@
   "platform_overrides": {
     // UNTESTED. Landlock can't carve a deny out of a broader grant, so nono refuses to start when
     // filesystem.deny overlaps an allow; supervised mode enforces those via seccomp-notify instead.
-    // The seatbelt rules above have no Linux equivalent: .git/hooks, .git/config and nono's own
-    // config stay writable there.
+    // The seatbelt rules above have no Linux equivalent: nono's own config stays writable there.
     "linux": {
       "security": { "capability_elevation": true },
     },

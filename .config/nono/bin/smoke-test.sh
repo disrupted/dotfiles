@@ -28,10 +28,10 @@ mise_state="${XDG_STATE_HOME:-$HOME/.local/state}/mise"
 
 cleanup() {
     local link agent
-    # the host-side `mise x` in the launcher records trust for the launch dir
+    # mise records trust for every project it loads, on the host and in the sandbox
     for link in "$mise_state"/trusted-configs/* "$mise_state"/tracked-configs/*; do
         case "$(readlink "$link" 2>/dev/null)" in
-        "$tmp"/*) rm -f "$link" ;;
+        "$tmp"/* | /private/tmp/nono-smoke-*) rm -f "$link" ;;
         esac
     done
     # mise names each project's history dir after its root
@@ -94,7 +94,7 @@ recorded_in_history() {
     [ "$(mise tasks history "$1" --json)" != "[]" ]
 }
 
-# Untrusted unless the launcher's temp-dir trust works: hooks and templates need trust
+# Untrusted, so mise has to record trust for it
 throwaway_project() {
     local dir
     dir="$(mktemp -d /tmp/nono-smoke-project.XXXXXX)"
@@ -105,8 +105,44 @@ throwaway_project() {
     return "$status"
 }
 
+clone() {
+    local dir
+    dir="$(mktemp -d)"
+    git clone -q "$SMOKE_WORKTREE" "$dir/clone"
+    local status=$?
+    rm -rf "$dir"
+    return "$status"
+}
+
+denied() {
+    ! ls "$1" >/dev/null 2>&1
+}
+
+cannot_write() {
+    if touch "$1" 2>/dev/null; then
+        rm -f "$1"
+        return 1
+    fi
+}
+
+# Only the ones that exist on this machine
+package_homes_writable() {
+    local dir probe
+    for dir in "${XDG_CACHE_HOME:-$HOME/.cache}" "$HOME/.npm" "$HOME/.bun" "$HOME/.local/share/pnpm" "$HOME/.local/share/uv" "$HOME/go" "${CARGO_HOME:-$HOME/.cargo}"; do
+        [ -d "$dir" ] || continue
+        probe="$dir/.nono-smoke-probe"
+        touch "$probe" && rm -f "$probe" || return 1
+    done
+}
+
 check "$agent --version" "$agent" --version
 check "mise x in a throwaway project in /tmp" throwaway_project
+check "git clone" clone
+check "reads anywhere in \$HOME" ls "$HOME/.config"
+check "~/.ssh stays hidden" denied "$HOME/.ssh"
+check "fnox config stays hidden" denied "${XDG_CONFIG_HOME:-$HOME/.config}/fnox"
+check "no writes outside granted dirs" cannot_write "$HOME/.nono-smoke-probe"
+check "caches and package manager homes are writable" package_homes_writable
 cd "$SMOKE_WORKTREE"
 check "mise x in a fresh worktree" mise x -- true
 check "mise run" mise run smoke
