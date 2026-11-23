@@ -31,7 +31,7 @@ maki.setup({
 		},
 	},
 	provider = WORK and {
-		default_model = maki.uv.os_getenv("ANTHROPIC_API_KEY") and "anthropic/claude-sonnet-5-5" or nil,
+		default_model = maki.uv.os_getenv("ANTHROPIC_API_KEY") and "anthropic/claude-opus-5-5" or nil,
 		allowed_models = {
 			"openai/gpt-6*-{luna,sol}",
 			"anthropic/claude-{haiku,sonnet,opus}-5-5",
@@ -51,7 +51,6 @@ maki.setup({
 		allowed_models = {
 			"opencode-go/*",
 			"claude-code/claude-{haiku,sonnet,opus}-5-5",
-			"claude-code/claude-fable-5-2",
 		},
 		-- excluded_models = { "*/*:batch" },
 	},
@@ -60,8 +59,8 @@ maki.setup({
 	},
 	plugins = {
 		-- Nushell trial: `nu` tool (lua/nu) replaces bash and code_execution.
-		bash = { enabled = false, timeout_secs = 10 }, -- background_on_timeout = true
-		code_execution = { enabled = false },
+		bash = { enabled = false, timeout_secs = 120 },
+		code_execution = { enabled = true },
 		task = { max_concurrent = 4 },
 		list = { enabled = false },
 		edit = { edit_lines = true, insert_lines = false, multiedit = true },
@@ -75,6 +74,17 @@ maki.setup({
 })
 
 require("nu")
+
+-- tree-sitter highlighting for Nushell (needs the prototype/treesitter-highlight build)
+do
+	local site = "~/.local/share/nvim/site"
+	local ok, added = pcall(maki.treesitter.language.add, "nu", { path = site .. "/parser/nu.so" })
+	local query = ok and added and maki.fs.read(site .. "/queries/nu/highlights.scm")
+	if query then
+		maki.treesitter.query.set("nu", "highlights", query)
+		maki.treesitter.language.register("nu", { "nushell" })
+	end
+end
 
 maki.api.set_prompt({
 	prompt = "system",
@@ -230,3 +240,37 @@ maki.api.create_autocmd("SessionTitleChanged", {
 		end
 	end,
 })
+
+-- Trial: model-callable compaction, https://github.com/tontinton/maki/pull/1660
+-- Guarded because it needs a build newer than 0.7.1.
+if maki.session.request_compact then
+	local MAIN_TASK = "main"
+
+	maki.api.register_tool({
+		name = "compact",
+		description = [[Compact this session's history now. Call it at a natural boundary, for example after finishing a task, or when the context runs high. `instructions` say what the summary must keep.
+
+Never batch this call with others: the summary swallows their results before you can read them.]],
+		schema = {
+			type = "object",
+			properties = {
+				instructions = {
+					type = "string",
+					description = "What the summary must keep (open questions, decisions, failing test names).",
+				},
+			},
+		},
+		handler = function(input, ctx)
+			local task = ctx:task_id()
+			local ok, err = maki.session.request_compact({
+				session = ctx:session_id(),
+				task = task ~= MAIN_TASK and task or nil,
+				instructions = input.instructions,
+			})
+			if not ok then
+				return { llm_output = "Error: " .. err, is_error = true }
+			end
+			return "Compaction queued. Your next request runs on the summary."
+		end,
+	})
+end

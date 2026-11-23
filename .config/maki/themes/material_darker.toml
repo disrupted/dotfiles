@@ -1,0 +1,150 @@
+"comment"                         = { fg = "comment" }
+"comment.block"                   = { fg = "comment" }
+"comment.block.documentation"     = { fg = "comment" }
+"comment.line"                    = { fg = "comment" }
+"comment.line.documentation"      = { fg = "comment" }
+
+"constant"                        = { fg = "orange" }
+"constant.builtin"                = { fg = "orange" }
+"constant.builtin.boolean"        = { fg = "purple" }
+"constant.character"              = { fg = "cyan" }
+"constant.character.escape"       = { fg = "pink" }
+"constant.macro"                  = { fg = "purple" }
+"constant.numeric"                = { fg = "orange" }
+"constructor"                     = { fg = "yellow" }
+
+"error"                           = { fg = "red" }
+"warning"                         = { fg = "yellow" }
+"info"                            = { fg = "blue" }
+"hint"                            = { fg = "cyan" }
+
+"diff.delta"                      = { fg = "orange" }
+"diff.minus"                      = { fg = "red" }
+"diff.plus"                       = { fg = "green" }
+
+"function"                        = { fg = "blue" }
+"function.builtin"                = { fg = "blue" }
+"function.call"                   = { fg = "blue" }
+"function.macro"                  = { fg = "purple" }
+"function.method"                 = { fg = "blue" }
+
+"keyword"                         = { fg = "purple" }
+"keyword.control.conditional"     = { fg = "purple" }
+"keyword.control.exception"       = { fg = "red" }
+"keyword.control.import"          = { fg = "purple" }
+"keyword.control.repeat"          = { fg = "purple" }
+"keyword.directive"               = { fg = "blue" }
+"keyword.function"                = { fg = "purple" }
+"keyword.operator"                = { fg = "cyan" }
+"keyword.return"                  = { fg = "purple" }
+"keyword.storage"                 = { fg = "purple" }
+"keyword.storage.modifier"        = { fg = "purple" }
+"keyword.storage.type"            = { fg = "yellow", modifiers = ["italic"] }
+
+"label"                           = { fg = "cyan" }
+"attribute"                       = { fg = "blue", modifiers = ["italic"] }
+"namespace"                       = { fg = "foreground" }
+"annotation"                      = { fg = "foreground" }
+
+"markup.bold"                     = { fg = "orange", modifiers = ["bold"] }
+"markup.heading"                  = { fg = "purple", modifiers = ["bold"] }
+"markup.italic"                   = { fg = "yellow", modifiers = ["italic"] }
+"markup.link.text"                = { fg = "pink" }
+"markup.link.url"                 = { fg = "cyan" }
+"markup.list"                     = { fg = "cyan" }
+"markup.quote"                    = { fg = "yellow", modifiers = ["italic"] }
+"markup.raw"                      = { fg = "foreground" }
+"markup.strikethrough"            = { modifiers = ["crossed_out"] }
+
+"punctuation"                     = { fg = "foreground" }
+"punctuation.bracket"             = { fg = "foreground" }
+"punctuation.delimiter"           = { fg = "foreground" }
+"punctuation.special"             = { fg = "cyan" }
+
+"special"                         = { fg = "pink" }
+
+"string"                          = { fg = "green" }
+"string.regexp"                   = { fg = "red" }
+"string.special"                  = { fg = "orange" }
+"string.symbol"                   = { fg = "green" }
+
+"tag"                             = { fg = "pink" }
+"tag.attribute"                   = { fg = "purple" }
+"tag.delimiter"                   = { fg = "foreground" }
+
+"type"                            = { fg = "yellow", modifiers = ["italic"] }
+"type.builtin"                    = { fg = "yellow" }
+"type.enum.variant"               = { fg = "foreground", modifiers = ["italic"] }
+
+"variable"                        = { fg = "foreground" }
+"variable.builtin"                = { fg = "purple", modifiers = ["italic"] }
+"variable.other"                  = { fg = "foreground" }
+"variable.other.member"           = { fg = "foreground" }
+"variable.parameter"              = { fg = "orange", modifiers = ["italic"] }
+
+[palette]
+background   = "#212121"
+foreground   = "#eeffff"
+comment      = "#545454"
+blue         = "#82aaff"
+cyan         = "#89ddff"
+green        = "#c3e88d"
+orange       = "#f78c6c"
+pink         = "#f07178"
+purple       = "#c792ea"
+red          = "#ff5370"
+yellow       = "#ffcb6b"
+current_line = "#2c2c2c"
+selection    = "#353535"
+
+[ui]
+user               = { fg = "cyan" }
+assistant          = { fg = "foreground" }
+assistant_prefix   = { fg = "purple" }
+thinking           = { fg = "comment", modifiers = ["italic"] }
+user_bg            = { bg = "#292929" }
+tool_bg            = { bg = "#1a1a1a" }
+tool               = { fg = "foreground" }
+tool_path          = { fg = "orange" }
+tool_annotation    = { fg = "comment" }
+tool_prefix        = { fg = "foreground", modifiers = ["bold"] }
+tool_success       = { fg = "green" }
+tool_error         = { fg = "red" }
+tool_dim           = { fg = "comment" }
+error              = { fg = "red" }
+status_dim         = { fg = "comment" }
+strikethrough      = { fg = "comment", modifiers = ["crossed_out"] }
+plan_rule          = { fg = "purple", modifiers = ["bold"] }
+code_block         = { fg = "foreground" }
+horizontal_rule    = { fg = "comment" }
+table_border       = { fg = "comment" }
+diff_old           = { bg = "#3d1a1a" }
+diff_new           = { bg = "#1a3020" }
+diff_old_emphasis  = { bg = "#5c2525" }
+diff_new_emphasis  = { bg = "#27462e" }
+diff_line_nr       = { fg = "comment" }
+todo_completed     = { fg = "green" }
+todo_in_progress   = { fg = "yellow" }
+todo_pending       = { fg = "comment" }
+todo_cancelled     = { fg = "red", modifiers = ["crossed_out"] }
+item_selected      = { fg = "background", bg = "purple" }
+item               = { fg = "cyan" }
+item_desc          = { fg = "comment" }
+accent             = { fg = "orange" }
+panel_border       = { fg = "purple" }
+panel_title        = { fg = "purple", modifiers = ["bold"] }
+cursor             = { fg = "background", bg = "foreground" }
+keybind_key        = { fg = "cyan", modifiers = ["bold"] }
+keybind_section    = { fg = "purple", modifiers = ["bold"] }
+input_border       = { fg = "comment" }
+keybind_desc       = { fg = "foreground" }
+queue              = { fg = "purple" }
+plan_path          = { fg = "orange", modifiers = ["bold"] }
+status_notice      = { fg = "orange" }
+status_retry_error = { fg = "red" }
+status_retry_info  = { fg = "comment" }
+input_placeholder  = { fg = "comment" }
+queue_delete       = { fg = "red", modifiers = ["bold"] }
+timestamp          = { fg = "comment" }
+spinner            = { fg = "yellow" }
+active             = { fg = "cyan" }

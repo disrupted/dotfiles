@@ -84,7 +84,7 @@ worktrunk = { version = "latest", workflow = "release.yaml" }
 [settings]
 experimental = true
 task.run_auto_install = false
-exec_auto_install = false
+exec_auto_install = true
 # experimental and slows down `mise search`; opt in per project
 disable_backends = ["truebrew"]
 

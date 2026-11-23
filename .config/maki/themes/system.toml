@@ -1,0 +1,142 @@
+# Colors come from the terminal's own palette; `default` follows the
+# terminal fg/bg, so this tracks light/dark mode automatically.
+
+"comment"                     = { fg = "light-gray" }
+"comment.block"               = { fg = "light-gray" }
+"comment.block.documentation" = { fg = "light-gray" }
+"comment.line"                = { fg = "light-gray" }
+"comment.line.documentation"  = { fg = "light-gray" }
+
+"constant"                    = { fg = "magenta" }
+"constant.builtin"            = { fg = "magenta" }
+"constant.builtin.boolean"    = { fg = "magenta" }
+"constant.character"          = { fg = "cyan" }
+"constant.character.escape"   = { fg = "red" }
+"constant.numeric"            = { fg = "magenta" }
+"constructor"                 = { fg = "cyan" }
+
+"error"                       = { fg = "red" }
+"warning"                     = { fg = "yellow" }
+"info"                        = { fg = "cyan" }
+"hint"                        = { fg = "light-gray" }
+
+"diff.plus"                   = { fg = "green" }
+"diff.minus"                  = { fg = "red" }
+"diff.delta"                  = { fg = "yellow" }
+
+"function"                    = { fg = "green" }
+"function.builtin"            = { fg = "green" }
+"function.call"               = { fg = "green" }
+"function.macro"              = { fg = "magenta" }
+"function.method"             = { fg = "green" }
+
+"keyword"                     = { fg = "magenta" }
+"keyword.control.conditional" = { fg = "magenta" }
+"keyword.control.exception"   = { fg = "magenta" }
+"keyword.control.import"      = { fg = "magenta" }
+"keyword.control.repeat"      = { fg = "magenta" }
+"keyword.directive"           = { fg = "cyan" }
+"keyword.function"            = { fg = "magenta" }
+"keyword.operator"            = { fg = "magenta" }
+"keyword.return"              = { fg = "magenta" }
+"keyword.storage"             = { fg = "magenta" }
+"keyword.storage.modifier"    = { fg = "magenta" }
+"keyword.storage.type"        = { fg = "cyan", modifiers = ["italic"] }
+
+"label"                       = { fg = "cyan" }
+"attribute"                   = { fg = "yellow", modifiers = ["italic"] }
+"namespace"                   = { fg = "foreground" }
+"annotation"                  = { fg = "foreground" }
+
+"markup.bold"                 = { fg = "yellow", modifiers = ["bold"] }
+"markup.heading"              = { fg = "cyan", modifiers = ["bold"] }
+"markup.italic"               = { fg = "yellow", modifiers = ["italic"] }
+"markup.link.text"            = { fg = "cyan" }
+"markup.link.url"             = { fg = "cyan" }
+"markup.list"                 = { fg = "cyan" }
+"markup.quote"                = { fg = "light-gray", modifiers = ["italic"] }
+"markup.raw"                  = { fg = "foreground" }
+"markup.strikethrough"        = { modifiers = ["crossed_out"] }
+
+"punctuation"                 = { fg = "foreground" }
+"punctuation.bracket"         = { fg = "foreground" }
+"punctuation.delimiter"       = { fg = "foreground" }
+"punctuation.special"         = { fg = "magenta" }
+
+"string"                      = { fg = "green" }
+"string.regexp"               = { fg = "red" }
+"string.special"              = { fg = "yellow" }
+"string.symbol"               = { fg = "green" }
+
+"tag"                         = { fg = "magenta" }
+"tag.attribute"               = { fg = "yellow" }
+"tag.delimiter"               = { fg = "foreground" }
+
+"type"                        = { fg = "cyan" }
+"type.builtin"                = { fg = "cyan" }
+"type.enum.variant"           = { fg = "cyan", modifiers = ["italic"] }
+
+"variable"                    = { fg = "foreground" }
+"variable.builtin"            = { fg = "magenta", modifiers = ["italic"] }
+"variable.other"              = { fg = "foreground" }
+"variable.other.member"       = { fg = "foreground" }
+"variable.parameter"          = { fg = "yellow", modifiers = ["italic"] }
+
+[palette]
+background = "default"
+foreground = "default"
+comment    = "light-gray"
+mode_build = "cyan"
+mode_plan  = "magenta"
+mode_bash  = "green"
+
+[ui]
+user                = { fg = "cyan" }
+assistant           = { fg = "foreground" }
+assistant_prefix    = { fg = "magenta" }
+thinking            = { fg = "light-gray", modifiers = ["italic"] }
+tool                = { fg = "foreground" }
+tool_path           = { fg = "yellow" }
+tool_annotation     = { fg = "light-gray" }
+tool_prefix         = { fg = "foreground", modifiers = ["bold"] }
+tool_success        = { fg = "green" }
+tool_error          = { fg = "red" }
+tool_dim            = { fg = "light-gray" }
+error               = { fg = "red" }
+status_dim          = { fg = "light-gray" }
+strikethrough       = { fg = "light-gray", modifiers = ["crossed_out"] }
+plan_rule           = { fg = "magenta", modifiers = ["bold"] }
+horizontal_rule     = { fg = "light-gray" }
+table_border        = { fg = "light-gray" }
+diff_old            = { fg = "red" }
+diff_new            = { fg = "green" }
+diff_old_emphasis   = { fg = "red", modifiers = ["bold"] }
+diff_new_emphasis   = { fg = "green", modifiers = ["bold"] }
+diff_line_nr        = { fg = "light-gray" }
+todo_completed      = { fg = "green" }
+todo_in_progress    = { fg = "yellow" }
+todo_pending        = { fg = "light-gray" }
+todo_cancelled      = { fg = "red", modifiers = ["crossed_out"] }
+item                = { fg = "cyan" }
+item_desc           = { fg = "light-gray" }
+item_selected       = { modifiers = ["reversed"] }
+item_match          = { fg = "yellow", modifiers = ["bold"] }
+item_match_selected = { fg = "yellow", modifiers = ["bold", "reversed"] }
+accent              = { fg = "cyan" }
+active              = { fg = "green" }
+panel_border        = { fg = "light-gray" }
+panel_title         = { fg = "cyan", modifiers = ["bold"] }
+cursor              = { modifiers = ["reversed"] }
+input_border        = { fg = "light-gray" }
+keybind_key         = { fg = "cyan", modifiers = ["bold"] }
+keybind_desc        = { fg = "foreground" }
+keybind_section     = { fg = "magenta", modifiers = ["bold"] }
+queue               = { fg = "magenta" }
+plan_path           = { fg = "yellow", modifiers = ["bold"] }
+status_notice       = { fg = "yellow" }
+status_retry_error  = { fg = "red" }
+status_retry_info   = { fg = "light-gray" }
+input_placeholder   = { fg = "light-gray" }
+queue_delete        = { fg = "red", modifiers = ["bold"] }
+timestamp           = { fg = "light-gray" }
+spinner             = { fg = "yellow" }
