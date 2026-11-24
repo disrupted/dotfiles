@@ -141,6 +141,7 @@ check "git clone" clone
 check "reads anywhere in \$HOME" ls "$HOME/.config"
 check "~/.ssh stays hidden" denied "$HOME/.ssh"
 check "fnox config stays hidden" denied "${XDG_CONFIG_HOME:-$HOME/.config}/fnox"
+check "fnox lease cache stays hidden" denied "${XDG_STATE_HOME:-$HOME/.local/state}/fnox"
 check "no writes outside granted dirs" cannot_write "$HOME/.nono-smoke-probe"
 check "caches and package manager homes are writable" package_homes_writable
 if command -v docker >/dev/null; then
