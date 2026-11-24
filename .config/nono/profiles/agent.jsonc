@@ -159,8 +159,6 @@
     },
   },
   "network": {
-    // allow outbound TCP to localhost:* (dev stack: Postgres, APIs, …)
-    "open_port_range": [[3000, 9000]],
     // Phantom-token routes, activated per run with `--credential <name>`. The child only sees a
     // per-session phantom in `env_var`. Clients that can't take a base URL (gh, git, MCP headers)
     // still work: the proxy TLS-intercepts the upstream host and swaps the phantom (see tls_intercept).
@@ -250,11 +248,17 @@
     "exclude_patterns": ["node_modules", ".venv", "__pycache__", "target", ".nx", "dist"],
   },
   "platform_overrides": {
+    "macos": {
+      // seatbelt caps port ranges at 16,384 ports, so only connect gets localhost:*
+      "network": { "open_port": [0], "listen_port_range": [[3000, 9000]] },
+    },
     // UNTESTED. Landlock can't carve a deny out of a broader grant, so nono refuses to start when
     // filesystem.deny overlaps an allow; supervised mode enforces those via seccomp-notify instead.
     // The seatbelt rules above have no Linux equivalent: nono's own config stays writable there.
     "linux": {
       "security": { "capability_elevation": true },
+      // Landlock has no localhost:* shorthand
+      "network": { "open_port_range": [[1, 65535]] },
     },
   },
 }
