@@ -99,6 +99,12 @@ credential_routes=(
     opencode:OPENCODE_API_KEY
 )
 
+# Optional per-machine hook to extend nono_args, e.g. with extra profiles and credential routes
+if [ -f "$HOME/.config/nono/bin/agent.local.sh" ]; then
+    # shellcheck source=/dev/null
+    source "$HOME/.config/nono/bin/agent.local.sh"
+fi
+
 nono_exec() {
     local profile="$1" agent="$2" route
     shift
