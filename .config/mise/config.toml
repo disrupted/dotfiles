@@ -166,6 +166,8 @@ exclude = [
 # link whole dir: new files land in the repo; pickers skip per-file symlinks
 [dotfile_groups.home.entries]
 "~/.config/nvim" = { mode = "symlink" }
+# boxd and OrbStack write to ~/.ssh/config, so it stays local
+"~/.ssh/config/dotfiles" = { line = "Include ~/.ssh/config.d/dotfiles", position = "prepend" }
 
 [dotfile_groups.private]
 root = "~/.dotfiles-private/home"
@@ -177,4 +179,4 @@ manifest = "git"
 "~/.config/pi/AGENTS.md" = { source = ".config/agents/AGENTS.md" }
 
 [bootstrap.repos]
-"~/.dotfiles-private" = { url = "git@github.com:disrupted/dotfiles-private.git" }
+"~/.dotfiles-private" = { url = "https://github.com/disrupted/dotfiles-private.git" }
