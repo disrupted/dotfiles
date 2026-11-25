@@ -140,6 +140,8 @@ end
 
 local ListPicker = (require :: any)("maki.list_picker")
 
+maki.keymap.set({ "n", "i" }, "<Tab>", function() end) -- disable plan mode toggle
+
 maki.keymap.set({ "n", "i" }, "<M-p>", function()
 	maki.ui.action("model_picker")
 end, { desc = "Pick model" })
