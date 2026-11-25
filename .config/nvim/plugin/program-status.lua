@@ -1,9 +1,5 @@
 -- Program Status Protocol (OSC 7501): reports Neovim itself as record "nvim"
 -- and each native progress-message as a child record beneath it.
-if vim.env.TMUX then
-    return
-end
-
 local function send(fields)
     local pairs_ = {}
     for _, kv in ipairs(fields) do

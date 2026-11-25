@@ -2,7 +2,7 @@
 
 ## Neovim
 
-![nvim in tmux](.config/_screens/nvim.png)
+![nvim](.config/_screens/nvim.png)
 
 [`~/.config/nvim`](https://github.com/disrupted/dotfiles/tree/master/.config/nvim)
 

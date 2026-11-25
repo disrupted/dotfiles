@@ -78,7 +78,7 @@ if $nu.is-interactive {
 }
 
 # Returns "dark", "light" or null.
-# tmux doesn't reply to ?996n when it doesn't know the theme and `term query`
+# not every terminal replies to ?996n and `term query`
 # has no timeout, so also send DSR (6n), which is always answered.
 def theme-query [] {
   if not $nu.is-interactive { return null }
@@ -108,11 +108,6 @@ def --env update-theme [] {
   }
 
   if $system_theme == null { return }
-
-  # let popups inherit the theme from the tmux server
-  if $detected != null and ($env.TMUX? | is-not-empty) and $detected != $inherited {
-    try { ^tmux set-environment -g THEME $detected } catch { }
-  }
 
   $env.THEME = $system_theme
   $env.BAT_THEME = if $system_theme == "dark" { "OneHalfDark" } else { "OneHalfLight" }

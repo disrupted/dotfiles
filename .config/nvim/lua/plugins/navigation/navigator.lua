@@ -1,7 +1,7 @@
 ---@type doze.Spec
 return {
     src = 'https://github.com/numToStr/Navigator.nvim',
-    enabled = vim.env.REX_SESSION ~= nil or vim.env.TMUX ~= nil,
+    enabled = vim.env.REX_SESSION ~= nil,
     keys = {
         {
             '<C-w>j',
@@ -29,10 +29,11 @@ return {
         },
     },
     config = function()
-        local opts = { auto_save = false, disable_on_zoom = false }
-        if vim.env.REX_SESSION then
-            opts.mux = require('conf.navigator.rex'):new()
-        end
+        local opts = {
+            auto_save = false,
+            disable_on_zoom = false,
+            mux = require('conf.navigator.rex'):new(),
+        }
         ---@cast opts Config
         require('Navigator').setup(opts)
     end,

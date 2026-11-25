@@ -154,7 +154,7 @@ ln -s ~/.config/nushell "$HOME/Library/Application Support/nushell"
 # Create vendor directory
 mkdir -p ~/.config/nushell/vendor
 
-# Create login.nu (required for login shells like Ghostty/tmux)
+# Create login.nu (required for login shells like Ghostty)
 echo "source ~/.config/nushell/env.nu" > ~/.config/nushell/login.nu
 
 # Regenerate mise integration (machine-specific)
