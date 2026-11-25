@@ -5,3 +5,5 @@ $env.config.footer_mode = "never"
 $env.config.table.mode = "none"
 $env.config.table.index_mode = "never"
 $env.config.datetime_format.table = "%Y-%m-%d %H:%M:%S"
+# models still write `range` from before nu renamed it to `slice`
+alias range = slice

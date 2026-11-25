@@ -20,31 +20,24 @@ maki.setup({
 		theme = { light = "catppuccin_latte", dark = "catppuccin_macchiato" },
 		thinking_lines = 0,
 		tool_output_lines = {
-			bash = 1, -- nu tool
+			bash = 0, -- nu tool
 			task = 5,
-			index = 1,
-			grep = 1,
-			read = 1,
+			grep = 0,
+			read = 0,
 			write = 1,
 			web = 1,
 			other = 1,
 		},
 	},
 	provider = WORK and {
-		default_model = maki.uv.os_getenv("ANTHROPIC_API_KEY") and "anthropic/claude-opus-5-5" or nil,
+		default_model = "anthropic/claude-opus-5-5",
 		allowed_models = {
 			"openai/gpt-6*-{luna,sol}",
 			"anthropic/claude-{haiku,sonnet,opus}-5-5",
-			"google/gemini-3.8-*",
+			"google/gemini-4-neon",
 		},
 		excluded_models = {
 			"openai/gpt-6-sol",
-			"*/*-preview",
-			"*-image",
-			"*-tts",
-			"*-transcribe",
-			"*-customtools",
-			"*-1m",
 		},
 	} or {
 		default_model = "claude-code/claude-opus-5-5",
@@ -52,17 +45,16 @@ maki.setup({
 			"opencode-go/*",
 			"claude-code/claude-{haiku,sonnet,opus}-5-5",
 		},
-		-- excluded_models = { "*/*:batch" },
 	},
 	agent = {
 		rtk = false,
 	},
 	plugins = {
-		-- Nushell trial: `nu` tool (lua/nu) replaces bash and code_execution.
 		bash = { enabled = false, timeout_secs = 120 },
 		code_execution = { enabled = true },
 		task = { max_concurrent = 4 },
 		list = { enabled = false },
+		index = { enabled = false },
 		edit = { edit_lines = true, insert_lines = false, multiedit = true },
 		view_image = { enabled = false },
 		memory = { enabled = false },
@@ -89,21 +81,17 @@ end
 maki.api.set_prompt({
 	prompt = "system",
 	content = [[
-You are Maki, an interactive CLI coding agent. Use the tools available to assist the user with software engineering tasks. Get the task right first, then keep context lean: read and fetch only what you need, but verify rather than guess.
+You are an interactive coding agent running inside maki. Use the tools available to assist the user with software engineering tasks. Get the task right first, then keep context lean: read and fetch only what you need, but verify rather than guess.
 
 # Tool usage
 - Use **batch** for independent calls. Use **task** for broad or parallel work (several tasks in one batch), not for single lookups you can do directly.
 - Prefer edits over full file writes.
-- Search, read and edit files with dedicated tools, even outside cwd. **nu** (Nushell, not bash) is for git, builds, tests, file management, and querying structured data.
-- Use the **grep** tool when searching for specific content across files.
-- Use the **index** tool first on individual files to get their skeleton, then use the **read** tool with offset/limit for the specific section you need.
-- When using the **read** tool, only read the sections you actually need.
-- For library behavior, read the installed dependency source (matches the lockfile). For guides, fetch markdown from the repo via `gh`, or try `<site>/llms.txt` and `.md` mirrors. Never fetch raw HTML.
-- Use todo_write for multi-step tasks (3+ steps); update **after EACH step** (done + next in_progress), never batched at the end.
+- Read and edit files with the dedicated tools, even outside cwd. **nu** (Nushell, not bash) is for git, builds, tests, file management, searching with `rg`/`fd`, and querying structured data.
+- For library behavior, read the installed dependency source (matches the lockfile). For guides, fetch markdown from the repo (`gh api repos/<owner>/<repo>/contents/<path> -H 'Accept: application/vnd.github.raw'`), or try `<site>/llms.txt` and `.md` mirrors. Never fetch raw HTML.
+- Use todo_write for multi-step tasks (3+ steps) and update it after each step.
 
 # Conventions
 - Match existing code style, naming conventions, and patterns.
-- Be concise in your responses.
 
 {environment}
 {{instructions}}{{after_instructions}}

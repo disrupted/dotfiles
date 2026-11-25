@@ -149,12 +149,12 @@ end
 local description = [[Execute a Nushell (nu) command, NOT bash.
 Commands run in the session's working directory (see Environment) by default.
 
-- Read, list, search, and edit files with dedicated tools. nu is for git, builds, tests, file management, and querying structured data (`open package.json | get scripts`, `ls src | where size > 10kb`, `git log -5 --format=%s | lines`).
+- Read and edit files with dedicated tools. nu is for git, builds, tests, file management, searching with `rg`/`fd`, and querying structured data (`open package.json | get scripts`, `ls src | where size > 10kb`, `git log -5 --format=%s | lines`).
 - Nushell syntax: chain with `;` (no `&&`/`||`), `(cmd)` not `$(cmd)`, `$env.FOO = "x"`, `cmd o+e>| ...` to pipe stderr too, `^cmd` forces an external.
+- Double quotes process escapes, so `"\("` is a parse error. Put regexes and backslashes in single quotes or `r#'...'#`.
 - Only the last pipeline's value is returned; earlier values in a `;` chain are dropped. For several results build a record: `{a: (...), b: (...)} | to nuon`.
 - Flat tables print as plain columns but cut wide data; end nested or wide output with `| to nuon` for compact, exact values.
 - Filter with `where`/`find`/`get`/`select`; use `fd`, `rg`, `sd` when shelling out, never `find`, `grep`, `sed`.
-- Structural code search and rewrites: `ast-grep run -p 'foo($A)' -l ts` (add `-r 'bar($A)' -U` to rewrite, `--json=compact | from json` for structured output). Single quotes keep `$A` literal.
 - Use `workdir` param instead of `cd`. Use batch for independent commands.
 - Never use it to message the user.
 - Provide a short `description` (3-5 words).
