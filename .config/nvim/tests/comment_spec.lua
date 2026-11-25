@@ -18,9 +18,10 @@ dofile(vim.fs.joinpath(cwd, 'plugin', 'comment.lua'))
 ---@param lines string[]
 ---@param pos? [integer, integer]
 local function setup_buf(ft, lines, pos)
+    local prev = vim.api.nvim_get_current_buf()
     local buf = vim.api.nvim_create_buf(true, false)
-    vim.bo[buf].bufhidden = 'wipe'
     vim.api.nvim_set_current_buf(buf)
+    vim.api.nvim_buf_delete(prev, { force = true })
     vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
     vim.bo[buf].filetype = ft
     vim.treesitter.start(buf)
@@ -54,90 +55,179 @@ describe('comment', function()
         '  </ul>',
         ')',
     }
+    -- { filetype, name, lines, first line, last line, expected commented range }
     local cases = {
         {
             'typescriptreact',
             'jsx element child',
             tsx_element,
-            { 3, 4 },
-            '    {/* <span>hi</span> */}',
+            3,
+            3,
+            { '    {/* <span>hi</span> */}' },
+        },
+        {
+            'typescriptreact',
+            'jsx expression child',
+            { 'const A = () => (', '  <div>', '    {render()}', '  </div>', ')' },
+            3,
+            3,
+            { '    {/* {render()} */}' },
         },
         {
             'typescriptreact',
             'jsx attribute',
             { 'const A = () => (', '  <div', '    className="x"', '  />', ')' },
-            { 3, 4 },
-            '    // className="x"',
+            3,
+            3,
+            { '    // className="x"' },
         },
         {
             'typescriptreact',
             'function body inside jsx',
             tsx_map,
-            { 4, 6 },
-            '      // return x',
+            4,
+            4,
+            { '      // return x' },
+        },
+        {
+            'typescriptreact',
+            'call argument inside jsx',
+            {
+                'const A = () => (',
+                '  <ul>',
+                '    {fmt(',
+                '      value,',
+                '    )}',
+                '  </ul>',
+                ')',
+            },
+            4,
+            4,
+            { '      // value,' },
         },
         {
             'typescriptreact',
             'plain code',
-            { 'const a = 1' },
-            { 1, 0 },
-            '// const a = 1',
+            { 'const a = f(1)' },
+            1,
+            1,
+            { '// const a = f(1)' },
         },
         {
             'markdown',
-            'injected lua fence',
-            { '# t', '', '```lua', 'local a = 1', '```' },
-            { 4, 0 },
-            '-- local a = 1',
+            'inside a lua fence',
+            { '```lua', 'local a = 1', '```' },
+            2,
+            2,
+            { '-- local a = 1' },
+        },
+        {
+            'markdown',
+            'whole lua fence',
+            { '```lua', 'local a = 1', '```' },
+            1,
+            3,
+            { '<!-- ```lua -->', '<!-- local a = 1 -->', '<!-- ``` -->' },
+        },
+        {
+            'lua',
+            'inside vim.cmd',
+            { 'vim.cmd([[', '  set nu', ']])' },
+            2,
+            2,
+            { '  "set nu' },
+        },
+        {
+            'lua',
+            'whole vim.cmd',
+            { 'vim.cmd([[', '  set nu', ']])' },
+            1,
+            3,
+            { '-- vim.cmd([[', '--   set nu', '-- ]])' },
         },
         {
             'html',
             'injected script',
             { '<script>', '  let a = 1', '</script>' },
-            { 2, 2 },
-            '  // let a = 1',
+            2,
+            2,
+            { '  // let a = 1' },
         },
         {
             'html',
             'injected style',
             { '<style>', '  a { color: red; }', '</style>' },
-            { 2, 2 },
-            '  /* a { color: red; } */',
+            2,
+            2,
+            { '  /* a { color: red; } */' },
         },
         {
             'svelte',
             'markup',
             { '<script>', '  let a = 1', '</script>', '<div>x</div>' },
-            { 4, 0 },
-            '<!-- <div>x</div> -->',
+            4,
+            4,
+            { '<!-- <div>x</div> -->' },
         },
+        { 'htmldjango', 'html', { '<div>x</div>' }, 1, 1, { '<!-- <div>x</div> -->' } },
         {
             'htmldjango',
-            'template',
+            'html with tag',
             { '<div>{{ x }}</div>' },
-            { 1, 0 },
-            '{# <div>{{ x }}</div> #}',
+            1,
+            1,
+            { '{# <div>{{ x }}</div> #}' },
+        },
+        { 'htmldjango', 'tag', { '{% if x %}' }, 1, 1, { '{# {% if x %} #}' } },
+        { 'helm', 'yaml', { 'a:', '  b: c' }, 1, 2, { '# a:', '#   b: c' } },
+        {
+            'helm',
+            'yaml with action',
+            { 'a: {{ .Values.x }}' },
+            1,
+            1,
+            { '{{/* a: {{ .Values.x }} */}}' },
         },
         {
             'helm',
-            'template',
-            { 'a: {{ .Values.x }}' },
-            { 1, 0 },
-            '{{/* a: {{ .Values.x }} */}}',
+            'action block',
+            { '{{- if .X }}', 'a: b', '{{- end }}' },
+            1,
+            3,
+            { '{{/* {{- if .X }} */}}', '{{/* a: b */}}', '{{/* {{- end }} */}}' },
         },
     }
 
     for _, case in ipairs(cases) do
-        local ft, name, lines, pos, expected = unpack(case)
-        it(
-            ('gcc uses the commentstring at the cursor: %s %s'):format(ft, name),
-            function()
-                setup_buf(ft, lines, pos)
-                feed('gcc')
-                assert.equal(expected, line(pos[1]))
+        local ft, name, lines, first, last, expected = unpack(case)
+        it(('gc ignores the cursor column: %s %s'):format(ft, name), function()
+            local keys = first == last and 'gcc' or ('gc%dj'):format(last - first)
+            for col = 0, #lines[first] - 1 do
+                setup_buf(ft, lines, { first, col })
+                feed(keys)
+                assert.same(
+                    expected,
+                    vim.api.nvim_buf_get_lines(0, first - 1, last, false)
+                )
+                vim.api.nvim_win_set_cursor(0, { first, 0 })
+                feed(keys)
+                assert.same(lines, get_lines())
             end
-        )
+        end)
     end
+
+    it('gc{motion} from inside an injection uses the host language', function()
+        setup_buf(
+            'lua',
+            { 'vim.cmd(\'echo 1\')', 'return vim.cmd(\'echo 1\')' },
+            { 1, 9 }
+        )
+        feed('gcG')
+        assert.same(
+            { '-- vim.cmd(\'echo 1\')', '-- return vim.cmd(\'echo 1\')' },
+            get_lines()
+        )
+    end)
 
     it('does not comment blank lines', function()
         setup_buf('lua', { 'local a = 1', '', '  ', 'local b = 2' })

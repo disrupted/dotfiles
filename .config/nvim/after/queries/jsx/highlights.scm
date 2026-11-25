@@ -1,5 +1,8 @@
 ;; extends
 
-; function bodies inside JSX expressions are JS, not markup
-((statement_block) @_block
-  (#set! @_block bo.commentstring "// %s"))
+; JS nested in JSX, drafted for upstream nvim-treesitter
+((statement_block) @_statement_block
+  (#set! @_statement_block bo.commentstring "// %s"))
+
+((arguments) @_arguments
+  (#set! @_arguments bo.commentstring "// %s"))

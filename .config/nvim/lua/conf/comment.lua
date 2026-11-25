@@ -53,12 +53,53 @@ function M.commentstring(pos)
     return result or vim.bo.commentstring
 end
 
+-- Native resolves the commentstring at the cursor (neovim/neovim#31003). Prefer the
+-- host language so helm/htmldjango template lines don't get the injected yaml/html
+-- comment, else the first non-blank char. Worth upstreaming into vim._comment.
 ---@param line_start integer
 ---@param line_end integer
----@param pos [integer, integer]
-function M.toggle_lines(line_start, line_end, pos)
+---@return [integer, integer]
+function M.ref_position(line_start, line_end)
+    local lines = vim.api.nvim_buf_get_lines(0, line_start - 1, line_end, false)
+    local first = { line_start, 0 }
+    for i, line in ipairs(lines) do
+        local col = line:find('%S')
+        if col then
+            first = { line_start + i - 1, col - 1 }
+            break
+        end
+    end
+
+    local parser = vim.treesitter.get_parser(0, nil, { error = false })
+    if not parser then
+        return first
+    end
+    parser:parse({ line_start - 1, line_end })
+    if vim.tbl_isempty(parser:children()) then
+        return first
+    end
+    for i, line in ipairs(lines) do
+        local row = line_start + i - 2
+        local col = line:find('%S')
+        while col do
+            if parser:language_for_range({ row, col - 1, row, col }) == parser then
+                return { row + 1, col - 1 }
+            end
+            col = line:find('%S', col + 1)
+        end
+    end
+    return first
+end
+
+---@param line_start integer
+---@param line_end integer
+function M.toggle_lines(line_start, line_end)
     local before = vim.api.nvim_buf_get_lines(0, line_start - 1, line_end, false)
-    require('vim._comment').toggle_lines(line_start, line_end, pos)
+    require('vim._comment').toggle_lines(
+        line_start,
+        line_end,
+        M.ref_position(line_start, line_end)
+    )
     for i, line in ipairs(before) do
         if is_blank(line) then
             local lnum = line_start + i - 1
@@ -79,7 +120,7 @@ function M.operator(mode)
     if from[1] > to[1] or (from[1] == to[1] and from[2] > to[2]) then
         return
     end
-    M.toggle_lines(from[1], to[1], vim.api.nvim_win_get_cursor(0))
+    M.toggle_lines(from[1], to[1])
 end
 
 function M.append()
