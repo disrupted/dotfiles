@@ -60,7 +60,6 @@ maki.setup({
 		memory = { enabled = false },
 		skill = { enabled = false },
 		question = { enabled = true },
-		webfetch = { enabled = false },
 		websearch = { enabled = false },
 	},
 })
@@ -86,8 +85,10 @@ You are an interactive coding agent running inside maki. Use the tools available
 # Tool usage
 - Use **batch** for independent calls. Use **task** for broad or parallel work (several tasks in one batch), not for single lookups you can do directly.
 - Prefer edits over full file writes.
-- Read and edit files with the dedicated tools, even outside cwd. **nu** (Nushell, not bash) is for git, builds, tests, file management, searching with `rg`/`fd`, and querying structured data.
-- For library behavior, read the installed dependency source (matches the lockfile). For guides, fetch markdown from the repo (`gh api repos/<owner>/<repo>/contents/<path> -H 'Accept: application/vnd.github.raw'`), or try `<site>/llms.txt` and `.md` mirrors. Never fetch raw HTML.
+- Read, search and edit files with **read**, **grep**, **glob** and the edit tools, even outside cwd.
+- The shell is **nu** (Nushell, not bash): git, builds, tests, file management, and querying structured data, including `rg`/`fd` output you want to shape in the same command.
+- **code_execution** runs a sandboxed Python subset that calls these tools, **nu** included, as async functions. Intermediate results stay out of your context, so it fits fan-out, multi-step searches and digesting large output such as logs, docs or issues.
+- For library behavior, read the installed dependency source (matches the lockfile). For docs, use **webfetch**, which asks for markdown and converts HTML. For files in a GitHub repo, use `gh api repos/<owner>/<repo>/contents/<path> -H 'Accept: application/vnd.github.raw'`.
 - Use todo_write for multi-step tasks (3+ steps) and update it after each step.
 
 # Conventions
@@ -236,6 +237,7 @@ if maki.session.request_compact then
 
 	maki.api.register_tool({
 		name = "compact",
+		audiences = { "main", "research_sub", "general_sub" },
 		description = [[Compact this session's history now. Call it at a natural boundary, for example after finishing a task, or when the context runs high. `instructions` say what the summary must keep.
 
 Never batch this call with others: the summary swallows their results before you can read them.]],
