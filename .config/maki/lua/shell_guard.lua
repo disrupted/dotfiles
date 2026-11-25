@@ -19,14 +19,35 @@ local HINTS = {
 	},
 }
 
+local function strip_quotes(cmd)
+	local out, i, n = {}, 1, #cmd
+	while i <= n do
+		local c = cmd:sub(i, i)
+		if c == "\\" then
+			i = i + 2
+		elseif c == "'" or c == '"' or c == "`" then
+			local j = i + 1
+			while j <= n do
+				local d = cmd:sub(j, j)
+				if d == c then
+					break
+				end
+				j = j + ((d == "\\" and c == '"') and 2 or 1)
+			end
+			out[#out + 1] = c .. c
+			i = j + 1
+		else
+			out[#out + 1] = c
+			i = i + 1
+		end
+	end
+	return table.concat(out)
+end
+
 local function strip(cmd)
 	cmd = cmd:gsub("<<%-?%s*['\"]?([%w_]+)['\"]?.-\n%1", "") -- bash heredocs
 	cmd = cmd:gsub("r#+'.-'#+", "") -- nu raw strings
-	cmd = cmd:gsub("\\.", "") -- escaped chars, incl. \" and \'
-	cmd = cmd:gsub('"[^"]*"', '""')
-	cmd = cmd:gsub("'[^']*'", "''")
-	cmd = cmd:gsub("`[^`]*`", "``")
-	return cmd
+	return strip_quotes(cmd)
 end
 
 -- Returns a reason when the command should be blocked, else nil.
