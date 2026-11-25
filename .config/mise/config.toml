@@ -41,6 +41,7 @@ pi = "latest"
 # "github:tontinton/maki" = "latest"
 "github:topiary/topiary" = "latest"
 "github:pruner-formatter/pruner" = "v1.0.0-alpha.12"
+"github:hahwul/gori" = "latest"
 
 # language servers, formatters, linters
 shellcheck = "latest"
