@@ -53,7 +53,8 @@ maki.setup({
 		bash = { enabled = false, timeout_secs = 120 },
 		code_execution = { enabled = true },
 		task = { max_concurrent = 4 },
-		list = { enabled = false },
+		-- code_execution's os.listdir, glob, stat and mkdir only work while list is enabled
+		list = { enabled = true },
 		index = { enabled = false },
 		edit = { edit_lines = true, insert_lines = false, multiedit = true },
 		view_image = { enabled = false },
