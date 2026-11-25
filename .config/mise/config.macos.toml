@@ -36,7 +36,6 @@
 "brew-cask:iina" = "latest"
 # "brew-cask:keka" = "latest"
 "brew-cask:mimestream" = "latest"
-"brew-cask:orbstack" = "latest"
 "brew-cask:pearcleaner" = "latest"
 # "brew-cask:pictogram" = "latest"
 "brew-cask:plexamp" = "latest"
@@ -55,6 +54,10 @@ _.path = [
 ]  # shadow BSD sed with gnu-sed
 # Never fall back to x86 emulation, images without an arm64 build fail loudly
 DOCKER_DEFAULT_PLATFORM = "linux/arm64"
+# docker-py and Testcontainers ignore Docker contexts, and /var/run/docker.sock is OrbStack's
+DOCKER_HOST = "unix://{{ env.HOME }}/.katamaran/run/docker.sock"
+# Ryuk mounts the socket path as seen inside the VM, not the macOS one
+TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE = "/var/run/docker.sock"
 
 [dotfile_groups.macos]
 root = "os/macos"

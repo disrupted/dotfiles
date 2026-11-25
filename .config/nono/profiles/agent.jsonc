@@ -89,7 +89,7 @@
     ],
     // Nx plugin workers use $TMPDIR/plugin*.sock
     "unix_socket_dir_bind": ["$TMPDIR"],
-    "unix_socket": [{ "path": "$HOME/.orbstack/run/docker.sock", "when": "macos" }],
+    "unix_socket": [{ "path": "$HOME/.katamaran/run/docker.sock", "when": "macos" }],
     "suppress_save_prompt": ["/"],
   },
   // macOS only, see platform_overrides.linux.

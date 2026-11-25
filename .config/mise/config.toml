@@ -35,6 +35,10 @@ typst = "latest"
 "github:ouch-org/ouch" = "latest"
 skim = "latest"
 "cargo:somo" = "latest"
+docker-cli = "latest"
+# docker only discovers CLI plugins named docker-<name> in fixed dirs, not on PATH
+docker-compose = { version = "latest", depends = ["docker-cli"], postinstall = { run = "mkdir -p ~/.docker/cli-plugins && ln -sf \"$MISE_TOOL_INSTALL_PATH/docker-compose\" ~/.docker/cli-plugins/docker-compose", when = "always" } }
+"aqua:docker/buildx" = { version = "latest", depends = ["docker-cli"], postinstall = { run = "mkdir -p ~/.docker/cli-plugins && ln -sf \"$MISE_TOOL_INSTALL_PATH/docker-cli-plugin-docker-buildx\" ~/.docker/cli-plugins/docker-buildx", when = "always" } }
 # bump together with mise (`mise self-update <version>`), then run `mise run agent:smoke-test`
 nono = "0.82.0"
 pi = "latest"
@@ -176,7 +180,7 @@ exclude = [
 # link whole dir: new files land in the repo; pickers skip per-file symlinks
 [dotfile_groups.home.entries]
 "~/.config/nvim" = { mode = "symlink" }
-# boxd and OrbStack write to ~/.ssh/config, so it stays local
+# boxd writes to ~/.ssh/config, so it stays local
 "~/.ssh/config/dotfiles" = { line = "Include ~/.ssh/config.d/dotfiles", position = "prepend" }
 
 [dotfile_groups.private]
