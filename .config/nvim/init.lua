@@ -668,6 +668,6 @@ end, {
 -- }}}1
 -----------------------------------------------------------------------------//
 -- remove some default keymaps
-for _, nmap in ipairs({ 'gra', 'gri', 'grn', 'grr', 'grt', 'grx', 'gO', 'gx', 'gcc' }) do
+for _, nmap in ipairs({ 'gra', 'gri', 'grn', 'grr', 'grt', 'grx', 'gO', 'gx' }) do
     pcall(vim.keymap.del, 'n', nmap)
 end

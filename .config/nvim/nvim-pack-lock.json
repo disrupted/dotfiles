@@ -1,9 +1,5 @@
 {
   "plugins": {
-    "Comment.nvim": {
-      "rev": "e30b7f2008e52442154b66f7c519bfd2f1e32acb",
-      "src": "https://github.com/numToStr/Comment.nvim"
-    },
     "LuaSnip": {
       "rev": "642b0c595e11608b4c18219e93b88d7637af27bc",
       "src": "https://github.com/L3MON4D3/LuaSnip",
@@ -208,10 +204,6 @@
       "rev": "5c7b0263797dfd1bd6202f2b219f3b53a80b2187",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
       "version": "'main'"
-    },
-    "nvim-ts-context-commentstring": {
-      "rev": "6141a40173c6efa98242dc951ed4b6f892c97027",
-      "src": "https://github.com/JoosepAlviste/nvim-ts-context-commentstring"
     },
     "nvim-web-devicons": {
       "rev": "0dc0cfb0c6858041174a53c7aa4adaf65e994b3c",
