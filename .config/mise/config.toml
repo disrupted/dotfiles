@@ -81,6 +81,16 @@ tombi = "latest"
 worktrunk = { version = "latest", workflow = "release.yaml" }
 "github:JohnnyMorganz/luau-lsp" = "1.70.1"
 
+[tools."http:boxd"]
+version = "latest"
+bin = "boxd"
+# boxd only publishes the latest build, at an unversioned URL
+url = "https://boxd.sh/downloads/cli/boxd-{{ os(macos='darwin') }}-{{ arch(x64='amd64') }}"
+version_list_url = "https://boxd.sh/downloads/cli/latest-linux-amd64.json"
+version_json_path = ".version"
+checksum_url = "https://boxd.sh/downloads/cli/latest-{{ os(macos='darwin') }}-{{ arch(x64='amd64') }}.json"
+checksum_expr = '"sha256:" + fromJSON(body).sha256'
+
 [settings]
 experimental = true
 task.run_auto_install = false
