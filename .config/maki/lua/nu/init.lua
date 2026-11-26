@@ -151,6 +151,9 @@ Commands run in the session's working directory (see Environment) by default.
 
 - Read, search and edit files with dedicated tools. nu is for git, builds, tests, file management, and querying structured data (`open package.json | get scripts`, `ls src | where size > 10kb`, `git log -5 --format=%s | lines`).
 - Nushell syntax: chain with `;` (no `&&`/`||`), `(cmd)` not `$(cmd)`, `$env.FOO = "x"`, `cmd o+e>| ...` to pipe stderr too, `^cmd` forces an external.
+- This is Nushell{{version}}, newer than your training data. Some commands and `$nu` fields were renamed, e.g. `$nu.home-path` is now `$nu.home-dir`. On an unknown command or column, check `help <cmd>`, `help commands | where name =~ <word>` or `$nu | columns` instead of guessing.
+- `~` expands only in bare words and backticks: `open ~/a`, `` open `~/my dir/a` ``. In quotes it stays literal. `\ ` does not escape spaces.
+- `$var` is not expanded inside a bare word: `^env HOME=$x` and `--dir=$x` silently pass the text `$x`. Use `$"HOME=($x)"`. A leading `FOO=$x cmd` env prefix does work.
 - Double quotes process escapes, so `"\("` is a parse error. Put regexes and backslashes in single quotes or `r#'...'#`.
 - Only the last pipeline's value is returned; earlier values in a `;` chain are dropped. For several results build a record: `{a: (...), b: (...)} | to nuon`.
 - Flat tables print as plain columns but cut wide data; end nested or wide output with `| to nuon` for compact, exact values.
@@ -161,10 +164,30 @@ Commands run in the session's working directory (see Environment) by default.
 - Output sent to the model is cut beyond 2000 lines or 50KB; the reply then names a log with the full output.
 - Interactive commands (sudo, ssh prompts) fail immediately.]]
 
+local VERSION_SLOT = "{{version}}"
+local nu_version
+
+local function versioned(v)
+  return (description:gsub(VERSION_SLOT, v and (" " .. v) or "", 1))
+end
+
+maki.fn.jobstart({ "nu", "--version" }, {
+  scope = "plugin",
+  -- TODO: use maki.version.parse once the installed maki ships maki.version
+  on_stdout = function(_, line)
+    if line:match("^%d+%.%d+") then
+      nu_version = line
+    end
+  end,
+})
+
 maki.api.register_tool({
   name = "nu",
   kind = "execute",
-  description = description,
+  description = versioned(nil),
+  describe = function()
+    return versioned(nu_version)
+  end,
   schema = {
     type = "object",
     properties = {
