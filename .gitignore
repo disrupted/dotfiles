@@ -138,11 +138,6 @@ scratch_*
 # RapidAPI
 *.paw
 
-# Nushell (generated)
-.config/nushell/history.sqlite*
-.config/nushell/vendor/
-.env.secrets
-
 mise.local.toml
 fnox.local.toml
 

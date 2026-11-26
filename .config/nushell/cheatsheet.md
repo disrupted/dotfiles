@@ -1,67 +1,44 @@
 # Nushell Cheat Sheet
 
-## Basics: Zsh -> Nushell
-- `ls` -> `ls` (table output)
+## Coming from bash/zsh
 - `grep foo` -> `where $it =~ 'foo'` or `where name =~ 'foo'`
-- `cd` -> `cd`
-- `pwd` -> `$env.PWD`
 - `echo` -> `print`
 - `cat` -> `open` (structured), `open --raw` (raw text)
-- `export VAR=...` -> `$env.VAR = "..."` (in `env.nu`)
+- `export VAR=...` -> `$env.VAR = "..."` (permanent: `env.nu`)
+- `a && b` -> `a; b` (stops on the first error)
+- `$(cmd)` -> `(cmd)`
+- `\` line continuation -> wrap the command in `( ... )`, newlines are allowed inside
+- `"$HOME/x"` -> `$"($env.HOME)/x"`, `~` only expands unquoted or in backticks
 
 ## Pipelines (structured data)
 ```nu
 ls | where type == "file"
 ls | where size > 1mb | sort-by size -r | first 5
+ls | get size | math sum
 ps | where cpu > 10 | sort-by cpu -r
+ps | get mem | math max
 ```
 
 ## Open structured data
 ```nu
 open data.json | get key
-open data.csv | from csv
-open data.csv --raw | from csv --separator ';'
+open data.csv
+open data.json | explore         # interactive viewer
 ```
 
 ## Your helpers
 ```nu
-csvs file.csv
-tsv file.tsv
-jsonr file.json
-yamlr file.yaml
+csvs file.csv    # CSV with ';' separator
+tsv file.tsv     # TSV
+jsonr file       # JSON, whatever the extension
+yamlr file       # YAML, whatever the extension
 ```
 
 ## History
 - Ctrl+R: history search (exact match, newest first)
 - Alt+R inside it: toggle between all history and the current directory
-
-## Files and paths
-```nu
-ls | select name size modified
-open file.txt --raw
-save -f out.txt
-pwd
-$env.PWD
-```
-
-## Search and filter
 ```nu
 history | where command =~ "kubectl"
-ls | where name =~ "config"
-ps | where command =~ "python"
-```
-
-## Sorting and selection
-```nu
-ls | sort-by modified
-ls | sort-by size -r
-ls | select name size
-```
-
-## Math and aggregates
-```nu
-ls | get size | math sum
-ps | get mem | math max
 ```
 
 ## Git
@@ -71,6 +48,7 @@ gc          # git commit
 gm          # switch to main branch
 gp          # push + CI watch
 ```
+Pickers from `modules/forgit.nu`: `ga`, `gr`, `gcf`, `glo`, `gd`, `gsw`, `gbd`, `gss`, `gsa`, `gcp`
 
 ## Navigation
 ```nu
@@ -78,15 +56,10 @@ j <query>   # zoxide top-level jump
 mkcd dir    # mkdir + cd
 ```
 
-## Process tools
+## Processes and ports
 ```nu
-ps | where cpu > 10 | sort-by cpu -r
 ps --long | where command =~ "python"
 sys mem
-```
-
-## Ports
-```nu
 somo                                       # interactive: filter, inspect, kill
 ports                                      # listening sockets, with the owner's cwd
 ports | uniq                               # collapse the IPv4/IPv6 duplicate rows
@@ -111,64 +84,21 @@ mise run docker:stop-all   # stop every container
 mise run docker:prune      # stop-all, then prune images, builders, cache
 ```
 
-## External commands
+## Misc
 ```nu
-^ls -la
-^git status
+^ls -la                          # force the external command over the builtin
+ls | input list --fuzzy "Pick"   # fuzzy selection
+exec nu                          # reload config
 ```
 
-## Fuzzy selection
-```nu
-ls | input list --fuzzy "Pick"
-```
+## Config and setup
+Edit config in `~/.dotfiles/.config/nushell`, `mise dot apply` links it into `~/.config/nushell`:
+- `env.nu`: environment and PATH
+- `config.nu`: everything else
+- `modules/user.nu`, `modules/forgit.nu`: helpers and git pickers
 
-## Environment
-```nu
-$env.PATH
-$env.EDITOR
-$env.VISUAL
-$env.LESS
-```
+A new machine needs only `mise bootstrap`. It installs nushell, makes it the login shell, links the config, and runs the `bootstrap` task, which generates the autoload files for mise, starship, zoxide, carapace and fnox in `$nu.data-dir/vendor/autoload`. Run `mise run bootstrap` to regenerate them. mise activation regenerates itself on every start.
 
-## Reload config
-```nu
-exec nu
-```
+On macOS, nu reads `~/.config/nushell` only if `XDG_CONFIG_HOME` is set before it starts. The launchd agent `dev.mise.xdg-config-home` sets it for every app at login, so restart the terminal after the first `mise bootstrap`. Shells started without it, e.g. over ssh, use the links in `~/Library/Application Support/nushell` instead, and keep their history there.
 
-## Config locations
-- `~/.config/nushell/config.nu`
-- `~/.config/nushell/env.nu`
-- `~/.config/nushell/modules/user.nu`
-- `~/.config/nushell/modules/forgit.nu` (git pickers: `ga`, `gr`, `gcf`, `glo`, `gd`, `gsw`, `gbd`, `gss`, `gsa`, `gcp`)
-
-## Setup on New Device
-
-After pulling dotfiles, run these commands to initialize auto-generated files:
-
-```bash
-# macOS: Create symlink from Application Support to ~/.config/nushell
-# (nushell on macOS defaults to ~/Library/Application Support/nushell)
-rm -rf "$HOME/Library/Application Support/nushell"
-ln -s ~/.config/nushell "$HOME/Library/Application Support/nushell"
-
-# Create vendor directory
-mkdir -p ~/.config/nushell/vendor
-
-# Create login.nu (required for login shells like Ghostty)
-echo "source ~/.config/nushell/env.nu" > ~/.config/nushell/login.nu
-
-# Regenerate mise integration (machine-specific)
-~/.local/bin/mise activate nu > ~/.config/nushell/vendor/mise.nu
-
-# Generate carapace completions
-mkdir -p "$(nu -c '$nu.cache-dir')"
-carapace _carapace nushell > "$(nu -c '$nu.cache-dir')/carapace.nu"
-
-# Generate starship prompt (if starship is installed)
-starship init nu > ~/.config/nushell/vendor/starship.nu
-
-# Generate zoxide integration (if zoxide is installed)
-zoxide init nushell > ~/.config/nushell/vendor/zoxide.nu
-```
-
-Note: The `vendor/` directory contains auto-generated, machine-specific files and is gitignored.
+Never set `XDG_*` in `env.nu`: nu has already picked its config dir by then, so only child processes see it, and history ends up split across two directories.

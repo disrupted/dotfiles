@@ -60,6 +60,18 @@ root = "os/macos"
 target = "~"
 manifest = "git"
 
+# fallback for nu started without launchd's XDG_CONFIG_HOME, e.g. over ssh
+[dotfile_groups.macos.entries]
+"~/Library/Application Support/nushell/config.nu" = { source = "../../.config/nushell/config.nu" }
+"~/Library/Application Support/nushell/env.nu" = { source = "../../.config/nushell/env.nu" }
+"~/Library/Application Support/nushell/modules" = { source = "../../.config/nushell/modules" }
+
+# set for every app at login, so nu reads ~/.config/nushell instead of Application Support
+[bootstrap.macos.launchd.agents.xdg-config-home]
+program = "/bin/launchctl"
+args = ["setenv", "XDG_CONFIG_HOME", "{{ env.HOME }}/.config"]
+run_at_load = true
+
 [bootstrap.user]
 login_shell = "/opt/homebrew/bin/nu"
 

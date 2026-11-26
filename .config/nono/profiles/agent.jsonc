@@ -52,7 +52,7 @@
       // read-only like gh: aliases run shell commands
       "$XDG_CONFIG_HOME/glab-cli/config.yml",
       "$XDG_CONFIG_HOME/glab-cli/aliases.yml",
-      { "path": "$HOME/Library/Application Support/nushell/plugin.msgpackz", "when": "macos" },
+      "$XDG_CONFIG_HOME/nushell/plugin.msgpackz",
     ],
     "allow": [
       // user_caches_macos grants this too, but the launcher's --read on it would win

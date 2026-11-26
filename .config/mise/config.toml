@@ -146,6 +146,10 @@ docker builder prune -a -f
 docker buildx prune -a -f
 """
 
+[tasks.bootstrap]
+description = "Generate Nushell autoload files for mise, starship, zoxide, carapace and fnox"
+run = "nu ~/.config/mise/scripts/nushell-autoload.nu"
+
 [tasks."agent:prune"]
 description = "Prune tools installed by sandboxed agents"
 run = "rm -rf ~/.local/share/mise-agent ~/.cache/mise-agent"
