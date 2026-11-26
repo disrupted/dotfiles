@@ -3,7 +3,7 @@ return {
     src = 'https://github.com/MagicDuck/grug-far.nvim',
     keys = {
         {
-            '<C-_>', -- ctrl + /
+            '<C-/>',
             function()
                 require('grug-far').toggle_instance({
                     transient = true,
