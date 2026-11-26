@@ -659,38 +659,6 @@ return {
             statuscolumn = { enabled = true },
             picker = {
                 ui_select = true,
-                actions = {
-                    opencode_send = function(picker)
-                        local selected = picker:selected({ fallback = true })
-                        if selected and #selected > 0 then
-                            local files = {}
-                            for _, item in ipairs(selected) do
-                                if item.file then
-                                    table.insert(files, item.file)
-                                end
-                            end
-                            if #files == 0 then
-                                Snacks.notify.warn(
-                                    'Please select files to send as context',
-                                    { title = 'Agent', icon = '' }
-                                )
-                                return
-                            end
-                            picker:close()
-
-                            require('opencode.services.session_runtime').open({
-                                new_session = false,
-                                focus = 'input',
-                                start_insert = true,
-                            })
-
-                            local context = require('opencode.context')
-                            for _, file in ipairs(files) do
-                                context.add_file(file)
-                            end
-                        end
-                    end,
-                },
                 sources = {
                     atlas_issue = vim.tbl_deep_extend('force', atlas.issue, {
                         layout = {
@@ -981,10 +949,6 @@ return {
                 win = {
                     input = {
                         keys = {
-                            ['<C-a>'] = {
-                                'opencode_send',
-                                mode = { 'n', 'i' },
-                            },
                             ['<Esc>'] = {
                                 'close',
                                 mode = { 'i', 'n' },

@@ -213,10 +213,6 @@
       "rev": "fd2d89f150a83424bc5f534954fa2307c638cb27",
       "src": "https://github.com/disrupted/one.nvim"
     },
-    "opencode.nvim": {
-      "rev": "494e474f58c45218a4cf7c7d2e76b0408de09daa",
-      "src": "https://github.com/disrupted/opencode.nvim"
-    },
     "overseer.nvim": {
       "rev": "a93d9f6d6defdac4bcd6d2c8ba988650e42e0a0e",
       "src": "https://github.com/stevearc/overseer.nvim"

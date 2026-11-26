@@ -155,19 +155,6 @@ vim.api.nvim_create_autocmd('TextPutPost', {
     desc = 'highlight pasted text briefly',
 })
 
--- FIXME: disabled because it causes weird side effects, e.g. in opencode.nvim
--- https://github.com/sudo-tee/opencode.nvim/issues/144
--- vim.api.nvim_create_autocmd('VimResized', {
---     desc = 'resize splits when Vim is resized',
---     callback = function()
---         vim.schedule(function()
---             local current_tab = vim.api.nvim_get_current_tabpage()
---             vim.cmd 'tabdo wincmd ='
---             vim.api.nvim_set_current_tabpage(current_tab)
---         end)
---     end,
--- })
-
 vim.api.nvim_create_autocmd('CmdlineEnter', {
     callback = require('conf.ui').cursor.show,
     desc = 'Show cursor when entering cmdline',
@@ -252,15 +239,11 @@ vim.o.signcolumn = 'auto:1-2' -- 'auto:1-2', 'yes:1'
 vim.o.laststatus = 3 -- global statusline
 vim.o.cursorline = false -- use autocmd below to only enable it for the focused window
 local cursorline_ignore_buftypes = { 'terminal' }
-local cursorline_ignore_filetypes = { 'opencode', 'opencode_output' }
 local au_cursorline = vim.api.nvim_create_augroup('cursorline_focus', {})
 vim.api.nvim_create_autocmd({ 'InsertLeave', 'WinEnter' }, {
     group = au_cursorline,
     callback = function(_)
-        if
-            vim.tbl_contains(cursorline_ignore_buftypes, vim.bo.buftype)
-            or vim.tbl_contains(cursorline_ignore_filetypes, vim.bo.filetype)
-        then
+        if vim.tbl_contains(cursorline_ignore_buftypes, vim.bo.buftype) then
             return
         end
         vim.wo.cursorline = true

@@ -41,7 +41,6 @@ docker-compose = { version = "latest", depends = ["docker-cli"], postinstall = {
 "aqua:docker/buildx" = { version = "latest", depends = ["docker-cli"], postinstall = { run = "mkdir -p ~/.docker/cli-plugins && ln -sf \"$MISE_TOOL_INSTALL_PATH/docker-cli-plugin-docker-buildx\" ~/.docker/cli-plugins/docker-buildx", when = "always" } }
 # bump together with mise (`mise self-update <version>`), then run `mise run agent:smoke-test`
 nono = "0.82.0"
-pi = "latest"
 # "github:tontinton/maki" = "latest"
 "github:topiary/topiary" = "latest"
 "github:pruner-formatter/pruner" = "v1.0.0-alpha.12"
@@ -159,9 +158,6 @@ arg "[agent]..." help="Agents to test, default all launchers"
 '''
 run = "~/.config/nono/bin/smoke-test.sh ${usage_network:+--network} ${usage_agent:-}"
 
-[env]
-PI_CODING_AGENT_DIR = "{{ env.HOME }}/.config/pi"
-
 # ~/.dotfiles mirrors $HOME; committed files are symlinked into place.
 # OS-specific files: os/<os>/ (config.<os>.toml). Work files: config.work.toml.
 [dotfile_groups.home]
@@ -190,7 +186,6 @@ manifest = "git"
 
 [dotfile_groups.private.entries]
 "~/.config/maki/AGENTS.md" = { source = ".config/agents/AGENTS.md" }
-"~/.config/pi/AGENTS.md" = { source = ".config/agents/AGENTS.md" }
 
 [bootstrap.repos]
 "~/.dotfiles-private" = { url = "https://github.com/disrupted/dotfiles-private.git" }

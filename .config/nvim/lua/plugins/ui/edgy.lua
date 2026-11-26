@@ -93,26 +93,6 @@ return {
                     },
                 } --[[@as Edgy.View.Opts]],
                 {
-                    ft = 'opencode_output',
-                    wo = {
-                        winbar = false,
-                        signcolumn = 'yes',
-                        winhighlight = 'Normal:OpencodeBackground',
-                        conceallevel = 3,
-                        concealcursor = 'n',
-                    },
-                } --[[@as Edgy.View.Opts]],
-                {
-                    ft = 'opencode',
-                    size = { height = 10 },
-                    wo = {
-                        winbar = false,
-                        signcolumn = 'yes',
-                        winhighlight = 'Normal:OpencodeBackground',
-                        statuscolumn = '',
-                    },
-                } --[[@as Edgy.View.Opts]],
-                {
                     ft = 'help',
                     size = { height = 40 },
                     filter = function(buf)

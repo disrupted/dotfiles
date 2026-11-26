@@ -2,12 +2,11 @@
 return {
     src = 'https://github.com/MeanderingProgrammer/render-markdown.nvim',
     cmd = 'RenderMarkdown',
-    ft = { 'opencode_output' },
     config = function()
         ---@type render.md.UserConfig
         local opts = {
             debounce = 50,
-            file_types = { 'opencode_output' },
+            file_types = {},
             -- don't attach to LSP floating previews (hover, etc.)
             ignore = function(buf)
                 local win = vim.fn.bufwinid(buf)

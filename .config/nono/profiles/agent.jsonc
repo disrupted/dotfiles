@@ -242,7 +242,7 @@
     // Network is open apart from the proxy routes. For an allowlist ("developer" = LLM APIs,
     // package registries, GitHub, GitLab.com, docs), uncomment:
     // "network_profile": "developer",
-    // "allow_domain": ["pi.dev", "mcp.context7.com", "openrouter.ai", "opencode.ai"],
+    // "allow_domain": ["mcp.context7.com", "openrouter.ai", "opencode.ai"],
   },
   "rollback": {
     "exclude_patterns": ["node_modules", ".venv", "__pycache__", "target", ".nx", "dist"],

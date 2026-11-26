@@ -23,25 +23,6 @@ return {
                 { ',', desc = '' },
                 { ';', desc = '' },
             },
-            icons = {
-                rules = {
-                    {
-                        plugin = 'opencode.nvim',
-                        icon = ' ',
-                        color = 'yellow',
-                    },
-                    {
-                        plugin = 'opencode.nvim',
-                        pattern = 'reasoning',
-                        icon = '󱍎 ',
-                    },
-                    {
-                        plugin = 'opencode.nvim',
-                        pattern = 'tool',
-                        icon = ' ',
-                    },
-                },
-            },
         }
         local wk = require('which-key')
         wk.setup(opts)

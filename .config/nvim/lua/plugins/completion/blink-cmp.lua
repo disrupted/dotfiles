@@ -1,12 +1,3 @@
-local function is_inside_opencode_prompt()
-    return vim.bo.filetype == 'opencode'
-end
-
-local function is_opencode_completion()
-    local item = require('blink.cmp.completion.list').get_selected_item()
-    return item and vim.startswith(item.source_id, 'opencode_')
-end
-
 -- blink requires a provider as soon as it's listed, before checking `enabled`
 local function git_source_enabled()
     return vim.bo.filetype == 'markdown.forge'
@@ -27,9 +18,6 @@ return {
                         if cmp.is_menu_visible() then
                             return cmp.cancel()
                         end
-                        if is_inside_opencode_prompt() then
-                            return false
-                        end
                         return cmp.show()
                     end,
                     'fallback',
@@ -49,31 +37,6 @@ return {
                         vim.print(item)
                         return true
                     end,
-                },
-                -- Opencode: preset 'enter'
-                ['<CR>'] = {
-                    function(cmp)
-                        if is_inside_opencode_prompt() and is_opencode_completion() then
-                            return cmp.accept()
-                        end
-                    end,
-                    'fallback',
-                },
-                ['<Tab>'] = {
-                    function(cmp)
-                        if is_inside_opencode_prompt() and is_opencode_completion() then
-                            return cmp.select_next()
-                        end
-                    end,
-                    'fallback',
-                },
-                ['<S-Tab>'] = {
-                    function(cmp)
-                        if is_inside_opencode_prompt() and is_opencode_completion() then
-                            return cmp.select_prev()
-                        end
-                    end,
-                    'fallback',
                 },
             } --[[@as blink.cmp.KeymapConfig]],
             snippets = { preset = 'luasnip' },
