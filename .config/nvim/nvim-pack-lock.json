@@ -10,7 +10,7 @@
       "src": "https://github.com/numToStr/Navigator.nvim"
     },
     "atlas.nvim": {
-      "rev": "184e891e19d989deb93f890fa20f4ec3dcb89ef2",
+      "rev": "4678b0223e187a6eb125a53b75db61ca41e0e83f",
       "src": "https://github.com/emrearmagan/atlas.nvim"
     },
     "auto-save.nvim": {
@@ -63,7 +63,7 @@
       "src": "https://github.com/folke/edgy.nvim"
     },
     "fff": {
-      "rev": "ab3002a9bfbef53874dd0b56608e34d281791b4c",
+      "rev": "eb584015bb6bb77a3f93e84520a8e47379ab8435",
       "src": "https://github.com/dmtrKovalenko/fff"
     },
     "fff-snacks.nvim": {
@@ -83,7 +83,7 @@
       "src": "https://github.com/disrupted/github-actions.nvim"
     },
     "gitsigns.nvim": {
-      "rev": "c0862d382a35b7b45757d8d151a6a634c09bf3ce",
+      "rev": "166c03131e6a3528f692dd89f37668d991f17baa",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "grug-far.nvim": {
@@ -123,7 +123,7 @@
       "src": "https://github.com/danymat/neogen"
     },
     "neogit": {
-      "rev": "17929b7b0b9c05fe3dfc788fbba9881eb9c1cbec",
+      "rev": "0468adaa4af22ede35c0df6bdd81e93a9c217733",
       "src": "https://github.com/NeogitOrg/neogit"
     },
     "neotest": {
@@ -196,7 +196,7 @@
       "src": "https://github.com/kylechui/nvim-surround"
     },
     "nvim-treesitter": {
-      "rev": "37e52c733ada9d8d544d53a763140ef1ba404353",
+      "rev": "52773f0d13a0c11d0c3ef33c14ab6ecc1c17148b",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter",
       "version": "'main'"
     },
@@ -247,7 +247,7 @@
       "src": "https://github.com/ian-howell/ripple.nvim"
     },
     "rustaceanvim": {
-      "rev": "c9df24e582b1c77b53da2eafc63e4ed5fea0f4ee",
+      "rev": "d2d04c81c36e2a7005f7794eea02a613dec575e8",
       "src": "https://github.com/mrcjkb/rustaceanvim"
     },
     "scope.nvim": {
@@ -267,7 +267,7 @@
       "src": "https://github.com/johmsalas/text-case.nvim"
     },
     "tiny-cmdline.nvim": {
-      "rev": "ac9c6557c66da6308eb523643df8778f3cbe652f",
+      "rev": "b6bb66ee46421b7965cbc961c9fae89310a87bd1",
       "src": "https://github.com/rachartier/tiny-cmdline.nvim"
     },
     "todo-comments.nvim": {
