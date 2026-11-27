@@ -54,6 +54,8 @@ _.path = [
 ]  # shadow BSD sed with gnu-sed
 # Never fall back to x86 emulation, images without an arm64 build fail loudly
 DOCKER_DEFAULT_PLATFORM = "linux/arm64"
+# Ryuk bind-mounts the host's context socket by default, which is a dead file inside the Katamaran VM
+TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE = "/var/run/docker.sock"
 
 [dotfile_groups.macos]
 root = "os/macos"
