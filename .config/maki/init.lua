@@ -42,7 +42,6 @@ maki.setup({
 	} or {
 		default_model = "claude-code/claude-opus-5-5",
 		allowed_models = {
-			"opencode-go/*",
 			"claude-code/claude-{haiku,sonnet,opus}-5-5",
 		},
 	},
