@@ -235,7 +235,8 @@ require("worktree").setup({
 	bounds = { 0.1, 0.1, 0.8, 0.8 }, -- x, y, width, height as fractions of the window
 })
 
-local WT = os.getenv("HOME") .. "/.local/share/mise/shims/wt"
+local NU = "/opt/homebrew/bin/nu"
+local PRUNE_SCRIPT = os.getenv("HOME") .. "/.config/rex/worktrunk-prune.nu"
 
 rex.action({
 	name = "worktree_prune",
@@ -249,11 +250,11 @@ rex.action({
 			error("can't tell which folder this pane is in", 0)
 		end
 		rex.exec({ "git", "fetch", "--prune", "--quiet" }, { cwd = dir })
-		local r = rex.exec({ WT, "step", "prune", "--dry-run", "--min-age", "0", "--format", "json" }, { cwd = dir })
+		local r = rex.exec({ NU, PRUNE_SCRIPT, "--count" }, { cwd = dir })
 		if not (r and r.ok) then
 			error("not in a git repository", 0)
 		end
-		if r.stdout:match("^%s*%[%s*%]%s*$") then
+		if tonumber(r.stdout) == 0 then
 			error("no merged worktrees to remove", 0)
 		end
 		local _, err = rex.session.new_layer({
@@ -262,7 +263,7 @@ rex.action({
 			layout = rex.layout.block({
 				flavor = "com.superlogical.terminal.shell",
 				label = "worktree prune",
-				options = { cwd = dir, command = { os.getenv("HOME") .. "/.config/rex/worktrunk-prune.sh" } },
+				options = { cwd = dir, command = { NU, PRUNE_SCRIPT } },
 			}),
 		})
 		if err then
