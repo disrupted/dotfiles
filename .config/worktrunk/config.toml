@@ -1,6 +1,12 @@
 # Worktrees live next to the repo in "<repo>.worktrees/", e.g. ~/work/foobar.worktrees/fix-login
 worktree-path = "{{ repo_path }}/../{{ repo }}.worktrees/{{ branch | sanitize }}"
 
+# Seed new worktrees with the gitignored files a repo lists in .worktreeinclude, e.g.
+# mise.local.toml or target/ (reflinked on APFS, so a warm build costs no disk).
+# The copied mise.local.toml comes from the trusted main checkout, so trust it too.
+[pre-start]
+seed = "wt step copy-ignored --require-include && { [ ! -f mise.local.toml ] || \"$HOME/.local/bin/mise\" trust --quiet mise.local.toml; }"
+
 # Close the worktree's Rex session however it was removed: Alt-x in the picker,
 # wt remove, wt merge or wt step prune. Closing an already closed one is a no-op.
 [post-remove]
