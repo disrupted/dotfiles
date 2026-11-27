@@ -98,6 +98,9 @@
     // (that only covers POSIX semaphores). The prebuilt lmdb-js binary (Angular build cache,
     // Nx) locks with SysV semaphores and aborts (SIGABRT, exit 134) without them.
     "(allow ipc-sysv-sem)",
+    // Secure Transport (Rust native-tls) parses server certificates through securityd and fails
+    // with -9808 "bad certificate format" without it. Keychain files stay denied.
+    "(allow mach-lookup (global-name \"com.apple.SecurityServer\"))",
     // Agents must not loosen their own sandbox, e.g. to get past a denial. profile-drafts stays
     // writable. Needed because ~/.config is writable in dotfiles mode.
     "(deny file-write* (regex #\"/\\.config/nono/(bin|profiles)(/|$)\"))",
